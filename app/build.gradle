@@ -5,8 +5,13 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
+<<<<<<< HEAD
         applicationId "com.toledo.fitnessapp.fitnessapp"
         minSdkVersion 15
+=======
+        applicationId "com.example.adam.gymtrackr"
+        minSdkVersion 8
+>>>>>>> origin/controllerProgramming
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"

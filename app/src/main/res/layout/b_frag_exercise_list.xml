@@ -1,0 +1,39 @@
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/browseMenuExerciseNameView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_alignParentLeft="true"
+            android:padding="4dp"
+            android:text="Exercise"/>
+        <TextView
+            android:id="@+id/browseMenuExerciseMuscleView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:text="ExerciseMuscle"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="70dp"
+            android:layout_marginEnd="70dp" />
+        <TextView
+            android:id="@+id/browseMenuExerciseEquip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:text="ExerciseEquip"
+            android:layout_below="@+id/browseMenuExerciseMuscleView"
+            android:layout_alignLeft="@+id/browseMenuExerciseMuscleView"
+            android:layout_alignStart="@+id/browseMenuExerciseMuscleView" />
+
+    </RelativeLayout>
