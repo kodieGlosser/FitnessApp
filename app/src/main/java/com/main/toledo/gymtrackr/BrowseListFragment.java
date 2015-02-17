@@ -31,9 +31,16 @@ public class BrowseListFragment extends ListFragment{
         //adds the exercise we selected to our workout data singleton
         //NOTE TO SELF: MAY BE BEST TO MODIFY THIS.  PASS EXERCISE TO ACTIVITY AND ADD IT TO
         //SINGLETON THERE.
-        WorkoutData.get(getActivity()).addExercise(exercise, 0);
+        WorkoutData.get(getActivity()).increment();
+        WorkoutData.get(getActivity()).addExercise(exercise,
+                ((BrowseActivity)getActivity()).getCircuitValue());
+
         //Calls the workspace activity
         Intent i = new Intent(getActivity(), WorkspaceActivity.class);
+
+        //i.putExtra("EXTRA_CIRCUIT_NUMBER",
+        //        ((BrowseActivity)getActivity()).getCircuitValue());
+
         startActivity(i);
 
     }

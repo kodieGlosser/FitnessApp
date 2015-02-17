@@ -25,10 +25,15 @@ public class BrowseActivity extends FragmentActivity {
     private static ArrayList<Exercise> StubExercises;
     //the adapter is responsible for populating the browse list
     public static BrowseAdapter adapter;
+    private int circuitNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null){
+            circuitNumber = extras.getInt("EXTRA_CIRCUIT_NUMBER");
+        }
         setContentView(R.layout.b_activity);
 
         //populates the stub list
@@ -82,6 +87,10 @@ public class BrowseActivity extends FragmentActivity {
     //used to add data to the display list from fragments, this method is called from from the filter
     //fragment.  queries to populate the the list could go here.  we could set addItem to take some
     //params to specify things.
+
+    public int getCircuitValue(){
+        return circuitNumber;
+    }
 
     public void addItem(){
         //new data to be displayed
