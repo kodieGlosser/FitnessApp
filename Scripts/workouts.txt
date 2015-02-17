@@ -1,0 +1,95 @@
+Legs, Barbell, Barbell Squat, Quadriceps
+Legs, Barbell, Barbell Hack Squat, Quadriceps
+Legs, Barbell, Barbell Lunge, Quadriceps
+Legs, Dumbbell, Dumbbell Lunge, Quadriceps
+Legs, Dumbbell, Dumbbell Squat, Quadriceps
+Legs, Barbell, Front Barbell Squat, Quadriceps
+Legs, Machine, Hack Squat, Quadriceps
+Legs, Machine, Leg Extensions, Quadriceps
+Legs, Machine, Leg Press, Quadriceps
+Legs, Machine, Lying Leg Curls, Quadriceps
+Legs, Cable, One-legged Cable Kickback, Glutes
+Legs, Barbell, Power Clean, Hamstrings
+Legs, Machine, Seated Leg Curl,  Hamstrings
+Legs, Barbell, Stiff-Legged Barbell Deadlift, Hamstrings
+Back, Barbell, Barbell Deadlift, Lower Back
+Back, Barbell, Bent Over Barbell Row, Middle Back
+Back, Barbell, Bent Over Two-Arm Long Bar Row, Middle Back
+Back, Barbell, Bent Over One-Arm Long Bar Row, Middle Back
+Back, Dumbbell, Dumbbell Incline Row, Middle Back
+Back, Dumbbell, One-Arm Dumbbell Row, Middle Back
+Back, Cable, Seated Cable Rows, Middle Back
+Back, Barbell, Rack Pulls, Lower Back
+Abs, Body, 3/4 Sit-Up, Abs
+Abs, Body, Cross-Body Crunch, Abs
+Abs, Body, Crunches, Abs
+Abs, Body, Reverse Crunch, Abs
+Abs, Body, Sit-Up, Abs
+Abs, Body, Tuck Crunch, Abs
+Abs, Body, Toe Touchers, Abs
+Abs, Dumbbell, Dumbbell Side Bend, Abs
+Abs, Barbell, Barbell Side Bend, Abs
+Abs, Body, Elbow to Knee, Abs
+Abs, Body, Jackknife Sit-Up, Abs
+Abs, Body, Janda Sit-Up, Abs
+Abs, Body, Lower Back Curl, Abs
+Abs, Body, Side Bridge, Abs
+Abs, Body, Side Jackknife, Abs
+Abs, Dumbbell, Spell Caster, Abs
+Abs, Body, Spider Crawl, Abs
+Abs, Body, Wind Sprints, Abs
+Abs, Body, Air Bike, Abs
+Abs, Body, Bent-Knee Hip Raise, Abs
+Arms, Dumbbell, Alternate Hammer Curl, Bicep
+Arms, Dumbbell, Hammer Curl, Bicep
+Arms, Dumbbell, Alternate Incline Dumbbell Curl, Bicep
+Arms, Dumbbell, Incline Dumbbell Curl, Bicep
+Arms, Dumbbell, Alternate Preacher Curl, Bicep
+Arms, Dumbbell, Alternate Dumbbell Bicep Curl, Bicep
+Arms, Dumbbell, Dumbbell Bicep Curl, Bicep
+Arms, Dumbbell, Concentration Curls, Bicep
+Arms, Dumbbell, Cross Body Hammer Curl, Bicep
+Arms, Dumbbell, Preacher Hammer Dumbbell Curl, Bicep
+Arms, Dumbbell, Seated Dumbbell Curl, Bicep
+Arms, Dumbbell, Seated Dumbbell Inner Bicep Curl, Bicep
+Arms, Barbell, Barbell Curl, Bicep
+Arms, Barbell, Close-Grip EZ Bar Curl, Bicep
+Arms, Barbell, Wide-Grip EZ Bar Curl, Bicep
+Arms, Barbell, Close-Grip Standing Barbell Curl, Bicep
+Arms, Barbell, Close-Grip EZ Bar Preacher Curl, Bicep
+Arms, Barbell, Wide-Grip EZ Bar Preacher Curl, Bicep
+Arms, Barbell, Preacher Curl, Bicep
+Arms, Barbell, Reverse Barbell Curl, Bicep
+Arms, Barbell, Wide-Grip Standing Barbell Curl, Bicep
+Arms, Cable, Cable Preacher Curl, Bicep
+Arms, Cable, Standing One-Arm Curl, Bicep
+Arms, Cable, Standing Biceps Cable Curl, Bicep
+Arms, Cable, Overhead Cable Curl, Bicep
+Arms, Cable, Reverse Cable Curl, Bicep
+Arms, Cable, Laying Cable Curl, Bicep
+Arms, Machine, Machine Preacher Curl, Bicep
+Arms, Machine, Smith Machine Close-Grip Bench, Triceps
+Arms, Machine, Machine Triceps Extension, Triceps
+Arms, Machine, Dip Machine, Triceps
+Arms, Cable, One Arm Triceps Extension, Triceps
+Arms, Cable, Cable Rope Overhead Triceps Extension, Triceps
+Arms, Cable, Triceps Pushdown, Triceps
+Arms, Cable, Triceps Pushdown - Rope Attachment, Triceps
+Arms, Cable, Triceps Pushdown - V-Bar Attachment, Triceps
+Arms, Dumbbell, Close-Grip Dumbbell Press, Triceps
+Arms, Dumbbell, One Arm Dumbbell Extension, Triceps
+Arms, Dumbbell, Seated Triceps Press, Triceps
+Arms, Dumbbell, Standing Triceps Press, Triceps
+Arms, Dumbbell, Standing Bent-Over One-Arm Dumbbell Triceps Extension, Triceps
+Arms, Dumbbell, Standing One-Arm Dumbbell Triceps Extension , Triceps
+Arms, Dumbbell, Tricep Dumbbell Kickback, Triceps
+Arms, Barbell, Close-Grip Barbell Bench Press, Triceps
+Arms, Barbell, Incline Barbell Triceps Extension, Triceps
+Arms, Barbell, Close-Grip EZ-Bar Press, Triceps
+Arms, Barbell, EZ-Bar Skullcrusher, Triceps
+Arms, Barbell, Close-Grip EZ-Bar Press, Triceps
+Arms, Barbell, Finger Curls, Forearm
+Arms, Barbell, Palms-Down Wrist Curl Over A Bench, Forearm
+Arms, Barbell, Palms-Up Barbell Wrist Curl Over A Bench, Forearm
+Arms, Barbell, Seated Palm-Up Barbell Wrist Curl, Forearm
+Arms, Barbell, Seated Palms-Down Barbell Wrist Curl , Forearm

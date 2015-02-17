@@ -1,4 +1,4 @@
-package com.example.adam.gymtrackr;
+package com.main.toledo.gymtrackr;
 
 /**
  * Created by Adam on 2/9/2015.

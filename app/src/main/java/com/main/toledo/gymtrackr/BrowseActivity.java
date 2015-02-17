@@ -1,4 +1,4 @@
-package com.example.adam.gymtrackr;
+package com.main.toledo.gymtrackr;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -36,6 +37,15 @@ public class BrowseActivity extends FragmentActivity {
         //initiates filter
         FilterFragment = new BrowseFilterFragment();
         ListFragment = new BrowseListFragment();
+
+        CopyDatabase myDbCopier = new CopyDatabase(this);
+
+        try {
+           myDbCopier.createDatabase();
+        } catch (IOException io) {
+            Log.e("Query Failure", io.getMessage());
+            throw new Error("Unable to create database");
+        }
 
         //creates a list adapter for our stub exercises
         adapter = new BrowseAdapter(this, 0, StubExercises);

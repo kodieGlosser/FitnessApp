@@ -1,4 +1,4 @@
-package com.example.adam.gymtrackr;
+package com.main.toledo.gymtrackr;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

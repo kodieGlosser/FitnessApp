@@ -2,7 +2,7 @@
 
     <manifest android:versionName="1.0"
     android:versionCode="1"
-    package="com.example.adam.gymtrackr"
+    package="com.main.toledo.gymtrackr"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-sdk android:targetSdkVersion="21"
@@ -17,7 +17,7 @@
 
     <activity android:label="@string/app_name"
         android:noHistory="true"
-        android:name="com.example.adam.gymtrackr.BrowseActivity">
+        android:name="com.main.toledo.gymtrackr.BrowseActivity">
         <intent-filter>
 
             <action android:name="android.intent.action.MAIN"/>
@@ -32,7 +32,7 @@
     <activity
         android:label="@string/app_name"
         android:noHistory="true"
-        android:name="com.example.adam.gymtrackr.WorkspaceActivity">
+        android:name="com.main.toledo.gymtrackr.WorkspaceActivity">
 
 
         <!--<intent-filter>
