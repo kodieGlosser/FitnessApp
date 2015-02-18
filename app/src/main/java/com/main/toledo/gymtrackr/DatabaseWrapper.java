@@ -31,7 +31,7 @@ public class DatabaseWrapper {
     /**
      *
      */
-    public Cursor browseExercisesByName(String name) {
+    public Exercise[] browseExercisesByName(String name) {
         String table = "Exercises";
         String[] columns =  new String[] {"*"};
         String whereClause = "name = ?";
@@ -39,12 +39,14 @@ public class DatabaseWrapper {
         Cursor c = null;
 
         try {
-            c = myDatabase.query(table, columns, whereClause, whereArgs, null, null, null);
+            c = myDatabase.query(table, null, whereClause, whereArgs, null, null, name);
         } catch (Exception e) {
             Log.e("Query Failure", e.getMessage());
         }
 
-        return c;
+        int queryCount = c.getCount();
+
+        return null;
     }
 
 }
