@@ -1,4 +1,4 @@
-package com.example.adam.gymtrackr;
+package com.main.toledo.gymtrackr;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

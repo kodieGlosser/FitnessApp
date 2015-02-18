@@ -5,7 +5,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "com.example.adam.gymtrackr"
+        applicationId "com.main.toledo.gymtrackr"
         minSdkVersion 8
         targetSdkVersion 21
         versionCode 1
