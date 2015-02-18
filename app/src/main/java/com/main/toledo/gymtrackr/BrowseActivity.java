@@ -87,6 +87,9 @@ public class BrowseActivity extends FragmentActivity {
         //new data to be displayed
         StubExercises.add( new Exercise("test", "test", 666, "hailsatan") );
 
+        DatabaseWrapper db = new DatabaseWrapper();
+        Exercise[] exercises = db.browseExercisesByName("Barbell");
+
         //this lets the adapter know that it's data is different, display wont update otherwise
         adapter.notifyDataSetChanged();
     }

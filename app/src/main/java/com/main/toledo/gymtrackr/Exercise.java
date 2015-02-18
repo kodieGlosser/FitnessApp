@@ -10,6 +10,7 @@ public class Exercise {
     private String m_name;
     private String m_muscleGroup; //leaving out muscle for now
     private String m_equipmentType;
+    private String m_targetMuscle;
     private int m_repetitions;
     private int m_weight;
     private int m_lastPerformed;  //this will be an integer value of the last time the exercise was
@@ -27,13 +28,22 @@ public class Exercise {
         this.m_equipmentType = equipmentType;
     }
 
-    public Exercise(int id, String name, String muscleGroup, String equipmentType, int repetitions, int weight){
+    public Exercise(int id, String name, String muscleGroup, String equipmentType, String targetMuscle, int repetitions, int weight){
         this.m_id = id;
         this.m_name = name;
         this.m_muscleGroup = muscleGroup;
         this.m_equipmentType = equipmentType;
+        this.m_targetMuscle = targetMuscle;
         this.m_repetitions = repetitions;
         this.m_weight = weight;
+    }
+
+    public Exercise(int id, String name, String muscleGroup, String equipmentType, String targetMuscle){
+        this.m_id = id;
+        this.m_name = name;
+        this.m_muscleGroup = muscleGroup;
+        this.m_equipmentType = equipmentType;
+        this.m_targetMuscle = targetMuscle;
     }
 
     public Exercise(){
@@ -46,6 +56,10 @@ public class Exercise {
     public void setId(int id) { this.m_id = id; }
 
     public int getId() { return this.m_id; }
+
+    public void setTargetMuscle(String targetMuscle) { this.m_targetMuscle = targetMuscle; }
+
+    public String getTargetMuscle() { return this.m_targetMuscle; }
 
     public void setRepetitions(int repetitions) { this.m_repetitions = repetitions; }
 
