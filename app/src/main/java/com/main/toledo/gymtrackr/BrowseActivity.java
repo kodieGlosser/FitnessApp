@@ -22,10 +22,11 @@ public class BrowseActivity extends FragmentActivity {
     BrowseListFragment ListFragment;
 
     //this is the stub list
-    private static ArrayList<Exercise> StubExercises;
+    private static ArrayList<Exercise> StubExercises = new ArrayList<Exercise>();
     //the adapter is responsible for populating the browse list
     public static BrowseAdapter adapter;
     private int circuitNumber;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +37,9 @@ public class BrowseActivity extends FragmentActivity {
         }
         setContentView(R.layout.b_activity);
 
-        //populates the stub list
-        implementStubList();
 
+        //populates our display initially
+        initializeBrowseList();
         //initiates filter
         FilterFragment = new BrowseFilterFragment();
         ListFragment = new BrowseListFragment();
@@ -56,18 +57,6 @@ public class BrowseActivity extends FragmentActivity {
     }
     //Adam:  This is a stub list of exercises used for the browse menu
     //in the format "Name, Muscle group, last used, equip used"
-
-    private void implementStubList(){
-        StubExercises = new ArrayList<Exercise>();
-        StubExercises.add( new Exercise("curl", "arms", 1, "dumbbell"));
-        StubExercises.add( new Exercise("squat", "legs", 2, "barbell"));
-        StubExercises.add( new Exercise("bench press", "chest", 3, "barbell"));
-        StubExercises.add( new Exercise("dumb bell row", "back", 4, "dumbell"));
-        StubExercises.add( new Exercise("triceps extension", "arms", 5, "dumbell"));
-        StubExercises.add( new Exercise("shoulder press", "shoulders", 6, "barbell"));
-        StubExercises.add( new Exercise("shrug", "shoulders", 7, "barbell"));
-    }
-
     //used to fetch the adapter from this activity in fragments.  the list fragment gets the adapter
     //via this method, then uses it to populate its list view.
 
@@ -85,16 +74,23 @@ public class BrowseActivity extends FragmentActivity {
 
     public void searchForItem(String search_value){
         StubExercises.clear();
-
         DatabaseWrapper db = new DatabaseWrapper();
         Exercise[] exercises = db.browseExercisesByName(search_value);
         for (int i = 0; i < exercises.length; i++) {
-
             StubExercises.add(exercises[i]);
 
         }
         //this lets the adapter know that it's data is different, display wont update otherwise
         adapter.notifyDataSetChanged();
+    }
+
+    public void initializeBrowseList(){
+        Log.d("test", "InitializeBrowseList called.");
+        DatabaseWrapper db = new DatabaseWrapper();
+        Exercise[] exercises = db.browseExercisesByName("");
+        for (int i = 0; i < exercises.length; i++) {
+            StubExercises.add(exercises[i]);
+        }
     }
 
     //this is the actual adapter class used to populate layout/b_frag_exercise_list.xml
