@@ -31,7 +31,8 @@ public class BrowseListFragment extends ListFragment{
         //adds the exercise we selected to our workout data singleton
         //NOTE TO SELF: MAY BE BEST TO MODIFY THIS.  PASS EXERCISE TO ACTIVITY AND ADD IT TO
         //SINGLETON THERE.
-        WorkoutData.get(getActivity()).increment();
+        //test 2/17 WorkoutData.get(getActivity()).increment();
+
         WorkoutData.get(getActivity()).addExercise(exercise,
                 ((BrowseActivity)getActivity()).getCircuitValue());
 
@@ -42,6 +43,5 @@ public class BrowseListFragment extends ListFragment{
         //        ((BrowseActivity)getActivity()).getCircuitValue());
 
         startActivity(i);
-
     }
 }

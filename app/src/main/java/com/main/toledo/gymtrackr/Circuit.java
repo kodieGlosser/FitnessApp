@@ -28,6 +28,7 @@ public class Circuit {
         order = 0;
         name = "Placeholder";
         isLast = true;
+        //exercises.add(new Exercise());
     }
 
     public Circuit( int order, ArrayList<Exercise> e){
@@ -37,7 +38,13 @@ public class Circuit {
     }
 
     public void add(Exercise e){
-        exercises.add(e);
+        e.setCircuitLocation(order);
+        if(exercises.isEmpty()) {
+            exercises.add(e);
+            exercises.add(new Exercise());
+        } else {
+            exercises.add(exercises.size() - 1, e);
+        }
     }
 
     public Exercise get(int i){
@@ -70,7 +77,6 @@ public class Circuit {
         LayoutInflater inflater = (LayoutInflater) c
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-
         switch (name) {
             case "Placeholder":
                 m_view = inflater.inflate(R.layout.w_end_buttons, null);
@@ -94,15 +100,15 @@ public class Circuit {
             case "Placeholder":
                 //Log.d("refreshTest ", "Placeholder called in " + order);
                 if (m_view == null) {
-                    Log.d("TEST ", "m_view is null for PlaceHolderCase");
-                    Log.d("TEST ", "in circuit " + order);
-                    Log.d("TEST ", "LIVESAVER GOOOOO");
+                    //                   Log.d("TEST ", "m_view is null for PlaceHolderCase");
+                    //                   Log.d("TEST ", "in circuit " + order);
+                    //                   Log.d("TEST ", "LIVESAVER GOOOOO");
                     LayoutInflater inflater = (LayoutInflater) c
                             .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     m_view = inflater.inflate(R.layout.w_end_buttons, null);
                     viewType = "Buttons";
-
                 }
+
                 browseButton = (Button)m_view.findViewById(R.id.BrowseButton);
                 browseButton.setOnClickListener(new View.OnClickListener(){
                     @Override
@@ -112,19 +118,21 @@ public class Circuit {
                         c.startActivity(i);
                     }
                 });
+
                 break;
 
             default:
                 if (viewType == "Buttons") {
-                    Log.d("TEST ", "m_view is null for default case");
-                    Log.d("TEST ", "in circuit " + order);
-                    Log.d("TEST ", "LIVESAVER GOOOOO");
+//                    Log.d("TEST ", "m_view is null for default case");
+//                    Log.d("TEST ", "in circuit " + order);
+//                    Log.d("TEST ", "LIVESAVER GOOOOO");
                     LayoutInflater inflater = (LayoutInflater) c
                             .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     m_view = inflater.inflate(R.layout.w_circuit_group, null);
                     viewType = "Text";
                 }
-                Log.d("TEST ", "VIEW TYPE IS " + viewType);
+
+                //               Log.d("TEST ", "VIEW TYPE IS " + viewType);
                 textView = (TextView)m_view.findViewById(R.id.lblListHeader);
                 textView.setTypeface(null, Typeface.BOLD);
                 textView.setText(name);

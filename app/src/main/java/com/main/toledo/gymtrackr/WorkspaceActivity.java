@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ExpandableListView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -25,14 +24,7 @@ public class WorkspaceActivity extends ExpandableListActivity {
         //setContentView(R.layout.activity_workspace);
 
         // get the listview
-        CopyDatabase myDbCopier = new CopyDatabase(this);
 
-        try {
-            myDbCopier.createDatabase();
-        } catch (IOException io) {
-            Log.e("Query Failure", io.getMessage());
-            throw new Error("Unable to create database");
-        }
 
         //expListView = (ExpandableListView) findViewById(R.id.workspaceListContainer);
         //testDataset();

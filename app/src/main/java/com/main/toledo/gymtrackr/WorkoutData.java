@@ -32,6 +32,7 @@ public class WorkoutData {
         }
         return sWorkspaceData;
     }
+
     //May be necessary
     //public HashMap<String, ArrayList<Exercise>> getWorkoutExercises(){
     //HashMap WorkoutMap = new HashMap<String, ArrayList<Exercise>>();
@@ -49,16 +50,18 @@ public class WorkoutData {
         Circuit c = new Circuit();
         c.setOrder(Workout.size());
         Workout.add(c);
-
     }
+
     //public ArrayList<String> getCircuitNames()
     //add exercise to circuit c
     public void addExercise(Exercise e, int circuitNumber){
+        e.setCircuitLocation(circuitNumber);
         Workout.get(circuitNumber).add(e);
-        Workout.get(circuitNumber).isNotLast();
+        //Workout.get(circuitNumber).isNotLast();
 
         if (Workout.get(circuitNumber).getName() == "Placeholder"){
             Workout.get(circuitNumber).setName("Circuit " + circuitNumber);
+            increment();
         }
     }
 
