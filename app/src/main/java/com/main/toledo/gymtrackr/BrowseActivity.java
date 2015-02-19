@@ -83,13 +83,16 @@ public class BrowseActivity extends FragmentActivity {
         return circuitNumber;
     }
 
-    public void addItem(){
-        //new data to be displayed
-        StubExercises.add( new Exercise("test", "test", 666, "hailsatan") );
+    public void searchForItem(String search_value){
+        StubExercises.clear();
 
         DatabaseWrapper db = new DatabaseWrapper();
-        Exercise[] exercises = db.browseExercisesByName("Barbell");
+        Exercise[] exercises = db.browseExercisesByName(search_value);
+        for (int i = 0; i < exercises.length; i++) {
 
+            StubExercises.add(exercises[i]);
+
+        }
         //this lets the adapter know that it's data is different, display wont update otherwise
         adapter.notifyDataSetChanged();
     }
