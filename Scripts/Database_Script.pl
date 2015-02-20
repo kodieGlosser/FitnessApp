@@ -6,7 +6,7 @@ use DBI;
 
 my $dbh = DBI->connect (
 	#"dbi:SQLite:dbname='/data/data/com.android.toledo.FitnessApp/databases/FitnessApp.db'",
-	"dbi:SQLite:dbname=FitnessApp.db",
+	"dbi:SQLite:dbname=gymtrackr.db",
 	"",
 	"",
 	{ RaiseError => 1 },
@@ -14,7 +14,7 @@ my $dbh = DBI->connect (
 
 #Exercises
 $dbh->do("CREATE TABLE IF NOT EXISTS Exercises (
-				ex_id INTEGER PRIMARY KEY, 
+				_id INTEGER PRIMARY KEY, 
 				muscleGroup TEXT, 
 				equipmentType TEXT, 
 				name TEXT, 
@@ -24,20 +24,20 @@ $dbh->do("CREATE TABLE IF NOT EXISTS Exercises (
 # History
 # The date is given as ("YYYY-MM-DD HH:MM:SS.SSS")
 $dbh->do("CREATE TABLE IF NOT EXISTS History (
-				h_id INTEGER PRIMARY KEY,
+				_id INTEGER PRIMARY KEY,
 				date TEXT, 
 				weight INTEGER,
 				rep INTEGER,
 				sequence INTEGER,
 				exercise INTEGER,
 				FOREIGN KEY(exercise)
-					REFERENCES Exercises(ex_id)
+					REFERENCES Exercises(_id)
 					ON DELETE CASCADE
 			)");
 			
 #Planned Workout
 $dbh->do("CREATE TABLE IF NOT EXISTS Planned_Workout (
-				w_planned_id INTEGER PRIMARY KEY,
+				_id INTEGER PRIMARY KEY,
 				sequence INTEGER,
 				workoutTitle TEXT,
 				notes TEXT
@@ -45,7 +45,7 @@ $dbh->do("CREATE TABLE IF NOT EXISTS Planned_Workout (
 			
 #In Progress Workout
 $dbh->do("CREATE TABLE IF NOT EXISTS In_Progress_Workout (
-				w_progress_id INTEGER PRIMARY KEY,
+				_id INTEGER PRIMARY KEY,
 				sequence INTEGER,
 				workoutTitle TEXT,
 				notes TEXT
@@ -53,41 +53,45 @@ $dbh->do("CREATE TABLE IF NOT EXISTS In_Progress_Workout (
 			
 #Circuit
 $dbh->do("CREATE TABLE IF NOT EXISTS Circuit (
-				c_id INTEGER PRIMARY KEY,
+				_id INTEGER PRIMARY KEY,
 				weight INTEGER,
 				rep INTEGER,
 				sequence INTEGER,
 				exercise INTEGER,
 				FOREIGN KEY(exercise)
-					REFERENCES Exercises(ex_id)
+					REFERENCES Exercises(_id)
 					ON DELETE CASCADE
 			)");
 			
 #Planned Union
 $dbh->do("CREATE TABLE IF NOT EXISTS Planned_Union (
-				p_planned_id INTEGER PRIMARY KEY,
+				_id INTEGER PRIMARY KEY,
 				circuit INTEGER,
 				plannedWorkout INTEGER,
 				FOREIGN KEY(circuit)
-					REFERENCES Circuit(c_id)
+					REFERENCES Circuit(_id)
 					ON DELETE CASCADE,
 				FOREIGN KEY(plannedWorkout)
-					REFERENCES Planned_Workout(w_progress_id)
+					REFERENCES Planned_Workout(_id)
 					ON DELETE CASCADE
 			)");
 			
 #In Progress Union
 $dbh->do("CREATE TABLE IF NOT EXISTS In_Progress_Union (
-				p_progress_id INTEGER PRIMARY KEY,
+				_id INTEGER PRIMARY KEY,
 				circuit INTEGER,
 				inProgressWorkout INTEGER,
 				FOREIGN KEY(circuit)
-					REFERENCES Circuit(c_id)
+					REFERENCES Circuit(_id)
 					ON DELETE CASCADE,
 				FOREIGN KEY(inProgressWorkout)
-					REFERENCES	In_Progress_Workout(w_progress_id)
+					REFERENCES	In_Progress_Workout(_id)
 					ON DELETE CASCADE
 			)");
+			
+#Android MetaData
+#	CREATE TABLE "android_metadata" ("locale" TEXT DEFAULT 'en_US')
+#	INSERT INTO "android_metadata" VALUES ('en_US')
 			
 my $filename = 'workouts.txt';
 open (my $fh, '<:encoding(UTF-8)', $filename) or die "Could not open file '$filename' $!";
@@ -113,6 +117,7 @@ while (my $row = <$fh>) {
 			}
 		elsif ($i == 3) {
 			$targetMuscle = $values[$i];
+			$targetMuscle =~ tr/"%'+\-0-9<=>A-Z_a-z{|}//cd;
 			}
 	}
 
@@ -122,5 +127,4 @@ while (my $row = <$fh>) {
 	print $query2;
 	print "\n";
 }
-
 $dbh->disconnect;
