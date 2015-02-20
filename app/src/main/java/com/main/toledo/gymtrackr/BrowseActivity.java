@@ -38,6 +38,15 @@ public class BrowseActivity extends FragmentActivity {
         setContentView(R.layout.b_activity);
 
 
+        CopyDatabase myDbCopier = new CopyDatabase(this);
+
+        try {
+            myDbCopier.createDatabase();
+        } catch (IOException io) {
+            Log.e("Query Failure", io.getMessage());
+            throw new Error("Unable to create database");
+        }
+
         //populates our display initially
         initializeBrowseList();
         //initiates filter
@@ -78,7 +87,6 @@ public class BrowseActivity extends FragmentActivity {
         Exercise[] exercises = db.browseExercisesByName(search_value);
         for (int i = 0; i < exercises.length; i++) {
             StubExercises.add(exercises[i]);
-
         }
         //this lets the adapter know that it's data is different, display wont update otherwise
         adapter.notifyDataSetChanged();

@@ -39,16 +39,63 @@ public class DatabaseWrapper {
      *
      */
     public Exercise[] browseExercisesByName(String name) {
-        String table = EXERCISE_TABLE;
         String[] whereArgs = new String[] { "%" + name + "%"};
         Cursor c = null;
 
         try {
-            c = myDatabase.query(table, null, COLUMN_NAME + " like ?", whereArgs, null, null, COLUMN_NAME);
+            c = myDatabase.query(EXERCISE_TABLE, null, COLUMN_NAME + " like ? COLLATE NOCASE", whereArgs, null, null, COLUMN_NAME);
         } catch (Exception e) {
             Log.e("Query Failure", e.getMessage());
             return null;
         }
+
+        return convertCursorToExercises(c);
+    }
+
+    public Exercise[] browseExerciseByEquipmentType(String equipmentType) {
+        String[] whereArgs = new String[] { equipmentType};
+        Cursor c  = myDatabase.query(EXERCISE_TABLE, null, COLUMN_EQUIPMENT_TYPE + "=? COLLATE NOCASE", whereArgs, null, null, COLUMN_NAME);
+
+        return convertCursorToExercises(c);
+    }
+
+    public Exercise[] browseExerciseByEquipmentType(String equipmentType, String name) {
+        String[] whereArgs = new String[] { equipmentType, "%" + name + "%"};
+
+        String selectionArgs = COLUMN_EQUIPMENT_TYPE +  "= ? COLLATE NOCASE AND " + COLUMN_NAME + " like ? COLLATE NOCASE";
+        Cursor c  = myDatabase.query(EXERCISE_TABLE, null, selectionArgs, whereArgs, null, null, COLUMN_NAME);
+
+        return convertCursorToExercises(c);
+    }
+
+    public Exercise[] browseExerciseByMuscleGroup(String muscleGroup) {
+        String[] whereArgs = new String[] { muscleGroup};
+        Cursor c  = myDatabase.query(EXERCISE_TABLE, null, COLUMN_MUSCLE_GROUP + "=? COLLATE NOCASE", whereArgs, null, null, COLUMN_NAME);
+
+        return convertCursorToExercises(c);
+    }
+
+    public Exercise[] browseExerciseByMuscleGroup(String muscleGroup, String name) {
+        String[] whereArgs = new String[] { muscleGroup, "%" + name + "%"};
+
+        String selectionArgs = COLUMN_MUSCLE_GROUP +  "= ? COLLATE NOCASE AND " + COLUMN_NAME + " like ? COLLATE NOCASE";
+        Cursor c  = myDatabase.query(EXERCISE_TABLE, null, selectionArgs, whereArgs, null, null, COLUMN_NAME);
+
+        return convertCursorToExercises(c);
+    }
+
+    public Exercise[] browseExerciseByTargetMuscle(String targetMuscle) {
+        String[] whereArgs = new String[] { targetMuscle};
+        Cursor c  = myDatabase.query(EXERCISE_TABLE, null, COLUMN_TARGET_MUSCLE + "=? COLLATE NOCASE", whereArgs, null, null, COLUMN_NAME);
+
+        return convertCursorToExercises(c);
+    }
+
+    public Exercise[] browseExerciseByTargetMuscle(String targetMuscle, String name) {
+        String[] whereArgs = new String[] { targetMuscle, "%" + name + "%"};
+
+        String selectionArgs = COLUMN_TARGET_MUSCLE +  "= ? COLLATE NOCASE AND " + COLUMN_NAME + " like ? COLLATE NOCASE";
+        Cursor c  = myDatabase.query(EXERCISE_TABLE, null, selectionArgs, whereArgs, null, null, COLUMN_NAME);
 
         return convertCursorToExercises(c);
     }
