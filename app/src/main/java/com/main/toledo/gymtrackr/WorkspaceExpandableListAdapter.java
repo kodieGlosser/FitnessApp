@@ -36,47 +36,15 @@ public class WorkspaceExpandableListAdapter extends BaseExpandableListAdapter {
     public long getChildId(int groupPosition, int childPosition) {
         return childPosition;
     }
-    /**
-     @Override
-     public View getChildView(int groupPosition, final int childPosition,
-     boolean isLastChild, View convertView, ViewGroup parent) {
-
-     //Handles output of our terminal add thing
-     if ( (groupPosition + 1) < workout.size()) {
-     //final String childText = (String) getChild(groupPosition, childPosition);
-     final String exerciseName = (String) getChild(groupPosition, childPosition).getName();
-     if (convertView == null) {
-     LayoutInflater inflater = (LayoutInflater) this._context
-     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-     convertView = inflater.inflate(R.layout.w_exercise, null);
-     }
-     //
-     //TextView txtListChild = (TextView) convertView
-     //        .findViewById(R.id.workspaceExerciseNameView);
-
-     //txtListChild.setText(childText);
-
-     TextView txtListChild = (TextView) convertView
-     .findViewById(R.id.workspaceExerciseNameView);
-
-     txtListChild.setText(exerciseName);
-     }
-     return convertView;
-     }
-     **/
-    //bigass test #2
     @Override
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-
-//        Log.d("TEST", "Calling get group view on " + groupPosition);
-
+        Log.d("TEST", "getChildView for group: " + groupPosition + " child position: " + childPosition);
         if (convertView == null) {
-//            Log.d("TEST", "Calling inflate view on " + groupPosition);
-            //Note: says convert view isn't used, but if I alter the method to return
-            //void it breaks and starts barfing out null pointers
+//            Log.d("UI BUG TEST", "CHILD VIEW: " + childPosition + " is null.");
             convertView = workout.get(groupPosition).get(childPosition).initiateView(_context);
         }
+
 
         convertView = workout.get(groupPosition).get(childPosition).refreshView(_context, groupPosition);
 
@@ -106,7 +74,8 @@ public class WorkspaceExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
-//        Log.d("TEST", "Calling get group view on " + groupPosition);
+
+        Log.d("TEST", "Calling get group view on " + groupPosition);
         if (convertView == null) {
 //            Log.d("TEST", "Calling inflate view on " + groupPosition);
             //Note: says convert view isn't used, but if I alter the method to return

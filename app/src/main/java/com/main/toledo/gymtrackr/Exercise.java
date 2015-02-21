@@ -171,7 +171,7 @@ public class Exercise {
                     @Override
                     public void onClick(View v){
                         Intent i = new Intent(c, BrowseActivity.class);
-                        Log.d("Test", "Browse called from circuit: " + circuit);
+//                        Log.d("Test", "Browse called from circuit: " + circuit);
                         i.putExtra("EXTRA_CIRCUIT_NUMBER", circuit);
                         c.startActivity(i);
                     }
@@ -190,8 +190,8 @@ public class Exercise {
                     m_viewType = "Text";
                 }
                 Log.d("TEST ", "VIEWTYPE = " + m_viewType);
-                if (m_view == null)
-                    Log.d("TEST ", "M_VIEW IS BREAKING IT");
+//                if (m_view == null)
+//                    Log.d("TEST ", "M_VIEW IS BREAKING IT");
 //                Log.d("TEST ", "VIEW TYPE IS " + viewType);
                 textView = (TextView)m_view.findViewById(R.id.workspaceExerciseNameView);
                 textView.setTypeface(null, Typeface.BOLD);
