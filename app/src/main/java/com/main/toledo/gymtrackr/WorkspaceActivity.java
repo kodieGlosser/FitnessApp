@@ -21,6 +21,7 @@ public class WorkspaceActivity extends Activity {
     ArrayList<Circuit> workout = new ArrayList<Circuit>();
     ArrayList<Circuit> singletonWorkout = new ArrayList<Circuit>();
     DragNDropExpandableListView workspaceListView;
+    WorkspaceExpandableListAdapterMKII listAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,7 @@ public class WorkspaceActivity extends Activity {
         //testDataset();
         workspaceListView = (DragNDropExpandableListView) findViewById(R.id.lvExp);
 
-        final WorkspaceExpandableListAdapterMKII listAdapter = new WorkspaceExpandableListAdapterMKII(
+        listAdapter = new WorkspaceExpandableListAdapterMKII(
                 this,  WorkoutData.get(this).getWorkout());
         //Log.d("TEST", "Adapter Created");
         workspaceListView.setAdapter(listAdapter);
@@ -82,7 +83,7 @@ public class WorkspaceActivity extends Activity {
                     if (adapter instanceof WorkspaceExpandableListAdapterMKII) {
                         Log.d("TOUCH TESTS", "ITEM DROPPED");
                         ((WorkspaceExpandableListAdapterMKII)adapter).onDrop(fromX, fromY, toX, toY);
-                        workspaceListView.invalidateViews();
+                        listAdapter.notifyDataSetChanged();
                     }
                 }
             };
@@ -94,11 +95,12 @@ public class WorkspaceActivity extends Activity {
                 int defaultBackgroundColor;
 
                 public void onDrag(int x, int y, ExpandableListView listView) {
-                    Log.d("TOUCH TESTS", "ON DRAG CALLED");
+                    //Log.d("TOUCH TESTS", "ON DRAG CALLED");
                     // TODO Auto-generated method stub
                 }
 
                 public void onStartDrag(View itemView) {
+                    //Log.d("TOUCH TESTS", "ON START DRAG CALLED");
                     itemView.setVisibility(View.INVISIBLE);
                     defaultBackgroundColor = itemView.getDrawingCacheBackgroundColor();
                     itemView.setBackgroundColor(backgroundColor);
@@ -108,6 +110,7 @@ public class WorkspaceActivity extends Activity {
                 }
 
                 public void onStopDrag(View itemView) {
+                    //Log.d("TOUCH TESTS", "ON STOP DRAG CALLED");
                     itemView.setVisibility(View.VISIBLE);
                     itemView.setBackgroundColor(defaultBackgroundColor);
                     //test

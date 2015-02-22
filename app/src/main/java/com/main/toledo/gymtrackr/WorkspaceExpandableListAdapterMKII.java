@@ -176,30 +176,38 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     */
 
     @Override
-    public void onDrop(int homeCircuitIndex, int homeExerciseIndex,
-                       int destinationCircuitIndex, int destinationExerciseIndex) {
-        //Save to temp, remove from workout
-        switch (homeExerciseIndex){
-            case -1:  //passed location is a group header
-                if ( (homeCircuitIndex < destinationCircuitIndex)
-                        || (homeCircuitIndex > destinationCircuitIndex + 1)){
+    public void onDrop(int homeExerciseIndex, int homeCircuitIndex,
+                        int destinationExerciseIndex ,int destinationCircuitIndex) {
+        synchronized (workout) {//Save to temp, remove from workout
+            if (destinationCircuitIndex < workout.size() - 1) { //if the destination circuit is the last
+                if (destinationExerciseIndex > workout.get(destinationCircuitIndex).getExercises().size() - 2) //if the destination exercise is
+                    destinationExerciseIndex = workout.get(destinationCircuitIndex).getExercises().size() - 2;
+                if (destinationExerciseIndex < 0)
+                    destinationExerciseIndex = 0;
+                switch (homeExerciseIndex) {
+                    case -1:  //passed location is a group header
+                        //if ((homeCircuitIndex < destinationCircuitIndex)
+                        //        || (homeCircuitIndex > destinationCircuitIndex + 1)) {
 
-                    Circuit tempCircuit = workout.get(homeCircuitIndex);
-                    workout.remove(homeCircuitIndex);
+                        Circuit tempCircuit = workout.get(homeCircuitIndex);
+                        workout.remove(homeCircuitIndex);
 
-                    workout.add(destinationCircuitIndex, tempCircuit);
+                        workout.add(destinationCircuitIndex, tempCircuit);
 
+                        ///}
+                        break;
+                    default:  //passed location is a group child
+                        Exercise tempExercise = workout.get(homeCircuitIndex)
+                                .getExercise(homeExerciseIndex);
+                        workout.get(homeCircuitIndex).removeExercise(homeExerciseIndex);
+                        Log.d("TOUCH TEST", "DEST CIRC INDEX: " + destinationCircuitIndex
+                                + " DEST EX INDEX: " + destinationExerciseIndex);
+                        //Add to location
+                        workout.get(destinationCircuitIndex).addExerciseAtIndex(destinationExerciseIndex,
+                                tempExercise);
+                        break;
                 }
-                break;
-            default:  //passed location is a group child
-                Exercise tempExercise = workout.get(homeCircuitIndex)
-                        .getExercise(homeExerciseIndex);
-                workout.get(homeCircuitIndex).removeExercise(homeExerciseIndex);
-
-                //Add to location
-                workout.get(destinationCircuitIndex).addExerciseAtIndex(destinationExerciseIndex,
-                        tempExercise);
-                break;
+            }
         }
     }
 

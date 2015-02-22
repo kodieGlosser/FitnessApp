@@ -59,17 +59,19 @@ public class DragNDropExpandableListView extends ExpandableListView {
         final int x = (int) ev.getX();
         final int y = (int) ev.getY();
 
-        Log.d("TOUCHTESTS", "ON TOUCH EVENT CALLED IN VIEW");
+
+
         if (action == MotionEvent.ACTION_DOWN && x < this.getWidth() / 4) {
+
             mDragMode = true;
         }
-
+        //Log.d("TOUCH TESTS", "TRUE IF: " + x + "<" + this.getWidth()/4 );
         if (!mDragMode)
             return super.onTouchEvent(ev);
 
         switch (action) {
             case MotionEvent.ACTION_DOWN: //mouse button is initially pressed
-                Log.d("TOUCHTESTS", "SCREEN IS TOUCHED");
+                //Log.d("TOUCH TESTS", "MOTION EVENT IS ACTION_DOWN");
                 //maps a point to an integer position on list
                 mStartPosition = pointToPosition(x, y); //mstartposition is the TRUE position
                 if (mStartPosition != INVALID_POSITION) {
@@ -87,11 +89,13 @@ public class DragNDropExpandableListView extends ExpandableListView {
                 }
                 break;
             case MotionEvent.ACTION_MOVE: //mose if moved
+                //Log.d("TOUCH TESTS", "MOTION EVENT IS ACTION_MOVE");
                 drag(0, y);// replace 0 with x if desired
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP: //mouse button is released
             default:
+                //Log.d("TOUCH TESTS", "MOTION EVENT IS DEFAULT");
                 mDragMode = false;
                 mEndPosition = pointToPosition(x, y);
                 stopDrag(mStartPosition - getFirstVisiblePosition());
@@ -110,6 +114,15 @@ public class DragNDropExpandableListView extends ExpandableListView {
                     m_endChildPosition = getPackedPositionChild(getExpandableListPosition(mEndPosition));
                     m_endGroupPosition = getPackedPositionGroup(getExpandableListPosition(mEndPosition));
                     //done
+                    Log.d("TOUCH TESTS", "MOVING CHILD: " + m_startChildPosition + " FROM GROUP: " + m_startGroupPosition);
+                    Log.d("TOUCH TESTS", "TO CHILD: " + m_endChildPosition + " FROM GROUP: " + m_endGroupPosition);
+
+                    if (m_endChildPosition < 0)
+                        m_endChildPosition = 0;
+
+                    if (m_endGroupPosition < 0)
+                        m_endGroupPosition = 0;
+
                     mDropListener.onDrop( m_startChildPosition, m_startGroupPosition,
                             m_endChildPosition, m_endGroupPosition); //this gets passed the start and end LIST positions
                 break;
