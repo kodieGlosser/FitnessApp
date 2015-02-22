@@ -45,9 +45,16 @@ public class Circuit {
         }
     }
 
+    public void addExerciseAtIndex(int i, Exercise e){
+        exercises.add(i, e);
+    }
+
     public Exercise getExercise(int i){
         return exercises.get(i);
     }
+
+    public void removeExercise(int i) {exercises.remove(i);}
+
 
     public void setName(String s){ name = s; }
 

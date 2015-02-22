@@ -16,7 +16,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapter {
+public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapter implements DropListener{
 
     private Context _context;
 
@@ -153,6 +153,56 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
+
+    /* BASE EXAMPLES
+    public void onRemove(int which) {
+        if (which < 0 || which > mContent.size()) return;
+        mContent.remove(which);
+    }
+
+    public void onDrop(int from, int to) {
+        String temp = mContent.get(from);
+        mContent.remove(from);
+        mContent.add(to,temp);
+    }
+    */
+
+    /* MODIFIED EXAMPLES */
+    /*we'll mess with this later, not sure how the remove functions from this example
+    public void onRemove(int which) {
+        if (which < 0 || which > mContent.size()) return;
+        mContent.remove(which);
+    }
+    */
+
+    @Override
+    public void onDrop(int homeCircuitIndex, int homeExerciseIndex,
+                       int destinationCircuitIndex, int destinationExerciseIndex) {
+        //Save to temp, remove from workout
+        switch (homeExerciseIndex){
+            case -1:  //passed location is a group header
+                if ( (homeCircuitIndex < destinationCircuitIndex)
+                        || (homeCircuitIndex > destinationCircuitIndex + 1)){
+
+                    Circuit tempCircuit = workout.get(homeCircuitIndex);
+                    workout.remove(homeCircuitIndex);
+
+                    workout.add(destinationCircuitIndex, tempCircuit);
+
+                }
+                break;
+            default:  //passed location is a group child
+                Exercise tempExercise = workout.get(homeCircuitIndex)
+                        .getExercise(homeExerciseIndex);
+                workout.get(homeCircuitIndex).removeExercise(homeExerciseIndex);
+
+                //Add to location
+                workout.get(destinationCircuitIndex).addExerciseAtIndex(destinationExerciseIndex,
+                        tempExercise);
+                break;
+        }
+    }
+
 
     public static class ViewHolder {
         public TextView textView;
