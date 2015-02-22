@@ -36,6 +36,7 @@ public class BrowseActivity extends FragmentActivity {
             circuitNumber = extras.getInt("EXTRA_CIRCUIT_NUMBER");
         }
         setContentView(R.layout.b_activity);
+        Log.d("test", " Looking for exercise for circuit" + circuitNumber);
 
 
         CopyDatabase myDbCopier = new CopyDatabase(this);

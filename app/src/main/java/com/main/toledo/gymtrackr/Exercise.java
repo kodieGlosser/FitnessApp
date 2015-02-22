@@ -28,18 +28,13 @@ public class Exercise {
     private int CircuitLocation = 0;  //this will be the number of the circuit relative to the
                                   //start of the workout a value of 'one' for exercises in the first
                                   //circuit, etc 0 for not part of a circuit
-    private boolean isLast = true;
-    private boolean display = true;
     //performed, used to organize browse menu
-    private View m_view;
-    private String m_viewType;
 
     public Exercise(String name, String muscleGroup, int lastPerformed, String equipmentType){
         this.m_name = name;
         this.m_muscleGroup = muscleGroup;
         this.m_lastPerformed = lastPerformed;
         this.m_equipmentType = equipmentType;
-        isLast = false;
     }
 
     public Exercise(int id, String name, String muscleGroup, String equipmentType, String targetMuscle, int repetitions, int weight){
@@ -124,83 +119,10 @@ public class Exercise {
     @Override
     public String toString() { return m_name; }
 
-
-
     public enum ExerciseStatus {
         PLAN, COMPLETED
     }
 
-    public View initiateView(final Context c) {
-        LayoutInflater inflater = (LayoutInflater) c
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        switch (m_name) {
-            case "test":
-                m_view = inflater.inflate(R.layout.w_end_buttons, null);
-                m_viewType = "Buttons";
-                break;
-
-            default:
-                m_view = inflater.inflate(R.layout.w_exercise, null);
-                m_viewType = "Text";
-                break;
-        }
-
-        return m_view;
-    }
-
-    public View refreshView(final Context c, final int circuit){
-        Button browseButton;
-        TextView textView;
-
-        switch (m_name) {
-            case "test":
-                //Log.d("refreshTest ", "Placeholder called in " + order);
-                if (m_view == null) {
-//                    Log.d("TEST ", "m_view is null for PlaceHolderCase");
-//                    Log.d("TEST ", "in exercise " + CircuitLocation);
-//                    Log.d("TEST ", "LIVESAVER GOOOOO");
-                    LayoutInflater inflater = (LayoutInflater) c
-                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    m_view = inflater.inflate(R.layout.w_end_buttons, null);
-                    m_viewType = "Buttons";
-                }
-                Log.d("TEST", "Initializing button for circuit: " + circuit);
-                browseButton = (Button)m_view.findViewById(R.id.BrowseButton);
-                browseButton.setOnClickListener(new View.OnClickListener(){
-                    @Override
-                    public void onClick(View v){
-                        Intent i = new Intent(c, BrowseActivity.class);
-//                        Log.d("Test", "Browse called from circuit: " + circuit);
-                        i.putExtra("EXTRA_CIRCUIT_NUMBER", circuit);
-                        c.startActivity(i);
-                    }
-                });
-
-                break;
-
-            default:
-                if (m_viewType == "Buttons" || m_view == null) {
-//                    Log.d("TEST ", "m_view is null for default case");
-//                    Log.d("TEST ", "in exercise " + CircuitLocation);
-//                    Log.d("TEST ", "LIVESAVER GOOOOO");
-                    LayoutInflater inflater = (LayoutInflater) c
-                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    m_view = inflater.inflate(R.layout.w_exercise, null);
-                    m_viewType = "Text";
-                }
-                Log.d("TEST ", "VIEWTYPE = " + m_viewType);
-//                if (m_view == null)
-//                    Log.d("TEST ", "M_VIEW IS BREAKING IT");
-//                Log.d("TEST ", "VIEW TYPE IS " + viewType);
-                textView = (TextView)m_view.findViewById(R.id.workspaceExerciseNameView);
-                textView.setTypeface(null, Typeface.BOLD);
-                textView.setText(m_name);
-                break;
-        }
-
-        return m_view;
-    }
 }
 
 

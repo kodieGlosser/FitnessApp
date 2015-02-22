@@ -19,9 +19,7 @@ public class Circuit {
     protected ArrayList<Exercise> exercises = new ArrayList<Exercise>();
     private String name;
     private int order;
-    private View m_view;
     boolean isLast;
-    private String viewType;
     //test for null pointer in workout data
 
     public Circuit(){
@@ -47,7 +45,7 @@ public class Circuit {
         }
     }
 
-    public Exercise get(int i){
+    public Exercise getExercise(int i){
         return exercises.get(i);
     }
 
@@ -71,75 +69,6 @@ public class Circuit {
 
     public boolean isLast(){
         return isLast;
-    }
-
-    public View initiateView(final Context c) {
-        LayoutInflater inflater = (LayoutInflater) c
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        switch (name) {
-            case "Placeholder":
-                m_view = inflater.inflate(R.layout.w_end_buttons, null);
-                viewType = "Buttons";
-                break;
-
-            default:
-                m_view = inflater.inflate(R.layout.w_circuit_group, null);
-                viewType = "Text";
-                break;
-        }
-
-        return m_view;
-    }
-
-    public View refreshView(final Context c){
-        Button browseButton;
-        TextView textView;
-
-        switch (name) {
-            case "Placeholder":
-                //Log.d("refreshTest ", "Placeholder called in " + order);
-                if (m_view == null) {
-                    //                   Log.d("TEST ", "m_view is null for PlaceHolderCase");
-                    //                   Log.d("TEST ", "in circuit " + order);
-                    //                   Log.d("TEST ", "LIVESAVER GOOOOO");
-                    LayoutInflater inflater = (LayoutInflater) c
-                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    m_view = inflater.inflate(R.layout.w_end_buttons, null);
-                    viewType = "Buttons";
-                }
-
-                browseButton = (Button)m_view.findViewById(R.id.BrowseButton);
-                browseButton.setOnClickListener(new View.OnClickListener(){
-                    @Override
-                    public void onClick(View v){
-                        Intent i = new Intent(c, BrowseActivity.class);
-                        i.putExtra("EXTRA_CIRCUIT_NUMBER", order);
-                        c.startActivity(i);
-                    }
-                });
-
-                break;
-
-            default:
-                if (viewType == "Buttons") {
-//                    Log.d("TEST ", "m_view is null for default case");
-//                    Log.d("TEST ", "in circuit " + order);
-//                    Log.d("TEST ", "LIVESAVER GOOOOO");
-                    LayoutInflater inflater = (LayoutInflater) c
-                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    m_view = inflater.inflate(R.layout.w_circuit_group, null);
-                    viewType = "Text";
-                }
-
-                //               Log.d("TEST ", "VIEW TYPE IS " + viewType);
-                textView = (TextView)m_view.findViewById(R.id.lblListHeader);
-                textView.setTypeface(null, Typeface.BOLD);
-                textView.setText(name);
-                break;
-        }
-
-        return m_view;
     }
 
 }

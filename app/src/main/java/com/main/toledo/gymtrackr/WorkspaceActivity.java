@@ -30,10 +30,13 @@ public class WorkspaceActivity extends ExpandableListActivity {
         //testDataset();
         //final WorkspaceExpandableListAdapter listAdapter = new WorkspaceExpandableListAdapter(
         //this,  workout);
-        final WorkspaceExpandableListAdapter listAdapter = new WorkspaceExpandableListAdapter(
-                this,  WorkoutData.get(this).getWorkout());
+        //final WorkspaceExpandableListAdapter listAdapter = new WorkspaceExpandableListAdapter(
+        //        this,  WorkoutData.get(this).getWorkout());
         //setting list adapter
 
+        final WorkspaceExpandableListAdapterMKII listAdapter = new WorkspaceExpandableListAdapterMKII(
+                this,  WorkoutData.get(this).getWorkout());
+        Log.d("TEST", "Adapter Created");
         this.setListAdapter(listAdapter);
         expandLists(listAdapter);
     }
@@ -46,13 +49,20 @@ public class WorkspaceActivity extends ExpandableListActivity {
         //}
     }
 
+    public void expandLists(WorkspaceExpandableListAdapterMKII listAdapter){
+        int count = listAdapter.getGroupCount();
+        for (int position = 1; position <= count; position++){
+            this.getExpandableListView().expandGroup(position - 1);
+        }
+    }
+    /*  TEST MK2
     public void expandLists(WorkspaceExpandableListAdapter listAdapter){
         int count = listAdapter.getGroupCount();
         for (int position = 1; position <= count; position++){
             this.getExpandableListView().expandGroup(position - 1);
         }
     }
-
+    */
     public void testDataset(){
         Circuit CircuitA = new Circuit();
         Circuit CircuitB = new Circuit();

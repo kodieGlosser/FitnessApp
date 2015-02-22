@@ -6,21 +6,21 @@
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="71dp"
+        android:layout_height="wrap_content"
         android:text="New Button"
         android:id="@+id/button3"
         android:layout_gravity="right" />
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="71dp"
+        android:layout_height="wrap_content"
         android:text="New Button"
         android:id="@+id/button2"
         android:layout_gravity="center_horizontal" />
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="71dp"
+        android:layout_height="wrap_content"
         android:text="Browse"
         android:id="@+id/BrowseButton" />
 
