@@ -52,11 +52,6 @@ public class BrowseFilterFragment extends Fragment {
                 boolean handled = false;
                 String search_value;
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
- //                   EditText e = (EditText)getActivity().getFragmentManager().findFragmentById
- //                           (R.id.exerciseFiltersContainer)
-  //                         .getView().findViewById(R.id.exercise_name_search);
-  //                  search_value = e.getText().toString();
-   //                 testMethod(search_value);
                     testMethod("LISTENER CHECK");
                     handled = true;
                 }

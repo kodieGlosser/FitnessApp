@@ -8,4 +8,16 @@
     <string name="workspaceAddButtonText">Add</string>
     <string name="browse_title">Browse Exercises</string>
     <string name="defaultSearchText">Input exercise name here</string>
+    <string name="title_activity_start_main">StartMainActivity</string>
+    <string name="hello_world">Hello world!</string>
+
+    <!-- Start Menu Strings -->
+    <string name="s_workoutNoPlanButtonText">Workout now</string>
+    <string name="s_start_welcome_message">Welcome to GymTrackR</string>
+    <string name="s_workoutFromPlanButtonText">Workout from a plan</string>
+    <string name="s_createPlanButtonText">Create a new plan</string>
+    <string name="s_modifyPlanButtonText">Modify an existing plan</string>
+    <string name="s_viewHistoryButtonText">View History</string>
+    <string name="title_activity_load">LoadActivity</string>
+
 </resources>

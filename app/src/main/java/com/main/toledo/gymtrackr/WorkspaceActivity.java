@@ -1,14 +1,11 @@
 package com.main.toledo.gymtrackr;
 
 import android.app.Activity;
-import android.app.ExpandableListActivity;
-import android.app.ListActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ImageView;
 
 import java.util.ArrayList;
 
@@ -26,7 +23,7 @@ public class WorkspaceActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.w_activity_main);
         //Log.d("TEST ", "CALLED ONCREATE IN WORKSPACE ACTIVITY");
 
         // get the listview
@@ -54,8 +51,11 @@ public class WorkspaceActivity extends Activity {
             //((DragNDropExpandableListView) listView).setRemoveListener(mRemoveListener);
         ((DragNDropExpandableListView) listView).setDragListener(mDragListener);
         */
+
         workspaceListView.setDropListener(mDropListener);
+
         //((DragNDropExpandableListView) listView).setRemoveListener(mRemoveListener);
+
         workspaceListView.setDragListener(mDragListener);
 
 

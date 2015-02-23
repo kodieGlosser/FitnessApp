@@ -179,7 +179,10 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     public void onDrop(int homeExerciseIndex, int homeCircuitIndex,
                         int destinationExerciseIndex ,int destinationCircuitIndex) {
         synchronized (workout) {//Save to temp, remove from workout
-            if (destinationCircuitIndex < workout.size() - 1) { //if the destination circuit is not the last
+
+
+            if (destinationCircuitIndex < workout.size() - 1) { //if the destination circuit is not the last or later
+
                 if (destinationExerciseIndex > workout.get(destinationCircuitIndex).getExercises().size() - 2) //if the destination exercise is
                     destinationExerciseIndex = workout.get(destinationCircuitIndex).getExercises().size() - 2;
                 if (destinationExerciseIndex < 0)
@@ -217,7 +220,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         }
     }
 
-
+    //may need to implement viewholder pattern later to help memory
     public static class ViewHolder {
         public TextView textView;
         public Button browseButton;

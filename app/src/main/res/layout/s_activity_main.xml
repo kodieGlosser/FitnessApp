@@ -1,0 +1,40 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="com.main.toledo.gymtrackr.StartActivity">
+
+    <TextView android:text="@string/s_start_welcome_message" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id = "@+id/workoutNoPlanButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/s_workoutNoPlanButtonText"/>
+    <Button
+        android:id = "@+id/workoutFromPlanButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/s_workoutFromPlanButtonText"/>
+    <Button
+        android:id = "@+id/createPlanButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/s_createPlanButtonText"/>
+    <Button
+        android:id = "@+id/modifyPlanButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/s_modifyPlanButtonText"/>
+    <Button
+        android:id = "@+id/viewHistoryButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/s_viewHistoryButtonText"/>
+
+</LinearLayout>

@@ -49,7 +49,7 @@ public class DragNDropExpandableListView extends ExpandableListView {
     }
 
     public void setDragListener(DragListener l) {
-        Log.d("TOUCH TESTS", "DRAG LISTENER INITIATED");
+//        Log.d("TOUCH TESTS", "DRAG LISTENER INITIATED");
         mDragListener = l;
     }
 
@@ -65,6 +65,7 @@ public class DragNDropExpandableListView extends ExpandableListView {
 
             mDragMode = true;
         }
+
         //Log.d("TOUCH TESTS", "TRUE IF: " + x + "<" + this.getWidth()/4 );
         if (!mDragMode)
             return super.onTouchEvent(ev);
@@ -116,15 +117,16 @@ public class DragNDropExpandableListView extends ExpandableListView {
                     //done
                     Log.d("TOUCH TESTS", "MOVING CHILD: " + m_startChildPosition + " FROM GROUP: " + m_startGroupPosition);
                     Log.d("TOUCH TESTS", "TO CHILD: " + m_endChildPosition + " FROM GROUP: " + m_endGroupPosition);
+                    if (!(m_endGroupPosition == -1 && m_endChildPosition == -1)) {
+                        if (m_endChildPosition < 0)
+                            m_endChildPosition = 0;
 
-                    if (m_endChildPosition < 0)
-                        m_endChildPosition = 0;
+                        if (m_endGroupPosition < 0)
+                            m_endGroupPosition = 0;
 
-                    if (m_endGroupPosition < 0)
-                        m_endGroupPosition = 0;
-
-                    mDropListener.onDrop( m_startChildPosition, m_startGroupPosition,
-                            m_endChildPosition, m_endGroupPosition); //this gets passed the start and end LIST positions
+                        mDropListener.onDrop(m_startChildPosition, m_startGroupPosition,
+                                m_endChildPosition, m_endGroupPosition); //this gets passed the start and end LIST positions
+                    }
                 break;
         }
         return true;
