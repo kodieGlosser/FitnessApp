@@ -179,11 +179,12 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     public void onDrop(int homeExerciseIndex, int homeCircuitIndex,
                         int destinationExerciseIndex ,int destinationCircuitIndex) {
         synchronized (workout) {//Save to temp, remove from workout
-            if (destinationCircuitIndex < workout.size() - 1) { //if the destination circuit is the last
+            if (destinationCircuitIndex < workout.size() - 1) { //if the destination circuit is not the last
                 if (destinationExerciseIndex > workout.get(destinationCircuitIndex).getExercises().size() - 2) //if the destination exercise is
                     destinationExerciseIndex = workout.get(destinationCircuitIndex).getExercises().size() - 2;
                 if (destinationExerciseIndex < 0)
                     destinationExerciseIndex = 0;
+
                 switch (homeExerciseIndex) {
                     case -1:  //passed location is a group header
                         //if ((homeCircuitIndex < destinationCircuitIndex)
@@ -197,14 +198,19 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         ///}
                         break;
                     default:  //passed location is a group child
-                        Exercise tempExercise = workout.get(homeCircuitIndex)
-                                .getExercise(homeExerciseIndex);
-                        workout.get(homeCircuitIndex).removeExercise(homeExerciseIndex);
-                        Log.d("TOUCH TEST", "DEST CIRC INDEX: " + destinationCircuitIndex
-                                + " DEST EX INDEX: " + destinationExerciseIndex);
-                        //Add to location
-                        workout.get(destinationCircuitIndex).addExerciseAtIndex(destinationExerciseIndex,
-                                tempExercise);
+                        if(workout.get(homeCircuitIndex)
+                                .getExercise(homeExerciseIndex).getName() != "test") { //fixes bug where button placeholder item is moved occasionally
+
+                            Exercise tempExercise = workout.get(homeCircuitIndex)
+                                    .getExercise(homeExerciseIndex);
+                            workout.get(homeCircuitIndex).removeExercise(homeExerciseIndex);
+
+                            Log.d("TOUCH TEST", "DEST CIRC INDEX: " + destinationCircuitIndex
+                                    + " DEST EX INDEX: " + destinationExerciseIndex);
+                            //Add to location
+                            workout.get(destinationCircuitIndex).addExerciseAtIndex(destinationExerciseIndex,
+                                    tempExercise);
+                        }
                         break;
                 }
             }
