@@ -62,7 +62,7 @@ public class StartActivity extends ActionBarActivity {
 
         Button viewHistoryButton = (Button)findViewById(R.id.viewHistoryButton);
 
-        modifyPlanButton.setOnClickListener(new View.OnClickListener(){
+        viewHistoryButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
 
