@@ -8,13 +8,15 @@
         android:minSdkVersion="11"
         android:targetSdkVersion="21" />
 
-    <android:uses-permission
+  <!--  Not needed; only gives errors
+  <android:uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
     <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <android:uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
+  -->
 
     <application
         android:allowBackup="true"
@@ -50,6 +52,8 @@
         <activity
             android:name=".StartActivity"
             android:label="@string/title_activity_start_main" >
+
+
         </activity>
         <activity
             android:name=".LoadActivity"
