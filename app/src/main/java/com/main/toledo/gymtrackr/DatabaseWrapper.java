@@ -5,6 +5,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.sql.Date;
 import java.util.ArrayList;
 
 /**
@@ -12,12 +13,17 @@ import java.util.ArrayList;
  */
 public class DatabaseWrapper {
 
-    private String COLUMN_NAME = "name";
-    private String COLUMN_MUSCLE_GROUP = "MuscleGroup";
-    private String COLUMN_EQUIPMENT_TYPE = "EquipmentType";
-    private String COLUMN_TARGET_MUSCLE = "TargetMuscle";
-    private String COLUMN_ID = "_ID";
-    private String EXERCISE_TABLE = "Exercises";
+    private static final String COLUMN_DATE = "date";
+    private static final String COLUMN_WEIGHT = "weight";
+    private static final String COLUMN_REP = "rep";
+    private static final String COLUMN_EXERCISE = "exercise";
+    private static final String COLUMN_NAME = "name";
+    private static final String COLUMN_MUSCLE_GROUP = "MuscleGroup";
+    private static final String COLUMN_EQUIPMENT_TYPE = "EquipmentType";
+    private static final String COLUMN_TARGET_MUSCLE = "TargetMuscle";
+    private static final String COLUMN_ID = "_ID";
+    private static final String EXERCISE_TABLE = "Exercises";
+    private static final String EXERCISE_HISTORY_TABLE = "History";
 
     private static String DB_PATH = "/data/data/com.main.toledo.gymtrackr/databases/";
     private static String DB_NAME = "gymtrackr.db";
@@ -124,7 +130,7 @@ public class DatabaseWrapper {
      * This will load the history of the exercises sorted by date and name
      * @return ArrayList of the exercise history object
      */
-    public ArrayList<ExerciseHistory> loadHistoryExerciseNames() {
+    public ExerciseHistory[] loadHistoryExerciseNames() {
         return null;
     }
 
@@ -134,10 +140,46 @@ public class DatabaseWrapper {
      * @param exerciseName the name of the exercise that needs to be loaded from history
      * @return
      */
-    public ArrayList<ExerciseHistory> loadHistoryByExerciseName(String exerciseName) {
-        return null;
+    public ExerciseHistory[] loadHistoryByExerciseName(String exerciseName) {
+        String rawQuery = "select * from History where History.exercise IN (select Exercises._id from Exercises where Exercises.name=?) ORDER BY datetime(History.date) DESC Limit 1";
+        String[] selectionArgs = new String[] { exerciseName };
+
+        Cursor c = myDatabase.rawQuery(rawQuery, selectionArgs);
+
+        return convertCursorToExerciseHistory(c);
     }
 
+    private ExerciseHistory[] convertCursorToExerciseHistory(Cursor c) {
+        int count = c.getCount();
+        int i = 0;
+        ExerciseHistory[] exerciseHistory= new ExerciseHistory[count];
+
+        if(count >= 1) {
+            while (c.moveToNext()) {
+                Date val_date= null; int val_weight= -1, val_rep= -1, val_exerciseId = -1;
+                for (int j = 0; j < 6; j++) {
+
+                    String columnName = c.getColumnName(j);
+                    if (columnName.equalsIgnoreCase(COLUMN_DATE)) {
+                        //val_date = c.get ##need to get the date format somehow
+                    }
+                    else if (columnName.equalsIgnoreCase(COLUMN_WEIGHT)){
+
+                    }
+                    else if (columnName.equalsIgnoreCase(COLUMN_REP)){
+
+                    }
+                    else if (columnName.equalsIgnoreCase(COLUMN_EXERCISE)){
+
+                    }
+                }
+
+                exerciseHistory[i] = new ExerciseHistory(val_date, val_weight, val_rep, val_exerciseId);
+            }
+        }
+
+        return null;
+    }
 
     /**
      * Stores the exercise into the plan
