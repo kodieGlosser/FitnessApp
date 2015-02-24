@@ -37,6 +37,8 @@ public class StartActivity extends ActionBarActivity {
             }
         });
 
+        /* Disabling these two buttons for now, we can always change them back later
+
         Button createPlanButton = (Button)findViewById(R.id.createPlanButton);
 
         createPlanButton.setOnClickListener(new View.OnClickListener(){
@@ -55,6 +57,8 @@ public class StartActivity extends ActionBarActivity {
 
             }
         });
+
+        */
 
         Button viewHistoryButton = (Button)findViewById(R.id.viewHistoryButton);
 
