@@ -5,6 +5,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 /**
  * Created by Kodie Glosser on 2/14/2015.
  */
@@ -100,6 +102,64 @@ public class DatabaseWrapper {
         return convertCursorToExercises(c);
     }
 
+
+    /**
+     * Load just the plan names to display to user
+     * @return ArrayList of plans just containing a plan name
+     * note: might just want to pass a string back
+     */
+    public ArrayList<Plan> loadPlanNames() {
+        return null;
+    }
+
+    /**
+     * Loads the entire plan selected by user
+     * @return an entire list of the workouts and exercises inside of the plan
+     */
+    public ArrayList<Plan> loadEntirePlan() {
+        return null;
+    }
+
+    /**
+     * This will load the history of the exercises sorted by date and name
+     * @return ArrayList of the exercise history object
+     */
+    public ArrayList<ExerciseHistory> loadHistoryExerciseNames() {
+        return null;
+    }
+
+
+    /**
+     *
+     * @param exerciseName the name of the exercise that needs to be loaded from history
+     * @return
+     */
+    public ArrayList<ExerciseHistory> loadHistoryByExerciseName(String exerciseName) {
+        return null;
+    }
+
+
+    /**
+     * Stores the exercise into the plan
+     * @param exercise the exercise to be added
+     * @param circuitNumber the circuit number where its added
+     * @param planNumber the plan number where its added
+     */
+    public void addExerciseToPlan(Exercise exercise, int circuitNumber, int planNumber) {
+
+    }
+
+    /**
+     * If we want to delete it then we can just set the new position and new circuit to -1.
+     * @param oldCircuitNumber
+     * @param oldPosition
+     * @param newCircuit
+     * @param newPosition
+     */
+    public void alterExerciseInPlan(int oldCircuitNumber, int oldPosition, int newCircuit, int newPosition) {
+
+    }
+
     private Exercise[] convertCursorToExercises(Cursor c) {
         int count = c.getCount();
         int i = 0;
@@ -142,5 +202,15 @@ public class DatabaseWrapper {
 
         return exercises;
     }
+
+    public void storeExerciseIntoCircuit(Exercise[] exercises, int circuitNumber){
+
+    }
+
+    public void storeCircuitIntoWorkout(ArrayList<Circuit> circuit, int workoutNumber) {
+
+    }
+
+
 
 }
