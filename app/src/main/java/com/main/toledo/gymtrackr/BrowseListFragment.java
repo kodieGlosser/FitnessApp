@@ -26,22 +26,22 @@ public class BrowseListFragment extends ListFragment{
     //this is the code that adds an item from the browse list to the workspace
     @Override
     public void onListItemClick(ListView l, View v, int position, long id){
-        //gets the exercise we selected
+
+
         Exercise exercise = (Exercise)(getListAdapter()).getItem(position);
-        //adds the exercise we selected to our workout data singleton
-        //NOTE TO SELF: MAY BE BEST TO MODIFY THIS.  PASS EXERCISE TO ACTIVITY AND ADD IT TO
-        //SINGLETON THERE.
-        //test 2/17 WorkoutData.get(getActivity()).increment();
+        //if circuit is open
+        if (((BrowseActivity)getActivity()).isCircuitOpen()){
+            //addToOpenCircuit to that circuit
+            WorkoutData.get(getActivity()).addExercise(exercise,
+                    ((BrowseActivity) getActivity()).getCircuitValue());
+        //if circuit is closed
+        } else if (!((BrowseActivity)getActivity()).isCircuitOpen()){
+            WorkoutData.get(getActivity()).addClosedCircuit(exercise,
+                    ((BrowseActivity) getActivity()).getCircuitValue());
+        }
 
-        WorkoutData.get(getActivity()).addExercise(exercise,
-                ((BrowseActivity)getActivity()).getCircuitValue());
-
-        //Calls the workspace activity
         Intent i = new Intent(getActivity(), WorkspaceActivity.class);
-
-        //i.putExtra("EXTRA_CIRCUIT_NUMBER",
-        //        ((BrowseActivity)getActivity()).getCircuitValue());
-
         startActivity(i);
+
     }
 }

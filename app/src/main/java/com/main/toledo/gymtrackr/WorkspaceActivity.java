@@ -132,14 +132,14 @@ public class WorkspaceActivity extends Activity {
         Circuit CircuitB = new Circuit();
         Circuit CircuitC = new Circuit();
 
-        CircuitA.add( new Exercise("curl", "arms", 1, "dumbbell"));
-        CircuitA.add( new Exercise("squat", "legs", 2, "barbell"));
-        CircuitA.add( new Exercise("bench press", "chest", 3, "barbell"));
-        CircuitB.add( new Exercise("dumb bell row", "back", 4, "dumbell"));
-        CircuitB.add( new Exercise("triceps extension", "arms", 5, "dumbell"));
-        CircuitC.add( new Exercise("shoulder press", "shoulders", 6, "barbell"));
-        CircuitC.add( new Exercise("shrug", "shoulders", 7, "barbell"));
-        CircuitC.add( new Exercise("shrug", "shoulders", 7, "barbell"));
+        CircuitA.addToOpenCircuit( new Exercise("curl", "arms", 1, "dumbbell"));
+        CircuitA.addToOpenCircuit( new Exercise("squat", "legs", 2, "barbell"));
+        CircuitA.addToOpenCircuit( new Exercise("bench press", "chest", 3, "barbell"));
+        CircuitB.addToOpenCircuit( new Exercise("dumb bell row", "back", 4, "dumbell"));
+        CircuitB.addToOpenCircuit( new Exercise("triceps extension", "arms", 5, "dumbell"));
+        CircuitC.addToOpenCircuit( new Exercise("shoulder press", "shoulders", 6, "barbell"));
+        CircuitC.addToOpenCircuit( new Exercise("shrug", "shoulders", 7, "barbell"));
+        CircuitC.addToOpenCircuit( new Exercise("shrug", "shoulders", 7, "barbell"));
 
         CircuitA.setName("testcircuitA");
         CircuitB.setName("testcircuitB");
@@ -149,9 +149,9 @@ public class WorkspaceActivity extends Activity {
         CircuitB.setOrder(1);
         CircuitC.setOrder(2);
 
-        workout.add( CircuitA );
-        workout.add( CircuitB );
-        workout.add( CircuitC );
+        workout.addToOpenCircuit( CircuitA );
+        workout.addToOpenCircuit( CircuitB );
+        workout.addToOpenCircuit( CircuitC );
     }
 
     public void incrementPlaceholderCircuit(){

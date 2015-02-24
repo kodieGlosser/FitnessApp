@@ -2,8 +2,6 @@ package com.main.toledo.gymtrackr;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
@@ -43,8 +41,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 //        Log.d("TEST", "getChildView called:");
 //        Log.d("TEST", "group position: " + groupPosition + " group.size(): "
 //               + workout.get(groupPosition).getExercises().size());
-
-        if ( childPosition < (workout.get(groupPosition).getSize()-1) ) {
+        if ( childPosition < (workout.get(groupPosition).getSize()-1) || !(workout.get(groupPosition).isOpen())) {
             //for the not last items in the list
             if (convertView == null || ( convertView.getTag() != "Data" ) ) {
                 LayoutInflater inflater = (LayoutInflater) this._context
@@ -61,7 +58,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
             //for the last items
                 LayoutInflater inflater = (LayoutInflater) this._context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.w_end_buttons, null);
+                convertView = inflater.inflate(R.layout.w_circuit_menu_buttons, null);
                 convertView.setTag("Button");
 
             Button browseButton = (Button)convertView.findViewById(R.id.BrowseButton);
@@ -70,7 +67,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 public void onClick(View v){
                     Intent i = new Intent(_context, BrowseActivity.class);
 //                        Log.d("Test", "Browse called from circuit: " + circuit);
-
+                    i.putExtra("EXTRA_CIRCUIT_OPEN", true);
                     i.putExtra("EXTRA_CIRCUIT_NUMBER", groupPosition);
                     _context.startActivity(i);
                 }
@@ -107,39 +104,58 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
 //        Log.d("TEST", "getGroupView called:");
 //        Log.d("TEST", "group position: " + groupPosition + " workout.size(): " + workout.size());
-
-        if ( groupPosition < (workout.size()-1 ) ) {
-            //for the not last items in the list
-            if (convertView == null || convertView.getTag() != "Data") {
-                LayoutInflater inflater = (LayoutInflater) this._context
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.w_circuit_group, null);
-                convertView.setTag("Data");
-            }
-
-            TextView textView = (TextView) convertView.findViewById(R.id.lblListHeader);
-            textView.setTypeface(null, Typeface.BOLD);
-            textView.setText(workout.get(groupPosition).getName());
-
-        } else {
-            //for the last items
-            //Log.d("TEST", "Should now make buttons!");
+        Log.d("TEST", "group position: "+ groupPosition+" workout.get(groupPosition).isOpen(): " + workout.get(groupPosition).isOpen());
+        Log.d("TEST", "Name: " + workout.get(groupPosition).getName());
+        if (!(workout.get(groupPosition).isOpen())) {
             LayoutInflater inflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.w_end_buttons, null);
-            convertView.setTag("Button");
-
-            Button browseButton = (Button)convertView.findViewById(R.id.BrowseButton);
-            browseButton.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v){
-                    Intent i = new Intent(_context, BrowseActivity.class);
-//                        Log.d("Test", "Browse called from circuit: " + circuit);
-                    i.putExtra("EXTRA_CIRCUIT_NUMBER", groupPosition);
-                    _context.startActivity(i);
+            convertView = inflater.inflate(R.layout.w_empty, null);
+            convertView.setTag("Blank");
+        }else {
+            if (groupPosition < (workout.size() - 1)) {
+                //for the not last items in the list
+                if (convertView == null || convertView.getTag() != "Data") {
+                    LayoutInflater inflater = (LayoutInflater) this._context
+                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.w_circuit_group, null);
+                    convertView.setTag("Data");
                 }
-            });
 
+                TextView textView = (TextView) convertView.findViewById(R.id.lblListHeader);
+                textView.setTypeface(null, Typeface.BOLD);
+                textView.setText(workout.get(groupPosition).getName());
+
+            } else {
+                //for the last items
+                //Log.d("TEST", "Should now make buttons!");
+                LayoutInflater inflater = (LayoutInflater) this._context
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(R.layout.w_workout_menu_buttons, null);
+                convertView.setTag("Button");
+                //add circuit code
+
+                Button addCircuitButton = (Button) convertView.findViewById(R.id.AddCircuitButton);
+                addCircuitButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        WorkoutData.get(_context).addCircuit(groupPosition);
+                        notifyDataSetChanged();
+                    }
+                });
+
+                Button browseButton = (Button) convertView.findViewById(R.id.BrowseButton);
+                browseButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(_context, BrowseActivity.class);
+//                        Log.d("Test", "Browse called from circuit: " + circuit);
+                        i.putExtra("EXTRA_CIRCUIT_NUMBER", groupPosition);
+                        i.putExtra("EXTRA_CIRCUIT_OPEN", false);
+                        _context.startActivity(i);
+                    }
+                });
+
+            }
         }
         return convertView;
     }
@@ -163,7 +179,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     public void onDrop(int from, int to) {
         String temp = mContent.get(from);
         mContent.remove(from);
-        mContent.add(to,temp);
+        mContent.addToOpenCircuit(to,temp);
     }
     */
 

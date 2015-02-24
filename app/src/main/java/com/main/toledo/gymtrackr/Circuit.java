@@ -18,31 +18,29 @@ public class Circuit {
 
     protected ArrayList<Exercise> exercises = new ArrayList<Exercise>();
     private String name;
-    private int order;
-    boolean isLast;
+    boolean isOpen;
     //test for null pointer in workout data
 
     public Circuit(){
-        order = 0;
         name = "Placeholder";
-        isLast = true;
-        //exercises.add(new Exercise());
     }
 
     public Circuit( int order, ArrayList<Exercise> e){
-        this.order = order;
         name = "Circuit " + order;
         exercises = e;
     }
-
-    public void add(Exercise e){
-        e.setCircuitLocation(order);
-        if(exercises.isEmpty()) {
-            exercises.add(e);
-            exercises.add(new Exercise());
-        } else {
+    //adds exercise to second to end of list
+    public void addToOpenCircuit(Exercise e){
+        //if(exercises.isEmpty()) {
+        //    exercises.addToOpenCircuit(e);
+        //    exercises.addToOpenCircuit(new Exercise());
+        //} else {
             exercises.add(exercises.size() - 1, e);
-        }
+        //}
+    }
+    //called to addToOpenCircuit a special exercise value to the end
+    public void add(Exercise e){
+        exercises.add(e);
     }
 
     public void addExerciseAtIndex(int i, Exercise e){
@@ -55,14 +53,9 @@ public class Circuit {
 
     public void removeExercise(int i) {exercises.remove(i);}
 
-
     public void setName(String s){ name = s; }
 
     public String getName(){return name;}
-
-    public int getOrder() {return order; }
-
-    public void setOrder(int i) { order = i; }
 
     public int getSize(){ return exercises.size(); }
 
@@ -70,12 +63,12 @@ public class Circuit {
         return exercises;
     }
 
-    public void isNotLast(){
-        isLast = false;
+    public void setOpenStatus(boolean b){
+        isOpen = b;
     }
 
-    public boolean isLast(){
-        return isLast;
+    public boolean isOpen(){
+        return isOpen;
     }
 
 }

@@ -3,7 +3,6 @@ package com.main.toledo.gymtrackr;
 import android.content.Context;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by Adam on 2/11/2015.
@@ -18,11 +17,8 @@ public class WorkoutData {
 
     private WorkoutData(Context appContext){
         mAppContext = appContext;
-        //initiate circuit list
-        //Exercise e = new Exercise();
-        //Circuit c = new Circuit(0, e);
-        //Test, null pointer fix
         Circuit c = new Circuit();
+        c.setOpenStatus(true);
         Workout.add(c);
     }
 
@@ -33,30 +29,19 @@ public class WorkoutData {
         return sWorkspaceData;
     }
 
-    //May be necessary
-    //public HashMap<String, ArrayList<Exercise>> getWorkoutExercises(){
-    //HashMap WorkoutMap = new HashMap<String, ArrayList<Exercise>>();
-    //for(Circuit circuit : Workout){
-    //    WorkoutMap.put(circuit.getName(), circuit.getExercises());
-    //}
-    //return WorkoutMap;
-    //}
-
     public ArrayList<Circuit> getWorkout(){
         return Workout;
     }
 
     public void increment(){
         Circuit c = new Circuit();
-        c.setOrder(Workout.size());
         Workout.add(c);
     }
 
     //public ArrayList<String> getCircuitNames()
-    //add exercise to circuit c
+    //addToOpenCircuit exercise to circuit c
     public void addExercise(Exercise e, int circuitNumber){
-        e.setCircuitLocation(circuitNumber);
-        Workout.get(circuitNumber).add(e);
+        Workout.get(circuitNumber).addToOpenCircuit(e);
         //Workout.get(circuitNumber).isNotLast();
 
         if (Workout.get(circuitNumber).getName() == "Placeholder"){
@@ -64,5 +49,19 @@ public class WorkoutData {
             increment();
         }
     }
-
+    //adds a new open circuit
+    public void addCircuit(int circuitNumber){
+        Circuit c = new Circuit();
+        c.setName("Circuit " + circuitNumber);
+        c.add(new Exercise());
+        c.setOpenStatus(true);
+        Workout.add(circuitNumber, c);
+    }
+    //adds a closed circuit, e.g. a circuit with only one exercise
+    public void addClosedCircuit(Exercise e, int circuitNumber){
+        Circuit c = new Circuit();
+        c.setOpenStatus(false);
+        c.add(e);
+        Workout.add(circuitNumber, c);
+    }
 }

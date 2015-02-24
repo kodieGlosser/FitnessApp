@@ -25,9 +25,7 @@ public class Exercise {
     private int m_lastPerformed;  //this will be an integer value of the last time the exercise was
                                 //performed, used to organize browse menu
     private ExerciseStatus status;
-    private int CircuitLocation = 0;  //this will be the number of the circuit relative to the
-                                  //start of the workout a value of 'one' for exercises in the first
-                                  //circuit, etc 0 for not part of a circuit
+
     //performed, used to organize browse menu
 
     public Exercise(String name, String muscleGroup, int lastPerformed, String equipmentType){
@@ -107,10 +105,6 @@ public class Exercise {
     public int getLastPerformed() {
         return m_lastPerformed;
     }
-
-    public void setCircuitLocation(int i){ CircuitLocation = i;}
-
-    public int getCircuitLocation(){ return CircuitLocation; }
 
     public void isPlan(){ status = ExerciseStatus.PLAN; }
 

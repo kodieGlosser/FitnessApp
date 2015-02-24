@@ -26,6 +26,7 @@ public class BrowseActivity extends FragmentActivity {
     //the adapter is responsible for populating the browse list
     public static BrowseAdapter adapter;
     private int circuitNumber;
+    private boolean circuitOpen;
 
 
     @Override
@@ -34,6 +35,7 @@ public class BrowseActivity extends FragmentActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null){
             circuitNumber = extras.getInt("EXTRA_CIRCUIT_NUMBER");
+            circuitOpen = extras.getBoolean("EXTRA_CIRCUIT_OPEN");
         }
         setContentView(R.layout.b_activity);
         Log.d("test", " Looking for exercise for circuit" + circuitNumber);
@@ -74,12 +76,16 @@ public class BrowseActivity extends FragmentActivity {
         return this.adapter;
     }
 
-    //used to add data to the display list from fragments, this method is called from from the filter
+    //used to addToOpenCircuit data to the display list from fragments, this method is called from from the filter
     //fragment.  queries to populate the the list could go here.  we could set addItem to take some
     //params to specify things.
 
     public int getCircuitValue(){
         return circuitNumber;
+    }
+
+    public boolean isCircuitOpen(){
+        return circuitOpen;
     }
 
     public void searchForItem(String search_value){

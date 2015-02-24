@@ -24,7 +24,7 @@ public class LoadActivity extends FragmentActivity {
     //this is the stub list
     private static ArrayList<Exercise> StubExercises = new ArrayList<Exercise>();
     //the adapter is responsible for populating the browse list
-    public static BrowseAdapter adapter;
+    public static LoadAdapter adapter;
     private int circuitNumber;
 
 
@@ -49,13 +49,12 @@ public class LoadActivity extends FragmentActivity {
         }
 
         //populates our display initially
-        initializeBrowseList();
         //initiates filter
         FilterFragment = new BrowseFilterFragment();
         ListFragment = new BrowseListFragment();
 
         //creates a list adapter for our stub exercises
-        adapter = new BrowseAdapter(this, 0, StubExercises);
+        adapter = new LoadAdapter(this, 0, StubExercises);
 
         //adds fragments to layout/b_activity.xml
         FragmentTransaction transaction =
@@ -70,42 +69,18 @@ public class LoadActivity extends FragmentActivity {
     //used to fetch the adapter from this activity in fragments.  the list fragment gets the adapter
     //via this method, then uses it to populate its list view.
 
-    public BrowseAdapter getAdapter(){
+    public LoadAdapter getAdapter(){
         return this.adapter;
     }
 
-    //used to add data to the display list from fragments, this method is called from from the filter
+    //used to addToOpenCircuit data to the display list from fragments, this method is called from from the filter
     //fragment.  queries to populate the the list could go here.  we could set addItem to take some
     //params to specify things.
 
-    public int getCircuitValue(){
-        return circuitNumber;
-    }
-
-    public void searchForItem(String search_value){
-        StubExercises.clear();
-        DatabaseWrapper db = new DatabaseWrapper();
-        Exercise[] exercises = db.browseExercisesByName(search_value);
-        for (int i = 0; i < exercises.length; i++) {
-            StubExercises.add(exercises[i]);
-        }
-        //this lets the adapter know that it's data is different, display wont update otherwise
-        adapter.notifyDataSetChanged();
-    }
-
-    public void initializeBrowseList(){
-        Log.d("test", "InitializeBrowseList called.");
-        DatabaseWrapper db = new DatabaseWrapper();
-        Exercise[] exercises = db.browseExercisesByName("");
-        for (int i = 0; i < exercises.length; i++) {
-            StubExercises.add(exercises[i]);
-        }
-    }
-
     //this is the actual adapter class used to populate layout/b_frag_exercise_list.xml
-    public class BrowseAdapter extends ArrayAdapter<Exercise> {
+    public class LoadAdapter extends ArrayAdapter<Exercise> {
 
-        public BrowseAdapter(Context context, int resource, ArrayList<Exercise> exercises){
+        public LoadAdapter(Context context, int resource, ArrayList<Exercise> exercises){
             super(context, resource, exercises);
         }
 
