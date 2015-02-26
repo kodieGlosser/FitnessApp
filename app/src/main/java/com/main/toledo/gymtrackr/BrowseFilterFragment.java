@@ -34,6 +34,7 @@ public class BrowseFilterFragment extends Fragment {
         View v = inflater.inflate(R.layout.b_frag_filters, null);
 
         //sets the listener for the test button
+        /* Adam 2/25
         testButton = (Button)v.findViewById(R.id.filterTestButton);
 
         testButton.setOnClickListener(new View.OnClickListener(){
@@ -43,6 +44,7 @@ public class BrowseFilterFragment extends Fragment {
                //2/19 dewired((BrowseActivity)getActivity()).addItem();
            }
         });
+        */
         //code to handle search
         editText = (EditText)v.findViewById(R.id.exercise_name_search);
 
@@ -52,7 +54,7 @@ public class BrowseFilterFragment extends Fragment {
                 boolean handled = false;
                 String search_value;
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    testMethod("LISTENER CHECK");
+                    testMethod();
                     handled = true;
                 }
                 return handled;
@@ -60,7 +62,7 @@ public class BrowseFilterFragment extends Fragment {
         });
         return v;
     }
-    public void testMethod(String s){
+    public void testMethod(){
         ((BrowseActivity)getActivity()).searchForItem(editText.getText().toString());
 
     }

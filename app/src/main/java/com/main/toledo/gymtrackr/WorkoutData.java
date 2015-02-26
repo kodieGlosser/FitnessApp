@@ -18,7 +18,9 @@ public class WorkoutData {
     private WorkoutData(Context appContext){
         mAppContext = appContext;
         Circuit c = new Circuit();
-        c.setOpenStatus(true);
+        c.setOpenStatus(false);
+        Exercise e = new Exercise();
+        c.add(e);
         Workout.add(c);
     }
 
@@ -63,5 +65,12 @@ public class WorkoutData {
         c.setOpenStatus(false);
         c.add(e);
         Workout.add(circuitNumber, c);
+    }
+    //removes exercise, and if necessary the closed circuit the exercise was associated with.
+    public void removeExercise(int exercisePosition, int circuitPosition){
+        Workout.get(circuitPosition).removeExercise(exercisePosition);
+        if (!Workout.get(circuitPosition).isOpen()){
+            Workout.remove(circuitPosition);
+        }
     }
 }

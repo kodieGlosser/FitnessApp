@@ -38,42 +38,85 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     public View getChildView(final int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
 
-//        Log.d("TEST", "getChildView called:");
-//        Log.d("TEST", "group position: " + groupPosition + " group.size(): "
-//               + workout.get(groupPosition).getExercises().size());
-        if ( childPosition < (workout.get(groupPosition).getSize()-1) || !(workout.get(groupPosition).isOpen())) {
-            //for the not last items in the list
-            if (convertView == null || ( convertView.getTag() != "Data" ) ) {
-                LayoutInflater inflater = (LayoutInflater) this._context
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.w_exercise, null);
-                convertView.setTag("Data");
-            }
+        Log.d("TEST", "group position: " + groupPosition + " child position "
+               + childPosition);
+        //if workout is closed, prints last item as an exercise value, otherwise last item is buttons
 
-            TextView textView = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
-            textView.setTypeface(null, Typeface.BOLD);
-            textView.setText(workout.get(groupPosition).getExercise(childPosition).getName());
+        if (groupPosition >= workout.size()-1){
+            Log.d("test", "should make buttons");
+            LayoutInflater inflater = (LayoutInflater) this._context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.w_workout_menu_buttons, null);
+            //add circuit code
 
-        } else {
-            //for the last items
+            Button addCircuitButton = (Button) convertView.findViewById(R.id.AddCircuitButton);
+            addCircuitButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    WorkoutData.get(_context).addCircuit(groupPosition);
+                    notifyDataSetChanged();
+
+                }
+            });
+
+            Button browseButton = (Button) convertView.findViewById(R.id.BrowseButton);
+            browseButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(_context, BrowseActivity.class);
+//                        Log.d("Test", "Browse called from circuit: " + circuit);
+                    i.putExtra("EXTRA_CIRCUIT_NUMBER", groupPosition);
+                    i.putExtra("EXTRA_CIRCUIT_OPEN", false);
+                    _context.startActivity(i);
+                }
+            });
+            convertView.setTag("End Button");
+
+        }else {
+            if (childPosition < (workout.get(groupPosition).getSize() - 1) || !(workout.get(groupPosition).isOpen())) {
+                //for the not last items in the list
+                if (convertView == null || (convertView.getTag() != "Data")) {
+                    LayoutInflater inflater = (LayoutInflater) this._context
+                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.w_exercise, null);
+                    convertView.setTag("Data");
+                }
+
+                TextView textView = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
+                textView.setTypeface(null, Typeface.BOLD);
+                textView.setText(workout.get(groupPosition).getExercise(childPosition).getName());
+
+                Button deleteButton = (Button) convertView.findViewById(R.id.removeButton);
+                deleteButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        WorkoutData.get(_context).removeExercise(childPosition, groupPosition);
+                        notifyDataSetChanged();
+                    }
+                });
+
+            } else {
+                //for the last items
+                //switch will go here when we have an edit toggle to hide buttons
                 LayoutInflater inflater = (LayoutInflater) this._context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.w_circuit_menu_buttons, null);
                 convertView.setTag("Button");
 
-            Button browseButton = (Button)convertView.findViewById(R.id.BrowseButton);
-            browseButton.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v){
-                    Intent i = new Intent(_context, BrowseActivity.class);
+                Button browseButton = (Button) convertView.findViewById(R.id.BrowseButton);
+                browseButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(_context, BrowseActivity.class);
 //                        Log.d("Test", "Browse called from circuit: " + circuit);
-                    i.putExtra("EXTRA_CIRCUIT_OPEN", true);
-                    i.putExtra("EXTRA_CIRCUIT_NUMBER", groupPosition);
-                    _context.startActivity(i);
-                }
-            });
+                        i.putExtra("EXTRA_CIRCUIT_OPEN", true);
+                        i.putExtra("EXTRA_CIRCUIT_NUMBER", groupPosition);
+                        _context.startActivity(i);
+                    }
+                });
 
-            //ConvertViewIsButton = true;
+                //ConvertViewIsButton = true;
+            }
         }
         return convertView;
     }
@@ -101,18 +144,14 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     @Override
     public View getGroupView(final int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
-
-//        Log.d("TEST", "getGroupView called:");
-//        Log.d("TEST", "group position: " + groupPosition + " workout.size(): " + workout.size());
-        Log.d("TEST", "group position: "+ groupPosition+" workout.get(groupPosition).isOpen(): " + workout.get(groupPosition).isOpen());
-        Log.d("TEST", "Name: " + workout.get(groupPosition).getName());
+        Log.d("TEST", "DOING STUFF FOR GROUP: " + groupPosition);
         if (!(workout.get(groupPosition).isOpen())) {
             LayoutInflater inflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.w_empty, null);
             convertView.setTag("Blank");
         }else {
-            if (groupPosition < (workout.size() - 1)) {
+            //if (groupPosition < (workout.size() - 1)) {
                 //for the not last items in the list
                 if (convertView == null || convertView.getTag() != "Data") {
                     LayoutInflater inflater = (LayoutInflater) this._context
@@ -125,9 +164,10 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 textView.setTypeface(null, Typeface.BOLD);
                 textView.setText(workout.get(groupPosition).getName());
 
-            } else {
+           // } else {
                 //for the last items
                 //Log.d("TEST", "Should now make buttons!");
+                /*
                 LayoutInflater inflater = (LayoutInflater) this._context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.w_workout_menu_buttons, null);
@@ -154,8 +194,8 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         _context.startActivity(i);
                     }
                 });
-
-            }
+                */
+           // }
         }
         return convertView;
     }

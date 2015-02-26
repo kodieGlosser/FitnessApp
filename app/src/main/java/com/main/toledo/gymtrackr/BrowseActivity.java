@@ -38,7 +38,7 @@ public class BrowseActivity extends FragmentActivity {
             circuitOpen = extras.getBoolean("EXTRA_CIRCUIT_OPEN");
         }
         setContentView(R.layout.b_activity);
-        Log.d("test", " Looking for exercise for circuit" + circuitNumber);
+        //Log.d("test", " Looking for exercise for circuit" + circuitNumber);
 
 
         CopyDatabase myDbCopier = new CopyDatabase(this);
@@ -100,7 +100,7 @@ public class BrowseActivity extends FragmentActivity {
     }
 
     public void initializeBrowseList(){
-        Log.d("test", "InitializeBrowseList called.");
+       // Log.d("test", "InitializeBrowseList called.");
         DatabaseWrapper db = new DatabaseWrapper();
         Exercise[] exercises = db.browseExercisesByName("");
         for (int i = 0; i < exercises.length; i++) {

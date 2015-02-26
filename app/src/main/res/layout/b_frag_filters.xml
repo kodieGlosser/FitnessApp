@@ -10,11 +10,11 @@
         android:hint="@string/defaultSearchText"
         android:inputType="text"
         android:imeOptions="actionSearch"/>
-
+    <!--
     <Button
         android:id = "@+id/filterTestButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="test"/>
-
+    -->
 </LinearLayout>

@@ -33,7 +33,8 @@ public class StartActivity extends ActionBarActivity {
         workoutFromPlanButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-
+                Intent i = new Intent(StartActivity.this, LoadActivity.class);
+                startActivity(i);
             }
         });
 
@@ -65,7 +66,7 @@ public class StartActivity extends ActionBarActivity {
         viewHistoryButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-
+                //our history call will go here
             }
         });
     }

@@ -17,50 +17,41 @@ import java.util.ArrayList;
  * Created by Adam on 2/10/2015.
  */
 public class LoadActivity extends FragmentActivity {
-    //fragments needed for the browse activity
-    BrowseFilterFragment FilterFragment;
-    BrowseListFragment ListFragment;
+    //fragments needed for the load activity
+    LoadHeaderFragment HeaderFragment;
+    LoadListFragment ListFragment;
 
     //this is the stub list
-    private static ArrayList<Exercise> StubExercises = new ArrayList<Exercise>();
-    //the adapter is responsible for populating the browse list
+    private static ArrayList<Plan> workoutPlans = new ArrayList<>();
+    //the adapter is responsible for populating the load list
     public static LoadAdapter adapter;
-    private int circuitNumber;
 
+    //testvals
+    String s;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle extras = getIntent().getExtras();
-        if (extras != null){
-            circuitNumber = extras.getInt("EXTRA_CIRCUIT_NUMBER");
-        }
-        setContentView(R.layout.b_activity);
-        Log.d("test", " Looking for exercise for circuit" + circuitNumber);
 
+        setContentView(R.layout.l_activity_load);
+        /*
 
-        CopyDatabase myDbCopier = new CopyDatabase(this);
+        PLAN DB CALL WILL GO HERE, GIVE US OUR INITIAL LIST OF PLANS
 
-        try {
-            myDbCopier.createDatabase();
-        } catch (IOException io) {
-            Log.e("Query Failure", io.getMessage());
-            throw new Error("Unable to create database");
-        }
-
+         */
         //populates our display initially
         //initiates filter
-        FilterFragment = new BrowseFilterFragment();
-        ListFragment = new BrowseListFragment();
+        HeaderFragment = new LoadHeaderFragment();
+        ListFragment = new LoadListFragment();
 
         //creates a list adapter for our stub exercises
-        adapter = new LoadAdapter(this, 0, StubExercises);
+        adapter = new LoadAdapter(this, 0, workoutPlans);
 
         //adds fragments to layout/b_activity.xml
         FragmentTransaction transaction =
                 getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.exerciseFiltersContainer, FilterFragment);
-        transaction.add(R.id.exerciseListContainer, ListFragment);
+        transaction.add(R.id.loadHeaderContainer, HeaderFragment);
+        transaction.add(R.id.loadListContainer, ListFragment);
         transaction.commit();
 
     }
@@ -78,10 +69,10 @@ public class LoadActivity extends FragmentActivity {
     //params to specify things.
 
     //this is the actual adapter class used to populate layout/b_frag_exercise_list.xml
-    public class LoadAdapter extends ArrayAdapter<Exercise> {
+    public class LoadAdapter extends ArrayAdapter<Plan> {
 
-        public LoadAdapter(Context context, int resource, ArrayList<Exercise> exercises){
-            super(context, resource, exercises);
+        public LoadAdapter(Context context, int resource, ArrayList<Plan> plans){
+            super(context, resource, plans);
         }
 
         @Override
@@ -89,21 +80,16 @@ public class LoadActivity extends FragmentActivity {
 
             if (convertView == null) {
                 convertView = getLayoutInflater()
-                        .inflate(R.layout.b_frag_exercise_list, null);
+                        .inflate(R.layout.l_frag_list_plan, null);
 
             }
 
-            Exercise e = getItem(position);
+            Plan p = getItem(position);
 
             TextView nameTextView =
-                    (TextView)convertView.findViewById(R.id.browseMenuExerciseNameView);
-            nameTextView.setText(e.getName());
-            TextView muscleTextView =
-                    (TextView)convertView.findViewById(R.id.browseMenuExerciseMuscleView);
-            muscleTextView.setText(e.getMuscleGroup());
-            TextView equipmentTextView =
-                    (TextView)convertView.findViewById(R.id.browseMenuExerciseEquip);
-            equipmentTextView.setText(e.getEquipment());
+                    (TextView)convertView.findViewById(R.id.planName);
+            nameTextView.setText(p.getName());
+
 
             return convertView;
         }
