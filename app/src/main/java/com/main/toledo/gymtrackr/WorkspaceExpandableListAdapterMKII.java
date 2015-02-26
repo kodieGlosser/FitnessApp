@@ -55,7 +55,8 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 public void onClick(View v) {
                     WorkoutData.get(_context).addCircuit(groupPosition);
                     notifyDataSetChanged();
-
+                    ((WorkspaceActivity) _context).ListFragment
+                            .expandLists(((WorkspaceActivity) _context).getAdapter());
                 }
             });
 
@@ -146,10 +147,12 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                              View convertView, ViewGroup parent) {
         Log.d("TEST", "DOING STUFF FOR GROUP: " + groupPosition);
         if (!(workout.get(groupPosition).isOpen())) {
+
             LayoutInflater inflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.w_empty, null);
             convertView.setTag("Blank");
+
         }else {
             //if (groupPosition < (workout.size() - 1)) {
                 //for the not last items in the list
