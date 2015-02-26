@@ -39,7 +39,7 @@ public class BrowseListFragment extends ListFragment{
             WorkoutData.get(getActivity()).addClosedCircuit(exercise,
                     ((BrowseActivity) getActivity()).getCircuitValue());
         }
-
+        //return to workspace
         Intent i = new Intent(getActivity(), WorkspaceActivity.class);
         startActivity(i);
 
