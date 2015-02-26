@@ -5,8 +5,12 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import java.sql.Date;
+import java.text.ParseException;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by Kodie Glosser on 2/14/2015.
@@ -20,11 +24,12 @@ public class DatabaseWrapper {
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_MUSCLE_GROUP = "MuscleGroup";
     private static final String COLUMN_EQUIPMENT_TYPE = "EquipmentType";
+    private static final String COLUMN_PLAN = "Plan";
     private static final String COLUMN_TARGET_MUSCLE = "TargetMuscle";
     private static final String COLUMN_ID = "_ID";
     private static final String EXERCISE_TABLE = "Exercises";
     private static final String EXERCISE_HISTORY_TABLE = "History";
-
+    private static final String DATE_FORMAT = "dd/mm/yyyy HH:mm:ss";
     private static String DB_PATH = "/data/data/com.main.toledo.gymtrackr/databases/";
     private static String DB_NAME = "gymtrackr.db";
     private SQLiteDatabase myDatabase;
@@ -156,29 +161,46 @@ public class DatabaseWrapper {
 
         if(count >= 1) {
             while (c.moveToNext()) {
-                Date val_date= null; int val_weight= -1, val_rep= -1, val_exerciseId = -1;
-                for (int j = 0; j < 6; j++) {
+                String s_val_date; int val_weight= -1, val_rep= -1, val_exerciseId = -1, val_planId = -1, columnData = -1;
+                Date val_date = null;
+                for (int j = 0; j < 5; j++) {
 
                     String columnName = c.getColumnName(j);
+
+                    if (!columnName.equalsIgnoreCase(COLUMN_DATE))
+                        columnData = c.getInt(c.getColumnIndex(columnName));
+
+
                     if (columnName.equalsIgnoreCase(COLUMN_DATE)) {
-                        //val_date = c.get ##need to get the date format somehow
+                        s_val_date = c.getString(c.getColumnIndex(columnName));
+
+                        DateFormat format = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
+                        try {
+                            val_date = format.parse(s_val_date);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                     }
                     else if (columnName.equalsIgnoreCase(COLUMN_WEIGHT)){
-
+                         val_weight = columnData;
                     }
                     else if (columnName.equalsIgnoreCase(COLUMN_REP)){
-
+                        val_rep = columnData;
                     }
                     else if (columnName.equalsIgnoreCase(COLUMN_EXERCISE)){
-
+                        val_exerciseId = columnData;
+                    }
+                    else if (columnName.equalsIgnoreCase(COLUMN_PLAN)) {
+                        val_planId = columnData;
                     }
                 }
 
-                exerciseHistory[i] = new ExerciseHistory(val_date, val_weight, val_rep, val_exerciseId);
+                exerciseHistory[i] = new ExerciseHistory(val_date, val_weight, val_rep, val_exerciseId, val_planId);
+                i++;
             }
         }
 
-        return null;
+        return exerciseHistory;
     }
 
     /**
@@ -217,7 +239,7 @@ public class DatabaseWrapper {
 
                     String columnName = c.getColumnName(j);
                     if (!columnName.equalsIgnoreCase(COLUMN_ID)) {
-                            columnData = c.getString(c.getColumnIndex(columnName));
+                        columnData = c.getString(c.getColumnIndex(columnName));
                     }
 
                     if (columnName.equalsIgnoreCase(COLUMN_ID)) {
