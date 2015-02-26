@@ -25,7 +25,6 @@ public class WorkspaceHeaderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState){
-        Log.d("test", "On createview called.");
         //sets the view for the fragment
         View v = inflater.inflate(R.layout.l_frag_header, null);
 

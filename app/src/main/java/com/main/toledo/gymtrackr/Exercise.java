@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by Adam on 2/9/2015.
  */
@@ -25,7 +27,7 @@ public class Exercise {
     private int m_lastPerformed;  //this will be an integer value of the last time the exercise was
                                 //performed, used to organize browse menu
     private ExerciseStatus status;
-
+    private ArrayList<Metric> m_metrics = new ArrayList<Metric>();
     //performed, used to organize browse menu
 
     public Exercise(String name, String muscleGroup, int lastPerformed, String equipmentType){
@@ -109,6 +111,10 @@ public class Exercise {
     public void isPlan(){ status = ExerciseStatus.PLAN; }
 
     public void isCompleted() { status = ExerciseStatus.COMPLETED; }
+
+    public ArrayList<Metric> getMetrics() { return m_metrics; }
+
+    public void addMetrics(Metric m){ m_metrics.add(m); }
 
     @Override
     public String toString() { return m_name; }

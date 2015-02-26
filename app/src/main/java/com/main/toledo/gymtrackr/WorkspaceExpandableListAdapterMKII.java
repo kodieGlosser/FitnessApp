@@ -92,6 +92,10 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     @Override
                     public void onClick(View v) {
                         WorkoutData.get(_context).removeExercise(childPosition, groupPosition);
+                        //if circuit is closed remove it as it is no longer necessary
+                        if(!WorkoutData.get(_context).getWorkout().get(groupPosition).isOpen()){
+                            WorkoutData.get(_context).getWorkout().remove(groupPosition);
+                        }
                         notifyDataSetChanged();
                     }
                 });
@@ -233,7 +237,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         mContent.remove(which);
     }
     */
-
+    //this needs fixed a lot
     @Override
     public void onDrop(int homeExerciseIndex, int homeCircuitIndex,
                         int destinationExerciseIndex ,int destinationCircuitIndex) {
