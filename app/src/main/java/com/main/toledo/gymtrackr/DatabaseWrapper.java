@@ -119,15 +119,25 @@ public class DatabaseWrapper {
      * @return ArrayList of plans just containing a plan name
      * note: might just want to pass a string back
      */
-    public ArrayList<Plan> loadPlanNames() {
-        return null;
+    public String[] loadPlanNames() {
+        Cursor c = myDatabase.query(COLUMN_PLAN, new String[]{COLUMN_NAME}, null, null, null, null, null);
+        String[] names = null;
+        int i = 0;
+        if (c.getCount() >= 1) {
+            while(c.moveToNext()) {
+                names[i] = new String(c.getString(1));
+                i++;
+            }
+        }
+        return names;
     }
 
     /**
      * Loads the entire plan selected by user
      * @return an entire list of the workouts and exercises inside of the plan
      */
-    public ArrayList<Plan> loadEntirePlan() {
+    public ArrayList<Plan> loadEntirePlan(String planName) {
+
         return null;
     }
 
