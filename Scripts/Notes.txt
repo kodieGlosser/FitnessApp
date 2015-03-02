@@ -1,0 +1,33 @@
+DB Correlations to objects
+
+Plan object contains {
+	
+     Plan table:
+	planId - _id fk in Planned_Union planId
+	planName - name
+
+     multiple Circuits
+}
+
+Circuit object contains {
+    	
+    Planned_Union Table:
+	name - circuitName
+	circuitId- circuitId fk of _id from Circuits
+	open - open
+	sequence - workoutId
+
+     multiple Exercises	
+}
+
+Exercise object contains {
+	    
+    Circuit table:
+	weight - weight
+	rep - rep
+	sequence - sequence
+	id - exercise fk of _id from Exercises 
+
+    Exercise Table:
+	name - name
+}

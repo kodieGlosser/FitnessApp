@@ -6,9 +6,9 @@ package com.main.toledo.gymtrackr;
 public class Plan {
 
     private String m_name;
-    private Circuit[] m_circuits;
+    private Circuit_temp[] m_circuits;
     private int m_planId;
-    public Plan(String name, Circuit[] circuits, int planId) {
+    public Plan(String name, Circuit_temp[] circuits, int planId) {
         m_name = name;
         m_circuits = circuits;
         m_planId = planId;
@@ -18,9 +18,9 @@ public class Plan {
 
     public String getName(){return m_name;}
 
-    public void setCircuits(Circuit[] circuits) {m_circuits = circuits;}
+    public void setCircuits(Circuit_temp[] circuits) {m_circuits = circuits;}
 
-    public Circuit[] getCircuits() {return m_circuits;}
+    public Circuit_temp[] getCircuits() {return m_circuits;}
 
     public void setPlanId(int planId) { m_planId = planId;}
 

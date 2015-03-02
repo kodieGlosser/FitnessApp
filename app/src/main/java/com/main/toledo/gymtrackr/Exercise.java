@@ -24,6 +24,7 @@ public class Exercise {
     private String m_targetMuscle;
     private int m_repetitions;
     private int m_weight;
+    private int m_sequence;
     private int m_lastPerformed;  //this will be an integer value of the last time the exercise was
                                 //performed, used to organize browse menu
     private ExerciseStatus status;
@@ -37,14 +38,12 @@ public class Exercise {
         this.m_equipmentType = equipmentType;
     }
 
-    public Exercise(int id, String name, String muscleGroup, String equipmentType, String targetMuscle, int repetitions, int weight){
+    public Exercise(int id, String name, int repetitions, int weight, int sequence){
         this.m_id = id;
         this.m_name = name;
-        this.m_muscleGroup = muscleGroup;
-        this.m_equipmentType = equipmentType;
-        this.m_targetMuscle = targetMuscle;
         this.m_repetitions = repetitions;
         this.m_weight = weight;
+        this.m_sequence = sequence;
     }
 
     public Exercise(int id, String name, String muscleGroup, String equipmentType, String targetMuscle){
