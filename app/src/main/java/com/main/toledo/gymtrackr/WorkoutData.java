@@ -66,11 +66,8 @@ public class WorkoutData {
         c.add(e);
         Workout.add(circuitNumber, c);
     }
-    //removes exercise, and if necessary the closed circuit the exercise was associated with.
+    //removes exercise at circuit
     public void removeExercise(int exercisePosition, int circuitPosition){
         Workout.get(circuitPosition).removeExercise(exercisePosition);
-        if (!Workout.get(circuitPosition).isOpen()){
-            Workout.remove(circuitPosition);
-        }
     }
 }

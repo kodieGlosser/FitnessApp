@@ -16,7 +16,6 @@ public class WorkspaceHeaderFragment extends Fragment {
     private String selectionOption;
     private Button testButton;
     private TextView loadMessage;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,8 +36,7 @@ public class WorkspaceHeaderFragment extends Fragment {
         testButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                //calls additem in the browse activity
-                //2/19 dewired((BrowseActivity)getActivity()).addItem();
+                ((WorkspaceActivity) getActivity()).testMethod();
             }
         });
         //code to handle search

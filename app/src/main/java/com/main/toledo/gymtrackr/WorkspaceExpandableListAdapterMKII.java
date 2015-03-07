@@ -93,6 +93,8 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     public void onClick(View v) {
                         WorkoutData.get(_context).removeExercise(childPosition, groupPosition);
                         //if circuit is closed remove it as it is no longer necessary
+                        Log.d("REMOVE BUG", "Remove clicked.  Child Position: " + childPosition + " Group Position: " + groupPosition);
+
                         if(!WorkoutData.get(_context).getWorkout().get(groupPosition).isOpen()){
                             WorkoutData.get(_context).getWorkout().remove(groupPosition);
                         }

@@ -62,6 +62,13 @@ public class WorkspaceListFragment extends Fragment {
         }
     }
 
+    public void collapseLists(WorkspaceExpandableListAdapterMKII listAdapter){
+        int count = listAdapter.getGroupCount();
+        for (int position = 1; position < count; position++){
+            workspaceListView.collapseGroup(position - 1);
+        }
+    }
+
     private DropListener mDropListener =
             new DropListener() {
                 public void onDrop(int fromX, int fromY, int toX, int toY) {

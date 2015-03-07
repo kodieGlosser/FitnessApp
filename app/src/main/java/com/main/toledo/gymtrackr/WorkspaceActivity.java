@@ -43,6 +43,9 @@ public class WorkspaceActivity extends FragmentActivity {
         super.onResume();
     }
 
+    public void testMethod(){
+        ListFragment.collapseLists(listAdapter);
+    }
     public WorkspaceExpandableListAdapterMKII getAdapter(){
         return this.listAdapter;
     }

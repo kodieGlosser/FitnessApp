@@ -69,16 +69,6 @@ public class LoadActivity extends FragmentActivity {
         return this.adapter;
     }
 
-    public void setToWorkout(){
-        actionToPerform = WORKOUT;
-        this.findViewById(R.id.loadMainWindow).setBackgroundColor(Color.RED);
-    }
-
-    public void setToEdit(){
-        actionToPerform = LOAD;
-        this.findViewById(R.id.loadMainWindow).setBackgroundColor(Color.GREEN);
-    }
-
     public void onRadioButtonClicked(View view){
 
         boolean checked = ((RadioButton) view).isChecked();
@@ -93,6 +83,16 @@ public class LoadActivity extends FragmentActivity {
                     setToWorkout();
                 break;
         }
+    }
+
+    public void setToWorkout(){
+        actionToPerform = WORKOUT;
+        this.findViewById(R.id.loadMainWindow).setBackgroundColor(Color.RED);
+    }
+
+    public void setToEdit(){
+        actionToPerform = LOAD;
+        this.findViewById(R.id.loadMainWindow).setBackgroundColor(Color.GREEN);
     }
 
     public class LoadAdapter extends ArrayAdapter{
