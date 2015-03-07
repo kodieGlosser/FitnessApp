@@ -20,4 +20,8 @@
     <string name="s_viewHistoryButtonText">View History</string>
     <string name="title_activity_load">LoadActivity</string>
 
+    <!-- Load Strings-->
+    <string name="load_radioText_workout">Workout</string>
+    <string name="load_radioText_edit">Edit</string>
+    <string name="load_buttonText_workout">Add plan</string>
 </resources>

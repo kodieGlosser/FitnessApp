@@ -17,10 +17,8 @@ import java.util.ArrayList;
  */
 public class WorkspaceListFragment extends Fragment {
 
-
-
-        ArrayList<Circuit> workout = new ArrayList<Circuit>();
-        ArrayList<Circuit> singletonWorkout = new ArrayList<Circuit>();
+        //ArrayList<Circuit> workout = new ArrayList<Circuit>();
+        //ArrayList<Circuit> singletonWorkout = new ArrayList<Circuit>();
         DragNDropExpandableListView workspaceListView;
         //WorkspaceExpandableListAdapterMKII listAdapter;
 

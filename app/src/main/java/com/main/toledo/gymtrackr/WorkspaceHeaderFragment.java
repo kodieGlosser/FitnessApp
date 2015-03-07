@@ -26,13 +26,13 @@ public class WorkspaceHeaderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState){
         //sets the view for the fragment
-        View v = inflater.inflate(R.layout.l_frag_header, null);
+        View v = inflater.inflate(R.layout.w_frag_header, null);
 
         //sets the listener for the test button
         loadMessage = (TextView)v.findViewById(R.id.headerMessage);
         loadMessage.setText("WERKOUTMANG");
 
-        testButton = (Button)v.findViewById(R.id.LoadTestButton);
+        testButton = (Button)v.findViewById(R.id.WorkspaceTestButton);
 
         testButton.setOnClickListener(new View.OnClickListener(){
             @Override

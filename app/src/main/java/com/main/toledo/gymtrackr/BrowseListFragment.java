@@ -36,6 +36,7 @@ public class BrowseListFragment extends ListFragment{
                     ((BrowseActivity) getActivity()).getCircuitValue());
         //if circuit is closed
         } else if (!((BrowseActivity)getActivity()).isCircuitOpen()){
+            //add a closed circuit, with the exercise in it
             WorkoutData.get(getActivity()).addClosedCircuit(exercise,
                     ((BrowseActivity) getActivity()).getCircuitValue());
         }

@@ -149,7 +149,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     @Override
     public View getGroupView(final int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
-        Log.d("TEST", "DOING STUFF FOR GROUP: " + groupPosition);
+        //Log.d("TEST", "DOING STUFF FOR GROUP: " + groupPosition);
         if (!(workout.get(groupPosition).isOpen())) {
 
             LayoutInflater inflater = (LayoutInflater) this._context

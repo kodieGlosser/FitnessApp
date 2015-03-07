@@ -1,13 +1,16 @@
 package com.main.toledo.gymtrackr;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -20,9 +23,10 @@ public class LoadActivity extends FragmentActivity {
     //fragments needed for the load activity
     LoadHeaderFragment HeaderFragment;
     LoadListFragment ListFragment;
-
+    private int actionToPerform;
+    final int LOAD = 1, WORKOUT = 2;
     //this is the stub list
-    private static ArrayList<Plan> workoutPlans = new ArrayList<>();
+    //private static ArrayList<Plan> workoutPlans = new ArrayList<>();
     //the adapter is responsible for populating the load list
     public static LoadAdapter adapter;
 
@@ -37,6 +41,7 @@ public class LoadActivity extends FragmentActivity {
         /*
 
         PLAN DB CALL WILL GO HERE, GIVE US OUR INITIAL LIST OF PLANS
+        MAKE WORKOUTPLANS REFLECT OUR DB STUFF AND WE'RE GOOD
 
          */
         //populates our display initially
@@ -44,8 +49,12 @@ public class LoadActivity extends FragmentActivity {
         HeaderFragment = new LoadHeaderFragment();
         ListFragment = new LoadListFragment();
 
+        //DatabaseWrapper db = new DatabaseWrapper();
+        //String[] planList = db.loadPlanNames();
+        //db.loadPlanNames();
+        String[] planList = {"CHEST", "BACK", "ARMS"};
         //creates a list adapter for our stub exercises
-        adapter = new LoadAdapter(this, 0, workoutPlans);
+        adapter = new LoadAdapter(this, 0, planList);
 
         //adds fragments to layout/b_activity.xml
         FragmentTransaction transaction =
@@ -55,23 +64,40 @@ public class LoadActivity extends FragmentActivity {
         transaction.commit();
 
     }
-    //Adam:  This is a stub list of exercises used for the browse menu
-    //in the format "Name, Muscle group, last used, equip used"
-    //used to fetch the adapter from this activity in fragments.  the list fragment gets the adapter
-    //via this method, then uses it to populate its list view.
 
     public LoadAdapter getAdapter(){
         return this.adapter;
     }
 
-    //used to addToOpenCircuit data to the display list from fragments, this method is called from from the filter
-    //fragment.  queries to populate the the list could go here.  we could set addItem to take some
-    //params to specify things.
+    public void setToWorkout(){
+        actionToPerform = WORKOUT;
+        this.findViewById(R.id.loadMainWindow).setBackgroundColor(Color.RED);
+    }
 
-    //this is the actual adapter class used to populate layout/b_frag_exercise_list.xml
-    public class LoadAdapter extends ArrayAdapter<Plan> {
+    public void setToEdit(){
+        actionToPerform = LOAD;
+        this.findViewById(R.id.loadMainWindow).setBackgroundColor(Color.GREEN);
+    }
 
-        public LoadAdapter(Context context, int resource, ArrayList<Plan> plans){
+    public void onRadioButtonClicked(View view){
+
+        boolean checked = ((RadioButton) view).isChecked();
+        switch(view.getId()) {
+
+            case R.id.load_radio_edit:
+                if (checked)
+                    setToEdit();
+                break;
+            case R.id.load_radio_workout:
+                if (checked)
+                    setToWorkout();
+                break;
+        }
+    }
+
+    public class LoadAdapter extends ArrayAdapter{
+
+        public LoadAdapter(Context context, int resource, String[] plans){
             super(context, resource, plans);
         }
 
@@ -79,16 +105,17 @@ public class LoadActivity extends FragmentActivity {
         public View getView(int position, View convertView, ViewGroup parent){
 
             if (convertView == null) {
+
                 convertView = getLayoutInflater()
                         .inflate(R.layout.l_frag_list_plan, null);
 
             }
 
-            Plan p = getItem(position);
+            String planName = (String)getItem(position);
 
             TextView nameTextView =
                     (TextView)convertView.findViewById(R.id.planName);
-            nameTextView.setText(p.getName());
+            nameTextView.setText(planName);
 
 
             return convertView;

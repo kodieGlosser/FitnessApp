@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 /**
@@ -46,4 +47,7 @@ public class LoadHeaderFragment extends Fragment {
         //code to handle search
         return v;
     }
+    //method executed when radio button is selected
+
+
 }
