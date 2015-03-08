@@ -40,16 +40,6 @@ public class BrowseActivity extends FragmentActivity {
         setContentView(R.layout.b_activity);
         //Log.d("test", " Looking for exercise for circuit" + circuitNumber);
 
-
-        CopyDatabase myDbCopier = new CopyDatabase(this);
-
-        try {
-            myDbCopier.createDatabase();
-        } catch (IOException io) {
-            Log.e("Query Failure", io.getMessage());
-            throw new Error("Unable to create database");
-        }
-
         //populates our display initially
         initializeBrowseList();
         //initiates filter

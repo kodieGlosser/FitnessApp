@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+
+import java.io.IOException;
 
 
 public class StartActivity extends Activity {
@@ -17,7 +20,14 @@ public class StartActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.s_activity_main);
 
+        CopyDatabase myDbCopier = new CopyDatabase(this);
 
+        try {
+            myDbCopier.createDatabase();
+        } catch (IOException io) {
+            Log.e("Query Failure", io.getMessage());
+            throw new Error("Unable to create database");
+        }
 
         Button workoutNoPlanButton = (Button)findViewById(R.id.workoutNoPlanButton);
 
