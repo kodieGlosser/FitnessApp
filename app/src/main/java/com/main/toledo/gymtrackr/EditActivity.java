@@ -49,7 +49,6 @@ public class EditActivity extends FragmentActivity {
         transaction.add(R.id.editHistoryFragment, historyFragment);
         transaction.commit();
 
-
     }
 
     public EditWorkoutMapAdapter getMapAdapter(){ return this.mapAdapter; }

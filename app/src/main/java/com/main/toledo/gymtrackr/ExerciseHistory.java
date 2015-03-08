@@ -6,6 +6,7 @@ import java.util.Date;
  * Created by Kodie Glosser on 2/23/2015.
  */
 public class ExerciseHistory {
+
     private int m_id, m_weight, m_rep, m_exerciseId, m_planId;
     private Date m_date;
 
@@ -26,4 +27,5 @@ public class ExerciseHistory {
     public int getExerciseId() { return this.m_exerciseId; }
 
     public int getPlanId() { return this.m_planId; }
+
 }
