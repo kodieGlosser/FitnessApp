@@ -16,6 +16,8 @@ public class WorkspaceHeaderFragment extends Fragment {
     private String selectionOption;
     private Button testButton;
     private TextView loadMessage;
+
+    final int EDIT = 1, WORKOUT = 2;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,10 +29,28 @@ public class WorkspaceHeaderFragment extends Fragment {
         //sets the view for the fragment
         View v = inflater.inflate(R.layout.w_frag_header, null);
 
-        //sets the listener for the test button
+        //sets first message text
         loadMessage = (TextView)v.findViewById(R.id.headerMessage);
-        loadMessage.setText("WERKOUTMANG");
+        loadMessage.setText(((WorkspaceActivity) getActivity()).getPlanName());
 
+        //sets second message text
+        loadMessage = (TextView)v.findViewById(R.id.headerMessageTwo);
+        String textVal;
+        switch(((WorkspaceActivity) getActivity()).getCourseOfAction()){
+            case EDIT:
+                textVal = "  EDIT";
+                break;
+            case WORKOUT:
+                textVal = "  WORKOUT";
+                break;
+            default:
+                textVal = "  SHIT HAPPENED!";
+                break;
+        }
+
+        loadMessage.setText(textVal);
+
+        //sets the listener for the test button
         testButton = (Button)v.findViewById(R.id.WorkspaceTestButton);
 
         testButton.setOnClickListener(new View.OnClickListener(){

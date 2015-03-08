@@ -21,10 +21,11 @@ import java.util.ArrayList;
  */
 public class LoadActivity extends FragmentActivity {
     //fragments needed for the load activity
+    public String[] planList = {"CHEST", "BACK", "ARMS"};
     LoadHeaderFragment HeaderFragment;
     LoadListFragment ListFragment;
     private int actionToPerform;
-    final int LOAD = 1, WORKOUT = 2;
+    final int EDIT = 1, WORKOUT = 2;
     //this is the stub list
     //private static ArrayList<Plan> workoutPlans = new ArrayList<>();
     //the adapter is responsible for populating the load list
@@ -52,7 +53,6 @@ public class LoadActivity extends FragmentActivity {
         //DatabaseWrapper db = new DatabaseWrapper();
         //String[] planList = db.loadPlanNames();
         //db.loadPlanNames();
-        String[] planList = {"CHEST", "BACK", "ARMS"};
         //creates a list adapter for our stub exercises
         adapter = new LoadAdapter(this, 0, planList);
 
@@ -91,9 +91,15 @@ public class LoadActivity extends FragmentActivity {
     }
 
     public void setToEdit(){
-        actionToPerform = LOAD;
+        actionToPerform = EDIT;
         this.findViewById(R.id.loadMainWindow).setBackgroundColor(Color.GREEN);
     }
+
+    public int getActionToPerform(){
+        return actionToPerform;
+    }
+
+    public String[] getPlanList(){return planList; }
 
     public class LoadAdapter extends ArrayAdapter{
 
@@ -116,10 +122,14 @@ public class LoadActivity extends FragmentActivity {
             TextView nameTextView =
                     (TextView)convertView.findViewById(R.id.planName);
             nameTextView.setText(planName);
-
-
+            /*didn't work, may revisit (tried to pass plan name from here -> loadListFragment -> workspaceActivity)
+            Log.d("W_HEADER_DEBUG", "Setting tag: " + planName);
+            nameTextView.setTag(planName);
+            */
             return convertView;
         }
+
+
 
     }
 }
