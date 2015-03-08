@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <TextView
         android:id="@+id/headerMessage"
         android:layout_width="wrap_content"
@@ -12,9 +13,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="17dp" />
+    <!--3/8 not needed at the moment
     <Button
         android:id = "@+id/WorkspaceTestButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="test"/>
+        android:text="Collapse"/>-->
+    <Button
+        android:id = "@+id/toggleEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit" />
+
 </LinearLayout>

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.widget.Button;
 
 /**
  * Created by Adam on 2/15/2015.
@@ -16,7 +17,7 @@ public class WorkspaceActivity extends FragmentActivity {
     WorkspaceHeaderFragment HeaderFragment;
     String planName;
     int courseOfAction;
-
+    public static boolean isEditable = true;
     final int EDIT = 1, WORKOUT = 2;
 
     @Override
@@ -62,9 +63,25 @@ public class WorkspaceActivity extends FragmentActivity {
     public String getPlanName(){return planName;}
 
     public int getCourseOfAction(){return courseOfAction;}
-
+    /*Not used at the moment
     public void testMethod(){
         ListFragment.collapseLists(listAdapter);
+    }
+    */
+    public void toggleEdit(){
+        Button toggleButton = (Button) HeaderFragment.getView().findViewById(R.id.toggleEdit);
+
+        Log.d("EDITABLE TEST", "toggleEdit() called in workspace activity");
+        isEditable = !isEditable;
+        listAdapter.setEditable(isEditable);
+        ListFragment.workspaceListView.toggleListeners(isEditable);
+        if(isEditable){
+            toggleButton.setBackgroundColor(Color.BLUE);
+            toggleButton.setTextColor(Color.WHITE);
+        }else{
+            toggleButton.setBackgroundColor(android.R.drawable.btn_default_small);
+            toggleButton.setTextColor(getResources().getColor(R.color.abc_primary_text_material_light));
+        }
     }
 
     public WorkspaceExpandableListAdapterMKII getAdapter(){

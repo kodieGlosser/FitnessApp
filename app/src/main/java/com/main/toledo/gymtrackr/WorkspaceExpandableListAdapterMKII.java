@@ -20,6 +20,8 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
     private ArrayList<Circuit> workout;
 
+    private boolean editable = true;
+
     public WorkspaceExpandableListAdapterMKII(Context context, ArrayList<Circuit> workout){
         this._context = context;
         this.workout = workout;
@@ -30,10 +32,17 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         return workout.get(groupPosition).getExercise(childPosition);
     }
 
+    public void setEditable(boolean b){
+        Log.d("EDITABLE TEST", "setEditable() called in adapter.  editable: " + b);
+        editable = b;
+        notifyDataSetChanged();
+    }
+
     @Override
     public long getChildId(int groupPosition, int childPosition) {
         return childPosition;
     }
+
     @Override
     public View getChildView(final int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
@@ -44,35 +53,45 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
         if (groupPosition >= workout.size()-1){
         //    Log.d("test", "should make buttons");
-            LayoutInflater inflater = (LayoutInflater) this._context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.w_workout_menu_buttons, null);
-            //add circuit code
+            if(editable){
+                if (convertView == null || (convertView.getTag() != "End Button")) {
+                    LayoutInflater inflater = (LayoutInflater) this._context
+                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.w_workout_menu_buttons, null);
+                    //add circuit code
 
-            Button addCircuitButton = (Button) convertView.findViewById(R.id.AddCircuitButton);
-            addCircuitButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    WorkoutData.get(_context).addCircuit(groupPosition);
-                    notifyDataSetChanged();
-                    ((WorkspaceActivity) _context).ListFragment
-                            .expandLists(((WorkspaceActivity) _context).getAdapter());
-                }
-            });
+                    Button addCircuitButton = (Button) convertView.findViewById(R.id.AddCircuitButton);
+                    addCircuitButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            WorkoutData.get(_context).addCircuit(groupPosition);
+                            notifyDataSetChanged();
+                            ((WorkspaceActivity) _context).ListFragment
+                                    .expandLists(((WorkspaceActivity) _context).getAdapter());
+                        }
+                    });
 
-            Button browseButton = (Button) convertView.findViewById(R.id.BrowseButton);
-            browseButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(_context, BrowseActivity.class);
+                    Button browseButton = (Button) convertView.findViewById(R.id.BrowseButton);
+                    browseButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(_context, BrowseActivity.class);
 //                        Log.d("Test", "Browse called from circuit: " + circuit);
-                    i.putExtra("EXTRA_CIRCUIT_NUMBER", groupPosition);
-                    i.putExtra("EXTRA_CIRCUIT_OPEN", false);
-                    _context.startActivity(i);
+                            i.putExtra("EXTRA_CIRCUIT_NUMBER", groupPosition);
+                            i.putExtra("EXTRA_CIRCUIT_OPEN", false);
+                            _context.startActivity(i);
+                        }
+                    });
+                    convertView.setTag("End Button");
                 }
-            });
-            convertView.setTag("End Button");
-
+            } else {
+                if (convertView == null || (convertView.getTag() != "Blank")) {
+                    LayoutInflater inflater = (LayoutInflater) this._context
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.w_empty, null);
+                    convertView.setTag("Blank");
+                }
+            }
         }else {
             if (childPosition < (workout.get(groupPosition).getSize() - 1) || !(workout.get(groupPosition).isOpen())) {
                 //for the not last items in the list
@@ -101,27 +120,41 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         notifyDataSetChanged();
                     }
                 });
-
+                if(!editable){
+                    deleteButton.setVisibility(View.INVISIBLE);
+                }else{
+                    deleteButton.setVisibility(View.VISIBLE);
+                }
             } else {
                 //for the last items
                 //switch will go here when we have an edit toggle to hide buttons
-                LayoutInflater inflater = (LayoutInflater) this._context
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.w_circuit_menu_buttons, null);
-                convertView.setTag("Button");
+                if(editable) {
+                    if (convertView == null || (convertView.getTag() != "Button")) {
+                        LayoutInflater inflater = (LayoutInflater) this._context
+                                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        convertView = inflater.inflate(R.layout.w_circuit_menu_buttons, null);
+                        convertView.setTag("Button");
 
-                Button browseButton = (Button) convertView.findViewById(R.id.BrowseButton);
-                browseButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent i = new Intent(_context, BrowseActivity.class);
+                        Button browseButton = (Button) convertView.findViewById(R.id.BrowseButton);
+                        browseButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent i = new Intent(_context, BrowseActivity.class);
 //                        Log.d("Test", "Browse called from circuit: " + circuit);
-                        i.putExtra("EXTRA_CIRCUIT_OPEN", true);
-                        i.putExtra("EXTRA_CIRCUIT_NUMBER", groupPosition);
-                        _context.startActivity(i);
+                                i.putExtra("EXTRA_CIRCUIT_OPEN", true);
+                                i.putExtra("EXTRA_CIRCUIT_NUMBER", groupPosition);
+                                _context.startActivity(i);
+                            }
+                        });
                     }
-                });
-
+                }else{
+                    if (convertView == null || (convertView.getTag() != "Blank")) {
+                        LayoutInflater inflater = (LayoutInflater) this._context
+                                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        convertView = inflater.inflate(R.layout.w_empty, null);
+                        convertView.setTag("Blank");
+                    }
+                }
                 //ConvertViewIsButton = true;
             }
         }
@@ -168,11 +201,26 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     convertView = inflater.inflate(R.layout.w_circuit_group, null);
                     convertView.setTag("Data");
                 }
-
+                //values for circuit header stuff
                 TextView textView = (TextView) convertView.findViewById(R.id.circuitNameHeader);
                 textView.setTypeface(null, Typeface.BOLD);
                 textView.setText(workout.get(groupPosition).getName());
 
+                Button removeCircuitButton = (Button) convertView.findViewById(R.id.removeCircuitButton);
+
+                removeCircuitButton.setFocusable(false);
+                removeCircuitButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                        WorkoutData.get(_context).getWorkout().remove(groupPosition);
+                        notifyDataSetChanged();
+                    }
+                });
+                if(!editable){
+                    removeCircuitButton.setVisibility(View.INVISIBLE);
+                } else {
+                    removeCircuitButton.setVisibility(View.VISIBLE);
+                }
            // } else {
                 //for the last items
                 //Log.d("TEST", "Should now make buttons!");
@@ -286,6 +334,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     }
 
     //may need to implement viewholder pattern later to help memory
+    /*3/8 edit, viewholder will probably take the form of array of inflated views
     public static class ViewHolder {
         public TextView textView;
         public Button browseButton;
@@ -293,5 +342,6 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         public Button button3;
         public String browseButtonText;
     }
+    */
 
 }

@@ -66,6 +66,7 @@ public class WorkoutData {
         c.add(e);
         Workout.add(circuitNumber, c);
     }
+
     //removes exercise at circuit
     public void removeExercise(int exercisePosition, int circuitPosition){
         Workout.get(circuitPosition).removeExercise(exercisePosition);

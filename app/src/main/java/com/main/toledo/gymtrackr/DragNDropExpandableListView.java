@@ -18,6 +18,7 @@ import android.widget.ImageView;
  */
 public class DragNDropExpandableListView extends ExpandableListView {
     boolean mDragMode;
+    boolean mToggle;
 
     int m_startGroupPosition;
     int m_startChildPosition;
@@ -53,6 +54,10 @@ public class DragNDropExpandableListView extends ExpandableListView {
         mDragListener = l;
     }
 
+    public void toggleListeners(boolean b){
+        mToggle = b;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         final int action = ev.getAction();
@@ -61,7 +66,7 @@ public class DragNDropExpandableListView extends ExpandableListView {
 
 
 
-        if (action == MotionEvent.ACTION_DOWN && x < this.getWidth() / 4) {
+        if ((action == MotionEvent.ACTION_DOWN && x < this.getWidth() / 4) && mToggle) {
 
             mDragMode = true;
         }
