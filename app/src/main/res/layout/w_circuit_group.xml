@@ -12,11 +12,11 @@
         android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
         android:textSize="17dp"
         android:layout_weight="0.85"/>
-    <Button
+    <!--<Button
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:text="-"
         android:id="@+id/removeExerciseButton"
-        android:layout_weight="0.15"/>
+        android:layout_weight="0.15"/>-->
 
 </LinearLayout>

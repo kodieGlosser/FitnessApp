@@ -21,7 +21,7 @@ import java.util.ArrayList;
  */
 public class LoadActivity extends FragmentActivity {
     //fragments needed for the load activity
-    public String[] planList = {"CHEST", "BACK", "ARMS"};
+    public String[] planList; //stubs = {"CHEST", "BACK", "ARMS"};
     LoadHeaderFragment HeaderFragment;
     LoadListFragment ListFragment;
     private int actionToPerform;
@@ -50,9 +50,8 @@ public class LoadActivity extends FragmentActivity {
         HeaderFragment = new LoadHeaderFragment();
         ListFragment = new LoadListFragment();
 
-        //DatabaseWrapper db = new DatabaseWrapper();
-        //String[] planList = db.loadPlanNames();
-        //db.loadPlanNames();
+        DatabaseWrapper db = new DatabaseWrapper();
+        planList = db.loadPlanNames();
         //creates a list adapter for our stub exercises
         adapter = new LoadAdapter(this, 0, planList);
 
