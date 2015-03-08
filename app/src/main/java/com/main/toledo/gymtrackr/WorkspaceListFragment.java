@@ -3,14 +3,11 @@ package com.main.toledo.gymtrackr;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-
-import java.util.ArrayList;
 
 /**
  * Created by Adam on 2/25/2015.
@@ -31,9 +28,9 @@ public class WorkspaceListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         //sets the view for the fragment
-        View v = inflater.inflate(R.layout.w_activity_main, null);
+        View v = inflater.inflate(R.layout.w_frag_list, null);
         workspaceListView = (DragNDropExpandableListView)
-                v.findViewById(R.id.lvExp);
+                v.findViewById(R.id.workspaceListView);
 
         workspaceListView.setAdapter(((WorkspaceActivity)getActivity()).getAdapter());
         expandLists(((WorkspaceActivity)getActivity()).getAdapter());
@@ -74,13 +71,14 @@ public class WorkspaceListFragment extends Fragment {
                 public void onDrop(int fromX, int fromY, int toX, int toY) {
                     ExpandableListAdapter adapter = workspaceListView.getExpandableListAdapter();
                     if (adapter instanceof WorkspaceExpandableListAdapterMKII) {
-                        Log.d("TOUCH TESTS", "ITEM DROPPED");
+                        //Log.d("TOUCH TESTS", "ITEM DROPPED");
                         ((WorkspaceExpandableListAdapterMKII)adapter).onDrop(fromX, fromY, toX, toY);
                         ((WorkspaceActivity)getActivity()).getAdapter().notifyDataSetChanged();
                     }
                 }
             };
 
+    //GREG - pretty sure the drag color bug originates from here
     private DragListener mDragListener =
             new DragListener() {
 

@@ -38,12 +38,12 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     public View getChildView(final int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
 
-        Log.d("TEST", "group position: " + groupPosition + " child position "
-               + childPosition);
+        //Log.d("TEST", "group position: " + groupPosition + " child position "
+        //       + childPosition);
         //if workout is closed, prints last item as an exercise value, otherwise last item is buttons
 
         if (groupPosition >= workout.size()-1){
-            Log.d("test", "should make buttons");
+        //    Log.d("test", "should make buttons");
             LayoutInflater inflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.w_workout_menu_buttons, null);
@@ -87,13 +87,13 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 textView.setTypeface(null, Typeface.BOLD);
                 textView.setText(workout.get(groupPosition).getExercise(childPosition).getName());
 
-                Button deleteButton = (Button) convertView.findViewById(R.id.removeButton);
+                Button deleteButton = (Button) convertView.findViewById(R.id.removeExerciseButton);
                 deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         WorkoutData.get(_context).removeExercise(childPosition, groupPosition);
                         //if circuit is closed remove it as it is no longer necessary
-                        Log.d("REMOVE BUG", "Remove clicked.  Child Position: " + childPosition + " Group Position: " + groupPosition);
+                        //Log.d("REMOVE BUG", "Remove clicked.  Child Position: " + childPosition + " Group Position: " + groupPosition);
 
                         if(!WorkoutData.get(_context).getWorkout().get(groupPosition).isOpen()){
                             WorkoutData.get(_context).getWorkout().remove(groupPosition);
@@ -169,7 +169,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     convertView.setTag("Data");
                 }
 
-                TextView textView = (TextView) convertView.findViewById(R.id.lblListHeader);
+                TextView textView = (TextView) convertView.findViewById(R.id.circuitNameHeader);
                 textView.setTypeface(null, Typeface.BOLD);
                 textView.setText(workout.get(groupPosition).getName());
 
