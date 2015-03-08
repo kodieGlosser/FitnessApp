@@ -121,11 +121,11 @@ public class DatabaseWrapper {
      */
     public String[] loadPlanNames() {
         Cursor c = myDatabase.query(COLUMN_PLAN, new String[]{COLUMN_NAME}, null, null, null, null, null);
-        String[] names = null;
+        String[] names = new String[c.getCount()];
         int i = 0;
         if (c.getCount() >= 1) {
             while(c.moveToNext()) {
-                names[i] = new String(c.getString(1));
+                names[i] = new String(c.getString(0));
                 i++;
             }
         }
