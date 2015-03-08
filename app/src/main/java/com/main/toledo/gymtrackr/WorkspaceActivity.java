@@ -33,6 +33,7 @@ public class WorkspaceActivity extends FragmentActivity {
             planName = extras.getString("EXTRA_PLAN_NAME");
             DatabaseWrapper db = new DatabaseWrapper();
             Plan planList = db.loadEntirePlan("legs");
+            WorkoutData.get(this).eatPlan(planList);
             //Log.d("W_HEADER_DEBUG", "Plan name: " + planName);
             courseOfAction = extras.getInt("EXTRA_COURSE_OF_ACTION");
             //Log.d("W_HEADER_DEBUG", "CourseOfAction: " + courseOfAction);
