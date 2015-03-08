@@ -30,6 +30,10 @@ public class DatabaseWrapper {
     private static final String EXERCISE_TABLE = "Exercises";
     private static final String EXERCISE_HISTORY_TABLE = "History";
     private static final String DATE_FORMAT = "YYYY-MM-DD HH:MM:SS";
+    private static final String COLUMN_SEQUENCE = "sequence";
+    private static final String COLUMN_CIRCUIT_NAME = "circuitName";
+    private static final String COLUMN_WORKOUT_ID = "workoutId";
+    private static final String COLUMN_OPEN= "open";
     private static String DB_PATH = "/data/data/com.main.toledo.gymtrackr/databases/";
     private static String DB_NAME = "gymtrackr.db";
     private SQLiteDatabase myDatabase;
@@ -61,6 +65,13 @@ public class DatabaseWrapper {
             Log.e("Query Failure", e.getMessage());
             return null;
         }
+
+        return convertCursorToExercises(c);
+    }
+
+    public Exercise[] browseExerciseById(int ID) {
+
+        Cursor c  = myDatabase.query(EXERCISE_TABLE, null, COLUMN_ID + "= " + ID, null, null, null, COLUMN_NAME);
 
         return convertCursorToExercises(c);
     }
@@ -136,9 +147,100 @@ public class DatabaseWrapper {
      * Loads the entire plan selected by user
      * @return an entire list of the workouts and exercises inside of the plan
      */
-    public ArrayList<Plan> loadEntirePlan(String planName) {
+    public Plan loadEntirePlan(String planName) {
+        String rawquery = "select * from Planned_Union where Planned_Union.planId IN (select _id from Plan where name='" + planName + "')";
+        Plan plan = null;
+        Cursor c = myDatabase.rawQuery(rawquery, null);
+        int count = c.getCount();
+        Circuit_temp[] circuits = new Circuit_temp[count];
+        int i = 0;
+        if(count >= 1) {
+            while (c.moveToNext()) {
 
-        return null;
+                int planId = -1;
+
+                for (int j = 0; j < c.getColumnCount(); j++) {
+
+                    String columnName = c.getColumnName(j);
+                    int workoutId = -1, sequence = -1;
+                    boolean open = false;
+                    Exercise[] exercises = null;
+                    String name = null;
+
+                    if (columnName.equalsIgnoreCase(COLUMN_WORKOUT_ID)) {
+                        workoutId = c.getInt(c.getColumnIndex(columnName));
+                        String rawquery1 = "select Open, circuitName, sequence from Workout where _id = " + workoutId;
+                        Cursor c1 = myDatabase.rawQuery(rawquery1, null);
+                        int count1 = c1.getCount();
+
+                        if (count1 >= 1) {
+                            while (c1.moveToNext()) {
+                                for (int x = 0; x < c1.getColumnCount(); x++) {
+                                    String columnName1 = c1.getColumnName(x);
+
+                                    if (columnName1.equalsIgnoreCase(COLUMN_OPEN)) {
+                                        if (c1.getInt(c1.getColumnIndex(columnName1)) == 1){
+                                            open = true;
+                                        }
+                                    }
+                                    else if (columnName1.equalsIgnoreCase(COLUMN_CIRCUIT_NAME)) {
+                                        name = c1.getString(c1.getColumnIndex(columnName1));
+                                    }
+                                    else if (columnName1.equalsIgnoreCase(COLUMN_SEQUENCE)) {
+                                        sequence = c1.getInt(c1.getColumnIndex(columnName1));
+                                    }
+                                }
+                            }
+                        }
+                        exercises = getExercisesFromCircuitTable(workoutId);
+
+                    }
+
+                    circuits[i] = new Circuit_temp(name, exercises, workoutId, open, sequence);
+                    i++;
+                }
+                plan = new Plan(planName, circuits, planId);
+            }
+        }
+
+        return plan;
+    }
+
+    private Exercise[] getExercisesFromCircuitTable(int workoutId) {
+        Exercise[] exercises;
+        String rawquery2 = "select * from Circuit where Circuit._id IN (select circuitId from Planned_Union where workoutId = " + workoutId + ")";
+        Cursor c2 = myDatabase.rawQuery(rawquery2, null);
+        int count2 = c2.getCount();
+        exercises = new Exercise[count2];
+        int z = 0;
+        if (count2 >= 1) {
+            while(c2.moveToNext()) {
+                int weight = -1, rep = -1, sequence1 = -1, exercise = -1, id = -1;
+
+                for (int y = 0; y < c2.getColumnCount(); y++) {
+                    String columnName2 = c2.getColumnName(y);
+                    if (columnName2.equalsIgnoreCase(COLUMN_ID)){
+                        id = c2.getInt(c2.getColumnIndex(columnName2));
+                    }
+                    else if (columnName2.equalsIgnoreCase(COLUMN_WEIGHT)){
+                        weight = c2.getInt(c2.getColumnIndex(columnName2));
+                    }
+                    else if (columnName2.equalsIgnoreCase(COLUMN_REP)){
+                        rep = c2.getInt(c2.getColumnIndex(columnName2));
+                    }
+                    else if (columnName2.equalsIgnoreCase(COLUMN_SEQUENCE)){
+                        sequence1 = c2.getInt(c2.getColumnIndex(columnName2));
+                    }
+                    else if (columnName2.equalsIgnoreCase(COLUMN_EXERCISE)){
+                        exercise = c2.getInt(c2.getColumnIndex(columnName2));
+                    }
+                }
+
+                exercises[z] = new Exercise(id, browseExerciseById(exercise)[1].getName(), rep, weight, sequence1);
+                z++;
+            }
+        }
+        return exercises;
     }
 
     /**
@@ -213,7 +315,7 @@ public class DatabaseWrapper {
                 int val_id = -1;
                 String val_name = null, val_equipmentType = null, val_targetMuscle = null, val_muscleGroup = null, columnData = null;
 
-                for (int j = 0; j < 5; j++) {
+                for (int j = 0; j < c.getColumnCount(); j++) {
 
                     String columnName = c.getColumnName(j);
                     if (!columnName.equalsIgnoreCase(COLUMN_ID)) {
@@ -254,7 +356,7 @@ public class DatabaseWrapper {
             while (c.moveToNext()) {
                 String s_val_date; int val_weight= -1, val_rep= -1, val_exerciseId = -1, val_planId = -1, columnData = -1;
                 Date val_date = null;
-                for (int j = 0; j < 5; j++) {
+                for (int j = 0; j < c.getColumnCount(); j++) {
 
                     String columnName = c.getColumnName(j);
 

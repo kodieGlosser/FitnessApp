@@ -31,6 +31,8 @@ public class WorkspaceActivity extends FragmentActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null){
             planName = extras.getString("EXTRA_PLAN_NAME");
+            DatabaseWrapper db = new DatabaseWrapper();
+            Plan planList = db.loadEntirePlan("legs");
             //Log.d("W_HEADER_DEBUG", "Plan name: " + planName);
             courseOfAction = extras.getInt("EXTRA_COURSE_OF_ACTION");
             //Log.d("W_HEADER_DEBUG", "CourseOfAction: " + courseOfAction);
