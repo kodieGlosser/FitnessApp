@@ -75,4 +75,44 @@ public class WorkoutData {
     public void removeExercise(int exercisePosition, int circuitPosition){
         Workout.get(circuitPosition).removeExercise(exercisePosition);
     }
+
+    public void eatPlan(Plan p){
+
+        Workout.clear();
+        Circuit_temp[] circuits = p.getCircuits();
+        boolean sorted = false;
+        //sort in case it's not sorted
+        while (!sorted) {
+            boolean test = true;
+            for (int i = 0; i < circuits.length; i++) {
+                if(i != circuits.length - 1){
+                    if(circuits[i].getSequence() > circuits[i+1].getSequence()){
+                        Circuit_temp c_temp = circuits[i];
+                        circuits[i] = circuits[i+1];
+                        circuits[i+1] = c_temp;
+                        test = false;
+                    }
+                } else {
+                    sorted = test;
+                }
+            }
+        }
+
+        for (Circuit_temp c_old : circuits){
+            Circuit c_new = new Circuit();
+            c_new.setOpenStatus(c_old.isOpen());
+            c_new.setName(c_old.getName());
+            c_new.setId(c_old.getCircuitId());
+            Exercise[] exercises = c_old.getExercises();
+            for(Exercise e : exercises){
+                c_new.add(e);
+            }
+            if(c_new.isOpen()){
+                c_new.add(new Exercise());
+            }
+            Workout.add(c_new);
+        }
+        initialize();
+
+    }
 }

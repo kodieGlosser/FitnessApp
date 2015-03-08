@@ -19,6 +19,7 @@ public class Circuit {
     protected ArrayList<Exercise> exercises = new ArrayList<Exercise>();
     private String name;
     private boolean isOpen;
+    private int id;
     //test for null pointer in workout data
 
     public Circuit(){
@@ -59,5 +60,9 @@ public class Circuit {
     public boolean isOpen(){
         return isOpen;
     }
+
+    public int getId(){return id;}
+
+    public void setId(int i){id = i;}
 
 }
