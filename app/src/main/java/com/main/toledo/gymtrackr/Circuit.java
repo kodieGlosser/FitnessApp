@@ -25,23 +25,12 @@ public class Circuit {
         name = "Placeholder";
     }
 
-    public Circuit( int order, ArrayList<Exercise> e){
-        name = "Circuit " + order;
-        exercises = e;
-    }
-    //adds exercise to second to end of list
-    public void addToOpenCircuit(Exercise e){
-        //if(exercises.isEmpty()) {
-        //    exercises.addToOpenCircuit(e);
-        //    exercises.addToOpenCircuit(new Exercise());
-        //} else {
-            exercises.add(exercises.size() - 1, e);
-        //}
-    }
     //called to addToOpenCircuit a special exercise value to the end
     public void add(Exercise e){
         exercises.add(e);
     }
+
+    public void add(int index, Exercise e){ exercises.add(index, e);}
 
     public void addExerciseAtIndex(int i, Exercise e){
         exercises.add(i, e);

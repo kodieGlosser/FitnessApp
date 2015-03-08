@@ -3,7 +3,6 @@ package com.main.toledo.gymtrackr;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
@@ -32,7 +31,7 @@ public class BrowseListFragment extends ListFragment{
         //if circuit is open
         if (((BrowseActivity)getActivity()).isCircuitOpen()){
             //addToOpenCircuit to that circuit
-            WorkoutData.get(getActivity()).addExercise(exercise,
+            WorkoutData.get(getActivity()).addExerciseToOpenCircuit(exercise,
                     ((BrowseActivity) getActivity()).getCircuitValue());
         //if circuit is closed
         } else if (!((BrowseActivity)getActivity()).isCircuitOpen()){

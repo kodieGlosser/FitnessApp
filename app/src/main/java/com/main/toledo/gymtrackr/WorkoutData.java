@@ -16,7 +16,12 @@ public class WorkoutData {
     private Context mAppContext;
 
     private WorkoutData(Context appContext){
+        //adds initial values
         mAppContext = appContext;
+        initialize();
+    }
+
+    public void initialize(){
         Circuit c = new Circuit();
         c.setOpenStatus(false);
         Exercise e = new Exercise();
@@ -35,20 +40,19 @@ public class WorkoutData {
         return Workout;
     }
 
-    public void increment(){
-        Circuit c = new Circuit();
-        Workout.add(c);
-    }
-
     //public ArrayList<String> getCircuitNames()
     //addToOpenCircuit exercise to circuit c
-    public void addExercise(Exercise e, int circuitNumber){
-        Workout.get(circuitNumber).addToOpenCircuit(e);
+    public void addExerciseToOpenCircuit(Exercise e, int circuitNumber){
+
+        int circuitSize = Workout.get(circuitNumber).getSize();
+        //adds exercise to second to last position
+        Workout.get(circuitNumber).add( circuitSize - 1 , e );
         //Workout.get(circuitNumber).isNotLast();
 
         if (Workout.get(circuitNumber).getName() == "Placeholder"){
             Workout.get(circuitNumber).setName("Circuit " + circuitNumber);
-            increment();
+            Circuit c = new Circuit();
+            Workout.add(c);
         }
     }
     //adds a new open circuit

@@ -16,10 +16,14 @@ public class WorkspaceActivity extends FragmentActivity {
     WorkspaceListFragment ListFragment;
     WorkspaceHeaderFragment HeaderFragment;
     String planName;
+
     int courseOfAction;
+
     public static boolean isEditable = true;
+
     final int EDIT = 1, WORKOUT = 2;
 
+    boolean toBrowse;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,12 +31,12 @@ public class WorkspaceActivity extends FragmentActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null){
             planName = extras.getString("EXTRA_PLAN_NAME");
-            Log.d("W_HEADER_DEBUG", "Plan name: " + planName);
+            //Log.d("W_HEADER_DEBUG", "Plan name: " + planName);
             courseOfAction = extras.getInt("EXTRA_COURSE_OF_ACTION");
-            Log.d("W_HEADER_DEBUG", "CourseOfAction: " + courseOfAction);
+            //Log.d("W_HEADER_DEBUG", "CourseOfAction: " + courseOfAction);
         }
 
-
+        toBrowse = false;
 
         setContentView(R.layout.w_activity_main);
 
@@ -48,7 +52,7 @@ public class WorkspaceActivity extends FragmentActivity {
         }
 
         listAdapter = new WorkspaceExpandableListAdapterMKII(
-                this,  WorkoutData.get(this).getWorkout());
+                        this, WorkoutData.get(this).getWorkout());
 
         HeaderFragment = new WorkspaceHeaderFragment();
         ListFragment = new WorkspaceListFragment();
@@ -58,9 +62,12 @@ public class WorkspaceActivity extends FragmentActivity {
         transaction.add(R.id.WorkspaceHeaderContainer, HeaderFragment);
         transaction.add(R.id.WorkspaceListContainer, ListFragment);
         transaction.commit();
+
     }
 
     public String getPlanName(){return planName;}
+
+    public void setToBrowse(boolean b){toBrowse = b;}
 
     public int getCourseOfAction(){return courseOfAction;}
     /*Not used at the moment
@@ -82,6 +89,16 @@ public class WorkspaceActivity extends FragmentActivity {
             toggleButton.setBackgroundColor(android.R.drawable.btn_default_small);
             toggleButton.setTextColor(getResources().getColor(R.color.abc_primary_text_material_light));
         }
+    }
+
+    @Override
+    public void onDestroy(){
+        Log.d("CLEAR WORKOUTDATA TEST", "onDestroy() called.");
+        if(!toBrowse) {
+            WorkoutData.get(this).getWorkout().clear();
+            WorkoutData.get(this).initialize();
+        }
+        super.onDestroy();
     }
 
     public WorkspaceExpandableListAdapterMKII getAdapter(){
