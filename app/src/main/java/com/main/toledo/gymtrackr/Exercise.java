@@ -16,7 +16,7 @@ public class Exercise {
     private int m_weight;
     private int m_sequence;
     private int m_lastPerformed;  //this will be an integer value of the last time the exercise was
-                                //performed, used to organize browse menu
+    //performed, used to organize browse menu
     private ExerciseStatus status;
     private ArrayList<Metric> m_metrics = new ArrayList<Metric>();
     //performed, used to organize browse menu
@@ -50,6 +50,18 @@ public class Exercise {
         m_lastPerformed = 0;
         m_equipmentType = "test";
     }
+
+    public void setWeight(int weight) { this.m_weight = weight; }
+
+    public int getWeight() { return this.m_weight; }
+
+    public void setRepetitions(int reps) { this.m_repetitions = reps; }
+
+    public int getRepetitions() { return this.m_repetitions; }
+
+    public void setSequence(int sequence) { this.m_sequence = sequence; }
+
+    public int getSequence() { return this.m_sequence; }
 
     public void setId(int id) { this.m_id = id; }
 

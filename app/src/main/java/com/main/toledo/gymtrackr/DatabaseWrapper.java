@@ -1,5 +1,6 @@
 package com.main.toledo.gymtrackr;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -35,6 +36,10 @@ public class DatabaseWrapper {
     private static final String COLUMN_WORKOUT_ID = "workoutId";
     private static final String COLUMN_PLAN_ID = "planId";
     private static final String COLUMN_OPEN= "open";
+    private static final String COLUMN_WORKOUT= "Workout";
+    private static final String COLUMN_CIRCUIT= "Circuit";
+    private static final String COLUMN_CIRCUIT_ID= "circuitId";
+    private static final String COLUMN_PLANNED_UNION= "Planned_Union";
     private static String DB_PATH = "/data/data/com.main.toledo.gymtrackr/databases/";
     private static String DB_NAME = "gymtrackr.db";
     private SQLiteDatabase myDatabase;
@@ -242,6 +247,45 @@ public class DatabaseWrapper {
             }
         }
         return exercises;
+    }
+
+    public void saveEntirePlan(Plan plan) {
+        ContentValues planValues = new ContentValues();
+        planValues.put(COLUMN_NAME, plan.getName());
+        long planId = myDatabase.insert(COLUMN_PLAN, null,planValues);
+        Circuit_temp[] circuits = plan.getCircuits();
+        for (int i = 0; i < circuits.length; i++) {
+            Exercise[] exercises = circuits[i].getExercises();
+            long circuitId;
+            ContentValues workoutValues = new ContentValues();
+            workoutValues.put(COLUMN_CIRCUIT_NAME, circuits[i].getName());
+            workoutValues.put(COLUMN_OPEN, circuits[i].isOpen());
+            workoutValues.put(COLUMN_SEQUENCE, circuits[i].getSequence());
+            long workoutId = myDatabase.insert(COLUMN_WORKOUT, null, workoutValues);
+
+            for (int j = 0; j < exercises.length; j++) {
+                ContentValues circuitValues = new ContentValues();
+                circuitValues.put(COLUMN_WEIGHT, exercises[j].getWeight());
+                circuitValues.put(COLUMN_REP, exercises[j].getRepetitions());
+                circuitValues.put(COLUMN_SEQUENCE, exercises[j].getSequence());
+                circuitValues.put(COLUMN_EXERCISE, exercises[j].getId());
+                circuitId = myDatabase.insert(COLUMN_CIRCUIT, null, circuitValues);
+
+                ContentValues plannedUnionValues = new ContentValues();
+                plannedUnionValues.put(COLUMN_WORKOUT_ID, workoutId);
+                plannedUnionValues.put(COLUMN_CIRCUIT_ID, circuitId);
+                plannedUnionValues.put(COLUMN_PLAN_ID, planId);
+                myDatabase.insert(COLUMN_PLANNED_UNION, null, plannedUnionValues);
+            }
+        }
+    }
+
+    public ExerciseHistory[] loadExercisesByDate(Date date) {
+        return null;
+    }
+
+    public void addExerciseToHistory(ExerciseHistory[] exercise) {
+        
     }
 
     /**
