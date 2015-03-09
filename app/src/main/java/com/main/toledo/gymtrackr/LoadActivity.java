@@ -113,7 +113,6 @@ public class LoadActivity extends FragmentActivity {
 
                 convertView = getLayoutInflater()
                         .inflate(R.layout.l_frag_list_plan, null);
-
             }
 
             String planName = (String)getItem(position);

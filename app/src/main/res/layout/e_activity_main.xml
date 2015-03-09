@@ -3,13 +3,13 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
+    <!--<FrameLayout
         android:id="@+id/editMapFragment"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="top"
         android:layout_weight="1"
-        />
+        />-->
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical" android:layout_width="wrap_content"
@@ -24,13 +24,13 @@
             android:layout_weight="1"
             />
 
-        <FrameLayout
+        <!--<FrameLayout
             android:id="@+id/editHistoryFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="top"
             android:layout_weight="1"
-            />
+            />-->
 
     </LinearLayout>
 </LinearLayout>

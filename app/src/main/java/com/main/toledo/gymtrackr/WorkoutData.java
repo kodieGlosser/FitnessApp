@@ -105,6 +105,12 @@ public class WorkoutData {
             c_new.setId(c_old.getCircuitId());
             Exercise[] exercises = c_old.getExercises();
             for(Exercise e : exercises){
+                Metric weight = new Metric();
+                weight.setType(metricType.WEIGHT);
+                Metric reps = new Metric();
+                reps.setType(metricType.REPETITIONS);
+                e.addMetrics(weight);
+                e.addMetrics(reps);
                 c_new.add(e);
             }
             if(c_new.isOpen()){

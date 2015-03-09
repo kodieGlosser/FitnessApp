@@ -22,8 +22,7 @@ public class Metric {
     public String getMetricStringValue(){return metricStringValue; }
 
     public void setMetricName(String s){metricName = s;}
-    public String getMetricName(){return metricName;
-    }
+    public String getMetricName(){return metricName;}
     /*
     Boolean m_weight;
     Boolean m_repetitions;

@@ -1,13 +1,16 @@
 package com.main.toledo.gymtrackr;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ListView;
 
 /**
  * Created by Adam on 2/25/2015.
@@ -41,7 +44,22 @@ public class WorkspaceListFragment extends Fragment {
 
         workspaceListView.setDragListener(mDragListener);
 
+        workspaceListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                startEdit(groupPosition, childPosition);
+                return true;
+            }
+        });
         return v;
+    }
+
+    private void startEdit(int group, int child){
+        Intent i = new Intent(getActivity(), EditActivity.class);
+        i.putExtra("CIRCUIT_VALUE", group);
+        i.putExtra("EXERCISE_VALUE", child);
+        startActivity(i);
     }
 
     @Override
@@ -78,7 +96,7 @@ public class WorkspaceListFragment extends Fragment {
                 }
             };
 
-    //GREG - pretty sure the drag color bug originates from here
+    //TO GREG - pretty sure the drag color bug originates from here
     private DragListener mDragListener =
             new DragListener() {
 
@@ -110,7 +128,6 @@ public class WorkspaceListFragment extends Fragment {
                 }
 
             };
-
 
 }
 

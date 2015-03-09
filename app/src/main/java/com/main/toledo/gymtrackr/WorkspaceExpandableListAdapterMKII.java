@@ -218,6 +218,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         notifyDataSetChanged();
                     }
                 });
+
                 if(!editable){
                     removeCircuitButton.setVisibility(View.INVISIBLE);
                 } else {

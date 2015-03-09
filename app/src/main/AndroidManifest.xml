@@ -41,8 +41,7 @@
         </activity>
         <activity
             android:name=".WorkspaceActivity"
-            android:label="@string/app_name"
-            android:noHistory="true" >
+            android:label="@string/app_name" >
             <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -63,6 +62,10 @@
         </activity>
         <activity
             android:name=".LoadActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".EditActivity"
             android:label="@string/app_name" >
         </activity>
     </application>

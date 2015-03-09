@@ -1,14 +1,4 @@
 package com.main.toledo.gymtrackr;
-
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Typeface;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-
 import java.util.ArrayList;
 
 /**
@@ -69,14 +59,6 @@ public class Exercise {
 
     public String getTargetMuscle() { return this.m_targetMuscle; }
 
-    public void setRepetitions(int repetitions) { this.m_repetitions = repetitions; }
-
-    public int getRepetitions() { return this.m_repetitions; }
-
-    public void setWeight(int weight) {this.m_weight = weight; }
-
-    public int getWeight() { return this.m_weight; }
-
     public void setMuscleGroup(String muscleGroup) {
         this.m_muscleGroup = muscleGroup;
     }
@@ -106,10 +88,6 @@ public class Exercise {
     public int getLastPerformed() {
         return m_lastPerformed;
     }
-
-    public void isPlan(){ status = ExerciseStatus.PLAN; }
-
-    public void isCompleted() { status = ExerciseStatus.COMPLETED; }
 
     public ArrayList<Metric> getMetrics() { return m_metrics; }
 
