@@ -33,6 +33,7 @@ public class DatabaseWrapper {
     private static final String COLUMN_SEQUENCE = "sequence";
     private static final String COLUMN_CIRCUIT_NAME = "circuitName";
     private static final String COLUMN_WORKOUT_ID = "workoutId";
+    private static final String COLUMN_PLAN_ID = "planId";
     private static final String COLUMN_OPEN= "open";
     private static String DB_PATH = "/data/data/com.main.toledo.gymtrackr/databases/";
     private static String DB_NAME = "gymtrackr.db";
@@ -148,17 +149,15 @@ public class DatabaseWrapper {
      * @return an entire list of the workouts and exercises inside of the plan
      */
     public Plan loadEntirePlan(String planName) {
-        String rawquery = "select * from Planned_Union where Planned_Union.planId IN (select _id from Plan where name='" + planName + "')";
+        String rawquery = "select DISTINCT(workoutId), planId from Planned_Union where Planned_Union.planId IN (select _id from Plan where name='" + planName + "')";
         Plan plan = null;
         Cursor c = myDatabase.rawQuery(rawquery, null);
         int count = c.getCount();
         Circuit_temp[] circuits = new Circuit_temp[count];
         int i = 0;
+        int planId = -1;
         if(count >= 1) {
             while (c.moveToNext()) {
-
-                int planId = -1;
-
                 for (int j = 0; j < c.getColumnCount(); j++) {
 
                     String columnName = c.getColumnName(j);
@@ -190,19 +189,21 @@ public class DatabaseWrapper {
                                         sequence = c1.getInt(c1.getColumnIndex(columnName1));
                                     }
                                 }
+                                exercises = getExercisesFromCircuitTable(workoutId);
+                                circuits[i] = new Circuit_temp(name, exercises, workoutId, open, sequence);
+                                i++;
                             }
                         }
-                        exercises = getExercisesFromCircuitTable(workoutId);
 
                     }
 
-                    circuits[i] = new Circuit_temp(name, exercises, workoutId, open, sequence);
-                    i++;
+                    else if (columnName.equalsIgnoreCase(COLUMN_PLAN_ID)) {
+                        planId = c.getInt(c.getColumnIndex(columnName));
+                    }
                 }
-                plan = new Plan(planName, circuits, planId);
             }
         }
-
+        plan = new Plan(planName, circuits, planId);
         return plan;
     }
 
@@ -236,7 +237,7 @@ public class DatabaseWrapper {
                     }
                 }
 
-                exercises[z] = new Exercise(id, browseExerciseById(exercise)[1].getName(), rep, weight, sequence1);
+                exercises[z] = new Exercise(id, browseExerciseById(exercise)[0].getName(), rep, weight, sequence1);
                 z++;
             }
         }
