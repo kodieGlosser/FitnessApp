@@ -90,8 +90,8 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
             for(int i = 0; i < m_numMetrics; i++){
                 m_metricTextViews.get(i+1).setText(e.getMetrics().get(i).getType().toString() + ": " +
                                                  e.getMetrics().get(i).getMetricIntValue());
-                Log.d("EDIT HISTORY", "PopulateDynamicView called: " + e.getMetrics().get(i).getType().toString() + ": " +
-                        e.getMetrics().get(i).getMetricIntValue());
+                //Log.d("EDIT HISTORY", "PopulateDynamicView called: " + e.getMetrics().get(i).getType().toString() + ": " +
+                //        e.getMetrics().get(i).getMetricIntValue());
             }
             return m_view;
 

@@ -1,6 +1,7 @@
 package com.main.toledo.gymtrackr;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -74,6 +75,53 @@ public class WorkoutData {
     //removes exercise at circuit
     public void removeExercise(int exercisePosition, int circuitPosition){
         Workout.get(circuitPosition).removeExercise(exercisePosition);
+    }
+    //newPlan
+    public Plan crapNewPlan(){
+        Plan plan = new Plan();
+
+        //minus one for the placeholder at end
+        Circuit_temp[] circuits = new Circuit_temp[Workout.size() - 1];
+        //Because Kodie hates arraylists
+        //for each circuit
+        for(int i = 0; i < Workout.size() - 1; i++){
+            //set circuit values
+            circuits[i].setName(Workout.get(i).getName());
+            circuits[i].setOpen(Workout.get(i).isOpen());
+            circuits[i].setSequence(i);
+            //setup to go through exercises
+            int numExercises = Workout.get(i).getExercises().size();
+            ArrayList<Exercise> exerciseArrayList;
+            exerciseArrayList = Workout.get(i).getExercises();
+            //instantiates exercise array to put into plan
+            if(Workout.get(i).isOpen()) { //handles open circuit case
+                //open circuit exercises equal to size - 1 because of placeholder value
+                Exercise[] exercisesArray = new Exercise[numExercises - 1];
+                for(int j = 0; j < numExercises; j++) {
+                    //get the exercises from the circuit, excluding the placeholder used
+                    //in open circuits
+                    if( j != numExercises - 1){
+                        exercisesArray[j] = exerciseArrayList.get(i);
+                    }
+                }
+                circuits[i].setExercises(exercisesArray);
+            } else { //handles closed circuit case
+                //closed circuit is array of one
+                Exercise[] exercisesArray = new Exercise[1];
+                exercisesArray[0] = exerciseArrayList.get(0);
+                circuits[i].setExercises(exercisesArray);
+            }
+
+        }
+        //debug shit
+        plan.setCircuits(circuits);
+        for(Circuit_temp c : plan.getCircuits()){
+            Log.d("CRAP PLAN TESTS", "CIRCUITNAME: " + c.getName() + " -- CIRCUIT SEQ: " + c.getSequence() + " -- CIRCUIT OPEN: " + c.isOpen());
+            for(Exercise e : c.getExercises()){
+                Log.d("CRAP PLAN TESTS", "NAME: " + e.getName() + " -- ");
+            }
+        }
+        return plan;
     }
 
     public void eatPlan(Plan p){

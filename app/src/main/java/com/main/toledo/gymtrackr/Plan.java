@@ -8,6 +8,11 @@ public class Plan {
     private String m_name;
     private Circuit_temp[] m_circuits;
     private int m_planId;
+    //ADAM - USED IN WORKOUTDATA.CRAPPLAN
+    public Plan(){
+
+    }
+
     public Plan(String name, Circuit_temp[] circuits, int planId) {
         m_name = name;
         m_circuits = circuits;
