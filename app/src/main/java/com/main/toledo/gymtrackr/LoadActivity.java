@@ -14,7 +14,11 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Adam on 2/10/2015.
@@ -52,6 +56,7 @@ public class LoadActivity extends FragmentActivity {
 
         DatabaseWrapper db = new DatabaseWrapper();
         planList = db.loadPlanNames();
+
         //creates a list adapter for our stub exercises
         adapter = new LoadAdapter(this, 0, planList);
 

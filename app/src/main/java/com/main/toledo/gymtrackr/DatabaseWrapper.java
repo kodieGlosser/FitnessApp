@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -280,8 +281,34 @@ public class DatabaseWrapper {
         }
     }
 
+    /**
+     * Example usage
+     *         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+               String sdate = "2015-02-05";
+               Date val_date = null;
+                    try {
+                        val_date = format.parse(sdate);
+                        db.loadExercisesByDate(val_date);
+                    } catch (ParseException e) {
+                    e.printStackTrace();
+                    }
+     * @param date
+     * @return
+     */
     public ExerciseHistory[] loadExercisesByDate(Date date) {
-        return null;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        String s_Month = null, s_Day = null, s_Hour = "", s_Minute = "", s_Second = "";
+        int month = cal.get(Calendar.MONTH) + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        if (month < 10) s_Month = "0" + month;
+        if (day < 10) s_Day = "0" + day;
+
+        String format = cal.get(Calendar.YEAR) + "-" + s_Month + "-" + s_Day;
+        String rawquery = "select * from History where Date like '%" + format  + "%'";
+        Cursor c = myDatabase.rawQuery(rawquery, null);
+
+        return convertCursorToExerciseHistory(c);
     }
 
     public void addExerciseToHistory(ExerciseHistory[] exercise) {
