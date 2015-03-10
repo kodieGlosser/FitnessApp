@@ -5,6 +5,7 @@
 
     <style name="GTR_Theme" parent="android:Theme.Light">
         <item name="android:windowBackground">@color/main_bg_color</item>
+        <item name="android:buttonStyle">@style/button</item>
     </style>
 
 </resources>

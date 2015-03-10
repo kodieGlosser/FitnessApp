@@ -12,10 +12,12 @@
         android:state_enabled="true"
         android:drawable="@drawable/button_pressed" />
 
+    <!-- Not needed, for now...
     <item
         android:state_focused="true"
         android:state_enabled="true"
         android:drawable="@drawable/button_focused" />
+    -->
 
     <item
         android:state_enabled="true"

@@ -58,9 +58,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/s_viewHistoryButtonText"
+            android:layout_marginTop="102dp"
             android:layout_below="@+id/workoutFromPlanButton"
             android:layout_alignLeft="@+id/workoutNoPlanButton"
-            android:layout_alignStart="@+id/workoutNoPlanButton"
-            android:layout_marginTop="82dp" />
+            android:layout_alignStart="@+id/workoutNoPlanButton" />
 
     </RelativeLayout>
