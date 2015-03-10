@@ -46,11 +46,13 @@ public class EditActivity extends FragmentActivity {
         */
         DatabaseWrapper db = new DatabaseWrapper();
         ExerciseHistory[] history = db.loadHistoryByExerciseName(exercise.getName());
-        //ExerciseHistory[] historyStub = {new ExerciseHistory(new Date(), 100, 10, 136, 1),
-        //                                 new ExerciseHistory(new Date(), 110, 10, 137, 1)};
-
-        historyAdapter = new EditExerciseHistoryAdapter(this, 0, history);
-
+        ExerciseHistory[] historyStub = {new ExerciseHistory(new Date(), 666, 666, 136, 1),
+                                         new ExerciseHistory(new Date(), 666, 666, 137, 1)};
+        if (history.length != 0) {
+            historyAdapter = new EditExerciseHistoryAdapter(this, 0, history);
+        } else {
+            historyAdapter = new EditExerciseHistoryAdapter(this, 0, historyStub);
+        }
         /*
         //Eats an arraylist of metrcis from exercise it is sent
         detailsAdapter = new  EditExerciseDetailsAdapter(this, 0, )
