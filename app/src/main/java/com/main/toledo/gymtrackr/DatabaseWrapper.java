@@ -30,7 +30,7 @@ public class DatabaseWrapper {
     private static final String COLUMN_ID = "_ID";
     private static final String EXERCISE_TABLE = "Exercises";
     private static final String EXERCISE_HISTORY_TABLE = "History";
-    private static final String DATE_FORMAT = "YYYY-MM-DD HH:MM:SS";
+    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final String COLUMN_SEQUENCE = "sequence";
     private static final String COLUMN_CIRCUIT_NAME = "circuitName";
     private static final String COLUMN_WORKOUT_ID = "workoutId";
@@ -441,7 +441,7 @@ public class DatabaseWrapper {
                     if (columnName.equalsIgnoreCase(COLUMN_DATE)) {
                         s_val_date = c.getString(c.getColumnIndex(columnName));
 
-                        DateFormat format = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
+                        SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
                         try {
                             val_date = format.parse(s_val_date);
                         } catch (ParseException e) {
