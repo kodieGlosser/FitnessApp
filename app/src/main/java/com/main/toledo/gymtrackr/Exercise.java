@@ -1,4 +1,6 @@
 package com.main.toledo.gymtrackr;
+import android.util.Log;
+
 import java.util.ArrayList;
 
 /**
@@ -34,6 +36,21 @@ public class Exercise {
         this.m_repetitions = repetitions;
         this.m_weight = weight;
         this.m_sequence = sequence;
+
+        Log.d("EXERCISE CONSTRUCTOR TEST", "WEIGHT: " + weight + "REPS: " + repetitions);
+
+        //stub for metrics
+
+        Metric weightMetric = new Metric();
+        weightMetric.setType(metricType.WEIGHT);
+        weightMetric.setMetricIntValue(weight);
+
+        Metric repMetric = new Metric();
+        repMetric.setType(metricType.REPETITIONS);
+        repMetric.setMetricIntValue(repetitions);
+
+        m_metrics.add(weightMetric);
+        m_metrics.add(repMetric);
     }
 
     public Exercise(int id, String name, String muscleGroup, String equipmentType, String targetMuscle){

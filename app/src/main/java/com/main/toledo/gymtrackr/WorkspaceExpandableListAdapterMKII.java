@@ -6,12 +6,15 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapter implements DropListener{
@@ -100,7 +103,77 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     LayoutInflater inflater = (LayoutInflater) this._context
                             .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.w_exercise, null);
+
+
                     convertView.setTag("Data");
+                }
+
+                LinearLayout layout = (LinearLayout) convertView.findViewById(R.id.exerciseLayout);
+                ArrayList<Metric> metrics = workout.get(groupPosition).getExercise(childPosition).getMetrics();
+                layout.removeAllViewsInLayout();
+                for(int i = 0; i < metrics.size(); i++){
+
+                    switch(metrics.get(i).getType()){
+                        case TIME:
+                            TextView timeText = new TextView(_context);
+                            timeText.setText("Time: ");
+
+                            EditText timeEdit = new EditText(_context);
+                            timeEdit.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                            timeEdit.setText("" + metrics.get(i).getMetricIntValue());
+
+                            LinearLayout timeRow = new LinearLayout(_context);
+                            timeRow.setOrientation(LinearLayout.HORIZONTAL);
+                            timeRow.addView(timeText);
+                            timeRow.addView(timeEdit);
+
+                            layout.addView(timeRow);
+                            break;
+                        case REPETITIONS:
+                            TextView repText = new TextView(_context);
+                            repText.setText("Reps: ");
+
+                            EditText repEdit = new EditText(_context);
+                            repEdit.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                            repEdit.setText("" + metrics.get(i).getMetricIntValue());
+
+                            LinearLayout repRow = new LinearLayout(_context);
+                            repRow.setOrientation(LinearLayout.HORIZONTAL);
+                            repRow.addView(repText);
+                            repRow.addView(repEdit);
+
+                            layout.addView(repRow);
+                            break;
+                        case OTHER:
+                            TextView otherText = new TextView(_context);
+                            otherText.setText(metrics.get(i).getMetricStringValue());
+                            //EditText otherEdit = new EditText(getActivity());
+
+                            LinearLayout otherRow = new LinearLayout(_context);
+                            otherRow.setOrientation(LinearLayout.HORIZONTAL);
+                            otherRow.addView(otherText);
+                            //otherRow.addView(otherEdit);
+                            break;
+                        case WEIGHT:
+                            TextView wtText = new TextView(_context);
+                            wtText.setText("Weight: ");
+
+                            EditText wtEdit = new EditText(_context);
+                            wtEdit.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+
+                            wtEdit.setText("" + metrics.get(i).getMetricIntValue());
+
+                            LinearLayout wtRow = new LinearLayout(_context);
+                            wtRow.setOrientation(LinearLayout.HORIZONTAL);
+                            wtRow.addView(wtText);
+                            wtRow.addView(wtEdit);
+
+                            layout.addView(wtRow);
+                            break;
+                        default:
+                            Log.d("ERROR DETAIL FRAGMENT", "DEFAULT REACHED IN DETAIL FRAGMENT");
+                            break;
+                    }
                 }
 
                 TextView textView = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
@@ -121,6 +194,12 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         notifyDataSetChanged();
                     }
                 });
+
+
+
+
+
+
                 if(!editable){
                     deleteButton.setVisibility(View.INVISIBLE);
                 }else{

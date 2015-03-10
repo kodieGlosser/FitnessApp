@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * Created by Adam on 2/26/2015.
@@ -13,9 +14,9 @@ import java.io.IOException;
 public class EditActivity extends FragmentActivity {
     //EditWorkoutMapFragment mapFragment;
     EditExerciseDetailsFragment detailsFragment;
-    //EditExerciseHistoryFragment historyFragment;
+    EditExerciseHistoryFragment historyFragment;
     //public static EditWorkoutMapAdapter mapAdapter;
-    //public static EditExerciseHistoryAdapter historyAdapter;
+    public static EditExerciseHistoryAdapter historyAdapter;
     //public static EditExerciseDetailsAdapter detailsAdapter;
     int circuitValue;
     int exerciseValue;
@@ -36,14 +37,21 @@ public class EditActivity extends FragmentActivity {
 
         detailsFragment = new EditExerciseDetailsFragment();
         //mapFragment = new EditWorkoutMapFragment();
-        //historyFragment = new EditExerciseHistoryFragment();
+        historyFragment = new EditExerciseHistoryFragment();
         /*
         //Eats the workoutdata singleton
         mapAdapter = new EditWorkoutMapAdapter(this, 0, )
 
-        //eats an arraylist of exercise history elements from the db
-        historyAdapter = new EditExerciseHistoryAdapter(this, 0, )
+        eats an arraylist of exercise history elements from the db
+        */
+        //DatabaseWrapper db = new DatabaseWrapper();
+        //ExerciseHistory[] history = db.loadHistoryByExerciseName(exercise.getName());
+        ExerciseHistory[] historyStub = {new ExerciseHistory(new Date(), 100, 10, 136, 1),
+                                         new ExerciseHistory(new Date(), 110, 10, 137, 1)};
 
+        historyAdapter = new EditExerciseHistoryAdapter(this, 0, historyStub);
+
+        /*
         //Eats an arraylist of metrcis from exercise it is sent
         detailsAdapter = new  EditExerciseDetailsAdapter(this, 0, )
 
@@ -53,14 +61,14 @@ public class EditActivity extends FragmentActivity {
                 getSupportFragmentManager().beginTransaction();
         //transaction.add(R.id.editMapFragment, mapFragment);
         transaction.add(R.id.editDetailsFragment, detailsFragment);
-        //transaction.add(R.id.editHistoryFragment, historyFragment);
+        transaction.add(R.id.editHistoryFragment, historyFragment);
         transaction.commit();
 
     }
 
     //public EditWorkoutMapAdapter getMapAdapter(){ return this.mapAdapter; }
 
-    //public EditExerciseHistoryAdapter getHistoryAdapter(){ return this.historyAdapter; }
+    public EditExerciseHistoryAdapter getHistoryAdapter(){ return this.historyAdapter; }
 
     //public EditExerciseDetailsAdapter getDetailsAdapter(){ return this.detailsAdapter; }
 
