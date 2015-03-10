@@ -28,7 +28,7 @@ public class EditActivity extends FragmentActivity {
 
         if (extras != null){
             circuitValue = extras.getInt("CIRCUIT_VALUE");
-            exerciseValue = extras.getInt("EXTRA_COURSE_OF_ACTION");
+            exerciseValue = extras.getInt("EXERCISE_VALUE");
             exercise = WorkoutData.get(this).getWorkout()
                     .get(circuitValue).getExercise(exerciseValue);
         }

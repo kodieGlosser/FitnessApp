@@ -113,6 +113,20 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 LinearLayout layout = (LinearLayout) convertView.findViewById(R.id.exerciseLayout);
                 ArrayList<Metric> metrics = workout.get(groupPosition).getExercise(childPosition).getMetrics();
                 layout.removeAllViewsInLayout();
+
+                LinearLayout mainLayout = (LinearLayout) convertView.findViewById(R.id.exerciseMainLayout);
+                mainLayout.setOnClickListener(null);
+                mainLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(_context, EditActivity.class);
+                        i.putExtra("CIRCUIT_VALUE", groupPosition);
+                        i.putExtra("EXERCISE_VALUE", childPosition);
+                        Log.d("LAST THING", groupPosition + " " + childPosition);
+                        _context.startActivity(i);
+                    }
+                });
+
                 for(int i = 0; i < metrics.size(); i++){
                     final int j = i;
                     switch(metrics.get(i).getType()){
@@ -154,10 +168,10 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                             repEdit.setText("" + metrics.get(i).getMetricIntValue());
                             repEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
                             //repEdit.setFocusable(false);
-                            repEdit.setOnEditorActionListener(new TextView.OnEditorActionListener(){
+                            repEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                                 @Override
-                                public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
-                                    if (actionId == EditorInfo.IME_ACTION_DONE){
+                                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                                    if (actionId == EditorInfo.IME_ACTION_DONE) {
                                         workout.get(groupPosition).getExercise(childPosition)
                                                 .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
                                         notifyDataSetChanged();
@@ -194,10 +208,10 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                             wtEdit.setText("" + metrics.get(i).getMetricIntValue());
                             wtEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
                             //wtEdit.setFocusable(false);
-                            wtEdit.setOnEditorActionListener(new TextView.OnEditorActionListener(){
+                            wtEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                                 @Override
-                                public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
-                                    if (actionId == EditorInfo.IME_ACTION_DONE){
+                                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                                    if (actionId == EditorInfo.IME_ACTION_DONE) {
                                         workout.get(groupPosition).getExercise(childPosition)
                                                 .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
                                         notifyDataSetChanged();
