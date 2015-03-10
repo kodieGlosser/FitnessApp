@@ -44,12 +44,12 @@ public class EditActivity extends FragmentActivity {
 
         eats an arraylist of exercise history elements from the db
         */
-        //DatabaseWrapper db = new DatabaseWrapper();
-        //ExerciseHistory[] history = db.loadHistoryByExerciseName(exercise.getName());
-        ExerciseHistory[] historyStub = {new ExerciseHistory(new Date(), 100, 10, 136, 1),
-                                         new ExerciseHistory(new Date(), 110, 10, 137, 1)};
+        DatabaseWrapper db = new DatabaseWrapper();
+        ExerciseHistory[] history = db.loadHistoryByExerciseName(exercise.getName());
+        //ExerciseHistory[] historyStub = {new ExerciseHistory(new Date(), 100, 10, 136, 1),
+        //                                 new ExerciseHistory(new Date(), 110, 10, 137, 1)};
 
-        historyAdapter = new EditExerciseHistoryAdapter(this, 0, historyStub);
+        historyAdapter = new EditExerciseHistoryAdapter(this, 0, history);
 
         /*
         //Eats an arraylist of metrcis from exercise it is sent
