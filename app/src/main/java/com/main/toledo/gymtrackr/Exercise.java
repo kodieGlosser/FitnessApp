@@ -28,6 +28,18 @@ public class Exercise {
         this.m_muscleGroup = muscleGroup;
         this.m_lastPerformed = lastPerformed;
         this.m_equipmentType = equipmentType;
+        //stub for metrics
+
+        Metric weightMetric = new Metric();
+        weightMetric.setType(metricType.WEIGHT);
+        //weightMetric.setMetricIntValue(weight);
+
+        Metric repMetric = new Metric();
+        repMetric.setType(metricType.REPETITIONS);
+        //repMetric.setMetricIntValue(repetitions);
+
+        m_metrics.add(weightMetric);
+        m_metrics.add(repMetric);
     }
 
     public Exercise(int id, String name, int repetitions, int weight, int sequence){
@@ -59,6 +71,17 @@ public class Exercise {
         this.m_muscleGroup = muscleGroup;
         this.m_equipmentType = equipmentType;
         this.m_targetMuscle = targetMuscle;
+        //stub for metrics
+        Metric weightMetric = new Metric();
+        weightMetric.setType(metricType.WEIGHT);
+        //weightMetric.setMetricIntValue(weight);
+
+        Metric repMetric = new Metric();
+        repMetric.setType(metricType.REPETITIONS);
+        //repMetric.setMetricIntValue(repetitions);
+
+        m_metrics.add(weightMetric);
+        m_metrics.add(repMetric);
     }
 
     public Exercise(){

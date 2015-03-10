@@ -8,9 +8,11 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.text.InputType;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -112,15 +114,29 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 ArrayList<Metric> metrics = workout.get(groupPosition).getExercise(childPosition).getMetrics();
                 layout.removeAllViewsInLayout();
                 for(int i = 0; i < metrics.size(); i++){
-
+                    final int j = i;
                     switch(metrics.get(i).getType()){
                         case TIME:
                             TextView timeText = new TextView(_context);
                             timeText.setText("Time: ");
 
-                            EditText timeEdit = new EditText(_context);
-                            timeEdit.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                            final EditText timeEdit = new EditText(_context);
+                            timeEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
                             timeEdit.setText("" + metrics.get(i).getMetricIntValue());
+                            timeEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                            timeEdit.setOnEditorActionListener(new TextView.OnEditorActionListener(){
+                                @Override
+                                public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
+                                    if (actionId == EditorInfo.IME_ACTION_DONE){
+                                       workout.get(groupPosition).getExercise(childPosition)
+                                                .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
+                                       notifyDataSetChanged();
+                                       return true;
+                                    }
+                                    return false;
+                                }
+                            });
+                            //timeEdit.setFocusable(false);
 
                             LinearLayout timeRow = new LinearLayout(_context);
                             timeRow.setOrientation(LinearLayout.HORIZONTAL);
@@ -134,8 +150,23 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                             repText.setText("Reps: ");
 
                             EditText repEdit = new EditText(_context);
-                            repEdit.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                            repEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
                             repEdit.setText("" + metrics.get(i).getMetricIntValue());
+                            repEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                            //repEdit.setFocusable(false);
+                            repEdit.setOnEditorActionListener(new TextView.OnEditorActionListener(){
+                                @Override
+                                public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
+                                    if (actionId == EditorInfo.IME_ACTION_DONE){
+                                        workout.get(groupPosition).getExercise(childPosition)
+                                                .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
+                                        notifyDataSetChanged();
+                                        return true;
+                                    }
+                                    return false;
+                                }
+                            });
+                            //time
 
                             LinearLayout repRow = new LinearLayout(_context);
                             repRow.setOrientation(LinearLayout.HORIZONTAL);
@@ -159,9 +190,23 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                             wtText.setText("Weight: ");
 
                             EditText wtEdit = new EditText(_context);
-                            wtEdit.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
-
+                            wtEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
                             wtEdit.setText("" + metrics.get(i).getMetricIntValue());
+                            wtEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                            //wtEdit.setFocusable(false);
+                            wtEdit.setOnEditorActionListener(new TextView.OnEditorActionListener(){
+                                @Override
+                                public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
+                                    if (actionId == EditorInfo.IME_ACTION_DONE){
+                                        workout.get(groupPosition).getExercise(childPosition)
+                                                .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
+                                        notifyDataSetChanged();
+                                        return true;
+                                    }
+                                    return false;
+                                }
+                            });
+                            //time
 
                             LinearLayout wtRow = new LinearLayout(_context);
                             wtRow.setOrientation(LinearLayout.HORIZONTAL);
@@ -171,7 +216,6 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                             layout.addView(wtRow);
                             break;
                         default:
-                            Log.d("ERROR DETAIL FRAGMENT", "DEFAULT REACHED IN DETAIL FRAGMENT");
                             break;
                     }
                 }
@@ -194,11 +238,6 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         notifyDataSetChanged();
                     }
                 });
-
-
-
-
-
 
                 if(!editable){
                     deleteButton.setVisibility(View.INVISIBLE);

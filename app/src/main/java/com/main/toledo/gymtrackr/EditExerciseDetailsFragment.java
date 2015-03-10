@@ -49,8 +49,9 @@ public class EditExerciseDetailsFragment extends Fragment {
                     timeText.setText("Time: ");
 
                     EditText timeEdit = new EditText(getActivity());
-                    timeEdit.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                    timeEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
                     timeEdit.setText("" + exercise.getMetrics().get(i).getMetricIntValue());
+                    timeEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
                     LinearLayout timeRow = new LinearLayout(getActivity());
                     timeRow.setOrientation(LinearLayout.HORIZONTAL);
@@ -86,8 +87,9 @@ public class EditExerciseDetailsFragment extends Fragment {
                     repText.setText("Reps: ");
 
                     EditText repEdit = new EditText(getActivity());
-                    repEdit.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                    repEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
                     repEdit.setText("" + exercise.getMetrics().get(i).getMetricIntValue());
+                    repEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
                     LinearLayout repRow = new LinearLayout(getActivity());
                     repRow.setOrientation(LinearLayout.HORIZONTAL);
@@ -137,9 +139,10 @@ public class EditExerciseDetailsFragment extends Fragment {
                     wtText.setText("Weight: ");
 
                     EditText wtEdit = new EditText(getActivity());
-                    wtEdit.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                    wtEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
                     Log.d("METRIC TEST", "TYPE: " + exercise.getMetrics().get(i).getType() + "-- VALUE: " + exercise.getMetrics().get(i).getMetricIntValue());
                     wtEdit.setText("" + exercise.getMetrics().get(i).getMetricIntValue());
+                    wtEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
                     LinearLayout wtRow = new LinearLayout(getActivity());
                     wtRow.setOrientation(LinearLayout.HORIZONTAL);

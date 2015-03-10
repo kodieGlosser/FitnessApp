@@ -86,12 +86,15 @@ public class BrowseActivity extends FragmentActivity {
             StubExercises.add(exercises[i]);
             //THIS IS WHERE IM ADDING SET METRICS STUB
             //adds weight and reps for everything
+            /*
             Metric weight = new Metric();
             weight.setType(metricType.WEIGHT);
             Metric reps = new Metric();
             reps.setType(metricType.REPETITIONS);
+
             StubExercises.get(i).addMetrics(weight);
             StubExercises.get(i).addMetrics(reps);
+            */
         }
         //this lets the adapter know that it's data is different, display wont update otherwise
         adapter.notifyDataSetChanged();
@@ -103,12 +106,14 @@ public class BrowseActivity extends FragmentActivity {
         Exercise[] exercises = db.browseExercisesByName("");
         for (int i = 0; i < exercises.length; i++) {
             StubExercises.add(exercises[i]);
+            /*
             Metric weight = new Metric();
             weight.setType(metricType.WEIGHT);
             Metric reps = new Metric();
             reps.setType(metricType.REPETITIONS);
             StubExercises.get(i).addMetrics(weight);
             StubExercises.get(i).addMetrics(reps);
+            */
         }
     }
 
