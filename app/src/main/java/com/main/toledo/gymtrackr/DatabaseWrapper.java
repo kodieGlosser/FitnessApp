@@ -285,7 +285,36 @@ public class DatabaseWrapper {
     }
 
     public void addExerciseToHistory(ExerciseHistory[] exercise) {
-        
+
+        for (int i =0; i < exercise.length; i++) {
+            ContentValues exerciseHistoryValues = new ContentValues();
+            exerciseHistoryValues.put(COLUMN_DATE, exercise[i].getDate().toString());
+            exerciseHistoryValues.put(COLUMN_WEIGHT, exercise[i].getWeight());
+            exerciseHistoryValues.put(COLUMN_REP, exercise[i].getRep());
+            exerciseHistoryValues.put(COLUMN_EXERCISE, exercise[i].getExerciseId());
+            exerciseHistoryValues.put(COLUMN_PLAN, exercise[i].getPlanId());
+            myDatabase.insert(EXERCISE_HISTORY_TABLE, null, exerciseHistoryValues);
+        }
+
+    }
+
+    public void deleteExerciseInExerciseTable(String exerciseName) {
+        String selectionArgs = COLUMN_NAME +  "= ? COLLATE NOCASE";
+        String[] whereArgs = new String[] { exerciseName };
+        myDatabase.delete(COLUMN_EXERCISE, selectionArgs, whereArgs);
+    }
+
+    public void deleteExerciseInExerciseTable(int exerciseId) {
+        myDatabase.delete(COLUMN_EXERCISE, COLUMN_ID + "= " + exerciseId, null);
+    }
+
+    public void addExerciseToExerciseTable(Exercise exercise) {
+        ContentValues exerciseValues = new ContentValues();
+        exerciseValues.put(COLUMN_EQUIPMENT_TYPE, exercise.getEquipment());
+        exerciseValues.put(COLUMN_NAME, exercise.getName());
+        exerciseValues.put(COLUMN_TARGET_MUSCLE, exercise.getTargetMuscle());
+        exerciseValues.put(COLUMN_MUSCLE_GROUP, exercise.getMuscleGroup());
+        myDatabase.insert(EXERCISE_TABLE, null, exerciseValues);
     }
 
     /**
@@ -314,40 +343,40 @@ public class DatabaseWrapper {
         return convertCursorToExerciseHistory(c);
     }
 
-    public void addCircuitToPlan(int sequence, int planNumber, String circuitName) {
-        // query: insert into Planned_Union (plannedWorkout, plan, circuitName) values (sequence, planNumber, circuitName)
-    }
-
-    /**
-     * Adds the exercise to the Circuit
-     * @param exercise the exercise to be added
-     * @param circuitNumber the circuit number where its added
-     * @param sequence the sequence inside the circuit
-     * @param isItOpen true if open, false if not
-     */
-    public void addExerciseToCircuit(Exercise exercise, int circuitNumber, int sequence, boolean isItOpen, int planId) {
-
-    }
-
-    /**
-     * If we want to delete it then we can just set the new position and new circuit to -1.
-     * @param oldCircuitNumber
-     * @param oldSequence
-     * @param newCircuit
-     * @param newSequence
-     */
-    public void alterExerciseInPlan(int oldCircuitNumber, int oldSequence, int newCircuit, int newSequence, int planId) {
-
-    }
-
-    /**
-     * Passing -1 will delete the record
-     * @param oldSequence
-     * @param newSequence
-     */
-    public void alterCircuitInPlan(int oldSequence, int newSequence, int planId){
-
-    }
+//    public void addCircuitToPlan(int sequence, int planNumber, String circuitName) {
+//        // query: insert into Planned_Union (plannedWorkout, plan, circuitName) values (sequence, planNumber, circuitName)
+//    }
+//
+//    /**
+//     * Adds the exercise to the Circuit
+//     * @param exercise the exercise to be added
+//     * @param circuitNumber the circuit number where its added
+//     * @param sequence the sequence inside the circuit
+//     * @param isItOpen true if open, false if not
+//     */
+//    public void addExerciseToCircuit(Exercise exercise, int circuitNumber, int sequence, boolean isItOpen, int planId) {
+//
+//    }
+//
+//    /**
+//     * If we want to delete it then we can just set the new position and new circuit to -1.
+//     * @param oldCircuitNumber
+//     * @param oldSequence
+//     * @param newCircuit
+//     * @param newSequence
+//     */
+//    public void alterExerciseInPlan(int oldCircuitNumber, int oldSequence, int newCircuit, int newSequence, int planId) {
+//
+//    }
+//
+//    /**
+//     * Passing -1 will delete the record
+//     * @param oldSequence
+//     * @param newSequence
+//     */
+//    public void alterCircuitInPlan(int oldSequence, int newSequence, int planId){
+//
+//    }
 
     private Exercise[] convertCursorToExercises(Cursor c) {
         int count = c.getCount();
