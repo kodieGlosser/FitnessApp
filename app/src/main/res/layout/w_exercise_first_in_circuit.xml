@@ -5,7 +5,6 @@
     android:weightSum="1">
 
     <Button
-        style="?android:attr/buttonStyleSmall"
         android:layout_width="48dp"
         android:layout_height="wrap_content"
         android:text="X"
@@ -20,7 +19,6 @@
         android:text="Exercise"
         android:layout_weight="0.8" />
     <Button
-        style="?android:attr/buttonStyleSmall"
         android:layout_width="48dp"
         android:layout_height="wrap_content"
         android:text="-"
