@@ -55,12 +55,13 @@ public class WorkspaceHeaderFragment extends Fragment {
 
         //sets the listener for the test (collapse) button
 
-        testButton = (Button)v.findViewById(R.id.WorkspaceTestButton);
+        testButton = (Button)v.findViewById(R.id.workspaceSaveButton);
 
         testButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                ((WorkspaceActivity) getActivity()).showNameDialog();
+                //save code will go here
+                
             }
         });
 

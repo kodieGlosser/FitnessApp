@@ -1,31 +1,27 @@
 package com.main.toledo.gymtrackr;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.RadioButton;
+import android.widget.Button;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by Adam on 2/10/2015.
  */
 public class LoadActivity extends FragmentActivity {
     //fragments needed for the load activity
-    public String[] planList; //stubs = {"CHEST", "BACK", "ARMS"};
+    public String[] planArray; //stubs = {"CHEST", "BACK", "ARMS"};
+    static public ArrayList<String> planList;
     LoadHeaderFragment HeaderFragment;
     LoadListFragment ListFragment;
     private int actionToPerform;
@@ -54,9 +50,13 @@ public class LoadActivity extends FragmentActivity {
         HeaderFragment = new LoadHeaderFragment();
         ListFragment = new LoadListFragment();
 
+        planList = new ArrayList<String>();
         DatabaseWrapper db = new DatabaseWrapper();
-        planList = db.loadPlanNames();
-
+        planArray = db.loadPlanNames();
+        //convert array to list for dynamic stuffs
+        for (String s : planArray){
+            planList.add(s);
+        }
         //creates a list adapter for our stub exercises
         adapter = new LoadAdapter(this, 0, planList);
 
@@ -72,7 +72,7 @@ public class LoadActivity extends FragmentActivity {
     public LoadAdapter getAdapter(){
         return this.adapter;
     }
-
+    /*
     public void onRadioButtonClicked(View view){
 
         boolean checked = ((RadioButton) view).isChecked();
@@ -88,7 +88,17 @@ public class LoadActivity extends FragmentActivity {
                 break;
         }
     }
+    */
 
+    public void updatePlanList(){
+        planList.clear();
+        DatabaseWrapper db = new DatabaseWrapper();
+        String[] planArray = db.loadPlanNames();
+        //convert array to list for dynamic stuffs
+        for (String s : planArray){
+            planList.add(s);
+        }
+    }
     public void setToWorkout(){
         actionToPerform = WORKOUT;
         this.findViewById(R.id.loadMainWindow).setBackgroundColor(Color.RED);
@@ -103,11 +113,28 @@ public class LoadActivity extends FragmentActivity {
         return actionToPerform;
     }
 
-    public String[] getPlanList(){return planList; }
+    public ArrayList<String> getPlanList(){return planList; }
 
+    public void showNameDialog(){
+        LoadNamePlanDialog dialog = new LoadNamePlanDialog();
+        dialog.show(getSupportFragmentManager(), "NameDialogFragment");
+    }
+    /*
+    public void editSelect(View view){
+        Log.d("LOADTESTS", "EDIT SELECTED");
+    }
+
+    public void workoutSelect(View view){
+        Log.d("LOADTEST", "WORKOUT SELECTED");
+    }
+
+    public void deleteSelect(View view){
+        Log.d("LOADTEST", "DELETE SELECTED");
+    }
+    */
     public class LoadAdapter extends ArrayAdapter{
 
-        public LoadAdapter(Context context, int resource, String[] plans){
+        public LoadAdapter(Context context, int resource, ArrayList<String> plans){
             super(context, resource, plans);
         }
 
@@ -115,16 +142,52 @@ public class LoadActivity extends FragmentActivity {
         public View getView(int position, View convertView, ViewGroup parent){
 
             if (convertView == null) {
-
                 convertView = getLayoutInflater()
                         .inflate(R.layout.l_frag_list_plan, null);
             }
 
-            String planName = (String)getItem(position);
+            final String planName = (String)getItem(position);
 
             TextView nameTextView =
                     (TextView)convertView.findViewById(R.id.planName);
             nameTextView.setText(planName);
+
+            Button delete = (Button) convertView.findViewById(R.id.deleteButton);
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //db call to delete a plan
+                    notifyDataSetChanged();
+                }
+            });
+
+            Button edit = (Button) convertView.findViewById(R.id.editButton);
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(getContext(), WorkspaceActivity.class);
+                    //gettag should return plan name of clicked item
+                    Log.d("W_HEADER_DEBUG", "Plan name: " + planName);
+                    i.putExtra("EXTRA_PLAN_NAME", planName);
+                    //puts actiontoperform (EDIT or WORKOUT) into the intent
+                    i.putExtra("EXTRA_COURSE_OF_ACTION", EDIT);
+                    startActivity(i);
+                }
+            });
+
+            Button workout = (Button) convertView.findViewById(R.id.workoutButton);
+            workout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(getContext(), WorkspaceActivity.class);
+                    //gettag should return plan name of clicked item
+                    Log.d("W_HEADER_DEBUG", "Plan name: " + planName);
+                    i.putExtra("EXTRA_PLAN_NAME", planName);
+                    //puts actiontoperform (EDIT or WORKOUT) into the intent
+                    i.putExtra("EXTRA_COURSE_OF_ACTION", WORKOUT);
+                    startActivity(i);
+                }
+            });
             /*didn't work, may revisit (tried to pass plan name from here -> loadListFragment -> workspaceActivity)
             Log.d("W_HEADER_DEBUG", "Setting tag: " + planName);
             nameTextView.setTag(planName);

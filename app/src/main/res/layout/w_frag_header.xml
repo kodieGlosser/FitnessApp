@@ -15,10 +15,11 @@
         android:textSize="17dp" />
 
     <Button
-        android:id = "@+id/WorkspaceTestButton"
+        android:id = "@+id/workspaceSaveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TESTCRAPPLAN"/>
+        android:text="SAVE"/>
+
     <Button
         android:id = "@+id/toggleEdit"
         android:layout_width="wrap_content"

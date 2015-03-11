@@ -2,7 +2,6 @@ package com.main.toledo.gymtrackr;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -35,8 +34,9 @@ public class WorkspaceActivity extends FragmentActivity{
             Log.d("W_HEADER_DEBUG", "Plan name: " + planName);
             DatabaseWrapper db = new DatabaseWrapper();
             Plan planList = db.loadEntirePlan(planName);
+            Log.d("W_HEADER_DEBUG", "DB CALL COMPLETED");
             WorkoutData.get(this).eatPlan(planList);
-
+            Log.d("W_HEADER_DEBUG", "EATPLAN CALL COMPLETED");
             courseOfAction = extras.getInt("EXTRA_COURSE_OF_ACTION");
             //Log.d("W_HEADER_DEBUG", "CourseOfAction: " + courseOfAction);
         }
@@ -106,10 +106,6 @@ public class WorkspaceActivity extends FragmentActivity{
         super.onDestroy();
     }
 
-    public void showNameDialog(){
-        WorkspaceNameDialog dialog = new WorkspaceNameDialog();
-        dialog.show(getSupportFragmentManager(), "NameDialogFragment");
-    }
     /*
     @Override
     public void onDialogPositiveClick(DialogFragment dialog){

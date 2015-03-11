@@ -173,23 +173,27 @@ public class WorkoutData {
 
         Workout.clear();
         Circuit_temp[] circuits = p.getCircuits();
-        boolean sorted = false;
-        //sort in case it's not sorted
-        while (!sorted) {
-            boolean test = true;
-            for (int i = 0; i < circuits.length; i++) {
-                if(i != circuits.length - 1){
-                    if(circuits[i].getSequence() > circuits[i+1].getSequence()){
-                        Circuit_temp c_temp = circuits[i];
-                        circuits[i] = circuits[i+1];
-                        circuits[i+1] = c_temp;
-                        test = false;
+        if(p.getCircuits().length != 0) {
+            boolean sorted = false;
+            //sort in case it's not sorted
+
+            while (!sorted) {
+                boolean test = true;
+                for (int i = 0; i < circuits.length; i++) {
+                    if (i != circuits.length - 1) {
+                        if (circuits[i].getSequence() > circuits[i + 1].getSequence()) {
+                            Circuit_temp c_temp = circuits[i];
+                            circuits[i] = circuits[i + 1];
+                            circuits[i + 1] = c_temp;
+                            test = false;
+                        }
+                    } else {
+                        sorted = test;
                     }
-                } else {
-                    sorted = test;
                 }
             }
         }
+        Log.d("EAT PLAN TESTS", "SORT COMPLETED");
 
         for (Circuit_temp c_old : circuits){
             Circuit c_new = new Circuit();
@@ -213,6 +217,7 @@ public class WorkoutData {
             }
             Workout.add(c_new);
         }
+        Log.d("EAT PLAN TESTS", "COPY COMPLETED");
         initialize();
 
     }
