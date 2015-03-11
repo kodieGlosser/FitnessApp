@@ -2,6 +2,7 @@ package com.main.toledo.gymtrackr;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -10,7 +11,7 @@ import android.widget.Button;
 /**
  * Created by Adam on 2/15/2015.
  */
-public class WorkspaceActivity extends FragmentActivity {
+public class WorkspaceActivity extends FragmentActivity{
 
     WorkspaceExpandableListAdapterMKII listAdapter;
     WorkspaceListFragment ListFragment;
@@ -31,10 +32,11 @@ public class WorkspaceActivity extends FragmentActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null){
             planName = extras.getString("EXTRA_PLAN_NAME");
+            Log.d("W_HEADER_DEBUG", "Plan name: " + planName);
             DatabaseWrapper db = new DatabaseWrapper();
-            Plan planList = db.loadEntirePlan("legs");
+            Plan planList = db.loadEntirePlan(planName);
             WorkoutData.get(this).eatPlan(planList);
-            //Log.d("W_HEADER_DEBUG", "Plan name: " + planName);
+
             courseOfAction = extras.getInt("EXTRA_COURSE_OF_ACTION");
             //Log.d("W_HEADER_DEBUG", "CourseOfAction: " + courseOfAction);
         }
@@ -103,6 +105,24 @@ public class WorkspaceActivity extends FragmentActivity {
         }
         super.onDestroy();
     }
+
+    public void showNameDialog(){
+        WorkspaceNameDialog dialog = new WorkspaceNameDialog();
+        dialog.show(getSupportFragmentManager(), "NameDialogFragment");
+    }
+    /*
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog){
+        Plan p = WorkoutData.get(this).crapNewPlan();
+        DatabaseWrapper db = new DatabaseWrapper();
+        db.saveEntirePlan(p);
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog){
+
+    }
+    */
 
     public WorkspaceExpandableListAdapterMKII getAdapter(){
         return this.listAdapter;

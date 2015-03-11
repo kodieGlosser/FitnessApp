@@ -60,9 +60,7 @@ public class WorkspaceHeaderFragment extends Fragment {
         testButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Plan p = WorkoutData.get(getActivity()).crapNewPlan();
-                DatabaseWrapper db = new DatabaseWrapper();
-                db.saveEntirePlan(p);
+                ((WorkspaceActivity) getActivity()).showNameDialog();
             }
         });
 

@@ -155,16 +155,17 @@ public class WorkoutData {
                     }
                 }
             }
-
         }
-        //debug shit
+
         plan.setCircuits(circuits);
+        //debug shit
         for(Circuit_temp c : plan.getCircuits()){
             Log.d("CRAP PLAN TESTS", "CIRCUITNAME: " + c.getName() + " -- CIRCUIT SEQ: " + c.getSequence() + " -- CIRCUIT OPEN: " + c.isOpen());
             for(Exercise e : c.getExercises()){
                 Log.d("CRAP PLAN TESTS", "NAME: " + e.getName() + " -- WEIGHT: " + e.getWeight() + " -- REPS: " + e.getRepetitions());
             }
         }
+        //end debug shit
         return plan;
     }
 

@@ -27,7 +27,20 @@ public class BrowseListFragment extends ListFragment{
     public void onListItemClick(ListView l, View v, int position, long id){
         //PROBABLY WAY BETTER TO PASS EXERCISE TO WORKSPACE ACTIVITY
 
-        Exercise exercise = (Exercise)(getListAdapter()).getItem(position);
+        Exercise e = (Exercise)(getListAdapter()).getItem(position);
+        Exercise exercise = new Exercise();
+        exercise.setName(e.getName());
+
+        //Stubs
+        Metric weightMetric = new Metric();
+        weightMetric.setType(metricType.WEIGHT);
+        //weightMetric.setMetricIntValue(weight);
+
+        Metric repMetric = new Metric();
+        repMetric.setType(metricType.REPETITIONS);
+        exercise.addMetrics(weightMetric);
+        exercise.addMetrics(repMetric);
+
         //if circuit is open
         if (((BrowseActivity)getActivity()).isCircuitOpen()){
             //addToOpenCircuit to that circuit
