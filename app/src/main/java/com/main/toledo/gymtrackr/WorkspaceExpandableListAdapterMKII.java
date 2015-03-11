@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.InputType;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +28,8 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     private ArrayList<Circuit> workout;
 
     private boolean editable = true;
+
+    private EditText m_editTextHandle;
 
     public WorkspaceExpandableListAdapterMKII(Context context, ArrayList<Circuit> workout){
         this._context = context;
@@ -114,7 +118,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 ArrayList<Metric> metrics = workout.get(groupPosition).getExercise(childPosition).getMetrics();
                 layout.removeAllViewsInLayout();
 
-                LinearLayout mainLayout = (LinearLayout) convertView.findViewById(R.id.exerciseMainLayout);
+                final LinearLayout mainLayout = (LinearLayout) convertView.findViewById(R.id.exerciseMainLayout);
                 mainLayout.setOnClickListener(null);
                 mainLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -122,7 +126,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         Intent i = new Intent(_context, EditActivity.class);
                         i.putExtra("CIRCUIT_VALUE", groupPosition);
                         i.putExtra("EXERCISE_VALUE", childPosition);
-                        Log.d("LAST THING", groupPosition + " " + childPosition);
+                        //Log.d("LAST THING", groupPosition + " " + childPosition);
                         _context.startActivity(i);
                     }
                 });
@@ -145,9 +149,27 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                        workout.get(groupPosition).getExercise(childPosition)
                                                 .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
                                        notifyDataSetChanged();
+                                       // notifyDataSetInvalidated();
                                        return true;
                                     }
                                     return false;
+                                }
+                            });
+
+                            timeEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                @Override
+                                public void onFocusChange(View v, boolean hasFocus) {
+                                    if (hasFocus){
+                                        Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED");
+                                        m_editTextHandle = (EditText) v;
+                                    } else {
+                                        Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS");
+                                        workout.get(groupPosition).getExercise(childPosition)
+                                                .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
+                                        notifyDataSetChanged();
+                                        hideKeypad();
+                                        //notifyDataSetInvalidated();
+                                    }
                                 }
                             });
                             //timeEdit.setFocusable(false);
@@ -174,6 +196,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                                         workout.get(groupPosition).getExercise(childPosition)
                                                 .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
+                                        //notifyDataSetInvalidated();
                                         notifyDataSetChanged();
                                         return true;
                                     }
@@ -182,6 +205,24 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                             });
                             //time
 
+                            repEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                @Override
+                                public void onFocusChange(View v, boolean hasFocus) {
+                                    if (hasFocus){
+                                        Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED");
+                                        m_editTextHandle = (EditText) v;
+                                        //notifyDataSetChanged();
+                                        //m_editTextHandle.requestFocus();
+                                    } else {
+                                        Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS");
+                                        workout.get(groupPosition).getExercise(childPosition)
+                                                .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
+                                        //notifyDataSetInvalidated();
+                                        hideKeypad();
+                                        notifyDataSetChanged();
+                                    }
+                                }
+                            });
                             LinearLayout repRow = new LinearLayout(_context);
                             repRow.setOrientation(LinearLayout.HORIZONTAL);
                             repRow.addView(repText);
@@ -214,6 +255,8 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                                         workout.get(groupPosition).getExercise(childPosition)
                                                 .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
+                                        //notifyDataSetInvalidated();
+                                        hideKeypad();
                                         notifyDataSetChanged();
                                         return true;
                                     }
@@ -222,6 +265,24 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                             });
                             //time
 
+                            wtEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                @Override
+                                public void onFocusChange(View v, boolean hasFocus) {
+                                    if (hasFocus){
+                                        Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED");
+                                        m_editTextHandle = (EditText) v;
+                                        //notifyDataSetChanged();
+                                        //m_editTextHandle.requestFocus();
+                                    } else {
+                                        Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS");
+                                        workout.get(groupPosition).getExercise(childPosition)
+                                               .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
+                                        //notifyDataSetInvalidated();
+                                        hideKeypad();
+                                        notifyDataSetChanged();
+                                    }
+                                }
+                            });
                             LinearLayout wtRow = new LinearLayout(_context);
                             wtRow.setOrientation(LinearLayout.HORIZONTAL);
                             wtRow.addView(wtText);
@@ -390,6 +451,12 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         mContent.remove(which);
     }
     */
+
+    private void hideKeypad(){
+        InputMethodManager imm = (InputMethodManager)_context.getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(m_editTextHandle.getWindowToken(), 0);
+    }
     //this needs fixed a lot
     @Override
     public void onDrop(int homeExerciseIndex, int homeCircuitIndex,
