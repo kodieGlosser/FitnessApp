@@ -84,9 +84,14 @@ public class WorkoutData {
         Circuit_temp[] circuits = new Circuit_temp[Workout.size() - 1];
         //Because Kodie hates arraylists
         //for each circuit
+
+        Log.d("CRAP TEST", Workout.get(0).getName());
         for(int i = 0; i < Workout.size() - 1; i++){
-            //set circuit values
-            circuits[i].setName(Workout.get(i).getName());
+            Circuit_temp cTemp = new Circuit_temp();
+            circuits[i] = cTemp;
+            if (Workout.get(i).getName() != null) {
+                circuits[i].setName(Workout.get(i).getName());
+            }
             circuits[i].setOpen(Workout.get(i).isOpen());
             circuits[i].setSequence(i);
             //setup to go through exercises
@@ -101,7 +106,27 @@ public class WorkoutData {
                     //get the exercises from the circuit, excluding the placeholder used
                     //in open circuits
                     if( j != numExercises - 1){
-                        exercisesArray[j] = exerciseArrayList.get(i);
+                        //puts metric stubs into DB speak
+                        exercisesArray[j] = exerciseArrayList.get(j);
+                        for(Metric m : exerciseArrayList.get(j).getMetrics()){
+                            switch(m.getType()) {
+                                case WEIGHT:
+                                    exercisesArray[j].setWeight(m.getMetricIntValue());
+                                    break;
+                                case REPETITIONS:
+                                    exercisesArray[j].setRepetitions(m.getMetricIntValue());
+                                    break;
+                                case TIME:
+                                    //we don't support time yet
+                                    break;
+                                case OTHER:
+                                    //we don't support other yet
+                                    break;
+                                default:
+                                    Log.d("TERRIBLE THINGS", "SOMETHING TERRIBLE HAPPENED WHEN WORKOUTDATA TRIED TO CRAP");
+                                    break;
+                            }
+                        }
                     }
                 }
                 circuits[i].setExercises(exercisesArray);
@@ -110,6 +135,25 @@ public class WorkoutData {
                 Exercise[] exercisesArray = new Exercise[1];
                 exercisesArray[0] = exerciseArrayList.get(0);
                 circuits[i].setExercises(exercisesArray);
+                for(Metric m : exerciseArrayList.get(0).getMetrics()){
+                    switch(m.getType()) {
+                        case WEIGHT:
+                            exercisesArray[0].setWeight(m.getMetricIntValue());
+                            break;
+                        case REPETITIONS:
+                            exercisesArray[0].setRepetitions(m.getMetricIntValue());
+                            break;
+                        case TIME:
+                            //we don't support time yet
+                            break;
+                        case OTHER:
+                            //we don't support other yet
+                            break;
+                        default:
+                            Log.d("TERRIBLE THINGS", "SOMETHING TERRIBLE HAPPENED WHEN WORKOUTDATA TRIED TO CRAP");
+                            break;
+                    }
+                }
             }
 
         }
@@ -118,7 +162,7 @@ public class WorkoutData {
         for(Circuit_temp c : plan.getCircuits()){
             Log.d("CRAP PLAN TESTS", "CIRCUITNAME: " + c.getName() + " -- CIRCUIT SEQ: " + c.getSequence() + " -- CIRCUIT OPEN: " + c.isOpen());
             for(Exercise e : c.getExercises()){
-                Log.d("CRAP PLAN TESTS", "NAME: " + e.getName() + " -- ");
+                Log.d("CRAP PLAN TESTS", "NAME: " + e.getName() + " -- WEIGHT: " + e.getWeight() + " -- REPS: " + e.getRepetitions());
             }
         }
         return plan;

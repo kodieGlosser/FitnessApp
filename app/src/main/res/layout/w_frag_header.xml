@@ -13,12 +13,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="17dp" />
-    <!--3/8 not needed at the moment
+
     <Button
         android:id = "@+id/WorkspaceTestButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Collapse"/>-->
+        android:text="TESTCRAPPLAN"/>
     <Button
         android:id = "@+id/toggleEdit"
         android:layout_width="wrap_content"

@@ -11,6 +11,11 @@ public class Circuit_temp {
     private boolean m_open;
     private int m_sequence;
 
+    //used for crapping
+    public Circuit_temp(){
+
+    }
+
     public Circuit_temp(String name, Exercise[] exercises, int circuitId, boolean open, int sequence) {
         m_name = name;
         m_exercises = exercises;

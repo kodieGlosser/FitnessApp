@@ -15,10 +15,12 @@ import android.widget.TextView;
  */
 public class WorkspaceHeaderFragment extends Fragment {
 
+    private Button testButton;
     private Button workspaceEditToggleButton;
     private TextView loadMessage;
 
     final int EDIT = 1, WORKOUT = 2;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,16 +54,16 @@ public class WorkspaceHeaderFragment extends Fragment {
         loadMessage.setText(textVal);
 
         //sets the listener for the test (collapse) button
-        /*removed 3/8, was an attempted bug fix, may want in future
+
         testButton = (Button)v.findViewById(R.id.WorkspaceTestButton);
 
         testButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                ((WorkspaceActivity) getActivity()).testMethod();
+                Plan p = WorkoutData.get(getActivity()).crapNewPlan();
             }
         });
-        */
+
         //sets the listener for the toggle button
         workspaceEditToggleButton = (Button)v.findViewById(R.id.toggleEdit);
 
