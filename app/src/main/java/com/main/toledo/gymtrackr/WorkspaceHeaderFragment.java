@@ -61,6 +61,8 @@ public class WorkspaceHeaderFragment extends Fragment {
             @Override
             public void onClick(View v){
                 Plan p = WorkoutData.get(getActivity()).crapNewPlan();
+                DatabaseWrapper db = new DatabaseWrapper();
+                db.saveEntirePlan(p);
             }
         });
 
