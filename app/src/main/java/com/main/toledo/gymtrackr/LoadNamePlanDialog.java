@@ -23,28 +23,37 @@ public class LoadNamePlanDialog extends DialogFragment {
     }
     */
     //NameDialogListener m_Listener;
+    final int OTHER = 10, INVALID_NAME_VALUE = 11, TAKEN_NAME_VALUE = 12;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View v = inflater.inflate(R.layout.w_plan_dialog, null);
-        TextView textView = (TextView) v.findViewById(R.id.dialogMessage);
-        textView.setText("ENTER PLAN NAME BELOW");
+        builder.setMessage("ENTER PLAN NAME");
         final EditText t = (EditText) v.findViewById(R.id.planName);
         builder.setView(v)
                 .setPositiveButton("SURE", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //EditText t = (EditText) v.findViewById(R.id.planName);
                         String planName = t.getText().toString();
-
-                        //if the name is taken
-                        if (((LoadActivity) getActivity()).getPlanList().contains(planName)) {
-                            //pass the plan to the activity for storage
+                        //ERROR HAPPENS
+                        if (((LoadActivity) getActivity()).getPlanList().contains(planName) || (planName.equals(""))) {
+                            //pass the plan name string value to the activity for storage
                             ((LoadActivity) getActivity()).setPlanName(planName);
                             //call error dialog asking how to proceed
-                            ((LoadActivity) getActivity()).showErrorDialog();
+                            int errorFlag = OTHER;
+                            //TODO:  WE NEED MORE CHECKS, MULTIPLE SPACES ETC
+                            if(planName.equals("")){
+                                errorFlag = INVALID_NAME_VALUE;
+                            }
+                            if(((LoadActivity) getActivity()).getPlanList().contains(planName)){
+                                errorFlag = TAKEN_NAME_VALUE;
+                            }
+
+                            ((LoadActivity) getActivity()).showErrorDialog(errorFlag);
                         } else {
+                            //NO ERROR
                             ((LoadActivity) getActivity()).setPlanName(planName);
                             ((LoadActivity) getActivity()).createNewPlan();
                             //m_Listener.onDialogPositiveClick(WorkspaceNameDialog.this);
