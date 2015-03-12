@@ -14,7 +14,7 @@ import java.io.IOException;
 
 
 public class StartActivity extends Activity {
-
+    final int WORKOUT = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +35,7 @@ public class StartActivity extends Activity {
             @Override
             public void onClick(View v){
                 Intent i = new Intent(StartActivity.this, WorkspaceActivity.class);
+                i.putExtra("EXTRA_COURSE_OF_ACTION", WORKOUT);
                 startActivity(i);
             }
         });

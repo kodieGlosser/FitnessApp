@@ -43,7 +43,7 @@ public class WorkspaceListFragment extends Fragment {
         //((DragNDropExpandableListView) listView).setRemoveListener(mRemoveListener);
 
         workspaceListView.setDragListener(mDragListener);
-        /*EDIT TEXT BROKE THIS, WE MAY WANT IT BACK
+        /*EDIT TEXT IN WORKSPACE BROKE THIS, WE MAY WANT IT BACK
         workspaceListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 
             @Override

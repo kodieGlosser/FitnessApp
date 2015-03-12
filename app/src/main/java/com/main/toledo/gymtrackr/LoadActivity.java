@@ -24,7 +24,13 @@ public class LoadActivity extends FragmentActivity {
     LoadHeaderFragment HeaderFragment;
     LoadListFragment ListFragment;
     private int actionToPerform;
+    //Program State Constants
     final int EDIT = 1, WORKOUT = 2;
+    //Error constants
+    final int OTHER = 10, INVALID_NAME_VALUE = 11, TAKEN_NAME_VALUE = 12;
+    //
+    int errorType;
+
     //this is the stub list
     //private static ArrayList<Plan> workoutPlans = new ArrayList<>();
     //the adapter is responsible for populating the load list
@@ -128,11 +134,15 @@ public class LoadActivity extends FragmentActivity {
         dialog.show(getSupportFragmentManager(), "NameDialogFragment");
     }
 
-    public void showErrorDialog(){
+    public void showErrorDialog(int error){
+        errorType = error;
         LoadErrorDialog dialog = new LoadErrorDialog();
         dialog.show(getSupportFragmentManager(), "ErrorDialogFragment");
     }
 
+    public int getError(){
+        return errorType;
+    }
     /*
     public void editSelect(View view){
         Log.d("LOADTESTS", "EDIT SELECTED");
