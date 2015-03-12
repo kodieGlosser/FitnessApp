@@ -250,7 +250,12 @@ public class DatabaseWrapper {
         return exercises;
     }
 
-    public void saveEntirePlan(Plan plan) {
+    public int saveEntirePlan(Plan plan) {
+
+        if (plan.getPlanId() != 0) {
+            deletePlan(plan.getPlanId());
+        }
+
         ContentValues planValues = new ContentValues();
         planValues.put(COLUMN_NAME, plan.getName());
         long planId = myDatabase.insert(COLUMN_PLAN, null,planValues);
@@ -279,6 +284,23 @@ public class DatabaseWrapper {
                 myDatabase.insert(COLUMN_PLANNED_UNION, null, plannedUnionValues);
             }
         }
+
+        return (int)planId;
+    }
+
+    public void deletePlan(int planId) {
+        String whereClause = "Workout._id IN (select workoutId from Planned_Union where planId=?)";
+        String[] whereArgs = {Integer.toString(planId)};
+        myDatabase.delete(COLUMN_WORKOUT, whereClause, whereArgs);
+
+        whereClause = "Circuit._id IN (select circuitId from Planned_Union where planId=?)";
+        myDatabase.delete(COLUMN_CIRCUIT, whereClause, whereArgs);
+
+        whereClause = "planId = ?";
+        myDatabase.delete(COLUMN_PLANNED_UNION, whereClause, whereArgs);
+
+        whereClause = "_id=?";
+        myDatabase.delete(COLUMN_PLAN, whereClause, whereArgs);
     }
 
     /**
