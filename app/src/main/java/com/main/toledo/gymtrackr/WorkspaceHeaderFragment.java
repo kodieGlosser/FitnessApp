@@ -3,6 +3,7 @@ package com.main.toledo.gymtrackr;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,7 @@ import android.widget.TextView;
  */
 public class WorkspaceHeaderFragment extends Fragment {
 
-    private Button testButton;
+    private Button saveButton;
     private Button workspaceEditToggleButton;
     private TextView loadMessage;
 
@@ -55,13 +56,13 @@ public class WorkspaceHeaderFragment extends Fragment {
 
         //sets the listener for the test (collapse) button
 
-        testButton = (Button)v.findViewById(R.id.workspaceSaveButton);
+        saveButton = (Button)v.findViewById(R.id.workspaceSaveButton);
 
-        testButton.setOnClickListener(new View.OnClickListener(){
+        saveButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 //save code will go here
-                
+
             }
         });
 

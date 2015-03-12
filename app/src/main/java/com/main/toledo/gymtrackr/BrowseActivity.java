@@ -31,6 +31,7 @@ public class BrowseActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("FLOW TESTS", "----------------------IN BROWSE-------------------");
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
         if (extras != null){
@@ -130,7 +131,6 @@ public class BrowseActivity extends FragmentActivity {
             if (convertView == null) {
                                 convertView = getLayoutInflater()
                         .inflate(R.layout.b_frag_exercise_list, null);
-
             }
 
             Exercise e = getItem(position);

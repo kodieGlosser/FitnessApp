@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 /**
  * Created by Adam on 3/10/2015.
@@ -28,19 +29,26 @@ public class LoadNamePlanDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View v = inflater.inflate(R.layout.w_plan_dialog, null);
+        TextView textView = (TextView) v.findViewById(R.id.dialogMessage);
+        textView.setText("ENTER PLAN NAME BELOW");
         final EditText t = (EditText) v.findViewById(R.id.planName);
         builder.setView(v)
                 .setPositiveButton("SURE", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //EditText t = (EditText) v.findViewById(R.id.planName);
-                        Plan p = WorkoutData.get(getActivity()).crapNewPlan();
-                        p.setName(t.getText().toString());
-                        DatabaseWrapper db = new DatabaseWrapper();
-                        Log.d("CRAP PLAN TESTS", "PLAN NAME BEFORE DB: " + p.getName());
-                        db.saveEntirePlan(p);
+                        String planName = t.getText().toString();
 
-                        ((LoadActivity) getActivity()).updatePlanList();
-                        //m_Listener.onDialogPositiveClick(WorkspaceNameDialog.this);
+                        //if the name is taken
+                        if (((LoadActivity) getActivity()).getPlanList().contains(planName)) {
+                            //pass the plan to the activity for storage
+                            ((LoadActivity) getActivity()).setPlanName(planName);
+                            //call error dialog asking how to proceed
+                            ((LoadActivity) getActivity()).showErrorDialog();
+                        } else {
+                            ((LoadActivity) getActivity()).setPlanName(planName);
+                            ((LoadActivity) getActivity()).createNewPlan();
+                            //m_Listener.onDialogPositiveClick(WorkspaceNameDialog.this);
+                        }
 
                     }
                 })

@@ -2,7 +2,6 @@ package com.main.toledo.gymtrackr;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -30,7 +29,7 @@ public class LoadActivity extends FragmentActivity {
     //private static ArrayList<Plan> workoutPlans = new ArrayList<>();
     //the adapter is responsible for populating the load list
     public static LoadAdapter adapter;
-
+    private String planName;
     //testvals
     String s;
 
@@ -88,17 +87,7 @@ public class LoadActivity extends FragmentActivity {
                 break;
         }
     }
-    */
 
-    public void updatePlanList(){
-        planList.clear();
-        DatabaseWrapper db = new DatabaseWrapper();
-        String[] planArray = db.loadPlanNames();
-        //convert array to list for dynamic stuffs
-        for (String s : planArray){
-            planList.add(s);
-        }
-    }
     public void setToWorkout(){
         actionToPerform = WORKOUT;
         this.findViewById(R.id.loadMainWindow).setBackgroundColor(Color.RED);
@@ -112,13 +101,38 @@ public class LoadActivity extends FragmentActivity {
     public int getActionToPerform(){
         return actionToPerform;
     }
+    */
+
+    public void setPlanName(String s){planName = s;};
 
     public ArrayList<String> getPlanList(){return planList; }
+
+    public void createNewPlan(){
+        //might be able to just create a new plan
+        Plan p = WorkoutData.get(this).crapNewPlan();
+        p.setName(planName);
+
+        DatabaseWrapper db = new DatabaseWrapper();
+        db.saveEntirePlan(p);
+
+        planList.clear();
+        String[] planArray = db.loadPlanNames();
+        //convert array to list for dynamic stuffs
+        for (String s : planArray){
+            planList.add(s);
+        }
+    }
 
     public void showNameDialog(){
         LoadNamePlanDialog dialog = new LoadNamePlanDialog();
         dialog.show(getSupportFragmentManager(), "NameDialogFragment");
     }
+
+    public void showErrorDialog(){
+        LoadErrorDialog dialog = new LoadErrorDialog();
+        dialog.show(getSupportFragmentManager(), "ErrorDialogFragment");
+    }
+
     /*
     public void editSelect(View view){
         Log.d("LOADTESTS", "EDIT SELECTED");

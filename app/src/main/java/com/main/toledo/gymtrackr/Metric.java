@@ -23,6 +23,14 @@ public class Metric {
 
     public void setMetricName(String s){metricName = s;}
     public String getMetricName(){return metricName;}
+
+}
+
+
+
+
+
+
     /*
     Boolean m_weight;
     Boolean m_repetitions;
@@ -69,4 +77,3 @@ public class Metric {
 
     public void setOther(String s){ m_otherValue = s; }
     */
-}

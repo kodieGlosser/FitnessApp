@@ -24,7 +24,7 @@ public class WorkspaceListFragment extends Fragment {
 
         @Override
    public void onCreate(Bundle savedInstanceState) {
-
+        Log.d("FLOW TESTS", "ONCREATE() CALLED IN WLFRAG");
         super.onCreate(savedInstanceState);
     }
 
@@ -35,15 +35,15 @@ public class WorkspaceListFragment extends Fragment {
         workspaceListView = (DragNDropExpandableListView)
                 v.findViewById(R.id.workspaceListView);
 
-        workspaceListView.setAdapter(((WorkspaceActivity)getActivity()).getAdapter());
-        expandLists(((WorkspaceActivity)getActivity()).getAdapter());
+        //workspaceListView.setAdapter(((WorkspaceActivity)getActivity()).getAdapter());
+        //expandLists(((WorkspaceActivity)getActivity()).getAdapter());
 
         workspaceListView.setDropListener(mDropListener);
 
         //((DragNDropExpandableListView) listView).setRemoveListener(mRemoveListener);
 
         workspaceListView.setDragListener(mDragListener);
-
+        /*EDIT TEXT BROKE THIS, WE MAY WANT IT BACK
         workspaceListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 
             @Override
@@ -52,22 +52,27 @@ public class WorkspaceListFragment extends Fragment {
                 return true;
             }
         });
+        */
         return v;
     }
-
+    /*WENT WITH WHAT EDIT TEXT BROKE ABOVE
     private void startEdit(int group, int child){
         Intent i = new Intent(getActivity(), EditActivity.class);
         i.putExtra("CIRCUIT_VALUE", group);
         i.putExtra("EXERCISE_VALUE", child);
         startActivity(i);
     }
-
+    */
     @Override
     public void onResume(){
+        Log.d("FLOW TESTS", "ONRESUME() CALLED IN WLFRAG");
+        workspaceListView.setAdapter(((WorkspaceActivity)getActivity()).getAdapter());
+        expandLists(((WorkspaceActivity)getActivity()).getAdapter());
+        /*
+        WorkspaceExpandableListAdapterMKII w = (WorkspaceExpandableListAdapterMKII) workspaceListView.getAdapter();
+        w.notifyDataSetChanged();
+        */
         super.onResume();
-        //if (listAdapter != null) {
-        //    listAdapter.notifyDataSetChanged();
-        //}
     }
 
     public void expandLists(WorkspaceExpandableListAdapterMKII listAdapter){
@@ -121,6 +126,7 @@ public class WorkspaceListFragment extends Fragment {
                 public void onStopDrag(View itemView) {
                     //Log.d("TOUCH TESTS", "ON STOP DRAG CALLED");
                     itemView.setVisibility(View.VISIBLE);
+                    //GREG - DRAG BUG IS PROBABLY THIS EXACT THING
                     itemView.setBackgroundColor(defaultBackgroundColor);
                     //test
                     //ImageView iv = (ImageView)itemView.findViewById(R.id.ImageView01);
