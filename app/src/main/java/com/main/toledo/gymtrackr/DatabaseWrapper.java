@@ -252,8 +252,8 @@ public class DatabaseWrapper {
 
     public int saveEntirePlan(Plan plan) {
 
-        if (plan.getPlanId() != 0) {
-            deletePlan(plan.getPlanId());
+        if (getPlanIdFromName(plan.getName()) != -1) {
+            deletePlan(plan.getName());
         }
 
         ContentValues planValues = new ContentValues();
@@ -301,6 +301,34 @@ public class DatabaseWrapper {
 
         whereClause = "_id=?";
         myDatabase.delete(COLUMN_PLAN, whereClause, whereArgs);
+    }
+
+    public void deletePlan(String planName) {
+        int planId = getPlanIdFromName(planName);
+
+        String whereClause = "Workout._id IN (select workoutId from Planned_Union where planId=?)";
+        String[] whereArgs = {Integer.toString(planId)};
+        myDatabase.delete(COLUMN_WORKOUT, whereClause, whereArgs);
+
+        whereClause = "Circuit._id IN (select circuitId from Planned_Union where planId=?)";
+        myDatabase.delete(COLUMN_CIRCUIT, whereClause, whereArgs);
+
+        whereClause = "planId = ?";
+        myDatabase.delete(COLUMN_PLANNED_UNION, whereClause, whereArgs);
+
+        whereClause = "_id=?";
+        myDatabase.delete(COLUMN_PLAN, whereClause, whereArgs);
+    }
+
+    private int getPlanIdFromName(String planName) {
+        // get plan id
+        Cursor c = myDatabase.query(COLUMN_PLAN, new String[] { COLUMN_ID }, COLUMN_NAME + "=? COLLATE NOCASE", new String[] { planName}, null, null, null);
+        int planId = -1;
+
+        while (c.moveToNext()) {
+            planId = c.getInt(c.getColumnIndex(COLUMN_ID));
+        }
+        return planId;
     }
 
     /**
