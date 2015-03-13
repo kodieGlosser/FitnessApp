@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class WorkoutData {
     //private HashMap<String, ArrayList<Exercise>> WorkoutMap;
     private ArrayList<Circuit> Workout = new ArrayList<Circuit>();
-
+    private int mPlanId;
     private static WorkoutData sWorkspaceData;
     private Context mAppContext;
 
@@ -83,7 +83,7 @@ public class WorkoutData {
         Circuit_temp[] circuits = new Circuit_temp[Workout.size() - 1];
         //Because Kodie hates arraylists
         //for each circuit
-
+        //plan.setPlanId(mPlanId);
         Log.d("CRAP TEST", Workout.get(0).getName());
         for(int i = 0; i < Workout.size() - 1; i++){
             Circuit_temp cTemp = new Circuit_temp();
@@ -171,6 +171,7 @@ public class WorkoutData {
     public void eatPlan(Plan p){
 
         Workout.clear();
+        //mPlanId = p.getPlanId();
         Circuit_temp[] circuits = p.getCircuits();
         if(p.getCircuits().length != 0) {
             boolean sorted = false;

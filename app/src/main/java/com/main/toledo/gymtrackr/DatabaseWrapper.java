@@ -258,7 +258,7 @@ public class DatabaseWrapper {
 
         ContentValues planValues = new ContentValues();
         planValues.put(COLUMN_NAME, plan.getName());
-        long planId = myDatabase.insert(COLUMN_PLAN, null,planValues);
+        long planId = myDatabase.insert(COLUMN_PLAN, null, planValues);
         Circuit_temp[] circuits = plan.getCircuits();
         for (int i = 0; i < circuits.length; i++) {
             Exercise[] exercises = circuits[i].getExercises();
@@ -325,8 +325,10 @@ public class DatabaseWrapper {
         Cursor c = myDatabase.query(COLUMN_PLAN, new String[] { COLUMN_ID }, COLUMN_NAME + "=? COLLATE NOCASE", new String[] { planName}, null, null, null);
         int planId = -1;
 
-        while (c.moveToNext()) {
-            planId = c.getInt(c.getColumnIndex(COLUMN_ID));
+        if (c.getCount() >= 1) {
+            while (c.moveToNext()) {
+                planId = c.getInt(c.getColumnIndex(COLUMN_ID));
+            }
         }
         return planId;
     }
