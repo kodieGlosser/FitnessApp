@@ -327,9 +327,12 @@ public class DatabaseWrapper {
 
         if (c.getCount() >= 1) {
             while (c.moveToNext()) {
-                planId = c.getInt(c.getColumnIndex(COLUMN_ID));
+
+                planId = c.getInt(c.getColumnIndex(c.getColumnName(0)));
+
             }
         }
+
         return planId;
     }
 
