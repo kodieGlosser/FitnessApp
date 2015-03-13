@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
@@ -37,13 +38,22 @@ public class WorkspaceListFragment extends Fragment {
 
         //workspaceListView.setAdapter(((WorkspaceActivity)getActivity()).getAdapter());
         //expandLists(((WorkspaceActivity)getActivity()).getAdapter());
-
-        workspaceListView.setDropListener(mDropListener);
+        //disabled for now 3/12
+        //workspaceListView.setDropListener(mDropListener);
 
         //((DragNDropExpandableListView) listView).setRemoveListener(mRemoveListener);
-
-        workspaceListView.setDragListener(mDragListener);
-        /*EDIT TEXT IN WORKSPACE BROKE THIS, WE MAY WANT IT BACK
+        //diabled for now 3/12
+        //workspaceListView.setDragListener(mDragListener);
+        /*
+        workspaceListView.setRecyclerListener(new AbsListView.RecyclerListener() {
+            @Override
+            public void onMovedToScrapHeap(View view) {
+                Log.d("SCRAP TEST", "ITEM SCRAPPED");
+            }
+        });
+        */
+        //EDIT TEXT IN WORKSPACE BROKE THIS, WE MAY WANT IT BACK
+        /*
         workspaceListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 
             @Override
@@ -55,7 +65,8 @@ public class WorkspaceListFragment extends Fragment {
         */
         return v;
     }
-    /*WENT WITH WHAT EDIT TEXT BROKE ABOVE
+    //WENT WITH WHAT EDIT TEXT BROKE ABOVE
+    /*
     private void startEdit(int group, int child){
         Intent i = new Intent(getActivity(), EditActivity.class);
         i.putExtra("CIRCUIT_VALUE", group);

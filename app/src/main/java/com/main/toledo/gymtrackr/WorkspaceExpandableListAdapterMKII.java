@@ -31,8 +31,23 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
     private EditText m_editTextHandle;
 
+    private Runnable mShowImeRunnable;
+
+    private boolean THETHING;
+
     public WorkspaceExpandableListAdapterMKII(Context context){//}, ArrayList<Circuit> workout){
         this._context = context;
+
+        mShowImeRunnable = new Runnable() {
+            public void run() {
+                InputMethodManager imm = (InputMethodManager)
+                        _context.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                if (imm != null) {
+                    imm.showSoftInput(m_editTextHandle,0);
+                }
+            }
+        };
         //this.WorkoutData.get(_context).getWorkout() = workout;
     }
 
@@ -61,14 +76,14 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         //if workout is closed, prints last item as an exercise value, otherwise last item is buttons
         final int group = groupPosition;
         final int child = childPosition;
-        Log.d("FLOW TEST", "TEST groupPosition >= WorkoutData.get(_context).getWorkout().size()-1");
-        Log.d("FLOW TEST", "groupPosition: " + group + "-- WorkoutData.get(_context).getWorkout().size(): " + WorkoutData.get(_context).getWorkout().size());
+        //Log.d("FLOW TEST", "TEST groupPosition >= WorkoutData.get(_context).getWorkout().size()-1");
+        //Log.d("FLOW TEST", "groupPosition: " + group + "-- WorkoutData.get(_context).getWorkout().size(): " + WorkoutData.get(_context).getWorkout().size());
         if (group >= WorkoutData.get(_context).getWorkout().size()-1){
         //    Log.d("test", "should make buttons");
             if(editable){
-                Log.d("FLOW TEST", "DRAW BUTTONS SHOULD BE CALLED NOW");
+                //Log.d("FLOW TEST", "DRAW BUTTONS SHOULD BE CALLED NOW");
                 if (convertView == null || (convertView.getTag() != "End Button")) {
-                    Log.d("FLOW TEST", "DRAW BUTTONS CALLED");
+                    //Log.d("FLOW TEST", "DRAW BUTTONS CALLED");
                     LayoutInflater inflater = (LayoutInflater) this._context
                             .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.w_workout_menu_buttons, null);
@@ -121,8 +136,9 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 ArrayList<Metric> metrics = WorkoutData.get(_context).getWorkout().get(group).getExercise(childPosition).getMetrics();
                 layout.removeAllViewsInLayout();
                 //WORKAROUND, MAKES LIST ITEMS CLICKABLE, EDIT TEXTS DISABLED NORMAL FUNCTIONALITY
+
                 final LinearLayout mainLayout = (LinearLayout) convertView.findViewById(R.id.exerciseMainLayout);
-                mainLayout.setOnClickListener(null);
+                mainLayout.setOnClickListener(null); //Resets the layouts on click listener
                 mainLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -131,13 +147,14 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         notifyDataSetChanged();
                         //END TESTS
                         Intent i = new Intent(_context, EditActivity.class);
+                        ((WorkspaceActivity) _context).setToEdit(true);
                         i.putExtra("CIRCUIT_VALUE", group);
                         i.putExtra("EXERCISE_VALUE", child);
                         //Log.d("LAST THING", groupPosition + " " + childPosition);
                         _context.startActivity(i);
                     }
                 });
-
+                //SHITTY EDIT TEXT CODE
                 for(int i = 0; i < metrics.size(); i++){
                     final int j = i;
                     switch(metrics.get(i).getType()){
@@ -167,14 +184,32 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                 @Override
                                 public void onFocusChange(View v, boolean hasFocus) {
                                     if (hasFocus){
-                                        Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED");
+
+                                        Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + timeEdit.getText());
+                                        /*
                                         m_editTextHandle = (EditText) v;
+                                        mShowImeRunnable = new Runnable() {
+                                            public void run() {
+                                                InputMethodManager imm = (InputMethodManager)
+                                                        _context.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                                                if (imm != null) {
+                                                    imm.showSoftInput(m_editTextHandle,0);
+                                                }
+                                            }
+                                        };
+                                        */
+                                        //setImeVisibility(true);
+                                        //notifyDataSetChanged();
+                                        //m_editTextHandle.requestFocus();
+                                        //showKeypad();
                                     } else {
-                                        Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS");
+                                        Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + timeEdit.getText());
                                         WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
                                                 .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
-                                        notifyDataSetChanged();
-                                        hideKeypad();
+                                        //notifyDataSetChanged();
+                                        //setImeVisibility(false);
+                                        //hideKeypad();
                                         //notifyDataSetInvalidated();
                                     }
                                 }
@@ -192,7 +227,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                             TextView repText = new TextView(_context);
                             repText.setText("Reps: ");
 
-                            EditText repEdit = new EditText(_context);
+                            final EditText repEdit = new EditText(_context);
                             repEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
                             repEdit.setText("" + metrics.get(i).getMetricIntValue());
                             repEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -204,29 +239,49 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                         WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
                                                 .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
                                         //notifyDataSetInvalidated();
-                                        notifyDataSetChanged();
+                                        //notifyDataSetChanged();
                                         return true;
                                     }
                                     return false;
                                 }
                             });
+
+
                             //time
 
                             repEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                                 @Override
                                 public void onFocusChange(View v, boolean hasFocus) {
                                     if (hasFocus){
-                                        Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED");
+                                        Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + repEdit.getText());
+
                                         m_editTextHandle = (EditText) v;
+                                        THETHING = true;
+                                        /*
+                                        mShowImeRunnable = new Runnable() {
+                                            public void run() {
+                                                InputMethodManager imm = (InputMethodManager)
+                                                        _context.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                                                if (imm != null) {
+                                                    imm.showSoftInput(m_editTextHandle,0);
+                                                }
+                                            }
+                                        };
+                                        */
+                                        //setImeVisibility(true);
                                         //notifyDataSetChanged();
                                         //m_editTextHandle.requestFocus();
+                                        showKeypad();
                                     } else {
-                                        Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS");
+                                        Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + repEdit.getText());
                                         WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
                                                 .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
                                         //notifyDataSetInvalidated();
                                         hideKeypad();
-                                        notifyDataSetChanged();
+                                        //setImeVisibility(false);
+                                        //notifyDataSetChanged();
+
                                     }
                                 }
                             });
@@ -251,7 +306,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                             TextView wtText = new TextView(_context);
                             wtText.setText("Weight: ");
 
-                            EditText wtEdit = new EditText(_context);
+                            final EditText wtEdit = new EditText(_context);
                             wtEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
                             wtEdit.setText("" + metrics.get(i).getMetricIntValue());
                             wtEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -263,8 +318,9 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                         WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
                                                 .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
                                         //notifyDataSetInvalidated();
-                                        hideKeypad();
-                                        notifyDataSetChanged();
+                                        //hideKeypad();
+                                        //setImeVisibility(false);
+                                        //notifyDataSetChanged();
                                         return true;
                                     }
                                     return false;
@@ -276,17 +332,34 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                 @Override
                                 public void onFocusChange(View v, boolean hasFocus) {
                                     if (hasFocus){
-                                        Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED");
+                                        Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED: " + wtEdit.getText());
+
                                         m_editTextHandle = (EditText) v;
+                                        /*
+                                        mShowImeRunnable = new Runnable() {
+                                            public void run() {
+                                                InputMethodManager imm = (InputMethodManager)
+                                                        _context.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                                                if (imm != null) {
+                                                    imm.showSoftInput(m_editTextHandle,0);
+                                                }
+                                            }
+                                        };
+                                        */
+                                        //setImeVisibility(true);
                                         //notifyDataSetChanged();
                                         //m_editTextHandle.requestFocus();
+                                        showKeypad();
                                     } else {
-                                        Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS");
+                                        Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + wtEdit.getText());
                                         WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
                                                .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
                                         //notifyDataSetInvalidated();
                                         hideKeypad();
-                                        notifyDataSetChanged();
+
+                                        //setImeVisibility(false);
+                                        //notifyDataSetChanged();
                                     }
                                 }
                             });
@@ -439,6 +512,20 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         return true;
     }
 
+    private void setImeVisibility(final boolean visible) {
+        if (visible) {
+            m_editTextHandle.post(mShowImeRunnable);
+        } else {
+            m_editTextHandle.removeCallbacks(mShowImeRunnable);
+            InputMethodManager imm = (InputMethodManager) _context
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(m_editTextHandle.getWindowToken(), 0);
+            }
+        }
+    }
+
     /* BASE EXAMPLES
     public void onRemove(int which) {
         if (which < 0 || which > mContent.size()) return;
@@ -459,11 +546,32 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         mContent.remove(which);
     }
     */
+    private void doWeCloseKeypad(boolean b){
+        InputMethodManager imm = (InputMethodManager)_context.getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(m_editTextHandle.getWindowToken(), 0);
+    }
+
+    private void hideKeyboard() {
+        // Check if no view has focus:
+        View view = ((WorkspaceActivity) _context).getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) _context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
 
     private void hideKeypad(){
         InputMethodManager imm = (InputMethodManager)_context.getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(m_editTextHandle.getWindowToken(), 0);
+    }
+
+    private void showKeypad(){
+
+        InputMethodManager imm = (InputMethodManager)_context.getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(m_editTextHandle, InputMethodManager.SHOW_IMPLICIT);
     }
     //this needs fixed a lot
     @Override

@@ -79,7 +79,6 @@ public class WorkoutData {
     //newPlan
     public Plan crapNewPlan(){
         Plan plan = new Plan();
-        plan.setName("PLANTEST");
         //minus one for the placeholder at end
         Circuit_temp[] circuits = new Circuit_temp[Workout.size() - 1];
         //Because Kodie hates arraylists

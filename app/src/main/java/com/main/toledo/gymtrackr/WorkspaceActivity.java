@@ -19,10 +19,10 @@ public class WorkspaceActivity extends FragmentActivity{
     WorkspaceHeaderFragment HeaderFragment;
     String planName;
 
-    int courseOfAction;
+    int mode;
 
     public static boolean isEditable = true;
-    boolean toBrowse;
+    boolean toBrowse, toEdit;
 
     final int EDIT = 1, WORKOUT = 2;
 
@@ -37,18 +37,16 @@ public class WorkspaceActivity extends FragmentActivity{
             //Log.d("W_HEADER_DEBUG", "Plan name: " + planName);
             DatabaseWrapper db = new DatabaseWrapper();
             Plan planList = db.loadEntirePlan(planName);
+            Log.d("DB INTEGRATION TESTS", "PLAN ID: "+ planList.getPlanId() + " -- PLAN NAME: " + planList.getName());
             //Log.d("W_HEADER_DEBUG", "DB CALL COMPLETED");
             WorkoutData.get(this).eatPlan(planList);
             //Log.d("W_HEADER_DEBUG", "EATPLAN CALL COMPLETED");
-            courseOfAction = extras.getInt("EXTRA_COURSE_OF_ACTION");
-            //Log.d("W_HEADER_DEBUG", "CourseOfAction: " + courseOfAction);
+            mode = extras.getInt("EXTRA_MODE");
         }
-
-        toBrowse = false;
 
         setContentView(R.layout.w_activity_main);
 
-        switch(courseOfAction){
+        switch(mode){
             case EDIT:
                 this.findViewById(R.id.mainLayoutHandle).setBackgroundColor(Color.GREEN);
                 break;
@@ -73,10 +71,12 @@ public class WorkspaceActivity extends FragmentActivity{
     }
 
     public String getPlanName(){return planName;}
-
+    //flow control for workspace state
     public void setToBrowse(boolean b){toBrowse = b;}
 
-    public int getCourseOfAction(){return courseOfAction;}
+    public void setToEdit(boolean b){toEdit = b; }
+
+    public int getCourseOfAction(){return mode;}
     /*Not used at the moment
     public void testMethod(){
         ListFragment.collapseLists(listAdapter);
@@ -86,7 +86,7 @@ public class WorkspaceActivity extends FragmentActivity{
     public void toggleEdit(){
         Button toggleButton = (Button) HeaderFragment.getView().findViewById(R.id.toggleEdit);
 
-        Log.d("EDITABLE TEST", "toggleEdit() called in workspace activity");
+        //Log.d("EDITABLE TEST", "toggleEdit() called in workspace activity");
         isEditable = !isEditable;
         listAdapter.setEditable(isEditable);
         ListFragment.workspaceListView.toggleListeners(isEditable);
@@ -101,13 +101,16 @@ public class WorkspaceActivity extends FragmentActivity{
     @Override
     public void onResume(){
         //Log.d("APP FLOW TESTS", "ON RESUME CALLED IN WORKSPACE ACTIVITY");
+        //THIS FIXES A BUG WHERE THE ADAPTER WONT BE UPDATED WHEN THE
+        //ACTIVITY IS RESUMED AFTER BROWSE
+        toBrowse = false;
         listAdapter = new WorkspaceExpandableListAdapterMKII(this);
         super.onResume();
     }
     @Override
     public void onDestroy(){
-        Log.d("CLEAR WORKOUTDATA TEST", "onDestroy() called.");
-        if(!toBrowse) {
+        //Log.d("CLEAR WORKOUTDATA TEST", "onDestroy() called.");
+        if(!toBrowse || !toEdit) {
             WorkoutData.get(this).getWorkout().clear();
             WorkoutData.get(this).initialize();
         }
@@ -115,12 +118,15 @@ public class WorkspaceActivity extends FragmentActivity{
     }
     @Override
     public void onStart(){
+        /*
         Log.d("APP FLOW TESTS", "ON start CALLED IN WORKSPACE ACTIVITY");
         for (Circuit c : WorkoutData.get(this).getWorkout()){
             Log.d("APP FLOW TESTS", "CIRCUIT: " + c.getName());
         }
+        */
         super.onStart();
     }
+
     /*
     @Override
     public void onDialogPositiveClick(DialogFragment dialog){

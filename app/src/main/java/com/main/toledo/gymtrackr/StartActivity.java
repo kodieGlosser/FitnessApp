@@ -35,7 +35,7 @@ public class StartActivity extends Activity {
             @Override
             public void onClick(View v){
                 Intent i = new Intent(StartActivity.this, WorkspaceActivity.class);
-                i.putExtra("EXTRA_COURSE_OF_ACTION", WORKOUT);
+                i.putExtra("EXTRA_MODE", WORKOUT);
                 startActivity(i);
             }
         });

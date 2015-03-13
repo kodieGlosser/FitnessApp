@@ -3,6 +3,7 @@ package com.main.toledo.gymtrackr;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -119,8 +120,8 @@ public class LoadActivity extends FragmentActivity {
         p.setName(planName);
 
         DatabaseWrapper db = new DatabaseWrapper();
-        db.saveEntirePlan(p);
-
+        int id = db.saveEntirePlan(p);
+        Log.d("DB INTEGRATION TESTS", "PLAN ID: " + id + "PLAN NAME: " + p.getName());
         planList.clear();
         String[] planArray = db.loadPlanNames();
         //convert array to list for dynamic stuffs
@@ -180,7 +181,10 @@ public class LoadActivity extends FragmentActivity {
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //db call to delete a plan
+                    Log.d("DELETE TESTS", "plan name: " + planName);
+                    DatabaseWrapper db = new DatabaseWrapper();
+                    Plan p = db.loadEntirePlan(planName);
+                    db.deletePlan(p.getPlanId());
                     notifyDataSetChanged();
                 }
             });
@@ -194,7 +198,7 @@ public class LoadActivity extends FragmentActivity {
                     Log.d("W_HEADER_DEBUG", "Plan name: " + planName);
                     i.putExtra("EXTRA_PLAN_NAME", planName);
                     //puts actiontoperform (EDIT or WORKOUT) into the intent
-                    i.putExtra("EXTRA_COURSE_OF_ACTION", EDIT);
+                    i.putExtra("EXTRA_MODE", EDIT);
                     startActivity(i);
                 }
             });
@@ -208,7 +212,7 @@ public class LoadActivity extends FragmentActivity {
                     Log.d("W_HEADER_DEBUG", "Plan name: " + planName);
                     i.putExtra("EXTRA_PLAN_NAME", planName);
                     //puts actiontoperform (EDIT or WORKOUT) into the intent
-                    i.putExtra("EXTRA_COURSE_OF_ACTION", WORKOUT);
+                    i.putExtra("EXTRA_MODE", WORKOUT);
                     startActivity(i);
                 }
             });
