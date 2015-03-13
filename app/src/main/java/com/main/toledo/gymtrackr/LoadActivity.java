@@ -183,8 +183,7 @@ public class LoadActivity extends FragmentActivity {
                 public void onClick(View v) {
                     Log.d("DELETE TESTS", "plan name: " + planName);
                     DatabaseWrapper db = new DatabaseWrapper();
-                    Plan p = db.loadEntirePlan(planName);
-                    db.deletePlan(p.getPlanId());
+                    db.deletePlan(planName);
                     notifyDataSetChanged();
                 }
             });
