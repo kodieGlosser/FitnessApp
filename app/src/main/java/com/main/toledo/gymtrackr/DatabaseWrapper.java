@@ -322,6 +322,8 @@ public class DatabaseWrapper {
 
     private int getPlanIdFromName(String planName) {
         // get plan id
+        if (planName == null) planName = "";
+
         Cursor c = myDatabase.query(COLUMN_PLAN, new String[] { COLUMN_ID }, COLUMN_NAME + "=? COLLATE NOCASE", new String[] { planName}, null, null, null);
         int planId = -1;
 
