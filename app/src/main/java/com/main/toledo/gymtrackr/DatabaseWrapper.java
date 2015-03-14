@@ -76,6 +76,13 @@ public class DatabaseWrapper {
         return convertCursorToExercises(c);
     }
 
+    public Exercise[] browseExercisesByExactName(String name) {
+        String[] whereArgs = new String[] { name};
+        Cursor c = myDatabase.query(EXERCISE_TABLE, null, COLUMN_NAME + " = ?", whereArgs, null, null, COLUMN_NAME);
+
+        return convertCursorToExercises(c);
+    }
+
     public Exercise[] browseExerciseById(int ID) {
 
         Cursor c  = myDatabase.query(EXERCISE_TABLE, null, COLUMN_ID + "= " + ID, null, null, null, COLUMN_NAME);
@@ -247,10 +254,11 @@ public class DatabaseWrapper {
                         exercise = c2.getInt(c2.getColumnIndex(columnName2));
                     }
                 }
-                //////////////////////////////////
-                //Log.d("DBWRAPTEST", "Z: " + z); //
-                //////////////////////////////////
-                exercises[z] = new Exercise(id, browseExerciseById(exercise)[0].getName(), rep, weight, sequence1);
+                String exerciseName = null;
+                if (browseExerciseById(exercise).length == 1) {
+                    exerciseName = browseExerciseById(exercise)[0].getName();
+                }
+                exercises[z] = new Exercise(id, exerciseName, rep, weight, sequence1);
                 z++;
             }
         }
@@ -258,7 +266,7 @@ public class DatabaseWrapper {
     }
 
     public int saveEntirePlan(Plan plan) {
-        Log.d("workoutdata -> dbwrapper test: ", "Plan Name: " + plan.getName());
+
         if (getPlanIdFromName(plan.getName()) != -1) {
             deletePlan(plan.getName());
         }
@@ -281,7 +289,13 @@ public class DatabaseWrapper {
                 circuitValues.put(COLUMN_WEIGHT, exercises[j].getWeight());
                 circuitValues.put(COLUMN_REP, exercises[j].getRepetitions());
                 circuitValues.put(COLUMN_SEQUENCE, exercises[j].getSequence());
-                circuitValues.put(COLUMN_EXERCISE, exercises[j].getId());
+
+                int exerciseId = -1;
+                if (browseExercisesByExactName(exercises[j].getName()).length == 1){
+                    exerciseId = browseExercisesByExactName(exercises[j].getName())[0].getId();
+                }
+
+                circuitValues.put(COLUMN_EXERCISE, exerciseId);
                 circuitId = myDatabase.insert(COLUMN_CIRCUIT, null, circuitValues);
 
                 ContentValues plannedUnionValues = new ContentValues();
