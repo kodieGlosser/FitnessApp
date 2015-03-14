@@ -120,8 +120,8 @@ public class LoadActivity extends FragmentActivity {
         p.setName(planName);
 
         DatabaseWrapper db = new DatabaseWrapper();
-        int id = db.saveEntirePlan(p);
-        Log.d("DB INTEGRATION TESTS", "PLAN ID: " + id + "PLAN NAME: " + p.getName());
+        db.saveEntirePlan(p);   //NOTE TO SELF: DELETES IF THERE
+
         planList.clear();
         String[] planArray = db.loadPlanNames();
         //convert array to list for dynamic stuffs
@@ -184,6 +184,8 @@ public class LoadActivity extends FragmentActivity {
                     Log.d("DELETE TESTS", "plan name: " + planName);
                     DatabaseWrapper db = new DatabaseWrapper();
                     db.deletePlan(planName);
+                    planList.remove(planName);
+
                     notifyDataSetChanged();
                 }
             });

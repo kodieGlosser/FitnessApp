@@ -218,6 +218,11 @@ public class DatabaseWrapper {
         String rawquery2 = "select * from Circuit where Circuit._id IN (select circuitId from Planned_Union where workoutId = " + workoutId + ")";
         Cursor c2 = myDatabase.rawQuery(rawquery2, null);
         int count2 = c2.getCount();
+        //ADAM 3/13/15 added this test code
+        //if (count2 == 0){                //
+        //   count2 = 1;                  //
+        //}                                //
+        ///////////////////////////////////
         exercises = new Exercise[count2];
         int z = 0;
         if (count2 >= 1) {
@@ -242,7 +247,9 @@ public class DatabaseWrapper {
                         exercise = c2.getInt(c2.getColumnIndex(columnName2));
                     }
                 }
-
+                //////////////////////////////////
+                //Log.d("DBWRAPTEST", "Z: " + z); //
+                //////////////////////////////////
                 exercises[z] = new Exercise(id, browseExerciseById(exercise)[0].getName(), rep, weight, sequence1);
                 z++;
             }
@@ -251,7 +258,7 @@ public class DatabaseWrapper {
     }
 
     public int saveEntirePlan(Plan plan) {
-
+        Log.d("workoutdata -> dbwrapper test: ", "Plan Name: " + plan.getName());
         if (getPlanIdFromName(plan.getName()) != -1) {
             deletePlan(plan.getName());
         }

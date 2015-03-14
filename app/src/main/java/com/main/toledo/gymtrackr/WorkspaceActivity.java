@@ -24,7 +24,7 @@ public class WorkspaceActivity extends FragmentActivity{
     public static boolean isEditable = true;
     boolean toBrowse, toEdit;
 
-    final int EDIT = 1, WORKOUT = 2;
+    final int PLAN = 1, WORKOUT = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class WorkspaceActivity extends FragmentActivity{
         setContentView(R.layout.w_activity_main);
 
         switch(mode){
-            case EDIT:
+            case PLAN:
                 this.findViewById(R.id.mainLayoutHandle).setBackgroundColor(Color.GREEN);
                 break;
             case WORKOUT:
@@ -76,7 +76,7 @@ public class WorkspaceActivity extends FragmentActivity{
 
     public void setToEdit(boolean b){toEdit = b; }
 
-    public int getCourseOfAction(){return mode;}
+    public int getAppMode(){return mode;}
     /*Not used at the moment
     public void testMethod(){
         ListFragment.collapseLists(listAdapter);
@@ -111,7 +111,7 @@ public class WorkspaceActivity extends FragmentActivity{
     public void onDestroy(){
         //Log.d("CLEAR WORKOUTDATA TEST", "onDestroy() called.");
         if(!toBrowse || !toEdit) {
-            WorkoutData.get(this).getWorkout().clear();
+            WorkoutData.get(this).clear();
             WorkoutData.get(this).initialize();
         }
         super.onDestroy();

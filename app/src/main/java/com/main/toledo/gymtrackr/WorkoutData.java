@@ -13,6 +13,7 @@ public class WorkoutData {
     //private HashMap<String, ArrayList<Exercise>> WorkoutMap;
     private ArrayList<Circuit> Workout = new ArrayList<Circuit>();
     private int mPlanId;
+    private String m_name;
     private static WorkoutData sWorkspaceData;
     private Context mAppContext;
 
@@ -80,6 +81,8 @@ public class WorkoutData {
     public Plan crapNewPlan(){
         Plan plan = new Plan();
         //minus one for the placeholder at end
+        plan.setName(m_name);
+        plan.setPlanId(mPlanId);
         Circuit_temp[] circuits = new Circuit_temp[Workout.size() - 1];
         //Because Kodie hates arraylists
         //for each circuit
@@ -172,6 +175,9 @@ public class WorkoutData {
 
         Workout.clear();
         //mPlanId = p.getPlanId();
+        mPlanId = p.getPlanId();
+        m_name = p.getName();
+
         Circuit_temp[] circuits = p.getCircuits();
         if(p.getCircuits().length != 0) {
             boolean sorted = false;
@@ -220,5 +226,11 @@ public class WorkoutData {
         Log.d("EAT PLAN TESTS", "COPY COMPLETED");
         initialize();
 
+    }
+
+    public void clear(){
+        Workout.clear();
+        m_name = "";
+        mPlanId = -1;
     }
 }

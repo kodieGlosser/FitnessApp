@@ -172,7 +172,8 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                     if (actionId == EditorInfo.IME_ACTION_DONE){
                                        WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
                                                 .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
-                                       notifyDataSetChanged();
+
+                                       //notifyDataSetChanged();
                                        // notifyDataSetInvalidated();
                                        return true;
                                     }
@@ -238,6 +239,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                                         WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
                                                 .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
+                                        hideKeypad();
                                         //notifyDataSetInvalidated();
                                         //notifyDataSetChanged();
                                         return true;
@@ -256,7 +258,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                         Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + repEdit.getText());
 
                                         m_editTextHandle = (EditText) v;
-                                        THETHING = true;
+                                        //THETHING = true;
                                         /*
                                         mShowImeRunnable = new Runnable() {
                                             public void run() {
@@ -272,13 +274,13 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                         //setImeVisibility(true);
                                         //notifyDataSetChanged();
                                         //m_editTextHandle.requestFocus();
-                                        showKeypad();
+                                        //showKeypad();
                                     } else {
                                         Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + repEdit.getText());
                                         WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
                                                 .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
                                         //notifyDataSetInvalidated();
-                                        hideKeypad();
+                                        //hideKeypad();
                                         //setImeVisibility(false);
                                         //notifyDataSetChanged();
 
@@ -318,7 +320,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                         WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
                                                 .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
                                         //notifyDataSetInvalidated();
-                                        //hideKeypad();
+                                        hideKeypad();
                                         //setImeVisibility(false);
                                         //notifyDataSetChanged();
                                         return true;
@@ -350,13 +352,13 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                         //setImeVisibility(true);
                                         //notifyDataSetChanged();
                                         //m_editTextHandle.requestFocus();
-                                        showKeypad();
+                                        //showKeypad();
                                     } else {
                                         Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + wtEdit.getText());
                                         WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
                                                .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
                                         //notifyDataSetInvalidated();
-                                        hideKeypad();
+                                        //hideKeypad();
 
                                         //setImeVisibility(false);
                                         //notifyDataSetChanged();

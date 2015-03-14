@@ -3,8 +3,6 @@ package com.main.toledo.gymtrackr;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +18,7 @@ public class WorkspaceHeaderFragment extends Fragment {
     private Button workspaceEditToggleButton;
     private TextView loadMessage;
 
-    final int EDIT = 1, WORKOUT = 2;
+    final int PLAN = 1, WORKOUT = 2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,20 +37,6 @@ public class WorkspaceHeaderFragment extends Fragment {
 
         //sets second message text
         loadMessage = (TextView)v.findViewById(R.id.headerMessageTwo);
-        String textVal;
-        switch(((WorkspaceActivity) getActivity()).getCourseOfAction()){
-            case EDIT:
-                textVal = "  EDIT";
-                break;
-            case WORKOUT:
-                textVal = "  WORKOUT";
-                break;
-            default:
-                textVal = "  SHIT HAPPENED!";
-                break;
-        }
-
-        loadMessage.setText(textVal);
 
         //sets the listener for the test (collapse) button
 
@@ -62,12 +46,35 @@ public class WorkspaceHeaderFragment extends Fragment {
             @Override
             public void onClick(View v){
                 //save code will go here
-                Plan p = WorkoutData.get(getActivity()).crapNewPlan();
-                DatabaseWrapper db = new DatabaseWrapper();
-                db.saveEntirePlan(p);
+
+                if (((WorkspaceActivity) getActivity()).getAppMode() == PLAN) {
+                    //CODE FOR PLAN SAVE
+                    Plan p = WorkoutData.get(getActivity()).crapNewPlan();
+                    DatabaseWrapper db = new DatabaseWrapper();
+                    db.saveEntirePlan(p);
+                }
+                if (((WorkspaceActivity) getActivity()).getAppMode() == WORKOUT) {
+                    //CODE FOR WORKOUT SAVE, EG EXPORT TO HISTORY
+                }
             }
         });
 
+        String textVal;
+        switch(((WorkspaceActivity) getActivity()).getAppMode()){
+            case PLAN:
+                textVal = "  PLAN";
+                saveButton.setText("SAVE PLAN");
+                break;
+            case WORKOUT:
+                textVal = "  WORKOUT";
+                saveButton.setText("EXPORT TO HISTORY");
+                break;
+            default:
+                textVal = "  SHIT HAPPENED!";
+                break;
+        }
+
+        loadMessage.setText(textVal);
         //sets the listener for the toggle button
         workspaceEditToggleButton = (Button)v.findViewById(R.id.toggleEdit);
 

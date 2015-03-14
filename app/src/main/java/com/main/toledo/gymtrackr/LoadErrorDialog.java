@@ -46,8 +46,7 @@ public class LoadErrorDialog extends DialogFragment {
         if (error == TAKEN_NAME_VALUE){
             builder.setPositiveButton(errorAffirmative, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    //Method to delete plan goes here.
-                    //((LoadActivity) getActivity()).createNewPlan();
+                    ((LoadActivity) getActivity()).createNewPlan();
                 }
             });
         }
