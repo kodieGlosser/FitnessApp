@@ -234,12 +234,16 @@ public class WorkoutData {
         for(Circuit c : Workout){
             for (Exercise e : c.getExercises()){
                 if (e.isSaveToHistorySet()){
+                    int weight, reps;
+                    Date d = new Date();
+                    reps = e.getMetricValueByType(metricType.REPETITIONS);
+                    weight = e.getMetricValueByType(metricType.WEIGHT);
                     ExerciseHistory eh = new ExerciseHistory(
-                        new Date(),
-                        e.getWeight(),
-                        e.getRepetitions(),
-                        0,
-                        mPlanId
+                        d, //date
+                        weight,     //weight
+                        reps,       //reps
+                        e.getId(),          //exercise id
+                        mPlanId     //plan id
                     );
                     tempExerciseHolder.add(eh);
                 }

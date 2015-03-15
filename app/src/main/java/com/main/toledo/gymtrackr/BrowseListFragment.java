@@ -30,7 +30,7 @@ public class BrowseListFragment extends ListFragment{
         Exercise e = (Exercise)(getListAdapter()).getItem(position);
         Exercise exercise = new Exercise();
         exercise.setName(e.getName());
-
+        exercise.setId(e.getId());
         //Stubs
         Metric weightMetric = new Metric();
         weightMetric.setType(metricType.WEIGHT);

@@ -158,14 +158,14 @@ public class Exercise {
 
     public void setSaveToHistory(boolean b){mSaveToHistory = b;}
 
-    public String getMetricValueByType(metricType metricType){
-        String s = "";
+    public int getMetricValueByType(metricType metricType){
+        int i = 0;
         for(Metric m : m_metrics){
             if (m.getType() == metricType){
-                s = m.metricStringValue;
+                i = m.getMetricIntValue();
             }
         }
-        return s;
+        return i;
     }
 
     public boolean isSaveToHistorySet(){return mSaveToHistory;}

@@ -86,7 +86,11 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
         }
 
         public LinearLayout populateDynamicView(ExerciseHistory e){
-            m_metricTextViews.get(0).setText(e.getDate().toString());
+            if(e.getDate() != null) {
+                m_metricTextViews.get(0).setText(e.getDate().toString());
+            } else {
+                m_metricTextViews.get(0).setText("DATE ERROR OCCURRED!");
+            }
             for(int i = 0; i < m_numMetrics; i++){
                 m_metricTextViews.get(i+1).setText(e.getMetrics().get(i).getType().toString() + ": " +
                                                  e.getMetrics().get(i).getMetricIntValue());
@@ -97,6 +101,5 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
 
         }
     }
-
 }
 
