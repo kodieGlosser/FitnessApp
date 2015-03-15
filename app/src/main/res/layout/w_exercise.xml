@@ -24,12 +24,12 @@
             android:layout_weight="0.15"
             android:focusable="false"/>
     </LinearLayout>
-    <LinearLayout
+    <!--<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/exerciseLayout">
-        <!--<TextView
+        <TextView
             android:id="@+id/workspaceExerciseNameView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,6 +40,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Exercise"
-            android:layout_weight="0.85" />-->
-    </LinearLayout>
+            android:layout_weight="0.85" />
+    </LinearLayout>-->
 </LinearLayout>

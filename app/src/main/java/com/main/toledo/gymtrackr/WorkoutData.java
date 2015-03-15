@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Adam on 2/11/2015.
@@ -226,6 +227,29 @@ public class WorkoutData {
         Log.d("EAT PLAN TESTS", "COPY COMPLETED");
         initialize();
 
+    }
+    public ExerciseHistory[] crapHistory(){
+        ArrayList<ExerciseHistory> tempExerciseHolder = new ArrayList<>();
+        //Pull all workout exercises into temp array
+        for(Circuit c : Workout){
+            for (Exercise e : c.getExercises()){
+                if (e.isSaveToHistorySet()){
+                    ExerciseHistory eh = new ExerciseHistory(
+                        new Date(),
+                        e.getWeight(),
+                        e.getRepetitions(),
+                        0,
+                        mPlanId
+                    );
+                    tempExerciseHolder.add(eh);
+                }
+            }
+        }
+        //Convert to array for db placement
+        ExerciseHistory[] exerciseHistory = new ExerciseHistory[tempExerciseHolder.size()];
+        exerciseHistory = tempExerciseHolder.toArray(exerciseHistory);
+
+        return exerciseHistory;
     }
 
     public void clear(){

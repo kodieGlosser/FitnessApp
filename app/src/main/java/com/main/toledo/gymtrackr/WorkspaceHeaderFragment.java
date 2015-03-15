@@ -55,6 +55,8 @@ public class WorkspaceHeaderFragment extends Fragment {
                 }
                 if (((WorkspaceActivity) getActivity()).getAppMode() == WORKOUT) {
                     //CODE FOR WORKOUT SAVE, EG EXPORT TO HISTORY
+                    DatabaseWrapper db = new DatabaseWrapper();
+                    db.addExerciseToHistory(WorkoutData.get(getActivity()).crapHistory());
                 }
             }
         });

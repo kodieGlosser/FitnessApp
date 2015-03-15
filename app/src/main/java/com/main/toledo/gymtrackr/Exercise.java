@@ -21,6 +21,7 @@ public class Exercise {
     //performed, used to organize browse menu
     private ExerciseStatus status;
     private ArrayList<Metric> m_metrics = new ArrayList<Metric>();
+    private boolean mSaveToHistory; //tests for whether exercise was used or not, used when saving history
     //performed, used to organize browse menu
 
     public Exercise(String name, String muscleGroup, int lastPerformed, String equipmentType){
@@ -40,6 +41,9 @@ public class Exercise {
 
         m_metrics.add(weightMetric);
         m_metrics.add(repMetric);
+
+        //tests for whether exercise was used or not, used when saving history
+        mSaveToHistory = false;
     }
 
     public Exercise(int id, String name, int repetitions, int weight, int sequence){
@@ -49,7 +53,7 @@ public class Exercise {
         this.m_weight = weight;
         this.m_sequence = sequence;
 
-        Log.d("EXERCISE CONSTRUCTOR TEST", "WEIGHT: " + weight + "REPS: " + repetitions);
+        //Log.d("EXERCISE CONSTRUCTOR TEST", "WEIGHT: " + weight + "REPS: " + repetitions);
 
         //stub for metrics
 
@@ -63,6 +67,9 @@ public class Exercise {
 
         m_metrics.add(weightMetric);
         m_metrics.add(repMetric);
+
+
+        mSaveToHistory = false;
     }
 
     public Exercise(int id, String name, String muscleGroup, String equipmentType, String targetMuscle){
@@ -82,6 +89,8 @@ public class Exercise {
 
         m_metrics.add(weightMetric);
         m_metrics.add(repMetric);
+
+        mSaveToHistory = false;
     }
 
     public Exercise(){
@@ -89,6 +98,8 @@ public class Exercise {
         m_muscleGroup = "test";
         m_lastPerformed = 0;
         m_equipmentType = "test";
+
+        mSaveToHistory = false;
     }
 
     public void setWeight(int weight) { this.m_weight = weight; }
@@ -145,6 +156,19 @@ public class Exercise {
 
     public void addMetrics(Metric m){ m_metrics.add(m); }
 
+    public void setSaveToHistory(boolean b){mSaveToHistory = b;}
+
+    public String getMetricValueByType(metricType metricType){
+        String s = "";
+        for(Metric m : m_metrics){
+            if (m.getType() == metricType){
+                s = m.metricStringValue;
+            }
+        }
+        return s;
+    }
+
+    public boolean isSaveToHistorySet(){return mSaveToHistory;}
     @Override
     public String toString() { return m_name; }
 

@@ -26,12 +26,14 @@ public class WorkspaceActivity extends FragmentActivity{
 
     final int PLAN = 1, WORKOUT = 2;
 
+    boolean workout_from_plan_flag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("APP FLOW TESTS", "ON CREATE CALLED IN WORKSPACE ACTIVITY");
         super.onCreate(savedInstanceState);
         //gets relevant data from load activity, plan name and whether we are editing or working out.
         Bundle extras = getIntent().getExtras();
+
         if (extras != null){
             planName = extras.getString("EXTRA_PLAN_NAME");
             //Log.d("W_HEADER_DEBUG", "Plan name: " + planName);
@@ -42,6 +44,11 @@ public class WorkspaceActivity extends FragmentActivity{
             WorkoutData.get(this).eatPlan(planList);
             //Log.d("W_HEADER_DEBUG", "EATPLAN CALL COMPLETED");
             mode = extras.getInt("EXTRA_MODE");
+            if (extras.getBoolean("WORKOUT_FROM_PLAN_FLAG")){
+                workout_from_plan_flag = true;
+            } else {
+                workout_from_plan_flag = false;
+            }
         }
 
         setContentView(R.layout.w_activity_main);
@@ -75,6 +82,8 @@ public class WorkspaceActivity extends FragmentActivity{
     public void setToBrowse(boolean b){toBrowse = b;}
 
     public void setToEdit(boolean b){toEdit = b; }
+
+    public boolean workoutFromPlan(){return workout_from_plan_flag;}
 
     public int getAppMode(){return mode;}
     /*Not used at the moment
