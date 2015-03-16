@@ -55,12 +55,15 @@ public class WorkspaceActivity extends FragmentActivity{
 
         setContentView(R.layout.w_activity_main);
 
+        int redColor = Color.parseColor("#FF3737");
+        int greenColor = Color.parseColor("#00B800");
+
         switch(mode){
             case PLAN:
-                this.findViewById(R.id.mainLayoutHandle).setBackgroundColor(Color.GREEN);
+                this.findViewById(R.id.mainLayoutHandle).setBackgroundColor(greenColor);
                 break;
             case WORKOUT:
-                this.findViewById(R.id.mainLayoutHandle).setBackgroundColor(Color.RED);
+                this.findViewById(R.id.mainLayoutHandle).setBackgroundColor(redColor);
                 break;
             default:
                 break;
