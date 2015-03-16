@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:baselineAligned="false"
-    android:id="@+id/loadMainWindow">
+    android:id="@+id/loadMainWindow"
+    android:background="#00B800">
 
     <FrameLayout
         android:id="@+id/loadHeaderContainer"
