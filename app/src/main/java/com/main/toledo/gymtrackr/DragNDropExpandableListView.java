@@ -37,8 +37,12 @@ public class DragNDropExpandableListView extends ExpandableListView {
     RemoveListener mRemoveListener;
     DragListener mDragListener;
 
+    Context mContext;
+
     public DragNDropExpandableListView(Context context, AttributeSet attrs) {
+
         super(context, attrs);
+        mContext = context;
     }
 
     public void setDropListener(DropListener l) {
@@ -202,4 +206,14 @@ public class DragNDropExpandableListView extends ExpandableListView {
             mDragView = null;
         }
     }
+    /*
+    @Override
+
+    public boolean collapseGroup(int groupPosition){
+        boolean b = super.collapseGroup(groupPosition);
+        ((WorkspaceActivity) mContext).
+
+        return b;
+    }
+    */
 }

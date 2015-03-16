@@ -415,10 +415,14 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         @Override
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
                             if (actionId == EditorInfo.IME_ACTION_DONE){
-                                WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
-                                        .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
-
-                                //notifyDataSetChanged();
+                                if(v.getText().toString().equals("")){
+                                    WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
+                                            .getMetrics().get(j).setMetricIntValue(0);
+                                } else {
+                                    WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
+                                            .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
+                                }      //
+                                // notifyDataSetChanged();
                                 // notifyDataSetInvalidated();
                                 return true;
                             }
@@ -451,8 +455,13 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                 //showKeypad();
                             } else {
                                 Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + timeEdit.getText());
-                                WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
-                                        .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
+                                if(((EditText) v).getText().toString().equals("")) {
+                                    WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
+                                            .getMetrics().get(j).setMetricIntValue(0);
+                                } else {
+                                    WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
+                                            .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
+                                }
                                 //notifyDataSetChanged();
                                 //setImeVisibility(false);
                                 //hideKeypad();
@@ -472,21 +481,27 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 case REPETITIONS:
                     TextView repText = new TextView(_context);
                     repText.setText("Reps: ");
-
+                    int focusCounter = 0;
                     final EditText repEdit = new EditText(_context);
                     repEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
                     repEdit.setText("" + metrics.get(i).getMetricIntValue());
                     repEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                    repEdit.setTag(focusCounter);
                     //repEdit.setFocusable(false);
                     repEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                         @Override
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                                WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
-                                        .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
+                                if(v.getText().toString().equals("")){
+                                    WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
+                                            .getMetrics().get(j).setMetricIntValue(0);
+                                } else {
+                                    WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
+                                            .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
+                                }
                                 hideKeypad();
                                 //notifyDataSetInvalidated();
-                                //notifyDataSetChanged();
+                                notifyDataSetChanged();
                                 return true;
                             }
                             return false;
@@ -522,10 +537,23 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                 //m_editTextHandle.requestFocus();
                                 //showKeypad();
                             } else {
-                                Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + repEdit.getText());
-                                WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
-                                        .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
-                                WorkoutData.get(_context).getWorkout().get(group).getExercise(child).setSaveToHistory(true);
+                                int i = (int) v.getTag();
+                                i++;
+                                Log.d("FOCUS TESTS", "i: " + i);
+                                v.setTag(i);
+                                //if( i == 2) {
+                                    Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + repEdit.getText());
+                                    if (((EditText) v).getText().toString().equals("")) {
+                                        WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
+                                                .getMetrics().get(j).setMetricIntValue(0);
+                                    } else {
+                                        WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
+                                                .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
+                                    }
+                                   // v.setTag(0);
+                                   // hideKeypad();
+                                   // notifyDataSetChanged();
+                                //}
                                 //notifyDataSetInvalidated();
                                 //hideKeypad();
                                 //setImeVisibility(false);
@@ -564,8 +592,13 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         @Override
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                                WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
-                                        .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
+                                if(v.getText().toString().equals("")){
+                                    WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
+                                            .getMetrics().get(j).setMetricIntValue(0);
+                                } else {
+                                    WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
+                                            .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
+                                }
                                 //notifyDataSetInvalidated();
                                 hideKeypad();
                                 //setImeVisibility(false);
@@ -603,8 +636,13 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                 //showKeypad();
                             } else {
                                 Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + wtEdit.getText());
-                                WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
-                                        .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
+                                if(((EditText) v).getText().toString().equals("")) {
+                                    WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
+                                            .getMetrics().get(j).setMetricIntValue(0);
+                                } else {
+                                    WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
+                                            .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
+                                }
                                 // WorkoutData.get(_context).getWorkout().get(group).getExercise(child).setSaveToHistory(true);
                                 //notifyDataSetInvalidated();
                                 //hideKeypad();
