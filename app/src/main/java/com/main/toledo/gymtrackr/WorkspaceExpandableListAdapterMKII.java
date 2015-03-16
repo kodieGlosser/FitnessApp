@@ -132,7 +132,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                             .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.w_exercise, null);
                     convertView.setTag("Data");
-                    ArrayList<Metric> metrics = WorkoutData.get(_context).getWorkout().get(group).getExercise(childPosition).getMetrics();
+
 
                     //WORKAROUND, MAKES LIST ITEMS CLICKABLE, EDIT TEXTS DISABLED NORMAL FUNCTIONALITY
                     //CODE GOES HERE
@@ -157,264 +157,10 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     });
 
                     if (((WorkspaceActivity) _context).workoutFromPlan()){
-                        //replace with method to add layout
-                        final LinearLayout goalLayout = new LinearLayout(_context);
-                        goalLayout.setOrientation(LinearLayout.HORIZONTAL);
-                        for(int i = 0; i < metrics.size(); i++) {
-                            switch(metrics.get(i).getType()){
-                                case TIME:
-                                    TextView timeGoal = new TextView(_context);
-                                    timeGoal.setText("Time: " + metrics.get(i).getMetricIntValue());
-                                    goalLayout.addView(timeGoal);
-                                    break;
-                                case REPETITIONS:
-                                    TextView repGoal = new TextView(_context);
-                                    repGoal.setText("Reps: " + metrics.get(i).getMetricIntValue());
-                                    goalLayout.addView(repGoal);
-                                    break;
-                                case OTHER:
-                                    TextView otherGoal = new TextView(_context);
-                                    break;
-                                case WEIGHT:
-                                    TextView weightGoal = new TextView(_context);
-                                    weightGoal.setText("Weight: " + metrics.get(i).getMetricIntValue());
-                                    goalLayout.addView(weightGoal);
-                                    break;
-                            }
-                        }
-                        mainLayout.addView(goalLayout);
+                        mainLayout.addView(createGoalLayout(group, child));
                     }
 
-                    final LinearLayout layout = new LinearLayout(_context);//(LinearLayout) convertView.findViewById(R.id.exerciseLayout);
-                    layout.setOrientation(LinearLayout.HORIZONTAL);
-                    layout.removeAllViewsInLayout();
-
-                    //SHITTY EDIT TEXT CODE REPLACE WITH METHOD
-                    for(int i = 0; i < metrics.size(); i++){
-                        final int j = i;
-                        switch(metrics.get(i).getType()){
-                            case TIME:
-                                TextView timeText = new TextView(_context);
-                                timeText.setText("Time: ");
-                                final EditText timeEdit = new EditText(_context);
-                                timeEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
-                                timeEdit.setText("" + metrics.get(i).getMetricIntValue());
-                                timeEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
-                                timeEdit.setOnEditorActionListener(new TextView.OnEditorActionListener(){
-                                    @Override
-                                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
-                                        if (actionId == EditorInfo.IME_ACTION_DONE){
-                                            WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
-                                                    .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
-
-                                            //notifyDataSetChanged();
-                                            // notifyDataSetInvalidated();
-                                            return true;
-                                        }
-                                        return false;
-                                    }
-                                });
-
-                                timeEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                                    @Override
-                                    public void onFocusChange(View v, boolean hasFocus) {
-                                        if (hasFocus){
-
-                                            Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + timeEdit.getText());
-                                        /*
-                                        m_editTextHandle = (EditText) v;
-                                        mShowImeRunnable = new Runnable() {
-                                            public void run() {
-                                                InputMethodManager imm = (InputMethodManager)
-                                                        _context.getSystemService(Context.INPUT_METHOD_SERVICE);
-
-                                                if (imm != null) {
-                                                    imm.showSoftInput(m_editTextHandle,0);
-                                                }
-                                            }
-                                        };
-                                        */
-                                            //setImeVisibility(true);
-                                            //notifyDataSetChanged();
-                                            //m_editTextHandle.requestFocus();
-                                            //showKeypad();
-                                        } else {
-                                            Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + timeEdit.getText());
-                                            WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
-                                                    .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
-                                            //notifyDataSetChanged();
-                                            //setImeVisibility(false);
-                                            //hideKeypad();
-                                            //notifyDataSetInvalidated();
-                                        }
-                                    }
-                                });
-                                //timeEdit.setFocusable(false);
-
-                                LinearLayout timeRow = new LinearLayout(_context);
-                                timeRow.setOrientation(LinearLayout.HORIZONTAL);
-                                timeRow.addView(timeText);
-                                timeRow.addView(timeEdit);
-
-                                layout.addView(timeRow);
-                                break;
-                            case REPETITIONS:
-                                TextView repText = new TextView(_context);
-                                repText.setText("Reps: ");
-
-                                final EditText repEdit = new EditText(_context);
-                                repEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
-                                repEdit.setText("" + metrics.get(i).getMetricIntValue());
-                                repEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
-                                //repEdit.setFocusable(false);
-                                repEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                                    @Override
-                                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                                        if (actionId == EditorInfo.IME_ACTION_DONE) {
-                                            WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
-                                                    .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
-                                            hideKeypad();
-                                            //notifyDataSetInvalidated();
-                                            //notifyDataSetChanged();
-                                            return true;
-                                        }
-                                        return false;
-                                    }
-                                });
-
-
-                                //time
-
-                                repEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                                    @Override
-                                    public void onFocusChange(View v, boolean hasFocus) {
-                                        if (hasFocus){
-                                            Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + repEdit.getText());
-
-                                            m_editTextHandle = (EditText) v;
-                                            //THETHING = true;
-                                        /*
-                                        mShowImeRunnable = new Runnable() {
-                                            public void run() {
-                                                InputMethodManager imm = (InputMethodManager)
-                                                        _context.getSystemService(Context.INPUT_METHOD_SERVICE);
-
-                                                if (imm != null) {
-                                                    imm.showSoftInput(m_editTextHandle,0);
-                                                }
-                                            }
-                                        };
-                                        */
-                                            //setImeVisibility(true);
-                                            //notifyDataSetChanged();
-                                            //m_editTextHandle.requestFocus();
-                                            //showKeypad();
-                                        } else {
-                                            Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + repEdit.getText());
-                                            WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
-                                                    .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
-                                            WorkoutData.get(_context).getWorkout().get(group).getExercise(child).setSaveToHistory(true);
-                                            //notifyDataSetInvalidated();
-                                            //hideKeypad();
-                                            //setImeVisibility(false);
-                                            //notifyDataSetChanged();
-
-                                        }
-                                    }
-                                });
-                                LinearLayout repRow = new LinearLayout(_context);
-                                repRow.setOrientation(LinearLayout.HORIZONTAL);
-                                repRow.addView(repText);
-                                repRow.addView(repEdit);
-
-                                layout.addView(repRow);
-                                break;
-                            case OTHER:
-                                TextView otherText = new TextView(_context);
-                                otherText.setText(metrics.get(i).getMetricStringValue());
-                                //EditText otherEdit = new EditText(getActivity());
-
-                                LinearLayout otherRow = new LinearLayout(_context);
-                                otherRow.setOrientation(LinearLayout.HORIZONTAL);
-                                otherRow.addView(otherText);
-                                //otherRow.addView(otherEdit);
-                                break;
-                            case WEIGHT:
-                                TextView wtText = new TextView(_context);
-                                wtText.setText("Weight: ");
-
-                                final EditText wtEdit = new EditText(_context);
-                                wtEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
-                                wtEdit.setText("" + metrics.get(i).getMetricIntValue());
-                                wtEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
-                                //wtEdit.setFocusable(false);
-                                wtEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                                    @Override
-                                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                                        if (actionId == EditorInfo.IME_ACTION_DONE) {
-                                            WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
-                                                    .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
-                                            //notifyDataSetInvalidated();
-                                            hideKeypad();
-                                            //setImeVisibility(false);
-                                            //notifyDataSetChanged();
-                                            return true;
-                                        }
-                                        return false;
-                                    }
-                                });
-                                //time
-
-                                wtEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                                    @Override
-                                    public void onFocusChange(View v, boolean hasFocus) {
-                                        if (hasFocus){
-                                            Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED: " + wtEdit.getText());
-
-                                            m_editTextHandle = (EditText) v;
-
-                                        /*
-                                        mShowImeRunnable = new Runnable() {
-                                            public void run() {
-                                                InputMethodManager imm = (InputMethodManager)
-                                                        _context.getSystemService(Context.INPUT_METHOD_SERVICE);
-
-                                                if (imm != null) {
-                                                    imm.showSoftInput(m_editTextHandle,0);
-                                                }
-                                            }
-                                        };
-                                        */
-                                            //setImeVisibility(true);
-                                            //notifyDataSetChanged();
-                                            //m_editTextHandle.requestFocus();
-                                            //showKeypad();
-                                        } else {
-                                            Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + wtEdit.getText());
-                                            WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
-                                                    .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
-                                            // WorkoutData.get(_context).getWorkout().get(group).getExercise(child).setSaveToHistory(true);
-                                            //notifyDataSetInvalidated();
-                                            //hideKeypad();
-
-                                            //setImeVisibility(false);
-                                            //notifyDataSetChanged();
-                                        }
-                                    }
-                                });
-                                LinearLayout wtRow = new LinearLayout(_context);
-                                wtRow.setOrientation(LinearLayout.HORIZONTAL);
-                                wtRow.addView(wtText);
-                                wtRow.addView(wtEdit);
-
-                                layout.addView(wtRow);
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-
-                    mainLayout.addView(layout);
+                    mainLayout.addView(createMetricEditTextLayout(group, child));
                 }
 
 
@@ -619,6 +365,269 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         imm.showSoftInput(m_editTextHandle, InputMethodManager.SHOW_IMPLICIT);
     }
     //this needs fixed a lot
+
+
+    private View createGoalLayout(int group, int child){
+        final LinearLayout goalLayout = new LinearLayout(_context);
+        ArrayList<Metric> plan_metrics = WorkoutData.get(_context).getWorkout().get(group).getExercise(child).getPlanMetrics();
+        goalLayout.setOrientation(LinearLayout.HORIZONTAL);
+        for(int i = 0; i < plan_metrics.size(); i++) {
+            switch(plan_metrics.get(i).getType()){
+                case TIME:
+                    TextView timeGoal = new TextView(_context);
+                    timeGoal.setText("Time: " + plan_metrics.get(i).getMetricIntValue());
+                    goalLayout.addView(timeGoal);
+                    break;
+                case REPETITIONS:
+                    TextView repGoal = new TextView(_context);
+                    repGoal.setText("Reps: " + plan_metrics.get(i).getMetricIntValue());
+                    goalLayout.addView(repGoal);
+                    break;
+                case OTHER:
+                    TextView otherGoal = new TextView(_context);
+                    break;
+                case WEIGHT:
+                    TextView weightGoal = new TextView(_context);
+                    weightGoal.setText("Weight: " + plan_metrics.get(i).getMetricIntValue());
+                    goalLayout.addView(weightGoal);
+                    break;
+            }
+        }
+        return goalLayout;
+    }
+
+    private View createMetricEditTextLayout(final int group, final int child){
+        final LinearLayout layout = new LinearLayout(_context);//(LinearLayout) convertView.findViewById(R.id.exerciseLayout);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        //layout.removeAllViewsInLayout();
+        ArrayList<Metric> metrics = WorkoutData.get(_context).getWorkout().get(group).getExercise(child).getMetrics();
+        //SHITTY EDIT TEXT CODE REPLACE WITH METHOD
+        for(int i = 0; i < metrics.size(); i++){
+            final int j = i;
+            switch(metrics.get(i).getType()){
+                case TIME:
+                    TextView timeText = new TextView(_context);
+                    timeText.setText("Time: ");
+                    final EditText timeEdit = new EditText(_context);
+                    timeEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    timeEdit.setText("" + metrics.get(i).getMetricIntValue());
+                    timeEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                    timeEdit.setOnEditorActionListener(new TextView.OnEditorActionListener(){
+                        @Override
+                        public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
+                            if (actionId == EditorInfo.IME_ACTION_DONE){
+                                WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
+                                        .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
+
+                                //notifyDataSetChanged();
+                                // notifyDataSetInvalidated();
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
+
+                    timeEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        @Override
+                        public void onFocusChange(View v, boolean hasFocus) {
+                            if (hasFocus){
+
+                                Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + timeEdit.getText());
+                                        /*
+                                        m_editTextHandle = (EditText) v;
+                                        mShowImeRunnable = new Runnable() {
+                                            public void run() {
+                                                InputMethodManager imm = (InputMethodManager)
+                                                        _context.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                                                if (imm != null) {
+                                                    imm.showSoftInput(m_editTextHandle,0);
+                                                }
+                                            }
+                                        };
+                                        */
+                                //setImeVisibility(true);
+                                //notifyDataSetChanged();
+                                //m_editTextHandle.requestFocus();
+                                //showKeypad();
+                            } else {
+                                Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + timeEdit.getText());
+                                WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
+                                        .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
+                                //notifyDataSetChanged();
+                                //setImeVisibility(false);
+                                //hideKeypad();
+                                //notifyDataSetInvalidated();
+                            }
+                        }
+                    });
+                    //timeEdit.setFocusable(false);
+
+                    LinearLayout timeRow = new LinearLayout(_context);
+                    timeRow.setOrientation(LinearLayout.HORIZONTAL);
+                    timeRow.addView(timeText);
+                    timeRow.addView(timeEdit);
+
+                    layout.addView(timeRow);
+                    break;
+                case REPETITIONS:
+                    TextView repText = new TextView(_context);
+                    repText.setText("Reps: ");
+
+                    final EditText repEdit = new EditText(_context);
+                    repEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    repEdit.setText("" + metrics.get(i).getMetricIntValue());
+                    repEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                    //repEdit.setFocusable(false);
+                    repEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                        @Override
+                        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                                WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
+                                        .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
+                                hideKeypad();
+                                //notifyDataSetInvalidated();
+                                //notifyDataSetChanged();
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
+
+
+                    //time
+
+                    repEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        @Override
+                        public void onFocusChange(View v, boolean hasFocus) {
+                            if (hasFocus){
+                                Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + repEdit.getText());
+
+                                m_editTextHandle = (EditText) v;
+                                //THETHING = true;
+                                        /*
+                                        mShowImeRunnable = new Runnable() {
+                                            public void run() {
+                                                InputMethodManager imm = (InputMethodManager)
+                                                        _context.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                                                if (imm != null) {
+                                                    imm.showSoftInput(m_editTextHandle,0);
+                                                }
+                                            }
+                                        };
+                                        */
+                                //setImeVisibility(true);
+                                //notifyDataSetChanged();
+                                //m_editTextHandle.requestFocus();
+                                //showKeypad();
+                            } else {
+                                Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + repEdit.getText());
+                                WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
+                                        .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
+                                WorkoutData.get(_context).getWorkout().get(group).getExercise(child).setSaveToHistory(true);
+                                //notifyDataSetInvalidated();
+                                //hideKeypad();
+                                //setImeVisibility(false);
+                                //notifyDataSetChanged();
+
+                            }
+                        }
+                    });
+                    LinearLayout repRow = new LinearLayout(_context);
+                    repRow.setOrientation(LinearLayout.HORIZONTAL);
+                    repRow.addView(repText);
+                    repRow.addView(repEdit);
+
+                    layout.addView(repRow);
+                    break;
+                case OTHER:
+                    TextView otherText = new TextView(_context);
+                    otherText.setText(metrics.get(i).getMetricStringValue());
+                    //EditText otherEdit = new EditText(getActivity());
+
+                    LinearLayout otherRow = new LinearLayout(_context);
+                    otherRow.setOrientation(LinearLayout.HORIZONTAL);
+                    otherRow.addView(otherText);
+                    //otherRow.addView(otherEdit);
+                    break;
+                case WEIGHT:
+                    TextView wtText = new TextView(_context);
+                    wtText.setText("Weight: ");
+
+                    final EditText wtEdit = new EditText(_context);
+                    wtEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    wtEdit.setText("" + metrics.get(i).getMetricIntValue());
+                    wtEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                    //wtEdit.setFocusable(false);
+                    wtEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                        @Override
+                        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                                WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
+                                        .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
+                                //notifyDataSetInvalidated();
+                                hideKeypad();
+                                //setImeVisibility(false);
+                                //notifyDataSetChanged();
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
+                    //time
+
+                    wtEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        @Override
+                        public void onFocusChange(View v, boolean hasFocus) {
+                            if (hasFocus){
+                                Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED: " + wtEdit.getText());
+
+                                m_editTextHandle = (EditText) v;
+
+                                        /*
+                                        mShowImeRunnable = new Runnable() {
+                                            public void run() {
+                                                InputMethodManager imm = (InputMethodManager)
+                                                        _context.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                                                if (imm != null) {
+                                                    imm.showSoftInput(m_editTextHandle,0);
+                                                }
+                                            }
+                                        };
+                                        */
+                                //setImeVisibility(true);
+                                //notifyDataSetChanged();
+                                //m_editTextHandle.requestFocus();
+                                //showKeypad();
+                            } else {
+                                Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + wtEdit.getText());
+                                WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
+                                        .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
+                                // WorkoutData.get(_context).getWorkout().get(group).getExercise(child).setSaveToHistory(true);
+                                //notifyDataSetInvalidated();
+                                //hideKeypad();
+
+                                //setImeVisibility(false);
+                                //notifyDataSetChanged();
+                            }
+                        }
+                    });
+                    LinearLayout wtRow = new LinearLayout(_context);
+                    wtRow.setOrientation(LinearLayout.HORIZONTAL);
+                    wtRow.addView(wtText);
+                    wtRow.addView(wtEdit);
+
+                    layout.addView(wtRow);
+                    break;
+                default:
+                    break;
+            }
+        }
+        return layout;
+    }
+
     @Override
     public void onDrop(int homeExerciseIndex, int homeCircuitIndex,
                         int destinationExerciseIndex ,int destinationCircuitIndex) {

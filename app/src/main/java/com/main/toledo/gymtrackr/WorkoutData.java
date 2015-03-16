@@ -172,7 +172,7 @@ public class WorkoutData {
         return plan;
     }
 
-    public void eatPlan(Plan p){
+    public void eatPlan(Plan p, boolean workout_from_plan_flag ){
 
         Workout.clear();
         //mPlanId = p.getPlanId();
@@ -200,7 +200,7 @@ public class WorkoutData {
                 }
             }
         }
-        Log.d("EAT PLAN TESTS", "SORT COMPLETED");
+        //Log.d("EAT PLAN TESTS", "SORT COMPLETED");
 
         for (Circuit_temp c_old : circuits){
             Circuit c_new = new Circuit();
@@ -217,6 +217,10 @@ public class WorkoutData {
                 e.addMetrics(weight);
                 e.addMetrics(reps);
                 */
+                if(workout_from_plan_flag){
+                    Log.d("PLAN METRIC", "addSeparatePlanMetrics called");
+                    e.addSeparatePlanMetrics();
+                }
                 c_new.add(e);
             }
             if(c_new.isOpen()){
@@ -224,7 +228,7 @@ public class WorkoutData {
             }
             Workout.add(c_new);
         }
-        Log.d("EAT PLAN TESTS", "COPY COMPLETED");
+        //Log.d("EAT PLAN TESTS", "COPY COMPLETED");
         initialize();
 
     }
