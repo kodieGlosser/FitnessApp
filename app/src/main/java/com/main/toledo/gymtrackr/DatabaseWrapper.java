@@ -369,26 +369,48 @@ public class DatabaseWrapper {
      * @return
      */
     public ExerciseHistory[] loadExercisesByDate(Date date) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        String s_Month = null, s_Day = null, s_Hour = "", s_Minute = "", s_Second = "";
-        int month = cal.get(Calendar.MONTH) + 1;
-        int day = cal.get(Calendar.DAY_OF_MONTH);
-        if (month < 10) s_Month = "0" + month;
-        if (day < 10) s_Day = "0" + day;
-
-        String format = cal.get(Calendar.YEAR) + "-" + s_Month + "-" + s_Day;
+        String format = formatDate(date);
         String rawquery = "select * from History where Date like '%" + format  + "%'";
         Cursor c = myDatabase.rawQuery(rawquery, null);
 
         return convertCursorToExerciseHistory(c);
     }
 
+    private String formatDate(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        String s_Month = null, s_Day = null, s_Hour = null, s_Minute = null, s_Second = null;
+        int month = cal.get(Calendar.MONTH) + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        int hour = cal.get(Calendar.HOUR);
+        int minute = cal.get(Calendar.MINUTE);
+        int second = cal.get(Calendar.SECOND);
+
+        if (month < 10) s_Month = "0" + month;
+        else s_Month = Integer.toString(month);
+
+        if (day < 10) s_Day = "0" + day;
+        else s_Day = Integer.toString(day);
+
+//        if (hour < 10) s_Hour = "0" + hour;
+//        else s_Hour = Integer.toString(hour);
+        s_Hour = Integer.toString(hour);
+
+        if (minute < 10) s_Minute = "0" + minute;
+        else s_Minute = Integer.toString(minute);
+
+        if (second < 10) s_Second = "0" + second;
+        else s_Second = Integer.toString(second);
+
+        return cal.get(Calendar.YEAR) + "-" + s_Month + "-" + s_Day + " " + s_Hour + ":" + s_Minute + ":" + s_Second;
+    }
+
     public void addExerciseToHistory(ExerciseHistory[] exercise) {
 
         for (int i =0; i < exercise.length; i++) {
             ContentValues exerciseHistoryValues = new ContentValues();
-            exerciseHistoryValues.put(COLUMN_DATE, exercise[i].getDate().toString());
+            String format = formatDate(exercise[i].getDate());
+            exerciseHistoryValues.put(COLUMN_DATE, format);
             exerciseHistoryValues.put(COLUMN_WEIGHT, exercise[i].getWeight());
             exerciseHistoryValues.put(COLUMN_REP, exercise[i].getRep());
             exerciseHistoryValues.put(COLUMN_EXERCISE, exercise[i].getExerciseId());
