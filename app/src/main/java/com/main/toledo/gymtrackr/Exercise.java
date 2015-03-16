@@ -21,6 +21,7 @@ public class Exercise {
     //performed, used to organize browse menu
     private ExerciseStatus status;
     private ArrayList<Metric> m_metrics = new ArrayList<Metric>();
+    private ArrayList<Metric> m_plan_metrics = new ArrayList<>();
     private boolean mSaveToHistory; //tests for whether exercise was used or not, used when saving history
     //performed, used to organize browse menu
 
@@ -102,6 +103,14 @@ public class Exercise {
         mSaveToHistory = false;
     }
 
+    public void addSeparatePlanMetrics(){
+        for(Metric m : m_metrics){
+            Metric plan_metric = new Metric();
+            plan_metric.setType(m.getType());
+            plan_metric.setMetricIntValue(m.getMetricIntValue());
+            m_plan_metrics.add(plan_metric);
+        }
+    }
     public void setWeight(int weight) { this.m_weight = weight; }
 
     public int getWeight() { return this.m_weight; }
@@ -153,6 +162,8 @@ public class Exercise {
     }
 
     public ArrayList<Metric> getMetrics() { return m_metrics; }
+
+    public ArrayList<Metric> getPlanMetrics()  { return m_plan_metrics; }
 
     public void addMetrics(Metric m){ m_metrics.add(m); }
 

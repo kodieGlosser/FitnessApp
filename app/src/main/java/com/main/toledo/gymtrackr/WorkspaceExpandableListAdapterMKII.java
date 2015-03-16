@@ -132,11 +132,11 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                             .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.w_exercise, null);
                     convertView.setTag("Data");
-                    ArrayList<Metric> metrics = WorkoutData.get(_context).getWorkout().get(group).getExercise(childPosition).getMetrics();
+
 
                     //WORKAROUND, MAKES LIST ITEMS CLICKABLE, EDIT TEXTS DISABLED NORMAL FUNCTIONALITY
                     //CODE GOES HERE
-
+                    ArrayList<Metric> metrics = WorkoutData.get(_context).getWorkout().get(group).getExercise(childPosition).getMetrics();
                     LinearLayout mainLayout = (LinearLayout) convertView.findViewById(R.id.exerciseMainLayout);
                     //mainLayout.removeAllViewsInLayout();
                     mainLayout.setOnClickListener(null); //Resets the layouts on click listener
@@ -159,17 +159,18 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     if (((WorkspaceActivity) _context).workoutFromPlan()){
                         //replace with method to add layout
                         final LinearLayout goalLayout = new LinearLayout(_context);
+                        ArrayList<Metric> plan_metrics = WorkoutData.get(_context).getWorkout().get(group).getExercise(childPosition).getPlanMetrics();
                         goalLayout.setOrientation(LinearLayout.HORIZONTAL);
-                        for(int i = 0; i < metrics.size(); i++) {
-                            switch(metrics.get(i).getType()){
+                        for(int i = 0; i < plan_metrics.size(); i++) {
+                            switch(plan_metrics.get(i).getType()){
                                 case TIME:
                                     TextView timeGoal = new TextView(_context);
-                                    timeGoal.setText("Time: " + metrics.get(i).getMetricIntValue());
+                                    timeGoal.setText("Time: " + plan_metrics.get(i).getMetricIntValue());
                                     goalLayout.addView(timeGoal);
                                     break;
                                 case REPETITIONS:
                                     TextView repGoal = new TextView(_context);
-                                    repGoal.setText("Reps: " + metrics.get(i).getMetricIntValue());
+                                    repGoal.setText("Reps: " + plan_metrics.get(i).getMetricIntValue());
                                     goalLayout.addView(repGoal);
                                     break;
                                 case OTHER:
@@ -177,7 +178,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                     break;
                                 case WEIGHT:
                                     TextView weightGoal = new TextView(_context);
-                                    weightGoal.setText("Weight: " + metrics.get(i).getMetricIntValue());
+                                    weightGoal.setText("Weight: " + plan_metrics.get(i).getMetricIntValue());
                                     goalLayout.addView(weightGoal);
                                     break;
                             }

@@ -36,19 +36,21 @@ public class WorkspaceActivity extends FragmentActivity{
 
         if (extras != null){
             planName = extras.getString("EXTRA_PLAN_NAME");
-            //Log.d("W_HEADER_DEBUG", "Plan name: " + planName);
-            DatabaseWrapper db = new DatabaseWrapper();
-            Plan planList = db.loadEntirePlan(planName);
-            Log.d("DB INTEGRATION TESTS", "PLAN ID: "+ planList.getPlanId() + " -- PLAN NAME: " + planList.getName());
-            //Log.d("W_HEADER_DEBUG", "DB CALL COMPLETED");
-            WorkoutData.get(this).eatPlan(planList);
-            //Log.d("W_HEADER_DEBUG", "EATPLAN CALL COMPLETED");
             mode = extras.getInt("EXTRA_MODE");
             if (extras.getBoolean("WORKOUT_FROM_PLAN_FLAG")){
                 workout_from_plan_flag = true;
             } else {
                 workout_from_plan_flag = false;
             }
+            //Log.d("W_HEADER_DEBUG", "Plan name: " + planName);
+            DatabaseWrapper db = new DatabaseWrapper();
+            Plan planList = db.loadEntirePlan(planName);
+            Log.d("DB INTEGRATION TESTS", "PLAN ID: "+ planList.getPlanId() + " -- PLAN NAME: " + planList.getName());
+            //Log.d("W_HEADER_DEBUG", "DB CALL COMPLETED");
+            WorkoutData.get(this).eatPlan(planList, workout_from_plan_flag);
+            //Log.d("W_HEADER_DEBUG", "EATPLAN CALL COMPLETED");
+
+
         }
 
         setContentView(R.layout.w_activity_main);

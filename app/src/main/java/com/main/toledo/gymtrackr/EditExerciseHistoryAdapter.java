@@ -53,7 +53,8 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
             m_numMetrics = m;
             m_context = c;
         }
-        //copy constructor
+        //copy constructor:  may not be needed
+        /*
         public DynamicView(DynamicView d){
             this.m_view = d.m_view;
             this.m_metricTextViews = d.m_metricTextViews;
@@ -61,7 +62,7 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
             this.m_context = d.m_context;
             this.m_numMetrics = d.m_numMetrics;
         }
-
+        */
         public void initialize(){
             LayoutInflater inflater = (LayoutInflater) m_context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
