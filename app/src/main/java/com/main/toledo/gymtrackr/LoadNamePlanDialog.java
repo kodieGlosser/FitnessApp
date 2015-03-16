@@ -61,7 +61,7 @@ public class LoadNamePlanDialog extends DialogFragment {
 
                     }
                 })
-                .setNegativeButton("PISS OFF", new DialogInterface.OnClickListener() {
+                .setNegativeButton("BUGGER OFF", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //m_Listener.onDialogNegativeClick(WorkspaceNameDialog.this);
 

@@ -177,7 +177,6 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         WorkoutData.get(_context).removeExercise(child, group);
                         //if circuit is closed remove it as it is no longer necessary
                         //Log.d("REMOVE BUG", "Remove clicked.  Child Position: " + childPosition + " Group Position: " + groupPosition);
-
                         if(!WorkoutData.get(_context).getWorkout().get(group).isOpen()){
                             WorkoutData.get(_context).getWorkout().remove(group);
                         }
@@ -397,7 +396,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     }
 
     private View createMetricEditTextLayout(final int group, final int child){
-        final LinearLayout layout = new LinearLayout(_context);//(LinearLayout) convertView.findViewById(R.id.exerciseLayout);
+        final LinearLayout layout = new LinearLayout(_context);
         layout.setOrientation(LinearLayout.HORIZONTAL);
         //layout.removeAllViewsInLayout();
         ArrayList<Metric> metrics = WorkoutData.get(_context).getWorkout().get(group).getExercise(child).getMetrics();
@@ -504,6 +503,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                 Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + repEdit.getText());
 
                                 m_editTextHandle = (EditText) v;
+
                                 //THETHING = true;
                                         /*
                                         mShowImeRunnable = new Runnable() {

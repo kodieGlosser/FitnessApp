@@ -29,7 +29,7 @@ public class LoadHeaderFragment extends Fragment {
 
         //sets the listener for the test button
         TextView loadMessage = (TextView)v.findViewById(R.id.headerMessage);
-        loadMessage.setText("Select a plan douchebag!");
+        loadMessage.setText("Select a plan!");
 
         Button addPlanButton = (Button)v.findViewById(R.id.addPlanButton);
 
