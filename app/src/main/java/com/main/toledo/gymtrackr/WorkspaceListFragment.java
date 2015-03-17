@@ -2,6 +2,7 @@ package com.main.toledo.gymtrackr;
 
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -25,13 +26,14 @@ public class WorkspaceListFragment extends Fragment {
 
         @Override
    public void onCreate(Bundle savedInstanceState) {
-        Log.d("FLOW TESTS", "ONCREATE() CALLED IN WLFRAG");
+        Log.d("PAD BUGS", "ONCREATE() CALLED IN WLFRAG");
         super.onCreate(savedInstanceState);
     }
 
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         //sets the view for the fragment
+        Log.d("PAD BUGS", "ON CREATE VIEW CALLED IN WLFRAG");
         View v = inflater.inflate(R.layout.w_frag_list, null);
         workspaceListView = (DragNDropExpandableListView)
                 v.findViewById(R.id.workspaceListView);
@@ -43,6 +45,8 @@ public class WorkspaceListFragment extends Fragment {
                 ((WorkspaceActivity)getActivity()).getAdapter().hideKeypad();
             }
         });
+
+
         //workspaceListView.setAdapter(((WorkspaceActivity)getActivity()).getAdapter());
         //expandLists(((WorkspaceActivity)getActivity()).getAdapter());
         //disabled for now 3/12
@@ -83,9 +87,24 @@ public class WorkspaceListFragment extends Fragment {
     */
     @Override
     public void onResume(){
-        Log.d("FLOW TESTS", "ONRESUME() CALLED IN WLFRAG");
+        Log.d("PAD BUGS", "ONRESUME() CALLED IN WLFRAG");
         workspaceListView.setAdapter(((WorkspaceActivity)getActivity()).getAdapter());
         expandLists(((WorkspaceActivity)getActivity()).getAdapter());
+
+        workspaceListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                Rect hitRect = new Rect();
+                workspaceListView.getHitRect(hitRect);
+                Log.d("PAD BUGS", "HIT RECT CALLED: " + hitRect.flattenToString());
+                ((WorkspaceActivity) getActivity()).getAdapter().cleanView(hitRect);
+
+            }
+        });
         /*
         WorkspaceExpandableListAdapterMKII w = (WorkspaceExpandableListAdapterMKII) workspaceListView.getAdapter();
         w.notifyDataSetChanged();

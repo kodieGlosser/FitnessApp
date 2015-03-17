@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.text.InputType;
 import android.util.Log;
@@ -58,6 +59,21 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         return WorkoutData.get(_context).getWorkout().get(groupPosition).getExercise(childPosition);
     }
 
+    public void cleanView(Rect viewHitRect){
+
+        Log.d("PAD BUGS", "CLEAN VIEW: CALLED");
+        if (m_editTextHandle != null) {
+            //Log.d("PAD BUGS", "CLEAN VIEW: EDIT TEXT IS NOT NULL");
+            if (!m_editTextHandle.getLocalVisibleRect(viewHitRect)
+                    || viewHitRect.height() < m_editTextHandle.getHeight()) {
+                Log.d("PAD BUGS", "CLEAN VIEW: SHOULD HIDE KEYPAD");
+                hideKeypad();
+            } else {
+                // NONE of the imageView is within the visible window
+
+            }
+        }
+    }
     public void setEditable(boolean b){
         Log.d("EDITABLE TEST", "setEditable() called in adapter.  editable: " + b);
         editable = b;
@@ -125,44 +141,43 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 }
             }
         }else {
-            if (childPosition < (WorkoutData.get(_context).getWorkout().get(group).getSize() - 1) || !(WorkoutData.get(_context).getWorkout().get(group).isOpen())) {
+            if (childPosition < (WorkoutData.get(_context).getWorkout().get(group).getSize() - 1)
+                    || !(WorkoutData.get(_context).getWorkout().get(group).isOpen())) {
                 //for the not last items in the list
                 if (convertView == null || (convertView.getTag() != "Data")) {
                     LayoutInflater inflater = (LayoutInflater) this._context
                             .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.w_exercise, null);
                     convertView.setTag("Data");
-
-
-                    //WORKAROUND, MAKES LIST ITEMS CLICKABLE, EDIT TEXTS DISABLED NORMAL FUNCTIONALITY
-                    //CODE GOES HERE
-
-                    LinearLayout mainLayout = (LinearLayout) convertView.findViewById(R.id.exerciseMainLayout);
-                    //mainLayout.removeAllViewsInLayout();
-                    mainLayout.setOnClickListener(null); //Resets the layouts on click listener
-                    mainLayout.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            //NOTIFY TESTS FOR FLOW
-                            Log.d("FLOW TESTS", "NOTIFY CALLED IN ADAPTER");
-                            notifyDataSetChanged();
-                            //END TESTS
-                            Intent i = new Intent(_context, EditActivity.class);
-                            ((WorkspaceActivity) _context).setToEdit(true);
-                            i.putExtra("CIRCUIT_VALUE", group);
-                            i.putExtra("EXERCISE_VALUE", child);
-                            //Log.d("LAST THING", groupPosition + " " + childPosition);
-                            _context.startActivity(i);
-                        }
-                    });
-
-                    if (((WorkspaceActivity) _context).workoutFromPlan()){
-                        mainLayout.addView(createGoalLayout(group, child));
+                }
+                LinearLayout mainLayout = (LinearLayout) convertView.findViewById(R.id.exerciseMainLayout);
+                //mainLayout.removeAllViewsInLayout();
+                //WORKAROUND, MAKES LIST ITEMS CLICKABLE, EDIT TEXTS DISABLED NORMAL FUNCTIONALITY
+                //CODE GOES HERE
+                mainLayout.setOnClickListener(null); //Resets the layouts on click listener
+                mainLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //NOTIFY TESTS FOR FLOW
+                        Log.d("FLOW TESTS", "NOTIFY CALLED IN ADAPTER");
+                        notifyDataSetChanged();
+                        //END TESTS
+                        Intent i = new Intent(_context, EditActivity.class);
+                        ((WorkspaceActivity) _context).setToEdit(true);
+                        i.putExtra("CIRCUIT_VALUE", group);
+                        i.putExtra("EXERCISE_VALUE", child);
+                        //Log.d("LAST THING", groupPosition + " " + childPosition);
+                        _context.startActivity(i);
                     }
+                });
 
-                    mainLayout.addView(createMetricEditTextLayout(group, child));
+                LinearLayout dynamicViewLayout = (LinearLayout) convertView.findViewById(R.id.dynamicViewLayout);
+                dynamicViewLayout.removeAllViewsInLayout();
+                if (((WorkspaceActivity) _context).workoutFromPlan()){
+                    dynamicViewLayout.addView(createGoalLayout(group, child));
                 }
 
+                dynamicViewLayout.addView(createMetricEditTextLayout(group, child));
 
 
                 //sets text for name
@@ -301,7 +316,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
-
+/*
     private void setImeVisibility(final boolean visible) {
         if (visible) {
             m_editTextHandle.post(mShowImeRunnable);
@@ -316,7 +331,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         }
     }
 
-    /* BASE EXAMPLES
+     BASE EXAMPLES
     public void onRemove(int which) {
         if (which < 0 || which > mContent.size()) return;
         mContent.remove(which);
@@ -335,13 +350,13 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         if (which < 0 || which > mContent.size()) return;
         mContent.remove(which);
     }
-    */
+
     private void doWeCloseKeypad(boolean b){
         InputMethodManager imm = (InputMethodManager)_context.getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(m_editTextHandle.getWindowToken(), 0);
     }
-/*
+
     public void hideKeyboard() {
         // Check if no view has focus:
         View view = ((WorkspaceActivity) _context).getCurrentFocus();
@@ -357,6 +372,8 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(m_editTextHandle.getWindowToken(), 0);
         }
+        m_editTextHandle.clearFocus();
+        Log.d("PAD BUGS", "HIDE KEYPAD - CLEAR FOCUS");
     }
 
     private void showKeypad(){
@@ -483,12 +500,10 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 case REPETITIONS:
                     TextView repText = new TextView(_context);
                     repText.setText("Reps: ");
-                    int focusCounter = 0;
                     final EditText repEdit = new EditText(_context);
                     repEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
                     repEdit.setText("" + metrics.get(i).getMetricIntValue());
                     repEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
-                    repEdit.setTag(focusCounter);
                     //repEdit.setFocusable(false);
                     repEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                         @Override
@@ -539,10 +554,6 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                 //m_editTextHandle.requestFocus();
                                 //showKeypad();
                             } else {
-                                int i = (int) v.getTag();
-                                i++;
-                                Log.d("FOCUS TESTS", "i: " + i);
-                                v.setTag(i);
                                 //if( i == 2) {
                                     Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + repEdit.getText());
                                     if (((EditText) v).getText().toString().equals("")) {
