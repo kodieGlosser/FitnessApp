@@ -211,7 +211,8 @@ public class DragNDropExpandableListView extends ExpandableListView {
 
     public boolean collapseGroup(int groupPosition){
         boolean b = super.collapseGroup(groupPosition);
-        ((WorkspaceActivity) mContext).
+        Log.d("PAD BUG", "collapse override called.");
+        ((WorkspaceActivity) mContext).getAdapter().hideKeyboard();
 
         return b;
     }

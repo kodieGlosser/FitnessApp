@@ -36,6 +36,13 @@ public class WorkspaceListFragment extends Fragment {
         workspaceListView = (DragNDropExpandableListView)
                 v.findViewById(R.id.workspaceListView);
 
+        workspaceListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+            @Override
+            public void onGroupCollapse(int groupPosition) {
+                Log.d("PAD BUGS", "ON GROUP COLLAPSE CALLED");
+                ((WorkspaceActivity)getActivity()).getAdapter().hideKeypad();
+            }
+        });
         //workspaceListView.setAdapter(((WorkspaceActivity)getActivity()).getAdapter());
         //expandLists(((WorkspaceActivity)getActivity()).getAdapter());
         //disabled for now 3/12

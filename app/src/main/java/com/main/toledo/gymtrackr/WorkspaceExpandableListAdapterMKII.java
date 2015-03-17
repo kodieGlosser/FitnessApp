@@ -341,8 +341,8 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(m_editTextHandle.getWindowToken(), 0);
     }
-
-    private void hideKeyboard() {
+/*
+    public void hideKeyboard() {
         // Check if no view has focus:
         View view = ((WorkspaceActivity) _context).getCurrentFocus();
         if (view != null) {
@@ -350,11 +350,13 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
             inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
-
-    private void hideKeypad(){
-        InputMethodManager imm = (InputMethodManager)_context.getSystemService(
-                Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(m_editTextHandle.getWindowToken(), 0);
+*/
+    public void hideKeypad(){
+        if (m_editTextHandle != null) {
+            InputMethodManager imm = (InputMethodManager) _context.getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(m_editTextHandle.getWindowToken(), 0);
+        }
     }
 
     private void showKeypad(){
