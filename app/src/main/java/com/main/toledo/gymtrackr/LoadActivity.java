@@ -169,7 +169,8 @@ public class LoadActivity extends FragmentActivity {
 
         @Override
         public void onSwipe(int index){
-
+            Log.d("LOAD SWIPE TESTS", "ON SWIPE CALLED");
+            notifyDataSetChanged();
         }
 
         @Override

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".LoadActivity">
 
-    <com.main.toledo.gymtrackr.swipableListView
+    <com.main.toledo.gymtrackr.LoadListView
         android:id="@+id/loadListView"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"/>

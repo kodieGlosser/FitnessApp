@@ -1,15 +1,11 @@
 package com.main.toledo.gymtrackr;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListAdapter;
-import android.widget.ExpandableListView;
 import android.widget.ListView;
 
 /**
@@ -17,7 +13,7 @@ import android.widget.ListView;
  */
 public class LoadListFragment extends Fragment {
 
-    swipableListView loadListView;
+    LoadListView loadListView;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -33,7 +29,7 @@ public class LoadListFragment extends Fragment {
         //sets the view for the fragment
         Log.d("PAD BUGS", "ON CREATE VIEW CALLED IN WLFRAG");
         View v = inflater.inflate(R.layout.l_frag_list, null);
-        loadListView = (swipableListView) v.findViewById(R.id.loadListView);
+        loadListView = (LoadListView) v.findViewById(R.id.loadListView);
         loadListView.setAdapter(((LoadActivity)getActivity()).getAdapter());
         //loadListView.setDropListener(mDropListener);
         loadListView.setDragListener(mDragListener);
@@ -56,8 +52,8 @@ public class LoadListFragment extends Fragment {
     //TO GREG - pretty sure the drag color bug originates from here
     private ListDragListener mDragListener =
             new ListDragListener() {
-
-                int backgroundColor = 0xe0103010;
+                //android:background="#00B800"
+                int backgroundColor = 0xff00B800;
                 int defaultBackgroundColor;
 
                 public void onDrag(int x, int y, ListView listView) {
@@ -79,7 +75,7 @@ public class LoadListFragment extends Fragment {
                     //Log.d("TOUCH TESTS", "ON STOP DRAG CALLED");
                     itemView.setVisibility(View.VISIBLE);
                     //GREG - DRAG BUG IS PROBABLY THIS EXACT THING
-                    itemView.setBackgroundColor(defaultBackgroundColor);
+                    itemView.setBackgroundColor(backgroundColor);
                     //test
                     //ImageView iv = (ImageView)itemView.findViewById(R.id.ImageView01);
                     //if (iv != null) iv.setVisibility(View.VISIBLE);
