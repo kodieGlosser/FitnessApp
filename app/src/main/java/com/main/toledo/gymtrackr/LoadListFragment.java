@@ -2,41 +2,88 @@ package com.main.toledo.gymtrackr;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 
 /**
  * Created by Adam on 2/23/2015.
  */
-public class LoadListFragment extends ListFragment {
+public class LoadListFragment extends Fragment {
+
+    swipableListView loadListView;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
         //sets the list adapter to the one we made in the browse activity
-        setListAdapter(((LoadActivity)getActivity()).getAdapter());
 
     }
 
-
-    //this is the code that adds an item from the browse list to the workspace
-    /*
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id){
-        //will pass plan to workspace activity, then that can run the DB call
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        //sets the view for the fragment
+        Log.d("PAD BUGS", "ON CREATE VIEW CALLED IN WLFRAG");
+        View v = inflater.inflate(R.layout.l_frag_list, null);
+        loadListView = (swipableListView) v.findViewById(R.id.loadListView);
+        loadListView.setAdapter(((LoadActivity)getActivity()).getAdapter());
+        //loadListView.setDropListener(mDropListener);
+        loadListView.setDragListener(mDragListener);
 
-        Intent i = new Intent(getActivity(), WorkspaceActivity.class);
-        //gettag should return plan name of clicked item
-        String plan = ((LoadActivity) getActivity()).getPlan(position);
-        Log.d("W_HEADER_DEBUG", "Plan name: " + plan);
-        i.putExtra("EXTRA_PLAN_NAME", plan);
-        //puts actiontoperform (EDIT or WORKOUT) into the intent
-        i.putExtra("EXTRA_COURSE_OF_ACTION", ((LoadActivity) getActivity()).getActionToPerform());
-        startActivity(i);
-
+        return v;
     }
+    /*
+    private DropListener mDropListener =
+            new DropListener() {
+                public void onDrop(int fromX, int fromY, int toX, int toY) {
+                    ExpandableListAdapter adapter = loadListView.getListAdapter();
+                    if (adapter instanceof WorkspaceExpandableListAdapterMKII) {
+                        //Log.d("TOUCH TESTS", "ITEM DROPPED");
+                        ((WorkspaceExpandableListAdapterMKII)adapter).onDrop(fromX, fromY, toX, toY);
+                        ((WorkspaceActivity)getActivity()).getAdapter().notifyDataSetChanged();
+                    }
+                }
+            };
     */
+    //TO GREG - pretty sure the drag color bug originates from here
+    private ListDragListener mDragListener =
+            new ListDragListener() {
+
+                int backgroundColor = 0xe0103010;
+                int defaultBackgroundColor;
+
+                public void onDrag(int x, int y, ListView listView) {
+                    //Log.d("TOUCH TESTS", "ON DRAG CALLED");
+                    // TODO Auto-generated method stub
+                }
+
+                public void onStartDrag(View itemView) {
+                    //Log.d("TOUCH TESTS", "ON START DRAG CALLED");
+                    itemView.setVisibility(View.INVISIBLE);
+                    defaultBackgroundColor = itemView.getDrawingCacheBackgroundColor();
+                    itemView.setBackgroundColor(backgroundColor);
+                    //test
+                    //ImageView iv = (ImageView)itemView.findViewById(R.id.ImageView01);
+                    //if (iv != null) iv.setVisibility(View.INVISIBLE);
+                }
+
+                public void onStopDrag(View itemView) {
+                    //Log.d("TOUCH TESTS", "ON STOP DRAG CALLED");
+                    itemView.setVisibility(View.VISIBLE);
+                    //GREG - DRAG BUG IS PROBABLY THIS EXACT THING
+                    itemView.setBackgroundColor(defaultBackgroundColor);
+                    //test
+                    //ImageView iv = (ImageView)itemView.findViewById(R.id.ImageView01);
+                    //if (iv != null) iv.setVisibility(View.VISIBLE);
+                }
+
+            };
 }

@@ -90,6 +90,9 @@ public class WorkspaceListFragment extends Fragment {
         Log.d("PAD BUGS", "ONRESUME() CALLED IN WLFRAG");
         workspaceListView.setAdapter(((WorkspaceActivity)getActivity()).getAdapter());
         expandLists(((WorkspaceActivity)getActivity()).getAdapter());
+        workspaceListView.setGroupIndicator(null);
+        final Rect hitRect = new Rect();
+        workspaceListView.getHitRect(hitRect);
 
         workspaceListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -98,8 +101,7 @@ public class WorkspaceListFragment extends Fragment {
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                Rect hitRect = new Rect();
-                workspaceListView.getHitRect(hitRect);
+
                 Log.d("PAD BUGS", "HIT RECT CALLED: " + hitRect.flattenToString());
                 ((WorkspaceActivity) getActivity()).getAdapter().cleanView(hitRect);
 

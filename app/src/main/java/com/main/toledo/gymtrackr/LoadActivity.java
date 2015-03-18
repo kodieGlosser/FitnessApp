@@ -3,10 +3,11 @@ package com.main.toledo.gymtrackr;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -157,10 +158,18 @@ public class LoadActivity extends FragmentActivity {
         Log.d("LOADTEST", "DELETE SELECTED");
     }
     */
-    public class LoadAdapter extends ArrayAdapter{
+
+
+    public class LoadAdapter extends ArrayAdapter implements swipeListener{
 
         public LoadAdapter(Context context, int resource, ArrayList<String> plans){
             super(context, resource, plans);
+        }
+
+
+        @Override
+        public void onSwipe(int index){
+
         }
 
         @Override
@@ -168,7 +177,7 @@ public class LoadActivity extends FragmentActivity {
 
             if (convertView == null) {
                 convertView = getLayoutInflater()
-                        .inflate(R.layout.l_frag_list_plan, null);
+                        .inflate(R.layout.l_frag_list_item, null);
             }
 
             final String planName = (String)getItem(position);
@@ -177,6 +186,32 @@ public class LoadActivity extends FragmentActivity {
                     (TextView)convertView.findViewById(R.id.planName);
             nameTextView.setText(planName);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            /*
             Button delete = (Button) convertView.findViewById(R.id.deleteButton);
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -219,14 +254,12 @@ public class LoadActivity extends FragmentActivity {
                     startActivity(i);
                 }
             });
+            */
             /*didn't work, may revisit (tried to pass plan name from here -> loadListFragment -> workspaceActivity)
             Log.d("W_HEADER_DEBUG", "Setting tag: " + planName);
             nameTextView.setTag(planName);
             */
             return convertView;
         }
-
-
-
     }
 }
