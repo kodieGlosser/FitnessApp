@@ -13,7 +13,7 @@ import android.widget.ListView;
  */
 public class LoadListFragment extends Fragment {
 
-    LoadListView loadListView;
+    ListView loadListView;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -29,10 +29,10 @@ public class LoadListFragment extends Fragment {
         //sets the view for the fragment
         Log.d("PAD BUGS", "ON CREATE VIEW CALLED IN WLFRAG");
         View v = inflater.inflate(R.layout.l_frag_list, null);
-        loadListView = (LoadListView) v.findViewById(R.id.loadListView);
+        loadListView = (ListView) v.findViewById(R.id.loadListView);
         loadListView.setAdapter(((LoadActivity)getActivity()).getAdapter());
         //loadListView.setDropListener(mDropListener);
-        loadListView.setDragListener(mDragListener);
+        //loadListView.setDragListener(mDragListener);
 
         return v;
     }
@@ -49,6 +49,7 @@ public class LoadListFragment extends Fragment {
                 }
             };
     */
+
     //TO GREG - pretty sure the drag color bug originates from here
     private ListDragListener mDragListener =
             new ListDragListener() {

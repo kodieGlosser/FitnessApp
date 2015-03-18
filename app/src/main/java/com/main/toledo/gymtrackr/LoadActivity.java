@@ -183,36 +183,10 @@ public class LoadActivity extends FragmentActivity {
 
             final String planName = (String)getItem(position);
 
-            TextView nameTextView =
-                    (TextView)convertView.findViewById(R.id.planName);
+            LoadTextView nameTextView =
+                    (LoadTextView)convertView.findViewById(R.id.planName);
             nameTextView.setText(planName);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            /*
             Button delete = (Button) convertView.findViewById(R.id.deleteButton);
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -255,7 +229,7 @@ public class LoadActivity extends FragmentActivity {
                     startActivity(i);
                 }
             });
-            */
+
             /*didn't work, may revisit (tried to pass plan name from here -> loadListFragment -> workspaceActivity)
             Log.d("W_HEADER_DEBUG", "Setting tag: " + planName);
             nameTextView.setTag(planName);
