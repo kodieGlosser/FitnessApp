@@ -1,11 +1,16 @@
 package com.main.toledo.gymtrackr;
 
+import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.gesture.Gesture;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,6 +37,7 @@ public class LoadActivity extends FragmentActivity {
     final int OTHER = 10, INVALID_NAME_VALUE = 11, TAKEN_NAME_VALUE = 12;
     //
     int errorType;
+    int slideVal = -650;
 
     //this is the stub list
     //private static ArrayList<Plan> workoutPlans = new ArrayList<>();
@@ -160,7 +166,13 @@ public class LoadActivity extends FragmentActivity {
     */
 
 
+
     public class LoadAdapter extends ArrayAdapter implements swipeListener{
+
+        float mStartX;
+        float mStartY;
+        float mLeftX;
+        float mRightX;
 
         public LoadAdapter(Context context, int resource, ArrayList<String> plans){
             super(context, resource, plans);
@@ -173,6 +185,7 @@ public class LoadActivity extends FragmentActivity {
             notifyDataSetChanged();
         }
 
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
 
@@ -182,11 +195,83 @@ public class LoadActivity extends FragmentActivity {
             }
 
             final String planName = (String)getItem(position);
-
+            /*
             LoadTextView nameTextView =
                     (LoadTextView)convertView.findViewById(R.id.planName);
             nameTextView.setText(planName);
+            */
+            final LoadTextView nameTextView =
+                    (LoadTextView)convertView.findViewById(R.id.planName);
+            nameTextView.setText(planName);
+            /*
+            nameTextView.setOnDragListener(new View.OnDragListener() {
+                @Override
+                public boolean onDrag(View v, DragEvent event) {
+                    int action = event.getAction();
+                    Log.d("MORE MOVE TESTS", "----------------------------ON GENERIC MOTION CALLED--------------------------");
+                    switch (action) {
+                        case MotionEvent.ACTION_DOWN: //mouse button is initially pressed
+                            //Log.d("TOUCH TESTS", "MOTION EVENT IS ACTION_DOWN");
+                            //maps a point to an integer position on list
+                            Log.d("MORE MOVE TESTS", "----------------------------ON-DOWN--------------------------");
+                            mStartX = event.getX();
+                            mLeftX = mStartX - 100;
+                            mRightX = mStartX + 100;
+                            //mStartY = event.getY();
+                            /*
+                            mStartPosition = pointToPosition(x, y); //mstartposition is the TRUE position
+                            if (mStartPosition != INVALID_POSITION) {
+                                //first item visible
+                                //get firstvisible position returns integer pointing to first
+                                //thing displayed on screen
+                                int mItemPosition = mStartPosition - getFirstVisiblePosition();
 
+                                mDragPointOffset = y - getChildAt(mItemPosition).getTop(); //returns top position of this view relative to parent in pixels
+                                mDragPointOffset -= ((int) ev.getRawY()) - y;
+                                startDrag(mItemPosition, y);
+                                //mItemPosition is the RELATIVE position on the list, 2nd item ON SCREEN vs 12th item
+                                drag(x, y);// replace 0 with x if desired
+                            }
+
+                            break;
+                        case MotionEvent.ACTION_MOVE: //mose if moved
+                            Log.d("MORE MOVE TESTS", "-----------------------------------------------------------------------");
+                            Log.d("MORE MOVE TESTS", "Start X: " + mStartX + " -- LEFT X: " + mLeftX + " -- RIGHT X: " + mRightX);
+                            Log.d("MORE MOVE TESTS", "-----------------------------------------------------------------------");
+                            if (event.getX() < mLeftX) {
+                                ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(nameTextView, "translationX", slideVal);
+                                mSlidInAnimator.setDuration(200);
+                                mSlidInAnimator.start();
+                            }
+                            if (event.getX() > mRightX) {
+                                ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(nameTextView, "translationX", -slideVal);
+                                mSlidInAnimator.setDuration(200);
+                                mSlidInAnimator.start();
+                            }
+
+                            break;
+                        case MotionEvent.ACTION_CANCEL:
+                        case MotionEvent.ACTION_UP: //mouse button is released
+                        default:
+                            break;
+                    }
+                    return false;
+                }
+            });
+            */
+            /*
+            nameTextView.setOnClickListener(new View.OnClickListener() {
+                @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+                @Override
+                public void onClick(View v) {
+                    ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(nameTextView, "translationX", slideVal);
+                    mSlidInAnimator.setDuration(200);
+                    mSlidInAnimator.start();
+                }
+            });
+            ?8
+
+            */
             Button delete = (Button) convertView.findViewById(R.id.deleteButton);
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override

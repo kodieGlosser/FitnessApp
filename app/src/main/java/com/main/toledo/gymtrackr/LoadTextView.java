@@ -1,5 +1,6 @@
 package com.main.toledo.gymtrackr;
 
+import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -31,6 +32,11 @@ public class LoadTextView extends TextView {
     float mLastTouchY;
     float mPosX;
     float mPosY;
+    float mRightX;
+    float mLeftX;
+    float mStartX;
+    int slideVal = -650;
+    boolean open = false;
 
     private int mActivePointerId = MotionEvent.INVALID_POINTER_ID;
     Context mContext;
@@ -105,11 +111,14 @@ public class LoadTextView extends TextView {
                 Log.d("VIEWTEST", "ACTION_DOWN");
                 final int pointerIndex = MotionEventCompat.getActionIndex(ev);
                 final float x = MotionEventCompat.getX(ev, pointerIndex);
-                final float y = MotionEventCompat.getY(ev, pointerIndex);
+                //final float y = MotionEventCompat.getY(ev, pointerIndex);
 
                 // Remember where we started (for dragging)
-                mLastTouchX = x;
-                mLastTouchY = y;
+                mStartX = x;
+                //mLastTouchY = y;
+                mLeftX = mStartX - 100;
+                mRightX = mStartX + 100;
+
                 // Save the ID of this pointer (for dragging)
                 mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
                 break;
@@ -118,6 +127,7 @@ public class LoadTextView extends TextView {
             case MotionEvent.ACTION_MOVE: {
                 Log.d("VIEWTEST", "ACTION_MOVE");
                 // Find the index of the active pointer and fetch its position
+               /*
                 final int pointerIndex =
                         MotionEventCompat.findPointerIndex(ev, mActivePointerId);
 
@@ -138,7 +148,19 @@ public class LoadTextView extends TextView {
                 // Remember this touch position for the next move event
                 mLastTouchX = x;
                 mLastTouchY = y;
-
+            */
+                if ((ev.getX() < mLeftX) && !open) {
+                    ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(this, "translationX", slideVal);
+                    mSlidInAnimator.setDuration(300);
+                    mSlidInAnimator.start();
+                    open = true;
+                }
+                if ((ev.getX() > mRightX) && open) {
+                    ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(this, "translationX", 0);
+                    mSlidInAnimator.setDuration(300);
+                    mSlidInAnimator.start();
+                    open = false;
+                }
                 break;
             }
 

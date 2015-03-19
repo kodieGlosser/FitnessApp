@@ -32,6 +32,7 @@
             android:text="WORKOUT"/>
     </LinearLayout>
 
+    <!--<TextView-->
     <com.main.toledo.gymtrackr.LoadTextView
         android:id="@+id/planName"
         android:layout_width="fill_parent"
