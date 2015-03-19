@@ -46,7 +46,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
             //Log.d("PAD BUGS", "CLEAN VIEW: EDIT TEXT IS NOT NULL");
             if (!m_editTextHandle.getLocalVisibleRect(viewHitRect)
                     || viewHitRect.height() < m_editTextHandle.getHeight()) {
-                Log.d("PAD BUGS", "CLEAN VIEW: SHOULD HIDE KEYPAD");
+                //Log.d("PAD BUGS", "CLEAN VIEW: SHOULD HIDE KEYPAD");
                 hideKeypad();
             } else {
                 // NONE of the imageView is within the visible window
@@ -55,7 +55,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         }
     }
     public void setEditable(boolean b){
-        Log.d("EDITABLE TEST", "setEditable() called in adapter.  editable: " + b);
+        //Log.d("EDITABLE TEST", "setEditable() called in adapter.  editable: " + b);
         editable = b;
         notifyDataSetChanged();
     }
@@ -92,6 +92,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         @Override
                         public void onClick(View v) {
                             WorkoutData.get(_context).addCircuit(group);
+                            //WorkoutData.get(_context).getWorkout()
                             notifyDataSetChanged();
                             ((WorkspaceActivity) _context).ListFragment
                                     .expandLists(((WorkspaceActivity) _context).getAdapter());
@@ -136,6 +137,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 //mainLayout.removeAllViewsInLayout();
                 //WORKAROUND, MAKES LIST ITEMS CLICKABLE, EDIT TEXTS DISABLED NORMAL FUNCTIONALITY
                 //CODE GOES HERE
+                /* Dewired 3/19 for workspace overhaul
                 mainLayout.setOnClickListener(null); //Resets the layouts on click listener
                 mainLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -152,7 +154,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         _context.startActivity(i);
                     }
                 });
-
+                */
                 LinearLayout dynamicViewLayout = (LinearLayout) convertView.findViewById(R.id.dynamicViewLayout);
                 dynamicViewLayout.removeAllViewsInLayout();
                 if (((WorkspaceActivity) _context).workoutFromPlan()){
@@ -315,7 +317,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
             m_editTextHandle.clearFocus();
         }
 
-        Log.d("PAD BUGS", "HIDE KEYPAD - CLEAR FOCUS");
+        //Log.d("PAD BUGS", "HIDE KEYPAD - CLEAR FOCUS");
     }
 
     private void showKeypad(){
@@ -324,7 +326,6 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(m_editTextHandle, InputMethodManager.SHOW_IMPLICIT);
     }
-    //this needs fixed a lot
 
     private View createGoalLayout(int group, int child){
         final LinearLayout goalLayout = new LinearLayout(_context);
@@ -360,7 +361,6 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         layout.setOrientation(LinearLayout.HORIZONTAL);
         //layout.removeAllViewsInLayout();
         ArrayList<Metric> metrics = WorkoutData.get(_context).getWorkout().get(group).getExercise(child).getMetrics();
-        //SHITTY EDIT TEXT CODE REPLACE WITH METHOD
         for(int i = 0; i < metrics.size(); i++){
             final int j = i;
             switch(metrics.get(i).getType()){
@@ -392,9 +392,9 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         @Override
                         public void onFocusChange(View v, boolean hasFocus) {
                             if (hasFocus){
-                                Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + timeEdit.getText());
+                                //Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + timeEdit.getText());
                             } else {
-                                Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + timeEdit.getText());
+                                //Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + timeEdit.getText());
                                 if(((EditText) v).getText().toString().equals("")) {
                                     WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
                                             .getMetrics().get(j).setMetricIntValue(0);
@@ -448,12 +448,12 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         @Override
                         public void onFocusChange(View v, boolean hasFocus) {
                             if (hasFocus){
-                                Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + repEdit.getText());
+                                //Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + repEdit.getText());
 
                                 m_editTextHandle = (EditText) v;
 
                             } else {
-                                    Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + repEdit.getText());
+                                    //Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + repEdit.getText());
                                     if (((EditText) v).getText().toString().equals("")) {
                                         WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
                                                 .getMetrics().get(j).setMetricIntValue(0);
@@ -512,12 +512,12 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         @Override
                         public void onFocusChange(View v, boolean hasFocus) {
                             if (hasFocus){
-                                Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED: " + wtEdit.getText());
+                                //Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED: " + wtEdit.getText());
 
                                 m_editTextHandle = (EditText) v;
 
                             } else {
-                                Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + wtEdit.getText());
+                                //Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + wtEdit.getText());
                                 if(((EditText) v).getText().toString().equals("")) {
                                     WorkoutData.get(_context).getWorkout().get(group).getExercise(child)
                                             .getMetrics().get(j).setMetricIntValue(0);
@@ -547,13 +547,22 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         int destinationExerciseIndex ,int destinationCircuitIndex) {
         synchronized (WorkoutData.get(_context).getWorkout()) {//Save to temp, remove from workout
 
+            boolean lastCircuit = false;
 
-            if (destinationCircuitIndex < WorkoutData.get(_context).getWorkout().size() - 1) { //if the destination circuit is not the last or later
-
-                if (destinationExerciseIndex > WorkoutData.get(_context).getWorkout().get(destinationCircuitIndex).getExercises().size() - 2) //if the destination exercise is
-                    destinationExerciseIndex = WorkoutData.get(_context).getWorkout().get(destinationCircuitIndex).getExercises().size() - 2;
-                if (destinationExerciseIndex < 0)
-                    destinationExerciseIndex = 0;
+            if (destinationCircuitIndex >= WorkoutData.get(_context).getWorkout().size() - 1) {             //if the destination circuit is the last or later
+                destinationExerciseIndex = -1;
+                lastCircuit = true;
+            }
+                if (destinationCircuitIndex >= 0 && destinationExerciseIndex >= 0)
+                    if (WorkoutData.get(_context).getWorkout().get(destinationCircuitIndex).getExercise(destinationExerciseIndex).getName().equals("test")){
+                        if(destinationExerciseIndex != 0) {
+                            destinationExerciseIndex--;
+                        }
+                    }
+                //if (destinationExerciseIndex > WorkoutData.get(_context).getWorkout().get(destinationCircuitIndex).getExercises().size() - 2) //if the destination exercise is
+                //    destinationExerciseIndex = WorkoutData.get(_context).getWorkout().get(destinationCircuitIndex).getExercises().size() - 2;
+                // 3/19 +++++ (destinationExerciseIndex < 0)
+                //    destinationExerciseIndex = 0;
 
                 switch (homeExerciseIndex) {
                     case -1:  //passed location is a group header
@@ -562,7 +571,9 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
                         Circuit tempCircuit = WorkoutData.get(_context).getWorkout().get(homeCircuitIndex);
                         WorkoutData.get(_context).getWorkout().remove(homeCircuitIndex);
-
+                        if(lastCircuit){
+                            destinationCircuitIndex--;
+                        }
                         WorkoutData.get(_context).getWorkout().add(destinationCircuitIndex, tempCircuit);
 
                         ///}
@@ -575,15 +586,28 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                     .getExercise(homeExerciseIndex);
                             WorkoutData.get(_context).getWorkout().get(homeCircuitIndex).removeExercise(homeExerciseIndex);
 
-                            Log.d("TOUCH TEST", "DEST CIRC INDEX: " + destinationCircuitIndex
-                                    + " DEST EX INDEX: " + destinationExerciseIndex);
+                            if (!WorkoutData.get(_context).getWorkout().get(homeCircuitIndex).isOpen()) {
+                                WorkoutData.get(_context).getWorkout().remove(homeCircuitIndex);
+                                Log.d("TOUCH TEST", "SHOULD NOW REMOVE CLOSED CIRCUIT");
+                            }
+
+                            Log.d("TOUCH TEST", " DEST EX INDEX: " + destinationExerciseIndex +"DEST CIRC INDEX: " + destinationCircuitIndex );
                             //Add to location
-                         WorkoutData.get(_context).getWorkout().get(destinationCircuitIndex).addExerciseAtIndex(destinationExerciseIndex,
-                                    tempExercise);
+                            if(destinationExerciseIndex != -1 && WorkoutData.get(_context).getWorkout().get(destinationCircuitIndex).isOpen()) {
+                                WorkoutData.get(_context).getWorkout().get(destinationCircuitIndex)
+                                        .addExerciseAtIndex(destinationExerciseIndex, tempExercise);
+                            } else {
+                                Log.d("TOUCH TESTS", "SHOULD NOW ADD CLOSED CIRCUIT");
+                                // WorkoutData.get(getActivity()).addClosedCircuit(exercise,
+                                //((BrowseActivity) getActivity()).getCircuitValue());
+                                WorkoutData.get(_context).addClosedCircuit(tempExercise, destinationCircuitIndex);
+                                ((WorkspaceActivity) _context).ListFragment
+                                        .expandLists(((WorkspaceActivity) _context).getAdapter());
+                            }
                         }
                         break;
                 }
-            }
+
         }
     }
 }

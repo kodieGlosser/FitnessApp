@@ -1,7 +1,6 @@
 package com.main.toledo.gymtrackr;
 
 
-import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 
 /**
  * Created by Adam on 2/25/2015.
@@ -21,7 +19,7 @@ public class WorkspaceListFragment extends Fragment {
 
         //ArrayList<Circuit> workout = new ArrayList<Circuit>();
         //ArrayList<Circuit> singletonWorkout = new ArrayList<Circuit>();
-        DragNDropExpandableListView workspaceListView;
+        WorkspaceExpandableListView workspaceListView;
         //WorkspaceExpandableListAdapterMKII listAdapter;
 
         @Override
@@ -35,7 +33,7 @@ public class WorkspaceListFragment extends Fragment {
         //sets the view for the fragment
         Log.d("PAD BUGS", "ON CREATE VIEW CALLED IN WLFRAG");
         View v = inflater.inflate(R.layout.w_frag_list, null);
-        workspaceListView = (DragNDropExpandableListView)
+        workspaceListView = (WorkspaceExpandableListView)
                 v.findViewById(R.id.workspaceListView);
 
         workspaceListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
@@ -50,11 +48,11 @@ public class WorkspaceListFragment extends Fragment {
         //workspaceListView.setAdapter(((WorkspaceActivity)getActivity()).getAdapter());
         //expandLists(((WorkspaceActivity)getActivity()).getAdapter());
         //disabled for now 3/12
-        //workspaceListView.setDropListener(mDropListener);
+        workspaceListView.setDropListener(mDropListener);
 
         //((DragNDropExpandableListView) listView).setRemoveListener(mRemoveListener);
         //diabled for now 3/12
-        //workspaceListView.setDragListener(mDragListener);
+        workspaceListView.setDragListener(mDragListener);
         /*
         workspaceListView.setRecyclerListener(new AbsListView.RecyclerListener() {
             @Override
