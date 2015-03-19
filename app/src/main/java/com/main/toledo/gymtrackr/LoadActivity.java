@@ -167,116 +167,53 @@ public class LoadActivity extends FragmentActivity {
 
 
 
-    public class LoadAdapter extends ArrayAdapter implements swipeListener{
+    public class LoadAdapter extends ArrayAdapter{
 
-        float mStartX;
-        float mStartY;
-        float mLeftX;
-        float mRightX;
+        private LoadTextView mTextViewHandle;
 
         public LoadAdapter(Context context, int resource, ArrayList<String> plans){
             super(context, resource, plans);
         }
 
+        public void setTextViewHandle(LoadTextView l){
+            mTextViewHandle = l;
+        }
 
-        @Override
-        public void onSwipe(int index){
-            Log.d("LOAD SWIPE TESTS", "ON SWIPE CALLED");
-            notifyDataSetChanged();
+        public void CloseTextViewHandle(){
+            if (mTextViewHandle != null){
+                mTextViewHandle.close();
+            }
+        }
+
+        public void clearHandle(){
+            mTextViewHandle = null;
         }
 
         @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
 
-            if (convertView == null) {
+            if ((convertView == null)) {
                 convertView = getLayoutInflater()
                         .inflate(R.layout.l_frag_list_item, null);
             }
 
             final String planName = (String)getItem(position);
-            /*
-            LoadTextView nameTextView =
-                    (LoadTextView)convertView.findViewById(R.id.planName);
-            nameTextView.setText(planName);
-            */
+
             final LoadTextView nameTextView =
                     (LoadTextView)convertView.findViewById(R.id.planName);
             nameTextView.setText(planName);
-            /*
-            nameTextView.setOnDragListener(new View.OnDragListener() {
-                @Override
-                public boolean onDrag(View v, DragEvent event) {
-                    int action = event.getAction();
-                    Log.d("MORE MOVE TESTS", "----------------------------ON GENERIC MOTION CALLED--------------------------");
-                    switch (action) {
-                        case MotionEvent.ACTION_DOWN: //mouse button is initially pressed
-                            //Log.d("TOUCH TESTS", "MOTION EVENT IS ACTION_DOWN");
-                            //maps a point to an integer position on list
-                            Log.d("MORE MOVE TESTS", "----------------------------ON-DOWN--------------------------");
-                            mStartX = event.getX();
-                            mLeftX = mStartX - 100;
-                            mRightX = mStartX + 100;
-                            //mStartY = event.getY();
-                            /*
-                            mStartPosition = pointToPosition(x, y); //mstartposition is the TRUE position
-                            if (mStartPosition != INVALID_POSITION) {
-                                //first item visible
-                                //get firstvisible position returns integer pointing to first
-                                //thing displayed on screen
-                                int mItemPosition = mStartPosition - getFirstVisiblePosition();
+            nameTextView.setAdapter(this);
 
-                                mDragPointOffset = y - getChildAt(mItemPosition).getTop(); //returns top position of this view relative to parent in pixels
-                                mDragPointOffset -= ((int) ev.getRawY()) - y;
-                                startDrag(mItemPosition, y);
-                                //mItemPosition is the RELATIVE position on the list, 2nd item ON SCREEN vs 12th item
-                                drag(x, y);// replace 0 with x if desired
-                            }
-
-                            break;
-                        case MotionEvent.ACTION_MOVE: //mose if moved
-                            Log.d("MORE MOVE TESTS", "-----------------------------------------------------------------------");
-                            Log.d("MORE MOVE TESTS", "Start X: " + mStartX + " -- LEFT X: " + mLeftX + " -- RIGHT X: " + mRightX);
-                            Log.d("MORE MOVE TESTS", "-----------------------------------------------------------------------");
-                            if (event.getX() < mLeftX) {
-                                ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(nameTextView, "translationX", slideVal);
-                                mSlidInAnimator.setDuration(200);
-                                mSlidInAnimator.start();
-                            }
-                            if (event.getX() > mRightX) {
-                                ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(nameTextView, "translationX", -slideVal);
-                                mSlidInAnimator.setDuration(200);
-                                mSlidInAnimator.start();
-                            }
-
-                            break;
-                        case MotionEvent.ACTION_CANCEL:
-                        case MotionEvent.ACTION_UP: //mouse button is released
-                        default:
-                            break;
-                    }
-                    return false;
-                }
-            });
-            */
-            /*
-            nameTextView.setOnClickListener(new View.OnClickListener() {
-                @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-                @Override
-                public void onClick(View v) {
-                    ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(nameTextView, "translationX", slideVal);
-                    mSlidInAnimator.setDuration(200);
-                    mSlidInAnimator.start();
-                }
-            });
-            ?8
-
-            */
             Button delete = (Button) convertView.findViewById(R.id.deleteButton);
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.d("DELETE TESTS", "plan name: " + planName);
+
+                    nameTextView.resetPosition();
+                    clearHandle();
+
                     DatabaseWrapper db = new DatabaseWrapper();
                     db.deletePlan(planName);
                     planList.remove(planName);
@@ -315,10 +252,6 @@ public class LoadActivity extends FragmentActivity {
                 }
             });
 
-            /*didn't work, may revisit (tried to pass plan name from here -> loadListFragment -> workspaceActivity)
-            Log.d("W_HEADER_DEBUG", "Setting tag: " + planName);
-            nameTextView.setTag(planName);
-            */
             return convertView;
         }
     }

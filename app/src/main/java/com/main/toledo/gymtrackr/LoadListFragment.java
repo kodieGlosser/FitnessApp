@@ -33,54 +33,6 @@ public class LoadListFragment extends Fragment {
         loadListView.setAdapter(((LoadActivity)getActivity()).getAdapter());
         //loadListView.setDropListener(mDropListener);
         //loadListView.setDragListener(mDragListener);
-
         return v;
     }
-    /*
-    private DropListener mDropListener =
-            new DropListener() {
-                public void onDrop(int fromX, int fromY, int toX, int toY) {
-                    ExpandableListAdapter adapter = loadListView.getListAdapter();
-                    if (adapter instanceof WorkspaceExpandableListAdapterMKII) {
-                        //Log.d("TOUCH TESTS", "ITEM DROPPED");
-                        ((WorkspaceExpandableListAdapterMKII)adapter).onDrop(fromX, fromY, toX, toY);
-                        ((WorkspaceActivity)getActivity()).getAdapter().notifyDataSetChanged();
-                    }
-                }
-            };
-    */
-
-    //TO GREG - pretty sure the drag color bug originates from here
-    private ListDragListener mDragListener =
-            new ListDragListener() {
-                //android:background="#00B800"
-                int backgroundColor = 0xff00B800;
-                int defaultBackgroundColor;
-
-                public void onDrag(int x, int y, ListView listView) {
-                    //Log.d("TOUCH TESTS", "ON DRAG CALLED");
-                    // TODO Auto-generated method stub
-                }
-
-                public void onStartDrag(View itemView) {
-                    //Log.d("TOUCH TESTS", "ON START DRAG CALLED");
-                    itemView.setVisibility(View.INVISIBLE);
-                    defaultBackgroundColor = itemView.getDrawingCacheBackgroundColor();
-                    itemView.setBackgroundColor(backgroundColor);
-                    //test
-                    //ImageView iv = (ImageView)itemView.findViewById(R.id.ImageView01);
-                    //if (iv != null) iv.setVisibility(View.INVISIBLE);
-                }
-
-                public void onStopDrag(View itemView) {
-                    //Log.d("TOUCH TESTS", "ON STOP DRAG CALLED");
-                    itemView.setVisibility(View.VISIBLE);
-                    //GREG - DRAG BUG IS PROBABLY THIS EXACT THING
-                    itemView.setBackgroundColor(backgroundColor);
-                    //test
-                    //ImageView iv = (ImageView)itemView.findViewById(R.id.ImageView01);
-                    //if (iv != null) iv.setVisibility(View.VISIBLE);
-                }
-
-            };
 }
