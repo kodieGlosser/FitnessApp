@@ -15,7 +15,7 @@
             android:text="Exercise"
             android:layout_weight="0.9" />
         <Button
-            android:layout_width="48dp"
+            android:layout_width="15dp"
             android:layout_height="wrap_content"
             android:text="-"
             android:id="@+id/removeExerciseButton"

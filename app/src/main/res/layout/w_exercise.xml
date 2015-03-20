@@ -18,11 +18,11 @@
             android:text="Exercise"
             android:layout_weight="0.85" />
         <Button
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_width="20dp"
             android:text="-"
             android:id="@+id/removeExerciseButton"
-            android:layout_weight="0.15"
+            android:layout_weight="0.07"
             android:focusable="false"/>
     </LinearLayout>
     <LinearLayout
