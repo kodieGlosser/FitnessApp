@@ -41,6 +41,10 @@ public class DatabaseWrapper {
     private static final String COLUMN_CIRCUIT= "Circuit";
     private static final String COLUMN_CIRCUIT_ID= "circuitId";
     private static final String COLUMN_PLANNED_UNION= "Planned_Union";
+    private static final String COLUMN_TIME= "time";
+    private static final String COLUMN_OTHER= "other";
+    private static final String COLUMN_ONE_REP_MAX= "oneRepMax";
+    private static final String COLUMN_ONE_REP_MAX_PERCENT= "oneRepMaxPercent";
     private static String DB_PATH = "/data/data/com.main.toledo.gymtrackr/databases/";
     private static String DB_NAME = "gymtrackr.db";
     private SQLiteDatabase myDatabase;
@@ -229,31 +233,41 @@ public class DatabaseWrapper {
         int z = 0;
         if (count2 >= 1) {
             while(c2.moveToNext()) {
-                int weight = -1, rep = -1, sequence1 = -1, exercise = -1, id = -1;
+                int weight = -1, rep = -1, sequence1 = -1, exercise = -1, id = -1, oneRepMaxPercent = 0, time = 0, other = -1;
 
                 for (int y = 0; y < c2.getColumnCount(); y++) {
                     String columnName2 = c2.getColumnName(y);
+                    int value = c2.getInt(c2.getColumnIndex(columnName2));
                     if (columnName2.equalsIgnoreCase(COLUMN_ID)){
-                        id = c2.getInt(c2.getColumnIndex(columnName2));
+                        id = value;
                     }
                     else if (columnName2.equalsIgnoreCase(COLUMN_WEIGHT)){
-                        weight = c2.getInt(c2.getColumnIndex(columnName2));
+                        weight = value;
                     }
                     else if (columnName2.equalsIgnoreCase(COLUMN_REP)){
-                        rep = c2.getInt(c2.getColumnIndex(columnName2));
+                        rep = value;
                     }
                     else if (columnName2.equalsIgnoreCase(COLUMN_SEQUENCE)){
-                        sequence1 = c2.getInt(c2.getColumnIndex(columnName2));
+                        sequence1 = value;
                     }
                     else if (columnName2.equalsIgnoreCase(COLUMN_EXERCISE)){
-                        exercise = c2.getInt(c2.getColumnIndex(columnName2));
+                        exercise = value;
+                    }
+                    else if (columnName2.equalsIgnoreCase(COLUMN_ONE_REP_MAX_PERCENT)) {
+                        oneRepMaxPercent = value;
+                    }
+                    else if (columnName2.equalsIgnoreCase(COLUMN_TIME)) {
+                        time = value;
+                    }
+                    else if (columnName2.equalsIgnoreCase(COLUMN_OTHER)) {
+                        other = value;
                     }
                 }
                 String exerciseName = null;
                 if (browseExerciseById(exercise).length == 1) {
                     exerciseName = browseExerciseById(exercise)[0].getName();
                 }
-                exercises[z] = new Exercise(id, exerciseName, rep, weight, sequence1);
+                exercises[z] = new Exercise(id, exerciseName, rep, weight, sequence1, oneRepMaxPercent, time, other);
                 z++;
             }
         }
@@ -284,7 +298,9 @@ public class DatabaseWrapper {
                 circuitValues.put(COLUMN_WEIGHT, exercises[j].getWeight());
                 circuitValues.put(COLUMN_REP, exercises[j].getRepetitions());
                 circuitValues.put(COLUMN_SEQUENCE, exercises[j].getSequence());
-
+                circuitValues.put(COLUMN_TIME, exercises[j].getTime());
+                circuitValues.put(COLUMN_ONE_REP_MAX_PERCENT, exercises[j].getOneRepMaxPercent());
+                circuitValues.put(COLUMN_OTHER, exercises[j].getOther());
                 int exerciseId = -1;
                 if (browseExercisesByExactName(exercises[j].getName()).length == 1){
                     exerciseId = browseExercisesByExactName(exercises[j].getName())[0].getId();
@@ -415,6 +431,8 @@ public class DatabaseWrapper {
             exerciseHistoryValues.put(COLUMN_REP, exercise[i].getRep());
             exerciseHistoryValues.put(COLUMN_EXERCISE, exercise[i].getExerciseId());
             exerciseHistoryValues.put(COLUMN_PLAN, exercise[i].getPlanId());
+            exerciseHistoryValues.put(COLUMN_TIME, exercise[i].getTime());
+            exerciseHistoryValues.put(COLUMN_OTHER, exercise[i].getOther());
             myDatabase.insert(EXERCISE_HISTORY_TABLE, null, exerciseHistoryValues);
         }
 
@@ -437,6 +455,14 @@ public class DatabaseWrapper {
         exerciseValues.put(COLUMN_TARGET_MUSCLE, exercise.getTargetMuscle());
         exerciseValues.put(COLUMN_MUSCLE_GROUP, exercise.getMuscleGroup());
         myDatabase.insert(EXERCISE_TABLE, null, exerciseValues);
+    }
+
+    public void setOneRepMaxForExercise(String exerciseName, int max) {
+        String whereClause = "exerciseName like ? COLLATE NOCASE";
+        String[] whereArgs = {exerciseName};
+        ContentValues setOneRepMax = new ContentValues();
+        setOneRepMax.put(COLUMN_ONE_REP_MAX, max);
+        myDatabase.update(COLUMN_EXERCISE, setOneRepMax, whereClause, whereArgs);
     }
 
     /**
@@ -508,7 +534,7 @@ public class DatabaseWrapper {
         if(count >= 1) {
             while(c.moveToNext()) {
 
-                int val_id = -1;
+                int val_id = -1, val_oneRepMax = -1;
                 String val_name = null, val_equipmentType = null, val_targetMuscle = null, val_muscleGroup = null, columnData = null;
 
                 for (int j = 0; j < c.getColumnCount(); j++) {
@@ -533,8 +559,11 @@ public class DatabaseWrapper {
                     else if (columnName.equalsIgnoreCase(COLUMN_TARGET_MUSCLE)) {
                         val_targetMuscle = columnData;
                     }
+                    else if (columnName.equalsIgnoreCase(COLUMN_ONE_REP_MAX)) {
+                        val_oneRepMax = c.getInt(c.getColumnIndex(columnName));
+                    }
                 }
-                exercises[i] = new Exercise(val_id, val_name, val_equipmentType, val_muscleGroup, val_targetMuscle);
+                exercises[i] = new Exercise(val_id, val_name, val_equipmentType, val_muscleGroup, val_targetMuscle, val_oneRepMax);
                 i++;
             }
 
@@ -550,7 +579,7 @@ public class DatabaseWrapper {
 
         if(count >= 1) {
             while (c.moveToNext()) {
-                String s_val_date; int val_weight= -1, val_rep= -1, val_exerciseId = -1, val_planId = -1, columnData = -1;
+                String s_val_date; int val_weight= -1, val_rep= -1, val_exerciseId = -1, val_planId = -1, columnData = -1, val_time = -1, val_other = -1;
                 Date val_date = null;
                 for (int j = 0; j < c.getColumnCount(); j++) {
 
@@ -582,9 +611,15 @@ public class DatabaseWrapper {
                     else if (columnName.equalsIgnoreCase(COLUMN_PLAN)) {
                         val_planId = columnData;
                     }
+                    else if (columnName.equalsIgnoreCase(COLUMN_TIME)) {
+                        val_time = columnData;
+                    }
+                    else if (columnName.equalsIgnoreCase(COLUMN_OTHER)) {
+                        val_other = columnData;
+                    }
                 }
 
-                exerciseHistory[i] = new ExerciseHistory(val_date, val_weight, val_rep, val_exerciseId, val_planId);
+                exerciseHistory[i] = new ExerciseHistory(val_date, val_weight, val_rep, val_exerciseId, val_planId, val_time, val_other);
                 i++;
             }
         }

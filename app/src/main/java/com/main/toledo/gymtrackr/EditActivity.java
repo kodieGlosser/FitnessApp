@@ -46,8 +46,8 @@ public class EditActivity extends FragmentActivity {
         */
         DatabaseWrapper db = new DatabaseWrapper();
         ExerciseHistory[] history = db.loadHistoryByExerciseName(exercise.getName());
-        ExerciseHistory[] historyStub = {new ExerciseHistory(new Date(), 666, 666, 136, 1),
-                                         new ExerciseHistory(new Date(), 666, 666, 137, 1)};
+        ExerciseHistory[] historyStub = {new ExerciseHistory(new Date(), 666, 666, 136, 1,1, 1),
+                                         new ExerciseHistory(new Date(), 666, 666, 137, 1,1,1)};
         if (history.length != 0) {
             historyAdapter = new EditExerciseHistoryAdapter(this, 0, history);
         } else {

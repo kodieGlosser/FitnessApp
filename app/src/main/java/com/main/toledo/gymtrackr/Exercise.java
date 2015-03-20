@@ -17,6 +17,10 @@ public class Exercise {
     private int m_repetitions;
     private int m_weight;
     private int m_sequence;
+    private int m_other;
+    private int m_time;
+    private int m_oneRepMax;
+    private int m_oneRepMaxPercent;
     private int m_lastPerformed;  //this will be an integer value of the last time the exercise was
     //performed, used to organize browse menu
     private ExerciseStatus status;
@@ -47,13 +51,15 @@ public class Exercise {
         mSaveToHistory = false;
     }
 
-    public Exercise(int id, String name, int repetitions, int weight, int sequence){
+    public Exercise(int id, String name, int repetitions, int weight, int sequence, int oneRepMaxPercent, int time, int other){
         this.m_id = id;
         this.m_name = name;
         this.m_repetitions = repetitions;
         this.m_weight = weight;
         this.m_sequence = sequence;
-
+        this.m_time = time;
+        this.m_other = other;
+        this.m_oneRepMaxPercent = oneRepMaxPercent;
         //Log.d("EXERCISE CONSTRUCTOR TEST", "WEIGHT: " + weight + "REPS: " + repetitions);
 
         //stub for metrics
@@ -73,12 +79,14 @@ public class Exercise {
         mSaveToHistory = false;
     }
 
-    public Exercise(int id, String name, String muscleGroup, String equipmentType, String targetMuscle){
+    public Exercise(int id, String name, String muscleGroup, String equipmentType, String targetMuscle, int oneRepMax){
         this.m_id = id;
         this.m_name = name;
         this.m_muscleGroup = muscleGroup;
         this.m_equipmentType = equipmentType;
         this.m_targetMuscle = targetMuscle;
+        this.m_oneRepMax = oneRepMax;
+
         //stub for metrics
         Metric weightMetric = new Metric();
         weightMetric.setType(metricType.WEIGHT);
@@ -111,6 +119,23 @@ public class Exercise {
             m_plan_metrics.add(plan_metric);
         }
     }
+
+    public void setOneRepMax(int oneRepMax) { this.m_oneRepMax = oneRepMax; }
+
+    public int getOneRepMax() { return this.m_oneRepMax; }
+
+    public void setTime(int time) { this.m_time = time; }
+
+    public int getTime() { return this.m_time; }
+
+    public void setOther(int other) { this.m_other = other; }
+
+    public int getOther() { return this.m_other; }
+
+    public void setOneRepMaxPercent(int oneRepMaxPercent) { this.m_oneRepMaxPercent = oneRepMaxPercent; }
+
+    public int getOneRepMaxPercent() { return this.m_oneRepMaxPercent; }
+
     public void setWeight(int weight) { this.m_weight = weight; }
 
     public int getWeight() { return this.m_weight; }

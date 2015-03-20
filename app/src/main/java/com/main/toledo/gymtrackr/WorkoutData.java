@@ -242,12 +242,19 @@ public class WorkoutData {
                     Date d = new Date();
                     reps = e.getMetricValueByType(metricType.REPETITIONS);
                     weight = e.getMetricValueByType(metricType.WEIGHT);
+
+                    // update adam!
+                    int time = 0;
+                    int other = 0;
+
                     ExerciseHistory eh = new ExerciseHistory(
                         d, //date
                         weight,     //weight
                         reps,       //reps
                         e.getId(),          //exercise id
-                        mPlanId     //plan id
+                        mPlanId,     //plan id
+                        time,
+                        other
                     );
                     tempExerciseHolder.add(eh);
                 }
