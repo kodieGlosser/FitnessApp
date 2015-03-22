@@ -563,7 +563,7 @@ public class DatabaseWrapper {
                         val_oneRepMax = c.getInt(c.getColumnIndex(columnName));
                     }
                 }
-                exercises[i] = new Exercise(val_id, val_name, val_equipmentType, val_muscleGroup, val_targetMuscle, val_oneRepMax);
+                exercises[i] = new Exercise(val_id, val_name, val_muscleGroup, val_equipmentType, val_targetMuscle, val_oneRepMax);
                 i++;
             }
 
