@@ -30,6 +30,13 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     int mEndPosition;
     int mDragPointOffset;        //Used to adjust drag view location
 
+    int lastGroup;
+    int lastChild;
+    int group;
+    int child;
+
+    int mLayoutHeight;
+    View mLayoutHandle;
     ImageView mDragView;
     GestureDetector mGestureDetector;
 
@@ -84,14 +91,21 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                 //Log.d("TOUCH TESTS", "MOTION EVENT IS ACTION_DOWN");
                 //maps a point to an integer position on list
                 mStartPosition = pointToPosition(x, y); //mstartposition is the TRUE position
+
                 if (mStartPosition != INVALID_POSITION) {
                     //first item visible
                     //get firstvisible position returns integer pointing to first
                     //thing displayed on screen
+
+                    openUI(getPackedPositionGroup(getExpandableListPosition(mStartPosition))
+                            ,getPackedPositionChild(getExpandableListPosition(mStartPosition)));
+                    //openUI code
+
                     int mItemPosition = mStartPosition - getFirstVisiblePosition();
                     //ADAM: may need code for group here
                     //get child at returns view at position
                     mDragPointOffset = y - getChildAt(mItemPosition).getTop(); //returns top position of this view relative to parent in pixels
+                    mLayoutHeight = getChildAt(mItemPosition).getHeight();
                     mDragPointOffset -= ((int) ev.getRawY()) - y;
                     startDrag(mItemPosition, y);
                     //mItemPosition is the RELATIVE position on the list, 2nd item ON SCREEN vs 12th item
@@ -100,11 +114,21 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                 break;
             case MotionEvent.ACTION_MOVE: //mose if moved
                 //Log.d("TOUCH TESTS", "MOTION EVENT IS ACTION_MOVE");
-                Log.d("TOUCH TESTS", "---------------------------------------------------------------------------------------------");
+                //Log.d("TOUCH TESTS", "---------------------------------------------------------------------------------------------");
 
-                Log.d("TOUCH TESTS", "CURRENTLY OVER CHILD: " + getPackedPositionChild(getExpandableListPosition(pointToPosition(x, y)))
-                        + " -- IN GROUP: " + getPackedPositionGroup(getExpandableListPosition(pointToPosition(x, y))));
-                Log.d("TOUCH TESTS", "---------------------------------------------------------------------------------------------");
+                //Log.d("TOUCH TESTS", "CURRENTLY OVER CHILD: " + getPackedPositionChild(getExpandableListPosition(pointToPosition(x, y)))
+                //        + " -- IN GROUP: " + getPackedPositionGroup(getExpandableListPosition(pointToPosition(x, y))));
+                //Log.d("TOUCH TESTS", "---------------------------------------------------------------------------------------------");
+                child = getPackedPositionChild(getExpandableListPosition(pointToPosition(x, y)));
+                group = getPackedPositionGroup(getExpandableListPosition(pointToPosition(x, y)));
+
+                if(((child == lastChild) && (group == lastGroup)) || (group == -1 && child == -1)){
+                    //do nothing
+                } else {
+                    openUI(group, child);
+                    //openUI code
+                }
+
                 drag(0, y);// replace 0 with x if desired
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -145,7 +169,16 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         }
         return true;
     }
-
+    private void openUI(int group, int child){
+        //close last opening
+        Log.d("TOUCH TESTS", "POSITION CHANGED OPEN UI CALLED GROUP: " + group + " -- CHILD: " + child);
+        if (mLayoutHandle != null){
+            View mLayoutHandle = new View(mContext);
+        }
+        //open new opening
+        lastChild = child;
+        lastGroup = group;
+    }
     // move the drag view
     private void drag(int x, int y) {
         if (mDragView != null) {
@@ -197,6 +230,8 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         mWindowManager.addView(v, mWindowParams);
         mDragView = v;
+
+        //delete item from list, save in a temp location, refresh adapter
     }
 
     // destroy drag view
