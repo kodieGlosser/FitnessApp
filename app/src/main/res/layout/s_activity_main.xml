@@ -63,4 +63,4 @@
             android:layout_alignLeft="@+id/workoutNoPlanButton"
             android:layout_alignStart="@+id/workoutNoPlanButton" />
 
-    </RelativeLayout>
+</RelativeLayout>
