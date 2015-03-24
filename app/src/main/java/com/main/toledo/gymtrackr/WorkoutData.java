@@ -17,6 +17,8 @@ public class WorkoutData {
     private String m_name;
     private static WorkoutData sWorkspaceData;
     private Context mAppContext;
+    private Circuit mTempCircuit;
+    private Exercise mTempExercise;
 
     private WorkoutData(Context appContext){
         //adds initial values
@@ -78,6 +80,22 @@ public class WorkoutData {
     public void removeExercise(int exercisePosition, int circuitPosition){
         Workout.get(circuitPosition).removeExercise(exercisePosition);
     }
+
+    public void setTempExercise(int circuit, int exercise){
+        mTempExercise = Workout.get(circuit).getExercise(exercise);
+        Workout.get(circuit).removeExercise(exercise);
+    }
+    public void shiftTempExercise(int circuit, int exercise){
+        Workout.get(circuit).add(exercise, mTempExercise);
+    }
+    public void setTempCircuit(int circuit){
+        mTempCircuit = Workout.get(circuit);
+        Workout.remove(circuit);
+    }
+
+    public Exercise getTempExercise(){return mTempExercise;}
+
+    public Circuit getTempCircuit(){return mTempCircuit;}
     //newPlan
     public Plan crapNewPlan(){
         Plan plan = new Plan();

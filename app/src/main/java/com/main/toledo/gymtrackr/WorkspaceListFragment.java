@@ -152,9 +152,9 @@ public class WorkspaceListFragment extends Fragment {
 
                 public void onStartDrag(View itemView) {
                     //Log.d("TOUCH TESTS", "ON START DRAG CALLED");
-                    itemView.setVisibility(View.INVISIBLE);
-                    defaultBackgroundColor = itemView.getDrawingCacheBackgroundColor();
-                    itemView.setBackgroundColor(backgroundColor);
+                    //itemView.setVisibility(View.INVISIBLE);
+                    //defaultBackgroundColor = itemView.getDrawingCacheBackgroundColor();
+                    //itemView.setBackgroundColor(backgroundColor);
                     //test
                     //ImageView iv = (ImageView)itemView.findViewById(R.id.ImageView01);
                     //if (iv != null) iv.setVisibility(View.INVISIBLE);
