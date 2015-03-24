@@ -6,6 +6,8 @@
     <style name="GTR_Theme" parent="android:Theme.Light">
         <item name="android:windowBackground">@color/main_bg_color</item>
         <item name="android:buttonStyle">@style/button</item>
+        <item name="android:editTextBackground">@drawable/gtr_theme_edit_text</item>
+        <item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewGTR_Theme</item>
     </style>
 
 </resources>
