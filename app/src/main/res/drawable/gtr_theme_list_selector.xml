@@ -10,4 +10,4 @@
     <item android:drawable="@drawable/gtr_theme_list_selector_background_transition" android:state_pressed="true" android:state_focused="false"/>
     <item android:drawable="@drawable/gtr_theme_list_focused" android:state_focused="true"/>
 
-</selector>
+    </selector>
