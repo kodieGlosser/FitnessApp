@@ -134,7 +134,7 @@ public class DragNDropExpandableListView extends ExpandableListView {
                             m_endGroupPosition = 0;
 
                         mDropListener.onDrop(m_startChildPosition, m_startGroupPosition,
-                                m_endChildPosition, m_endGroupPosition); //this gets passed the start and end LIST positions
+                                m_endChildPosition); //this gets passed the start and end LIST positions
                     }
                 break;
         }
