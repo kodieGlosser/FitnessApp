@@ -36,7 +36,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     int m_endChildPosition;
 
     int mStartPosition;
-    int mEndPosition;
     int mDragPointOffset;        //Used to adjust drag view location
 
     int mLastPosition;
@@ -77,15 +76,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
     public void setDropListener(DropListener l) {
         mDropListener = l;
-    }
-
-    public void setRemoveListener(RemoveListener l) {
-        mRemoveListener = l;
-    }
-
-    public void setDragListener(DragListener l) {
-//        Log.d("TOUCH TESTS", "DRAG LISTENER INITIATED");
-        mDragListener = l;
     }
 
     public void toggleListeners(boolean b){
@@ -299,8 +289,9 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                     public void run() {
                         WorkoutData.get(mContext).getWorkout().remove(group);
                         ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
+                        ((WorkspaceActivity) mContext).ListFragment.restoreListExpansion();
                     }
-                },800);
+                }, 800);
 
                 justRemovedHeader = true;
             }

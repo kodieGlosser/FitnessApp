@@ -19,6 +19,7 @@ public class Circuit {
     protected ArrayList<Exercise> exercises = new ArrayList<Exercise>();
     private String name;
     private boolean isOpen;
+    private boolean isExpanded = true;
     private int id;
     //test for null pointer in workout data
 
@@ -64,5 +65,9 @@ public class Circuit {
     public int getId(){return id;}
 
     public void setId(int i){id = i;}
+
+    public void setExpanded(boolean b){isExpanded = b;}
+
+    public boolean isExpanded(){return isExpanded;}
 
 }

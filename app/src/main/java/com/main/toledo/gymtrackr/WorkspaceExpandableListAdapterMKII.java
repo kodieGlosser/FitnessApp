@@ -139,29 +139,16 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     //code to set color
                     convertView.setBackgroundColor(R.color.material_blue_grey_800);
                 //}
-                /*
+
                 LinearLayout mainLayout = (LinearLayout) convertView.findViewById(R.id.exerciseMainLayout);
-                //mainLayout.removeAllViewsInLayout();
-                //WORKAROUND, MAKES LIST ITEMS CLICKABLE, EDIT TEXTS DISABLED NORMAL FUNCTIONALITY
-                //CODE GOES HERE
-                Dewired 3/19 for workspace overhaul
-                mainLayout.setOnClickListener(null); //Resets the layouts on click listener
                 mainLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //NOTIFY TESTS FOR FLOW
-                        Log.d("FLOW TESTS", "NOTIFY CALLED IN ADAPTER");
-                        notifyDataSetChanged();
-                        //END TESTS
-                        Intent i = new Intent(_context, EditActivity.class);
-                        ((WorkspaceActivity) _context).setToEdit(true);
-                        i.putExtra("CIRCUIT_VALUE", group);
-                        i.putExtra("EXERCISE_VALUE", child);
-                        //Log.d("LAST THING", groupPosition + " " + childPosition);
-                        _context.startActivity(i);
+                        Log.d("PLUS FUNCTIONALITY", "BUTTON SHOULD BE WHITE");
+                        v.setBackgroundColor(Color.WHITE);
                     }
                 });
-                */
+
                 LinearLayout dynamicViewLayout = (LinearLayout) convertView.findViewById(R.id.dynamicViewLayout);
                 dynamicViewLayout.removeAllViewsInLayout();
                 if (((WorkspaceActivity) _context).workoutFromPlan()){
@@ -529,7 +516,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         break;
                 }
             notifyDataSetChanged();
-            ((WorkspaceActivity) _context).ListFragment.expandLists(this);
+            ((WorkspaceActivity) _context).ListFragment.restoreListExpansion();
         }
     }
 }

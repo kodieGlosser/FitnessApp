@@ -1,6 +1,7 @@
 package com.main.toledo.gymtrackr;
 
 
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,18 +13,12 @@ import android.widget.AbsListView;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 
-import java.util.ArrayList;
-
 /**
  * Created by Adam on 2/25/2015.
  */
 public class WorkspaceListFragment extends Fragment {
 
-        //ArrayList<Circuit> workout = new ArrayList<Circuit>();
-        //ArrayList<Circuit> singletonWorkout = new ArrayList<Circuit>();
         WorkspaceExpandableListView workspaceListView;
-        ArrayList<Boolean> groupExpandedArray = new ArrayList<>();
-        //WorkspaceExpandableListAdapterMKII listAdapter;
 
         @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -43,12 +38,19 @@ public class WorkspaceListFragment extends Fragment {
             @Override
             public void onGroupCollapse(int groupPosition) {
                 Log.d("PAD BUGS", "ON GROUP COLLAPSE CALLED");
-
+                WorkoutData.get(getActivity()).getWorkout().get(groupPosition).setExpanded(false);
                 ((WorkspaceActivity)getActivity()).getAdapter().hideKeypad();
-
             }
         });
-        //makes it so closed circuits and end buttons cannot be collapsed.
+
+        workspaceListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                Log.d("PAD BUGS", "ON GROUP COLLAPSE CALLED");
+                WorkoutData.get(getActivity()).getWorkout().get(groupPosition).setExpanded(true);
+            }
+        });
+
         workspaceListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
             @Override
@@ -63,49 +65,16 @@ public class WorkspaceListFragment extends Fragment {
             }
         });
 
-        //workspaceListView.setAdapter(((WorkspaceActivity)getActivity()).getAdapter());
-        //expandLists(((WorkspaceActivity)getActivity()).getAdapter());
-        //disabled for now 3/12
         workspaceListView.setDropListener(mDropListener);
 
-        //((DragNDropExpandableListView) listView).setRemoveListener(mRemoveListener);
-        //diabled for now 3/12
-        //workspaceListView.setDragListener(mDragListener);
-        /*
-        workspaceListView.setRecyclerListener(new AbsListView.RecyclerListener() {
-            @Override
-            public void onMovedToScrapHeap(View view) {
-                Log.d("SCRAP TEST", "ITEM SCRAPPED");
-            }
-        });
-        */
-        //EDIT TEXT IN WORKSPACE BROKE THIS, WE MAY WANT IT BACK
-        /*
-        workspaceListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                startEdit(groupPosition, childPosition);
-                return true;
-            }
-        });
-        */
         return v;
     }
-    //WENT WITH WHAT EDIT TEXT BROKE ABOVE
-    /*
-    private void startEdit(int group, int child){
-        Intent i = new Intent(getActivity(), EditActivity.class);
-        i.putExtra("CIRCUIT_VALUE", group);
-        i.putExtra("EXERCISE_VALUE", child);
-        startActivity(i);
-    }
-    */
+
     @Override
     public void onResume(){
         Log.d("PAD BUGS", "ONRESUME() CALLED IN WLFRAG");
         workspaceListView.setAdapter(((WorkspaceActivity)getActivity()).getAdapter());
-        expandLists(((WorkspaceActivity)getActivity()).getAdapter());
+        restoreListExpansion();
         workspaceListView.setGroupIndicator(null);
         final Rect hitRect = new Rect();
         workspaceListView.getHitRect(hitRect);
@@ -114,52 +83,24 @@ public class WorkspaceListFragment extends Fragment {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
             }
-
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
                 Log.d("PAD BUGS", "HIT RECT CALLED: " + hitRect.flattenToString());
                 ((WorkspaceActivity) getActivity()).getAdapter().cleanView(hitRect);
-
             }
         });
-        /*
-        WorkspaceExpandableListAdapterMKII w = (WorkspaceExpandableListAdapterMKII) workspaceListView.getAdapter();
-        w.notifyDataSetChanged();
-        */
         super.onResume();
     }
 
-    public void expandLists(WorkspaceExpandableListAdapterMKII listAdapter){
-        Log.d("SWIPE TESTS", "EXPANDLISTS CALLED");
-        int count = listAdapter.getGroupCount();
-        for (int position = 1; position <= count; position++){
-            workspaceListView.expandGroup(position - 1);
-        }
-    }
-
-    public void collapseLists(WorkspaceExpandableListAdapterMKII listAdapter){
-        int count = listAdapter.getGroupCount();
-        for (int position = 1; position < count; position++){
-            workspaceListView.collapseGroup(position - 1);
-        }
-    }
-
-    public void backupListStatus(){
-        groupExpandedArray.clear();
-        int numberOfGroups = ((WorkspaceActivity)getActivity()).getAdapter().getGroupCount();
-        for (int i=0;i<numberOfGroups;i++)
-            groupExpandedArray.add(workspaceListView.isGroupExpanded(i));
-    }
-
-    public void restoreListStatus(){
-        for (int i=0;i<groupExpandedArray.size();i++)
-            if (groupExpandedArray.get(i) == true)
+    public void restoreListExpansion(){
+        int length = WorkoutData.get(getActivity()).getWorkout().size();
+        for (int i = 0; i < length; i++){
+            if(WorkoutData.get(getActivity()).getWorkout().get(i).isExpanded()){
                 workspaceListView.expandGroup(i);
-    }
-
-    public void removeExpandedMemory(int group){
-        groupExpandedArray.remove(group);
+            } else {
+                workspaceListView.collapseGroup(i);
+            }
+        }
     }
 
     private DropListener mDropListener =
@@ -173,42 +114,6 @@ public class WorkspaceListFragment extends Fragment {
                     }
                 }
             };
-
-    //TO GREG - pretty sure the drag color bug originates from here
-    /*
-    private DragListener mDragListener =
-            new DragListener() {
-
-                int backgroundColor = 0xe0103010;
-                int defaultBackgroundColor;
-
-                public void onDrag(int x, int y, ExpandableListView listView) {
-                    //Log.d("TOUCH TESTS", "ON DRAG CALLED");
-                    // TODO Auto-generated method stub
-                }
-
-                public void onStartDrag(View itemView) {
-                    //Log.d("TOUCH TESTS", "ON START DRAG CALLED");
-                    //itemView.setVisibility(View.INVISIBLE);
-                    //defaultBackgroundColor = itemView.getDrawingCacheBackgroundColor();
-                    //itemView.setBackgroundColor(backgroundColor);
-                    //test
-                    //ImageView iv = (ImageView)itemView.findViewById(R.id.ImageView01);
-                    //if (iv != null) iv.setVisibility(View.INVISIBLE);
-                }
-
-                public void onStopDrag(View itemView) {
-                    //Log.d("TOUCH TESTS", "ON STOP DRAG CALLED");
-                    itemView.setVisibility(View.VISIBLE);
-                    //GREG - DRAG BUG IS PROBABLY THIS EXACT THING
-                    itemView.setBackgroundColor(defaultBackgroundColor);
-                    //test
-                    //ImageView iv = (ImageView)itemView.findViewById(R.id.ImageView01);
-                    //if (iv != null) iv.setVisibility(View.VISIBLE);
-                }
-
-            };
-            */
 
 }
 
