@@ -40,10 +40,25 @@ public class WorkspaceListFragment extends Fragment {
             @Override
             public void onGroupCollapse(int groupPosition) {
                 Log.d("PAD BUGS", "ON GROUP COLLAPSE CALLED");
+
                 ((WorkspaceActivity)getActivity()).getAdapter().hideKeypad();
+
             }
         });
+        //makes it so closed circuits and end buttons cannot be collapsed.
+        workspaceListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v,
+                                        int groupPosition, long id) {
+                if(!WorkoutData.get(getActivity())
+                        .getWorkout().get(groupPosition).isOpen()){
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
 
         //workspaceListView.setAdapter(((WorkspaceActivity)getActivity()).getAdapter());
         //expandLists(((WorkspaceActivity)getActivity()).getAdapter());
@@ -52,7 +67,7 @@ public class WorkspaceListFragment extends Fragment {
 
         //((DragNDropExpandableListView) listView).setRemoveListener(mRemoveListener);
         //diabled for now 3/12
-        workspaceListView.setDragListener(mDragListener);
+        //workspaceListView.setDragListener(mDragListener);
         /*
         workspaceListView.setRecyclerListener(new AbsListView.RecyclerListener() {
             @Override
@@ -128,17 +143,18 @@ public class WorkspaceListFragment extends Fragment {
 
     private DropListener mDropListener =
             new DropListener() {
-                public void onDrop(int fromX, int fromY, int toX, int toY) {
+                public void onDrop(int type, int toX, int toY) {
                     ExpandableListAdapter adapter = workspaceListView.getExpandableListAdapter();
                     if (adapter instanceof WorkspaceExpandableListAdapterMKII) {
                         //Log.d("TOUCH TESTS", "ITEM DROPPED");
-                        ((WorkspaceExpandableListAdapterMKII)adapter).onDrop(fromX, fromY, toX, toY);
-                        ((WorkspaceActivity)getActivity()).getAdapter().notifyDataSetChanged();
+                        ((WorkspaceExpandableListAdapterMKII)adapter).onDrop(type, toX, toY);
+                        //((WorkspaceActivity)getActivity()).getAdapter().notifyDataSetChanged();
                     }
                 }
             };
 
     //TO GREG - pretty sure the drag color bug originates from here
+    /*
     private DragListener mDragListener =
             new DragListener() {
 
@@ -171,6 +187,7 @@ public class WorkspaceListFragment extends Fragment {
                 }
 
             };
+            */
 
 }
 

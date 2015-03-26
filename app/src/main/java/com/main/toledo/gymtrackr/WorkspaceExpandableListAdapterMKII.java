@@ -30,6 +30,9 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
     private EditText m_editTextHandle;
 
+    final int CIRCUIT = 1;
+    final int EXERCISE = 2;
+
     public WorkspaceExpandableListAdapterMKII(Context context){
         this._context = context;
     }
@@ -543,8 +546,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     }
 
     @Override
-    public void onDrop(int homeExerciseIndex, int homeCircuitIndex,
-                        int destinationExerciseIndex ,int destinationCircuitIndex) {
+    public void onDrop(int type, int destinationExerciseIndex ,int destinationCircuitIndex) {
         synchronized (WorkoutData.get(_context).getWorkout()) {//Save to temp, remove from workout
 
             boolean lastCircuit = false;
@@ -553,32 +555,44 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 destinationExerciseIndex = -1;
                 lastCircuit = true;
             }
+            /*
                 if (destinationCircuitIndex >= 0 && destinationExerciseIndex >= 0)
                     if (WorkoutData.get(_context).getWorkout().get(destinationCircuitIndex).getExercise(destinationExerciseIndex).getName().equals("test")){
                         if(destinationExerciseIndex != 0) {
                             destinationExerciseIndex--;
                         }
                     }
+                    */
                 //if (destinationExerciseIndex > WorkoutData.get(_context).getWorkout().get(destinationCircuitIndex).getExercises().size() - 2) //if the destination exercise is
                 //    destinationExerciseIndex = WorkoutData.get(_context).getWorkout().get(destinationCircuitIndex).getExercises().size() - 2;
                 // 3/19 +++++ (destinationExerciseIndex < 0)
                 //    destinationExerciseIndex = 0;
 
-                switch (homeExerciseIndex) {
-                    case -1:  //passed location is a group header
+                switch (type) {
+                    case CIRCUIT:  //passed location is a group header
                         //if ((homeCircuitIndex < destinationCircuitIndex)
                         //        || (homeCircuitIndex > destinationCircuitIndex + 1)) {
-
+                        /*
                         Circuit tempCircuit = WorkoutData.get(_context).getWorkout().get(homeCircuitIndex);
                         WorkoutData.get(_context).getWorkout().remove(homeCircuitIndex);
                         if(lastCircuit){
                             destinationCircuitIndex--;
                         }
-                        WorkoutData.get(_context).getWorkout().add(destinationCircuitIndex, tempCircuit);
+                        */
+                        WorkoutData.get(_context).placeTempCircuit(destinationCircuitIndex);
 
                         ///}
                         break;
-                    default:  //passed location is a group child
+                    case EXERCISE:  //passed location is a group child
+                        switch (destinationExerciseIndex){
+                            case -1:
+                                WorkoutData.get(_context).addClosedCircuitWithTempExercise(destinationCircuitIndex);
+                                break;
+                            default:
+                                WorkoutData.get(_context).placeTempExercise(destinationCircuitIndex, destinationExerciseIndex);
+                                break;
+                        }
+                        /*
                         if(WorkoutData.get(_context).getWorkout().get(homeCircuitIndex)
                                 .getExercise(homeExerciseIndex).getName() != "test") { //fixes bug where button placeholder item is moved occasionally
 
@@ -605,9 +619,11 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                         .expandLists(((WorkspaceActivity) _context).getAdapter());
                             }
                         }
+                        */
                         break;
                 }
-
+            notifyDataSetChanged();
+            ((WorkspaceActivity) _context).ListFragment.expandLists(this);
         }
     }
 }

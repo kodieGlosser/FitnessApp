@@ -76,6 +76,14 @@ public class WorkoutData {
         Workout.add(circuitNumber, c);
     }
 
+    public void addClosedCircuitWithTempExercise(int circuitNumber){
+        Circuit c = new Circuit();
+        c.setOpenStatus(false);
+        c.add(mTempExercise);
+        Workout.add(circuitNumber, c);
+        mTempExercise = null;
+    }
+
     //removes exercise at circuit
     public void removeExercise(int exercisePosition, int circuitPosition){
         Workout.get(circuitPosition).removeExercise(exercisePosition);
@@ -84,18 +92,22 @@ public class WorkoutData {
     public void setTempExercise(int circuit, int exercise){
         mTempExercise = Workout.get(circuit).getExercise(exercise);
         Workout.get(circuit).removeExercise(exercise);
+        if (!Workout.get(circuit).isOpen()){
+            Workout.remove(circuit);
+        }
     }
-    public void shiftTempExercise(int circuit, int exercise){
+    public void placeTempExercise(int circuit, int exercise){
         Workout.get(circuit).add(exercise, mTempExercise);
+        mTempExercise = null;
     }
     public void setTempCircuit(int circuit){
         mTempCircuit = Workout.get(circuit);
         Workout.remove(circuit);
     }
-
-    public Exercise getTempExercise(){return mTempExercise;}
-
-    public Circuit getTempCircuit(){return mTempCircuit;}
+    public void placeTempCircuit(int circuit){
+        Workout.add(circuit, mTempCircuit);
+        mTempCircuit = null;
+    }
     //newPlan
     public Plan crapNewPlan(){
         Plan plan = new Plan();

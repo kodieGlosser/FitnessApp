@@ -32,5 +32,5 @@ public interface DropListener {
      * @param from - index item started at.
      * @param to - index to place item at.
      */
-    void onDrop(int fromX, int fromY, int toX, int toY);
+    void onDrop(int type, int toX, int toY);
 }
