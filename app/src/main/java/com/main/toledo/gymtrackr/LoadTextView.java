@@ -64,8 +64,8 @@ public class LoadTextView extends TextView {
                 // Remember where we started (for dragging)
                 mStartX = x;
                 //mLastTouchY = y;
-                mLeftX = mStartX - 100;
-                mRightX = mStartX + 100;
+                mLeftX = mStartX - 50;
+                mRightX = mStartX + 50;
 
                 // Save the ID of this pointer (for dragging)
                 mActivePointerId = MotionEventCompat.getPointerId(ev, 0);

@@ -9,7 +9,7 @@
 
     <com.main.toledo.gymtrackr.WorkspaceExpandableListView
         android:id="@+id/workspaceListView"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_width="match_parent"
         android:divider="@android:color/transparent"
         android:childDivider="@android:color/transparent"

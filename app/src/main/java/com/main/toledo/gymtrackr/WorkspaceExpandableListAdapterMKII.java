@@ -83,7 +83,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         //    Log.d("test", "should make buttons");
             if(editable){
                 //Log.d("FLOW TEST", "DRAW BUTTONS SHOULD BE CALLED NOW");
-                if (convertView == null || (convertView.getTag() != "End Button")) {
+                //if (convertView == null || (convertView.getTag() != "End Button")) {
                     //Log.d("FLOW TEST", "DRAW BUTTONS CALLED");
                     LayoutInflater inflater = (LayoutInflater) this._context
                             .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -95,10 +95,13 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         @Override
                         public void onClick(View v) {
                             WorkoutData.get(_context).addCircuit(group);
+                            ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(group);
                             //WorkoutData.get(_context).getWorkout()
                             notifyDataSetChanged();
+                            /*
                             ((WorkspaceActivity) _context).ListFragment
                                     .expandLists(((WorkspaceActivity) _context).getAdapter());
+                                    */
                         }
                     });
 
@@ -115,27 +118,27 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         }
                     });
                     convertView.setTag("End Button");
-                }
+                //}
             } else {
-                if (convertView == null || (convertView.getTag() != "Blank")) {
+                //if (convertView == null || (convertView.getTag() != "Blank")) {
                     LayoutInflater inflater = (LayoutInflater) this._context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.w_empty, null);
                     convertView.setTag("Blank");
-                }
+                //}
             }
         }else {
             if (childPosition < (WorkoutData.get(_context).getWorkout().get(group).getSize() - 1)
                     || !(WorkoutData.get(_context).getWorkout().get(group).isOpen())) {
                 //for the not last items in the list
-                if (convertView == null || (convertView.getTag() != "Data")) {
+                //if (convertView == null || (convertView.getTag() != "Data")) {
                     LayoutInflater inflater = (LayoutInflater) this._context
                             .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.w_exercise, null);
                     convertView.setTag("Data");
                     //code to set color
                     convertView.setBackgroundColor(R.color.material_blue_grey_800);
-                }
+                //}
                 /*
                 LinearLayout mainLayout = (LinearLayout) convertView.findViewById(R.id.exerciseMainLayout);
                 //mainLayout.removeAllViewsInLayout();
@@ -172,38 +175,18 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 TextView textView = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
                 textView.setTypeface(null, Typeface.BOLD);
                 textView.setText(WorkoutData.get(_context).getWorkout().get(group).getExercise(childPosition).getName());
-                //code for delete button
-                Button deleteButton = (Button) convertView.findViewById(R.id.removeExerciseButton);
-                deleteButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        WorkoutData.get(_context).removeExercise(child, group);
-                        //if circuit is closed remove it as it is no longer necessary
-                        //Log.d("REMOVE BUG", "Remove clicked.  Child Position: " + childPosition + " Group Position: " + groupPosition);
-                        if(!WorkoutData.get(_context).getWorkout().get(group).isOpen()){
-                            WorkoutData.get(_context).getWorkout().remove(group);
-                        }
-                        notifyDataSetChanged();
-                    }
-                });
-                //toggles button for edit mode
-                if(!editable){
-                    deleteButton.setVisibility(View.INVISIBLE);
-                }else{
-                    deleteButton.setVisibility(View.VISIBLE);
-                }
             } else {
                 //for the last items
                 //switch will go here when we have an edit toggle to hide buttons
                 if(editable) {
-                    if (convertView == null || (convertView.getTag() != "Button")) {
+                    //if (convertView == null || (convertView.getTag() != "Button")) {
                         LayoutInflater inflater = (LayoutInflater) this._context
                                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         convertView = inflater.inflate(R.layout.w_circuit_menu_buttons, null);
                         convertView.setTag("Button");
                         convertView.findViewById(R.id.inCircuitButtonHandle)
                                 .setBackgroundColor(R.color.material_blue_grey_800);
-                    }
+                    //}
                         Button browseButton = (Button) convertView.findViewById(R.id.BrowseButton);
                         browseButton.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -218,12 +201,12 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         });
 
                 }else{
-                    if (convertView == null || (convertView.getTag() != "Blank")) {
+                    //if (convertView == null || (convertView.getTag() != "Blank")) {
                         LayoutInflater inflater = (LayoutInflater) this._context
                                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         convertView = inflater.inflate(R.layout.w_empty, null);
                         convertView.setTag("Blank");
-                    }
+                    //}
                 }
                 //ConvertViewIsButton = true;
             }
@@ -262,13 +245,14 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.w_empty, null);
             convertView.setTag("Blank");
+            ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
             //LinearLayout main = (LinearLayout) convertView.findViewById(R.id.empty);
             //main.setPadding(100, 100, 0, 100);
 
         }else {
             //if (groupPosition < (workout.size() - 1)) {
                 //for the not last items in the list
-                if (convertView == null || convertView.getTag() != "Data") {
+                //if (convertView == null || convertView.getTag() != "Data") {
                     LayoutInflater inflater = (LayoutInflater) this._context
                             .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.w_circuit_group, null);
@@ -277,28 +261,11 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     //LinearLayout main = (LinearLayout) convertView.findViewById(R.id.groupHandle);
                     //main.setPadding(100, 100, 0, 100);
 
-                }
+               // }
                 //values for circuit header stuff
                 TextView textView = (TextView) convertView.findViewById(R.id.circuitNameHeader);
                 textView.setTypeface(null, Typeface.BOLD);
                 textView.setText(WorkoutData.get(_context).getWorkout().get(groupPosition).getName());
-
-                Button removeCircuitButton = (Button) convertView.findViewById(R.id.removeCircuitButton);
-
-                removeCircuitButton.setFocusable(false);
-                removeCircuitButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                        WorkoutData.get(_context).getWorkout().remove(group);
-                        notifyDataSetChanged();
-                    }
-                });
-
-                if(!editable){
-                    removeCircuitButton.setVisibility(View.INVISIBLE);
-                } else {
-                    removeCircuitButton.setVisibility(View.VISIBLE);
-                }
         }
         return convertView;
     }
@@ -320,15 +287,6 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
             imm.hideSoftInputFromWindow(m_editTextHandle.getWindowToken(), 0);
             m_editTextHandle.clearFocus();
         }
-
-        //Log.d("PAD BUGS", "HIDE KEYPAD - CLEAR FOCUS");
-    }
-
-    private void showKeypad(){
-
-        InputMethodManager imm = (InputMethodManager)_context.getSystemService(
-                Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(m_editTextHandle, InputMethodManager.SHOW_IMPLICIT);
     }
 
     private View createGoalLayout(int group, int child){
@@ -550,39 +508,14 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     public void onDrop(int type, int destinationExerciseIndex ,int destinationCircuitIndex) {
         synchronized (WorkoutData.get(_context).getWorkout()) {//Save to temp, remove from workout
 
-            boolean lastCircuit = false;
-
             if (destinationCircuitIndex >= WorkoutData.get(_context).getWorkout().size() - 1) {             //if the destination circuit is the last or later
                 destinationExerciseIndex = -1;
-                lastCircuit = true;
-            }
-            /*
-                if (destinationCircuitIndex >= 0 && destinationExerciseIndex >= 0)
-                    if (WorkoutData.get(_context).getWorkout().get(destinationCircuitIndex).getExercise(destinationExerciseIndex).getName().equals("test")){
-                        if(destinationExerciseIndex != 0) {
-                            destinationExerciseIndex--;
-                        }
-                    }
-                    */
-                //if (destinationExerciseIndex > WorkoutData.get(_context).getWorkout().get(destinationCircuitIndex).getExercises().size() - 2) //if the destination exercise is
-                //    destinationExerciseIndex = WorkoutData.get(_context).getWorkout().get(destinationCircuitIndex).getExercises().size() - 2;
-                // 3/19 +++++ (destinationExerciseIndex < 0)
-                //    destinationExerciseIndex = 0;
 
+            }
                 switch (type) {
-                    case CIRCUIT:  //passed location is a group header
-                        //if ((homeCircuitIndex < destinationCircuitIndex)
-                        //        || (homeCircuitIndex > destinationCircuitIndex + 1)) {
-                        /*
-                        Circuit tempCircuit = WorkoutData.get(_context).getWorkout().get(homeCircuitIndex);
-                        WorkoutData.get(_context).getWorkout().remove(homeCircuitIndex);
-                        if(lastCircuit){
-                            destinationCircuitIndex--;
-                        }
-                        */
+                    case CIRCUIT:
                         WorkoutData.get(_context).placeTempCircuit(destinationCircuitIndex);
 
-                        ///}
                         break;
                     case EXERCISE:  //passed location is a group child
                         switch (destinationExerciseIndex){
@@ -593,34 +526,6 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                 WorkoutData.get(_context).placeTempExercise(destinationCircuitIndex, destinationExerciseIndex);
                                 break;
                         }
-                        /*
-                        if(WorkoutData.get(_context).getWorkout().get(homeCircuitIndex)
-                                .getExercise(homeExerciseIndex).getName() != "test") { //fixes bug where button placeholder item is moved occasionally
-
-                            Exercise tempExercise = WorkoutData.get(_context).getWorkout().get(homeCircuitIndex)
-                                    .getExercise(homeExerciseIndex);
-                            WorkoutData.get(_context).getWorkout().get(homeCircuitIndex).removeExercise(homeExerciseIndex);
-
-                            if (!WorkoutData.get(_context).getWorkout().get(homeCircuitIndex).isOpen()) {
-                                WorkoutData.get(_context).getWorkout().remove(homeCircuitIndex);
-                                Log.d("TOUCH TEST", "SHOULD NOW REMOVE CLOSED CIRCUIT");
-                            }
-
-                            Log.d("TOUCH TEST", " DEST EX INDEX: " + destinationExerciseIndex +"DEST CIRC INDEX: " + destinationCircuitIndex );
-                            //Add to location
-                            if(destinationExerciseIndex != -1 && WorkoutData.get(_context).getWorkout().get(destinationCircuitIndex).isOpen()) {
-                                WorkoutData.get(_context).getWorkout().get(destinationCircuitIndex)
-                                        .addExerciseAtIndex(destinationExerciseIndex, tempExercise);
-                            } else {
-                                Log.d("TOUCH TESTS", "SHOULD NOW ADD CLOSED CIRCUIT");
-                                // WorkoutData.get(getActivity()).addClosedCircuit(exercise,
-                                //((BrowseActivity) getActivity()).getCircuitValue());
-                                WorkoutData.get(_context).addClosedCircuit(tempExercise, destinationCircuitIndex);
-                                ((WorkspaceActivity) _context).ListFragment
-                                        .expandLists(((WorkspaceActivity) _context).getAdapter());
-                            }
-                        }
-                        */
                         break;
                 }
             notifyDataSetChanged();

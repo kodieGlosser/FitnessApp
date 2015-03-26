@@ -12,6 +12,8 @@ import android.widget.AbsListView;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 
+import java.util.ArrayList;
+
 /**
  * Created by Adam on 2/25/2015.
  */
@@ -20,6 +22,7 @@ public class WorkspaceListFragment extends Fragment {
         //ArrayList<Circuit> workout = new ArrayList<Circuit>();
         //ArrayList<Circuit> singletonWorkout = new ArrayList<Circuit>();
         WorkspaceExpandableListView workspaceListView;
+        ArrayList<Boolean> groupExpandedArray = new ArrayList<>();
         //WorkspaceExpandableListAdapterMKII listAdapter;
 
         @Override
@@ -128,6 +131,7 @@ public class WorkspaceListFragment extends Fragment {
     }
 
     public void expandLists(WorkspaceExpandableListAdapterMKII listAdapter){
+        Log.d("SWIPE TESTS", "EXPANDLISTS CALLED");
         int count = listAdapter.getGroupCount();
         for (int position = 1; position <= count; position++){
             workspaceListView.expandGroup(position - 1);
@@ -139,6 +143,23 @@ public class WorkspaceListFragment extends Fragment {
         for (int position = 1; position < count; position++){
             workspaceListView.collapseGroup(position - 1);
         }
+    }
+
+    public void backupListStatus(){
+        groupExpandedArray.clear();
+        int numberOfGroups = ((WorkspaceActivity)getActivity()).getAdapter().getGroupCount();
+        for (int i=0;i<numberOfGroups;i++)
+            groupExpandedArray.add(workspaceListView.isGroupExpanded(i));
+    }
+
+    public void restoreListStatus(){
+        for (int i=0;i<groupExpandedArray.size();i++)
+            if (groupExpandedArray.get(i) == true)
+                workspaceListView.expandGroup(i);
+    }
+
+    public void removeExpandedMemory(int group){
+        groupExpandedArray.remove(group);
     }
 
     private DropListener mDropListener =

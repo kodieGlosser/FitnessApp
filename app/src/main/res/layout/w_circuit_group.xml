@@ -28,12 +28,7 @@
             android:textSize="17dp"
             android:text="TESTVAL"
             android:layout_weight="0.85"/>
-        <Button
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="-"
-            android:id="@+id/removeCircuitButton"
-            android:layout_weight="0.15"/>
+
     </LinearLayout>
 
 </LinearLayout>

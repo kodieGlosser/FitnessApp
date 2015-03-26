@@ -22,13 +22,6 @@
             android:layout_height="wrap_content"
             android:text="Exercise"
             android:layout_weight="0.85" />
-        <Button
-            android:layout_height="30dp"
-            android:layout_width="20dp"
-            android:text="-"
-            android:id="@+id/removeExerciseButton"
-            android:layout_weight="0.07"
-            android:focusable="false"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
