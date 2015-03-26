@@ -93,6 +93,8 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                         .get(getPackedPositionGroup(getExpandableListPosition(pointToPosition(x, y)))).isOpen()) {
                     Log.d("OPEN TESTS", "TRIED TO DRAG CLOSED CIRCUIT HEADER");
                     mDragMode = false;
+                } else {
+                    mDragMode = true;
                 }
             } else {
                 mDragMode = true;

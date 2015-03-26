@@ -136,11 +136,12 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     //code to set color
                     convertView.setBackgroundColor(R.color.material_blue_grey_800);
                 }
+                /*
                 LinearLayout mainLayout = (LinearLayout) convertView.findViewById(R.id.exerciseMainLayout);
                 //mainLayout.removeAllViewsInLayout();
                 //WORKAROUND, MAKES LIST ITEMS CLICKABLE, EDIT TEXTS DISABLED NORMAL FUNCTIONALITY
                 //CODE GOES HERE
-                /* Dewired 3/19 for workspace overhaul
+                Dewired 3/19 for workspace overhaul
                 mainLayout.setOnClickListener(null); //Resets the layouts on click listener
                 mainLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -202,7 +203,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         convertView.setTag("Button");
                         convertView.findViewById(R.id.inCircuitButtonHandle)
                                 .setBackgroundColor(R.color.material_blue_grey_800);
-
+                    }
                         Button browseButton = (Button) convertView.findViewById(R.id.BrowseButton);
                         browseButton.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -215,7 +216,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                 _context.startActivity(i);
                             }
                         });
-                    }
+
                 }else{
                     if (convertView == null || (convertView.getTag() != "Blank")) {
                         LayoutInflater inflater = (LayoutInflater) this._context
