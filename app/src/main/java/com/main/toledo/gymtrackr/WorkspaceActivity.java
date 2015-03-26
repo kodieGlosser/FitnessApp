@@ -104,6 +104,8 @@ public class WorkspaceActivity extends FragmentActivity{
         isEditable = !isEditable;
         listAdapter.setEditable(isEditable);
         ListFragment.workspaceListView.toggleListeners(isEditable);
+        ListFragment.workspaceListView.clearHandle();
+
         if(isEditable){
             toggleButton.setBackgroundColor(Color.BLUE);
             toggleButton.setTextColor(Color.WHITE);

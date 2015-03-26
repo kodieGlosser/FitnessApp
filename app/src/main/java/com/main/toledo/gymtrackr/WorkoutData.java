@@ -19,6 +19,7 @@ public class WorkoutData {
     private Context mAppContext;
     private Circuit mTempCircuit;
     private Exercise mTempExercise;
+    private Exercise mToggledExercise;
 
     private WorkoutData(Context appContext){
         //adds initial values
@@ -87,6 +88,48 @@ public class WorkoutData {
     //removes exercise at circuit
     public void removeExercise(int exercisePosition, int circuitPosition){
         Workout.get(circuitPosition).removeExercise(exercisePosition);
+    }
+    public void setToggledExercise(int circuit, int exercise){
+        mToggledExercise = Workout.get(circuit).getExercise(exercise);
+    }
+
+    public void setToggledExerciseExplicit(Exercise e){
+        mToggledExercise = e;
+    }
+
+    public boolean isAnExerciseToggled(){
+        if (mToggledExercise == null){
+            return false;
+        }
+        return true;
+    }
+
+    public Exercise getToggledExercise(){
+        Exercise e = new Exercise();
+        e.setName(mToggledExercise.getName());
+        e.setEquipment(mToggledExercise.getEquipment());
+        e.setMuscleGroup(mToggledExercise.getMuscleGroup());
+
+        for(Metric m : mToggledExercise.getMetrics()){
+            Metric metric = new Metric();
+            metric.setType(m.getType());
+            switch(m.getType()){
+                case TIME:
+                    metric.setMetricIntValue(m.getMetricIntValue());
+                    break;
+                case WEIGHT:
+                    metric.setMetricIntValue(m.getMetricIntValue());
+                    break;
+                case REPETITIONS:
+                    metric.setMetricIntValue(m.getMetricIntValue());
+                    break;
+                case OTHER:
+                    metric.setMetricStringValue(m.getMetricStringValue());
+                    break;
+            }
+            e.addMetrics(metric);
+        }
+        return e;
     }
 
     public void setTempExercise(int circuit, int exercise){
@@ -301,5 +344,6 @@ public class WorkoutData {
         Workout.clear();
         m_name = "";
         mPlanId = -1;
+        mToggledExercise = null;
     }
 }

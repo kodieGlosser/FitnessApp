@@ -27,6 +27,7 @@ public class Exercise {
     private ArrayList<Metric> m_metrics = new ArrayList<Metric>();
     private ArrayList<Metric> m_plan_metrics = new ArrayList<>();
     private boolean mSaveToHistory; //tests for whether exercise was used or not, used when saving history
+    private boolean mToggled;//used for ui stuffs
     //performed, used to organize browse menu
 
     public Exercise(String name, String muscleGroup, int lastPerformed, String equipmentType){
@@ -49,6 +50,7 @@ public class Exercise {
 
         //tests for whether exercise was used or not, used when saving history
         mSaveToHistory = false;
+        mToggled = false;
     }
 
     public Exercise(int id, String name, int repetitions, int weight, int sequence, int oneRepMaxPercent, int time, int other){
@@ -77,6 +79,7 @@ public class Exercise {
 
 
         mSaveToHistory = false;
+        mToggled = false;
     }
 
     public Exercise(int id, String name, String muscleGroup, String equipmentType, String targetMuscle, int oneRepMax){
@@ -100,6 +103,7 @@ public class Exercise {
         m_metrics.add(repMetric);
 
         mSaveToHistory = false;
+        mToggled = false;
     }
 
     public Exercise(){
@@ -109,6 +113,7 @@ public class Exercise {
         m_equipmentType = "test";
 
         mSaveToHistory = false;
+        mToggled = false;
     }
 
     public void addSeparatePlanMetrics(){
@@ -193,6 +198,10 @@ public class Exercise {
     public void addMetrics(Metric m){ m_metrics.add(m); }
 
     public void setSaveToHistory(boolean b){mSaveToHistory = b;}
+
+    public void setToggled(boolean b){mToggled = b;}
+
+    public boolean isToggled(){return mToggled;}
 
     public int getMetricValueByType(metricType metricType){
         int i = 0;

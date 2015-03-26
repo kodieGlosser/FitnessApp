@@ -32,6 +32,7 @@ public class BrowseListFragment extends ListFragment{
         exercise.setName(e.getName());
         exercise.setId(e.getId());
         //Stubs
+        //THIS NEEDS UPDATING
         Metric weightMetric = new Metric();
         weightMetric.setType(metricType.WEIGHT);
         //weightMetric.setMetricIntValue(weight);
@@ -41,6 +42,7 @@ public class BrowseListFragment extends ListFragment{
         exercise.addMetrics(weightMetric);
         exercise.addMetrics(repMetric);
 
+        WorkoutData.get(getActivity()).setToggledExerciseExplicit(e);
         //if circuit is open
         if (((BrowseActivity)getActivity()).isCircuitOpen()){
             //addToOpenCircuit to that circuit

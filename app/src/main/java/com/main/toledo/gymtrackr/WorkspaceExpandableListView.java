@@ -53,6 +53,11 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     int swipeX;
     int swipeY;
 
+    int currentX;
+    int currentY;
+
+    Exercise mToggledExerciseHandle;
+
     ArrayList<Circuit> Workout = new ArrayList<>();
     LinearLayout mLayoutHandle;
     LinearLayout.LayoutParams mOpenParams;
@@ -190,7 +195,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                     if (!(m_endGroupPosition == -1 && m_endChildPosition == -1)) {
                         //3/19****  if (m_endChildPosition < 0)
                         //          m_endChildPosition = 0;
-
                         if (m_endGroupPosition < 0)
                             m_endGroupPosition = 0;
 
@@ -204,35 +208,59 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
             switch (action) {
                 case MotionEvent.ACTION_DOWN:
+                    Log.d("SELECT TESTS", "DOWN X: " + x + " -- Y: " + y);
                     justRemovedHeader = false;
                     //mouse button is initially pressed
+
                     mStartPosition = pointToPosition(x, y);
+
                     if (mStartPosition != INVALID_POSITION) {
                         swipeX = x;
                         swipeY = y;
+                        currentX = x;
+                        currentY = y;
                     }
+
+                    postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("SELECT TESTS", "RUNNABLE X: " + x + " -- Y: " + y);
+                            Log.d("SELECT TESTS", "RUNNABLE X: " + currentX + " -- Y: " + currentY);
+                            if(
+                                (currentX < (x + 30)) &&
+                                (currentX > (x - 30)) &&
+                                (currentY < (y + 30)) &&
+                                (currentY > (y -30))
+                            ){
+                                toggle(mStartPosition);
+                            }
+                        }
+                    }, 250);
+
+
                     super.onTouchEvent(ev);
                     break;
                 case MotionEvent.ACTION_MOVE: //mose if moved
+                    currentX = x;
+                    currentY = y;
+                    Log.d("SELECT TESTS", "MOVE");
                     if (mStartPosition != -1) {
                         if (pointToPosition(x, y) != mStartPosition) {
                             mStartPosition = -1;
                         }
                         if ((x < (swipeX - 150)) && mStartPosition != -1) {
-
-                            Log.d("SWIPE TESTS", "SHOULD NOW FIRE SWIPEY LOGIC");
                             int mItemPosition = mStartPosition - getFirstVisiblePosition();
                             deleteItem(mStartPosition);
                             mStartPosition = -1;
                         }
                     }
                     if (!justRemovedHeader) {
-                        Log.d("SWIPE TESTS", "SUPER CALLED UNDER MOVE");
+
                         super.onTouchEvent(ev);
                     }
                     break; //mouse button is released
                 default:
-                    Log.d("SWIPE TESTS", "SUPER CALLED UNDER DEFAULT");
+                    Log.d("SELECT TESTS", "DEFAULT");
                     if (!justRemovedHeader) {
                         super.onTouchEvent(ev);
                     }
@@ -245,9 +273,35 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         return super.onTouchEvent(ev);
     }
 
+    private void toggle(int position){
+        Log.d("SELECT TESTS", "TOGGLE CALLED");
+        if(getPackedPositionType(getExpandableListPosition(position))==PACKED_POSITION_TYPE_CHILD){
+            int group = getPackedPositionGroup(getExpandableListPosition(position));
+            int child = getPackedPositionChild(getExpandableListPosition(position));
+
+            if(!Workout.get(group).getExercise(child).getName().equals("test")) {
+                if (mToggledExerciseHandle != null)
+                    mToggledExerciseHandle.setToggled(false);
+
+                mToggledExerciseHandle = Workout.get(group).getExercise(child);
+                mToggledExerciseHandle.setToggled(true);
+                WorkoutData.get(mContext).setToggledExercise(group, child);
+                ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
+            }
+
+        }
+    }
+
+    public void clearHandle(){
+        if (mToggledExerciseHandle!=null) {
+            mToggledExerciseHandle.setToggled(false);
+            mToggledExerciseHandle = null;
+        }
+    }
+
     private void openUI(int position, View v){//int child, View v){
 
-        if (v != null) {
+        if (v != null && position != -1) {
             Log.d("OPEN TESTS", "SHOW NOW CLOSE LAST PADDING");
             if (!(!Workout.get(getPackedPositionGroup(getExpandableListPosition(position))).isOpen()
                     && (getPackedPositionChild(getExpandableListPosition(position)) == 0))) {
@@ -276,13 +330,11 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                 postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
                         ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(getChildAt(itemPosition - getFirstVisiblePosition()), "translationX", -1500);
                         mSlidInAnimator.setDuration(300);
                         mSlidInAnimator.start();
                     }
                 }, 500);
-
 
                 postDelayed(new Runnable() {
                     @Override
