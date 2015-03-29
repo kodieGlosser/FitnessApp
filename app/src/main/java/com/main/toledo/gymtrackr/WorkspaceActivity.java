@@ -4,7 +4,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Button;
 
 import java.util.List;
@@ -12,12 +16,13 @@ import java.util.List;
 /**
  * Created by Adam on 2/15/2015.
  */
-public class WorkspaceActivity extends FragmentActivity{
+public class WorkspaceActivity extends ActionBarActivity {
 
     WorkspaceExpandableListAdapterMKII listAdapter;
     WorkspaceListFragment ListFragment;
-    WorkspaceHeaderFragment HeaderFragment;
+   // WorkspaceHeaderFragment HeaderFragment;
     String planName;
+    Menu mOptionsMenu;
 
     int mode;
 
@@ -71,15 +76,52 @@ public class WorkspaceActivity extends FragmentActivity{
 
         //listAdapter = new WorkspaceExpandableListAdapterMKII(this);
 
-        HeaderFragment = new WorkspaceHeaderFragment();
+        //HeaderFragment = new WorkspaceHeaderFragment();
         ListFragment = new WorkspaceListFragment();
 
         FragmentTransaction transaction =
                 getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.WorkspaceHeaderContainer, HeaderFragment);
+        //transaction.add(R.id.WorkspaceHeaderContainer, HeaderFragment);
         transaction.add(R.id.WorkspaceListContainer, ListFragment);
         transaction.commit();
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        mOptionsMenu = menu;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_workspace, menu);
+        toggleEdit();
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_toggle_edit:
+                toggleEdit();
+                return true;
+            case R.id.save_changes:
+                if (mode == PLAN) {
+                    //CODE FOR PLAN SAVE
+                    Plan p = WorkoutData.get(this).crapNewPlan();
+                    DatabaseWrapper db = new DatabaseWrapper();
+                    db.saveEntirePlan(p);
+                }
+                if (mode == WORKOUT) {
+                    //CODE FOR WORKOUT SAVE, EG EXPORT TO HISTORY
+                    DatabaseWrapper db = new DatabaseWrapper();
+                    db.addExerciseToHistory(WorkoutData.get(this).crapHistory());
+                }
+                return true;
+            case R.id.action_settings:
+                //openSettings();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public String getPlanName(){return planName;}
@@ -98,7 +140,7 @@ public class WorkspaceActivity extends FragmentActivity{
     */
     //I feel like this should be in the header fragment...
     public void toggleEdit(){
-        Button toggleButton = (Button) HeaderFragment.getView().findViewById(R.id.toggleEdit);
+        //Button toggleButton = (Button) HeaderFragment.getView().findViewById(R.id.toggleEdit);
 
         //Log.d("EDITABLE TEST", "toggleEdit() called in workspace activity");
         isEditable = !isEditable;
@@ -107,13 +149,20 @@ public class WorkspaceActivity extends FragmentActivity{
         ListFragment.workspaceListView.clearHandle();
 
         if(isEditable){
+            mOptionsMenu.findItem(R.id.action_toggle_edit).setIcon(R.drawable.unlocked);
+            /*
             toggleButton.setBackgroundColor(Color.BLUE);
             toggleButton.setTextColor(Color.WHITE);
+            */
         }else{
+            mOptionsMenu.findItem(R.id.action_toggle_edit).setIcon(R.drawable.locked);
+            /*
             toggleButton.setBackgroundColor(android.R.drawable.btn_default_small);
             toggleButton.setTextColor(getResources().getColor(R.color.abc_primary_text_material_light));
+            */
         }
     }
+
     @Override
     public void onResume(){
         //Log.d("APP FLOW TESTS", "ON RESUME CALLED IN WORKSPACE ACTIVITY");

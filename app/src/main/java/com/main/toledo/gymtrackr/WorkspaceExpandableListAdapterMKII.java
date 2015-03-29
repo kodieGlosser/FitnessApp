@@ -371,7 +371,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                 ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(false);
                                 //Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + timeEdit.getText());
                             } else {
-                                ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(true);
+                                ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(editable);
                                 //Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + timeEdit.getText());
                                 if(((EditText) v).getText().toString().equals("")) {
                                     Workout.get(group).getExercise(child)
@@ -431,7 +431,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                 m_editTextHandle = (EditText) v;
 
                             } else {
-                                ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(true);
+                                ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(editable);
                                     //Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + repEdit.getText());
                                     if (((EditText) v).getText().toString().equals("")) {
                                         Workout.get(group).getExercise(child)
@@ -497,7 +497,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
                             } else {
                                 //Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + wtEdit.getText());
-                                ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(true);
+                                ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(editable);
                                 if(((EditText) v).getText().toString().equals("")) {
                                     Workout.get(group).getExercise(child)
                                             .getMetrics().get(j).setMetricIntValue(0);
