@@ -2,16 +2,12 @@ package com.main.toledo.gymtrackr;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
-
-import java.util.List;
 
 /**
  * Created by Adam on 2/15/2015.
@@ -20,9 +16,11 @@ public class WorkspaceActivity extends ActionBarActivity {
 
     WorkspaceExpandableListAdapterMKII listAdapter;
     WorkspaceListFragment ListFragment;
-   // WorkspaceHeaderFragment HeaderFragment;
+    WorkspaceTabFragment TabFragment;
     String planName;
     Menu mOptionsMenu;
+    private int mToggledExercise = -1;
+    private int mToggledCircuit = -1;
 
     int mode;
 
@@ -76,12 +74,12 @@ public class WorkspaceActivity extends ActionBarActivity {
 
         //listAdapter = new WorkspaceExpandableListAdapterMKII(this);
 
-        //HeaderFragment = new WorkspaceHeaderFragment();
+        TabFragment = new WorkspaceTabFragment();
         ListFragment = new WorkspaceListFragment();
 
         FragmentTransaction transaction =
                 getSupportFragmentManager().beginTransaction();
-        //transaction.add(R.id.WorkspaceHeaderContainer, HeaderFragment);
+        transaction.add(R.id.WorkspaceHeaderContainer, TabFragment);
         transaction.add(R.id.WorkspaceListContainer, ListFragment);
         transaction.commit();
 
@@ -140,9 +138,7 @@ public class WorkspaceActivity extends ActionBarActivity {
     */
     //I feel like this should be in the header fragment...
     public void toggleEdit(){
-        //Button toggleButton = (Button) HeaderFragment.getView().findViewById(R.id.toggleEdit);
 
-        //Log.d("EDITABLE TEST", "toggleEdit() called in workspace activity");
         isEditable = !isEditable;
         listAdapter.setEditable(isEditable);
         ListFragment.workspaceListView.toggleListeners(isEditable);
@@ -191,6 +187,13 @@ public class WorkspaceActivity extends ActionBarActivity {
         */
         super.onStart();
     }
+
+    public void putToggledExerciseCircuit(int exercise, int circuit){
+        mToggledExercise = exercise;
+        mToggledCircuit = circuit;
+    }
+    public int getToggledExercise(){return mToggledExercise;}
+    public int getToggledCircuit(){return mToggledCircuit;}
 
     /*
     @Override

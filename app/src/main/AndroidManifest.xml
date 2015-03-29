@@ -25,20 +25,17 @@
         android:theme="@style/GTR_Theme" >
         <activity
             android:name=".BrowseActivity"
-            android:label="@string/app_name"
-            android:noHistory="true" >
-
-            <!--
-        <intent-filter>
-
-            <action android:name="android.intent.action.MAIN"/>
-
-            <category android:name="android.intent.category.LAUNCHER"/>
-
-        </intent-filter>
-            -->
+            android:label="Browse Exercises"
+            android:noHistory="true"
+            android:theme="@style/Theme.AppCompat.Light"
+            android:parentActivityName="com.main.toledo.gymtrackr.WorkspaceActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.main.toledo.gymtrackr.WorkspaceActivity"
+                />
 
         </activity>
+
         <activity
             android:name=".WorkspaceActivity"
             android:label="Workspace"
@@ -51,9 +48,11 @@
                 android:value="com.main.toledo.gymtrackr.StartActivity"
                 />
         </activity>
+
         <activity
             android:name=".StartActivity">
         </activity>
+
         <activity
             android:name=".LoadActivity"
             android:theme="@style/Theme.AppCompat.Light"
@@ -64,11 +63,20 @@
                 android:value="com.main.toledo.gymtrackr.StartActivity"
                 />
         </activity>
+
         <activity
             android:name=".EditActivity"
             android:windowSoftInputMode="adjustPan"
-            android:label="@string/app_name" >
+            android:label="Detail View"
+            android:theme="@style/Theme.AppCompat.Light"
+            android:parentActivityName="com.main.toledo.gymtrackr.StartActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.main.toledo.gymtrackr.StartActivity"
+                />
+
         </activity>
+
         <activity android:name=".SplashScreen"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >

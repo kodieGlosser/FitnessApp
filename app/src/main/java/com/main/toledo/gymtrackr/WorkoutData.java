@@ -97,6 +97,7 @@ public class WorkoutData {
         mToggledExercise = e;
     }
 
+    public void clearToggledExercise(){ mToggledExercise = null;}
     public boolean isAnExerciseToggled(){
         if (mToggledExercise == null){
             return false;

@@ -10,15 +10,12 @@ import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 /**
  * Created by Adam on 2/22/2015.
@@ -56,6 +53,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     int currentX;
     int currentY;
 
+    private int mDelay;
     Exercise mToggledExerciseHandle;
 
     ArrayList<Circuit> Workout = new ArrayList<>();
@@ -235,29 +233,32 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                                 toggle(mStartPosition);
                             }
                         }
-                    }, 250);
+                    }, mDelay);
 
 
                     super.onTouchEvent(ev);
                     break;
                 case MotionEvent.ACTION_MOVE: //mose if moved
-                    currentX = x;
-                    currentY = y;
-                    Log.d("SELECT TESTS", "MOVE");
-                    if (mStartPosition != -1) {
-                        if (pointToPosition(x, y) != mStartPosition) {
-                            mStartPosition = -1;
-                        }
-                        if ((x < (swipeX - 150)) && mStartPosition != -1) {
-                            int mItemPosition = mStartPosition - getFirstVisiblePosition();
-                            deleteItem(mStartPosition);
-                            mStartPosition = -1;
-                        }
-                    }
-                    if (!justRemovedHeader) {
 
-                        super.onTouchEvent(ev);
-                    }
+                        currentX = x;
+                        currentY = y;
+                        Log.d("SELECT TESTS", "MOVE");
+                        if (mStartPosition != -1) {
+                            if (pointToPosition(x, y) != mStartPosition) {
+                                mStartPosition = -1;
+                            }
+                            if ((x < (swipeX - 150)) && mStartPosition != -1) {
+                                int mItemPosition = mStartPosition - getFirstVisiblePosition();
+                                deleteItem(mStartPosition);
+                                mStartPosition = -1;
+                            }
+                        }
+
+                        if (!justRemovedHeader) {
+
+                            super.onTouchEvent(ev);
+                        }
+
                     break; //mouse button is released
                 default:
                     Log.d("SELECT TESTS", "DEFAULT");
@@ -274,18 +275,30 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     }
 
     private void toggle(int position){
-        Log.d("SELECT TESTS", "TOGGLE CALLED");
+        Log.d("TOGGLE TESTS", "TOGGLE CALLED");
         if(getPackedPositionType(getExpandableListPosition(position))==PACKED_POSITION_TYPE_CHILD){
             int group = getPackedPositionGroup(getExpandableListPosition(position));
             int child = getPackedPositionChild(getExpandableListPosition(position));
 
             if(!Workout.get(group).getExercise(child).getName().equals("test")) {
-                if (mToggledExerciseHandle != null)
-                    mToggledExerciseHandle.setToggled(false);
 
-                mToggledExerciseHandle = Workout.get(group).getExercise(child);
-                mToggledExerciseHandle.setToggled(true);
-                WorkoutData.get(mContext).setToggledExercise(group, child);
+                if(!Workout.get(group).getExercise(child).isToggled()) {
+                    if (mToggledExerciseHandle != null)
+                            mToggledExerciseHandle.setToggled(false);
+
+                    mToggledExerciseHandle = Workout.get(group).getExercise(child);
+                    mToggledExerciseHandle.setToggled(true);
+                    WorkoutData.get(mContext).setToggledExercise(group, child);
+                    ((WorkspaceActivity) mContext).putToggledExerciseCircuit(child, group);
+
+                }else if (Workout.get(group).getExercise(child).isToggled()){
+                    Log.d("TOGGLE TESTS", "SHOULD NOW DETOGGLE");
+                    Workout.get(group).getExercise(child).setToggled(false);
+                    mToggledExerciseHandle = null;
+                    WorkoutData.get(mContext).clearToggledExercise();
+                    ((WorkspaceActivity) mContext).putToggledExerciseCircuit(-1, -1);
+                }
+
                 ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
             }
 

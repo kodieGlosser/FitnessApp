@@ -177,10 +177,10 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 //switch will go here when we have an edit toggle to hide buttons
                 if(editable) {
                     //if (convertView == null || (convertView.getTag() != "Button")) {
-                        LayoutInflater inflater = (LayoutInflater) this._context
-                                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        convertView = inflater.inflate(R.layout.w_circuit_menu_buttons, null);
-                        //convertView.setTag("Button");
+                    LayoutInflater inflater = (LayoutInflater) this._context
+                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.w_circuit_menu_buttons, null);
+                    //convertView.setTag("Button");
                     Button browseButton = (Button) convertView.findViewById(R.id.BrowseButton);
                     browseButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -388,6 +388,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     timeRow.setOrientation(LinearLayout.HORIZONTAL);
                     timeRow.addView(timeText);
                     timeRow.addView(timeEdit);
+                    timeRow.setWeightSum(1);
 
                     layout.addView(timeRow);
                     break;
@@ -447,6 +448,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     repRow.setOrientation(LinearLayout.HORIZONTAL);
                     repRow.addView(repText);
                     repRow.addView(repEdit);
+                    repRow.setWeightSum(1);
 
                     layout.addView(repRow);
                     break;
@@ -512,7 +514,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     wtRow.setOrientation(LinearLayout.HORIZONTAL);
                     wtRow.addView(wtText);
                     wtRow.addView(wtEdit);
-
+                    wtRow.setWeightSum(1);
                     layout.addView(wtRow);
                     break;
                 default:

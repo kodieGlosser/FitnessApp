@@ -1,9 +1,13 @@
 package com.main.toledo.gymtrackr;
 
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 
 import java.io.IOException;
 import java.util.Date;
@@ -11,10 +15,11 @@ import java.util.Date;
 /**
  * Created by Adam on 2/26/2015.
  */
-public class EditActivity extends FragmentActivity {
+public class EditActivity extends ActionBarActivity {
     //EditWorkoutMapFragment mapFragment;
     EditExerciseDetailsFragment detailsFragment;
     EditExerciseHistoryFragment historyFragment;
+    WorkspaceTabFragment tabFragment;
     //public static EditWorkoutMapAdapter mapAdapter;
     public static EditExerciseHistoryAdapter historyAdapter;
     //public static EditExerciseDetailsAdapter detailsAdapter;
@@ -29,6 +34,11 @@ public class EditActivity extends FragmentActivity {
         if (extras != null){
             circuitValue = extras.getInt("CIRCUIT_VALUE");
             exerciseValue = extras.getInt("EXERCISE_VALUE");
+            if (circuitValue == -1 && exerciseValue == -1){
+                circuitValue = 0;
+                exerciseValue = 0;
+            }
+
             exercise = WorkoutData.get(this).getWorkout()
                     .get(circuitValue).getExercise(exerciseValue);
         }
@@ -38,6 +48,7 @@ public class EditActivity extends FragmentActivity {
         detailsFragment = new EditExerciseDetailsFragment();
         //mapFragment = new EditWorkoutMapFragment();
         historyFragment = new EditExerciseHistoryFragment();
+        tabFragment = new WorkspaceTabFragment();
         /*
         //Eats the workoutdata singleton
         mapAdapter = new EditWorkoutMapAdapter(this, 0, )
@@ -64,10 +75,17 @@ public class EditActivity extends FragmentActivity {
         //transaction.add(R.id.editMapFragment, mapFragment);
         transaction.add(R.id.editDetailsFragment, detailsFragment);
         transaction.add(R.id.editHistoryFragment, historyFragment);
+        transaction.add(R.id.tabFragment, tabFragment);
         transaction.commit();
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_detail, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
     //public EditWorkoutMapAdapter getMapAdapter(){ return this.mapAdapter; }
 
     public EditExerciseHistoryAdapter getHistoryAdapter(){ return this.historyAdapter; }

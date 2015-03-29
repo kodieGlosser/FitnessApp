@@ -4,7 +4,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -16,7 +19,7 @@ import java.util.ArrayList;
 /**
  * Created by Adam on 2/10/2015.
  */
-public class BrowseActivity extends FragmentActivity {
+public class BrowseActivity extends ActionBarActivity {
     //fragments needed for the browse activity
     BrowseFilterFragment FilterFragment;
     BrowseListFragment ListFragment;
@@ -58,6 +61,14 @@ public class BrowseActivity extends FragmentActivity {
         transaction.commit();
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_browse, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
     //Adam:  This is a stub list of exercises used for the browse menu
     //in the format "Name, Muscle group, last used, equip used"
     //used to fetch the adapter from this activity in fragments.  the list fragment gets the adapter

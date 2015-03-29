@@ -17,6 +17,13 @@
         android:layout_weight="10">
 
         <FrameLayout
+            android:id="@+id/tabFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            />
+
+        <FrameLayout
             android:id="@+id/editDetailsFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- this XML specifies the layout for the buttons at the very end of the workout in the workspace-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,23 +7,15 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Add Circuit"
-        android:id="@+id/AddCircuitButton"
-        android:layout_gravity="right"
-        android:layout_weight="1"/>
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="+"
-        android:id="@+id/PlusButton"
+        android:text="Workspace"
+        android:id="@+id/workspace"
         android:layout_weight="1" />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Browse"
-        android:id="@+id/BrowseButton"
+        android:text="Details"
+        android:id="@+id/details"
         android:layout_weight="1"/>
 
 </LinearLayout>
