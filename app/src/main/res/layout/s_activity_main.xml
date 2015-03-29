@@ -6,61 +6,41 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
+    android:background="#1ca4fb"
     tools:context="com.main.toledo.gymtrackr.StartActivity">
 
-    <TextView android:text="@string/s_start_welcome_message" android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="21dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/textView" />
+    <Button
+        android:id="@+id/workoutNow"
+        android:text="Workout"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        style="@style/myButton"
+        android:layout_above="@+id/workoutFromPlan" />
 
     <Button
-        android:id = "@+id/workoutNoPlanButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/s_workoutNoPlanButtonText"
-        android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="58dp" />
+        android:id="@+id/workoutFromPlan"
+        android:text="Open Plan"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        style="@style/myButton"
+        android:layout_above="@+id/viewHistory" />
 
     <Button
-        android:id = "@+id/workoutFromPlanButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/s_workoutFromPlanButtonText"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:id="@+id/viewHistory"
+        android:text="History"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        style="@style/myButton"
+        android:layout_alignParentBottom="true" />
 
-    <!--  Disabling these two buttons for now, we can always change them back later
-        <Button
-            android:id = "@+id/createPlanButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/s_createPlanButtonText"
-            android:layout_marginTop="42dp"
-            android:layout_below="@+id/workoutFromPlanButton"
-            android:layout_centerHorizontal="true" />
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:src="@drawable/ic_logo"
+        android:layout_above="@+id/workoutNow"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="46dp" />
 
-        <Button
-            android:id = "@+id/modifyPlanButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/s_modifyPlanButtonText"
-            android:layout_marginTop="36dp"
-            android:layout_below="@+id/createPlanButton"
-            android:layout_centerHorizontal="true" />
-    -->
-
-        <Button
-            android:id = "@+id/viewHistoryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/s_viewHistoryButtonText"
-            android:layout_marginTop="102dp"
-            android:layout_below="@+id/workoutFromPlanButton"
-            android:layout_alignLeft="@+id/workoutNoPlanButton"
-            android:layout_alignStart="@+id/workoutNoPlanButton" />
-
-    </RelativeLayout>
+ </RelativeLayout>

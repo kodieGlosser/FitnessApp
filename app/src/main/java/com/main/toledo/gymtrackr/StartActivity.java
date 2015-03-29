@@ -2,15 +2,11 @@ package com.main.toledo.gymtrackr;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-
-import java.io.IOException;
 
 
 public class StartActivity extends Activity {
@@ -20,7 +16,7 @@ public class StartActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.s_activity_main);
 
-        Button workoutNoPlanButton = (Button)findViewById(R.id.workoutNoPlanButton);
+        Button workoutNoPlanButton = (Button)findViewById(R.id.workoutNow);
 
         workoutNoPlanButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -31,7 +27,7 @@ public class StartActivity extends Activity {
             }
         });
 
-        Button workoutFromPlanButton = (Button)findViewById(R.id.workoutFromPlanButton);
+        Button workoutFromPlanButton = (Button)findViewById(R.id.workoutFromPlan);
 
         workoutFromPlanButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -64,7 +60,7 @@ public class StartActivity extends Activity {
 
         */
 
-        Button viewHistoryButton = (Button)findViewById(R.id.viewHistoryButton);
+        Button viewHistoryButton = (Button)findViewById(R.id.viewHistory);
 
         viewHistoryButton.setOnClickListener(new View.OnClickListener(){
             @Override
