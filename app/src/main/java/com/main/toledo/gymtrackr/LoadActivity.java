@@ -9,9 +9,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.GestureDetector;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,11 +28,10 @@ import java.util.ArrayList;
 /**
  * Created by Adam on 2/10/2015.
  */
-public class LoadActivity extends FragmentActivity {
+public class LoadActivity extends ActionBarActivity {
     //fragments needed for the load activity
     public String[] planArray; //stubs = {"CHEST", "BACK", "ARMS"};
     static public ArrayList<String> planList;
-    LoadHeaderFragment HeaderFragment;
     LoadListFragment ListFragment;
     private int actionToPerform;
     //Program State Constants
@@ -60,7 +63,6 @@ public class LoadActivity extends FragmentActivity {
          */
         //populates our display initially
         //initiates filter
-        HeaderFragment = new LoadHeaderFragment();
         ListFragment = new LoadListFragment();
 
         planList = new ArrayList<String>();
@@ -73,49 +75,39 @@ public class LoadActivity extends FragmentActivity {
         //creates a list adapter for our stub exercises
         adapter = new LoadAdapter(this, 0, planList);
 
-        //adds fragments to layout/b_activity.xml
         FragmentTransaction transaction =
                 getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.loadHeaderContainer, HeaderFragment);
+
         transaction.add(R.id.loadListContainer, ListFragment);
         transaction.commit();
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_load, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_add_plan:
+                showNameDialog();
+                adapter.notifyDataSetChanged();
+                return true;
+            case R.id.action_settings:
+                //openSettings();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     public LoadAdapter getAdapter(){
         return this.adapter;
     }
-    /*
-    public void onRadioButtonClicked(View view){
-
-        boolean checked = ((RadioButton) view).isChecked();
-        switch(view.getId()) {
-
-            case R.id.load_radio_edit:
-                if (checked)
-                    setToEdit();
-                break;
-            case R.id.load_radio_workout:
-                if (checked)
-                    setToWorkout();
-                break;
-        }
-    }
-
-    public void setToWorkout(){
-        actionToPerform = WORKOUT;
-        this.findViewById(R.id.loadMainWindow).setBackgroundColor(Color.RED);
-    }
-
-    public void setToEdit(){
-        actionToPerform = EDIT;
-        this.findViewById(R.id.loadMainWindow).setBackgroundColor(Color.GREEN);
-    }
-
-    public int getActionToPerform(){
-        return actionToPerform;
-    }
-    */
 
     public void setPlanName(String s){planName = s;};
 
@@ -151,21 +143,6 @@ public class LoadActivity extends FragmentActivity {
     public int getError(){
         return errorType;
     }
-    /*
-    public void editSelect(View view){
-        Log.d("LOADTESTS", "EDIT SELECTED");
-    }
-
-    public void workoutSelect(View view){
-        Log.d("LOADTEST", "WORKOUT SELECTED");
-    }
-
-    public void deleteSelect(View view){
-        Log.d("LOADTEST", "DELETE SELECTED");
-    }
-    */
-
-
 
     public class LoadAdapter extends ArrayAdapter{
 

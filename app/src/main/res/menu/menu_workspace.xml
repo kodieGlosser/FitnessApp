@@ -1,12 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.main.toledo.gymtrackr.LoadActivity">
 
-    <item android:id="@+id/action_add_plan"
-          android:title="Add Plan"
-          android:icon="@drawable/ic_action"
-          app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_toggle_edit"
+        android:title="Toggle Edit Mode"
+        android:icon="@drawable/locked"
+        app:showAsAction="ifRoom" />
+
+    <item android:id="@+id/save_changes"
+        android:title="Save changes"
+        android:icon="@drawable/save"
+        app:showAsAction="ifRoom" />
 
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />

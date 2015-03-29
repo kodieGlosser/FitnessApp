@@ -368,8 +368,10 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         @Override
                         public void onFocusChange(View v, boolean hasFocus) {
                             if (hasFocus){
+                                ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(false);
                                 //Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + timeEdit.getText());
                             } else {
+                                ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(editable);
                                 //Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + timeEdit.getText());
                                 if(((EditText) v).getText().toString().equals("")) {
                                     Workout.get(group).getExercise(child)
@@ -425,10 +427,11 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         public void onFocusChange(View v, boolean hasFocus) {
                             if (hasFocus){
                                 //Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + repEdit.getText());
-
+                                ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(false);
                                 m_editTextHandle = (EditText) v;
 
                             } else {
+                                ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(editable);
                                     //Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + repEdit.getText());
                                     if (((EditText) v).getText().toString().equals("")) {
                                         Workout.get(group).getExercise(child)
@@ -489,11 +492,12 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         public void onFocusChange(View v, boolean hasFocus) {
                             if (hasFocus){
                                 //Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED: " + wtEdit.getText());
-
+                                ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(false);
                                 m_editTextHandle = (EditText) v;
 
                             } else {
                                 //Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + wtEdit.getText());
+                                ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(editable);
                                 if(((EditText) v).getText().toString().equals("")) {
                                     Workout.get(group).getExercise(child)
                                             .getMetrics().get(j).setMetricIntValue(0);

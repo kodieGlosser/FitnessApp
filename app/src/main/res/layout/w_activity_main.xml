@@ -6,12 +6,12 @@
     android:baselineAligned="false"
     android:id="@+id/mainLayoutHandle">
 
-    <FrameLayout
+    <!--<FrameLayout
         android:id="@+id/WorkspaceHeaderContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="top"
-        />
+        />-->
 
     <FrameLayout
         android:id="@+id/WorkspaceListContainer"
