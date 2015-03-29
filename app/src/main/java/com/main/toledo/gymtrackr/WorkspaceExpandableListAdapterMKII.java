@@ -19,6 +19,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -38,9 +40,12 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
     private ArrayList<Circuit> Workout = new ArrayList<>();
 
+
+
     private LinearLayout.LayoutParams params;
     public WorkspaceExpandableListAdapterMKII(Context context){
         params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+
         this._context = context;
         Workout = WorkoutData.get(_context).getWorkout();
     }
@@ -163,17 +168,31 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
                 LinearLayout dynamicViewLayout = (LinearLayout) convertView.findViewById(R.id.dynamicViewLayout);
                 dynamicViewLayout.removeAllViewsInLayout();
+
+
+
+
                 if (((WorkspaceActivity) _context).workoutFromPlan()){
                     dynamicViewLayout.addView(createGoalLayout(group, child));
                 }
-
-                dynamicViewLayout.addView(createMetricEditTextLayout(group, child));
+                FrameLayout exerciseViewHandle = (FrameLayout) convertView.findViewById(R.id.exercise_frame_handle);
+                dynamicViewLayout.addView(createMetricEditTextLayout(group, child, exerciseViewHandle));
 
 
                 //sets text for name
                 TextView textView = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
                 textView.setTypeface(null, Typeface.BOLD);
                 textView.setText(Workout.get(group).getExercise(childPosition).getName());
+
+                if(Workout.get(group).getExercise(childPosition).isSaveToHistorySet()){
+                    if (exerciseViewHandle.getTag() == null || !exerciseViewHandle.getTag().equals("checked")) {
+                        ImageView mChecked = new ImageView(_context);
+                        mChecked.setImageResource(R.drawable.grn_check);
+                        exerciseViewHandle.addView(mChecked);
+                        exerciseViewHandle.setTag("checked");
+                    }
+                }
+
             } else {
                 //for the last items
                 //switch will go here when we have an edit toggle to hide buttons
@@ -327,7 +346,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     TextView timeGoal = new TextView(_context);
                     timeGoal.setText("Time: " + plan_metrics.get(i).getMetricIntValue());
                     timeGoal.setLayoutParams(params);
-                    
+
                     goalLayout.addView(timeGoal);
                     break;
                 case REPETITIONS:
@@ -352,7 +371,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         return goalLayout;
     }
 
-    private View createMetricEditTextLayout(final int group, final int child){
+    private View createMetricEditTextLayout(final int group, final int child, final FrameLayout frameLayout){
         final LinearLayout layout = new LinearLayout(_context);
         layout.setOrientation(LinearLayout.HORIZONTAL);
         //layout.removeAllViewsInLayout();
@@ -379,6 +398,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                             .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
                                 }
                                 return true;
+
                             }
                             return false;
                         }
@@ -400,6 +420,17 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                     Workout.get(group).getExercise(child)
                                             .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
                                 }
+                                Log.d("CHECKED TESTS", "PERFORMING CHECK TESTS");
+
+                                if (!(frameLayout.getTag() == "checked") || (frameLayout.getTag() == null)) {
+                                    Log.d("CHECKED TESTS", "MAKING NEW CHECK");
+                                    Workout.get(group).getExercise(child).setSaveToHistory(true);
+                                    ImageView mChecked = new ImageView(_context);
+                                    mChecked.setImageResource(R.drawable.grn_check);
+                                    frameLayout.addView(mChecked);
+                                    frameLayout.setTag("checked");
+                                }
+
                             }
                         }
                     });
@@ -461,6 +492,17 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                         Workout.get(group).getExercise(child)
                                                 .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
                                     }
+                                Log.d("CHECKED TESTS", "PERFORMING CHECK TESTS");
+
+                                if (!(frameLayout.getTag() == "checked") || (frameLayout.getTag() == null)) {
+                                    Log.d("CHECKED TESTS", "MAKING NEW CHECK");
+                                    Workout.get(group).getExercise(child).setSaveToHistory(true);
+                                    ImageView mChecked = new ImageView(_context);
+                                    mChecked.setImageResource(R.drawable.grn_check);
+                                    frameLayout.addView(mChecked);
+                                    frameLayout.setTag("checked");
+                                }
+
                             }
                         }
                     });
@@ -527,6 +569,17 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                     Workout.get(group).getExercise(child)
                                             .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
                                 }
+                                Log.d("CHECKED TESTS", "PERFORMING CHECK TESTS");
+
+                                if (!(frameLayout.getTag() == "checked") || (frameLayout.getTag() == null)) {
+                                    Log.d("CHECKED TESTS", "MAKING NEW CHECK");
+                                    Workout.get(group).getExercise(child).setSaveToHistory(true);
+                                    ImageView mChecked = new ImageView(_context);
+                                    mChecked.setImageResource(R.drawable.grn_check);
+                                    frameLayout.addView(mChecked);
+                                    frameLayout.setTag("checked");
+                                }
+
                             }
                         }
                     });

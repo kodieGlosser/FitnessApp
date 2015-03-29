@@ -159,7 +159,7 @@ public class WorkspaceActivity extends ActionBarActivity {
             */
             }
         }
-
+        listAdapter.hideKeypad();
         listAdapter.setEditable(isEditable);
         ListFragment.workspaceListView.toggleListeners(isEditable);
         ListFragment.workspaceListView.clearHandle();
