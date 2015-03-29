@@ -57,6 +57,7 @@
             android:name=".LoadActivity"
             android:theme="@style/Theme.AppCompat.Light"
             android:label="Plan Menu"
+            android:noHistory="true"
             android:parentActivityName="com.main.toledo.gymtrackr.StartActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -68,6 +69,7 @@
             android:name=".EditActivity"
             android:windowSoftInputMode="adjustPan"
             android:label="Detail View"
+            android:noHistory="true"
             android:theme="@style/Theme.AppCompat.Light"
             android:parentActivityName="com.main.toledo.gymtrackr.StartActivity">
             <meta-data

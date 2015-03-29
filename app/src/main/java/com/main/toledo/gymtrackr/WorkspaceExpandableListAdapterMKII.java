@@ -1,7 +1,6 @@
 package com.main.toledo.gymtrackr;
 
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import android.content.Context;
@@ -13,7 +12,6 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -40,7 +38,9 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
     private ArrayList<Circuit> Workout = new ArrayList<>();
 
+    private LinearLayout.LayoutParams params;
     public WorkspaceExpandableListAdapterMKII(Context context){
+        params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
         this._context = context;
         Workout = WorkoutData.get(_context).getWorkout();
     }
@@ -82,7 +82,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
         final int group = groupPosition;
         final int child = childPosition;
-
+        boolean emptyFlag = false;
 
         if (group >= Workout.size()-1){
         //    Log.d("test", "should make buttons");
@@ -90,6 +90,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 //Log.d("FLOW TEST", "DRAW BUTTONS SHOULD BE CALLED NOW");
                 //if (convertView == null || (convertView.getTag() != "End Button")) {
                     //Log.d("FLOW TEST", "DRAW BUTTONS CALLED");
+                emptyFlag = true;
                 LayoutInflater inflater = (LayoutInflater) this._context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.w_workout_menu_buttons, null);
@@ -140,9 +141,10 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 //}
             } else {
                 //if (convertView == null || (convertView.getTag() != "Blank")) {
+                emptyFlag = true;
                 LayoutInflater inflater = (LayoutInflater) this._context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.w_empty, null);
+                convertView = inflater.inflate(R.layout.w_empty_wopadding, null);
                 //convertView.setTag("Blank");
                 //}
             }
@@ -210,20 +212,25 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
                 }else{
                     //if (convertView == null || (convertView.getTag() != "Blank")) {
+                    emptyFlag = true;
                     LayoutInflater inflater = (LayoutInflater) this._context
                             .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    convertView = inflater.inflate(R.layout.w_empty, null);
+                    convertView = inflater.inflate(R.layout.w_empty_wopadding, null);
                     //convertView.setTag("Blank");
                     //}
                 }
                 //ConvertViewIsButton = true;
             }
         }
+
         if(Workout.get(group).getExercise(child).isToggled()){
             convertView.setBackgroundColor(mSelectColor);
-        } else {
+        } else if(!emptyFlag){
             convertView.setBackgroundColor(mBackgroundColor);
+        } else {
+
         }
+
         return convertView;
     }
     @Override
@@ -253,12 +260,19 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         //Log.d("TEST", "DOING STUFF FOR GROUP: " + groupPosition);
         final int group = groupPosition;
         if (!(Workout.get(groupPosition).isOpen())) {
-
-            LayoutInflater inflater = (LayoutInflater) this._context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.w_empty, null);
-            convertView.setTag("Blank");
-            ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
+            if( groupPosition != Workout.size()-1) {
+                LayoutInflater inflater = (LayoutInflater) this._context
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(R.layout.w_empty_wpadding, null);
+                convertView.setTag("Blank");
+                ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
+            } else {
+                LayoutInflater inflater = (LayoutInflater) this._context
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(R.layout.w_empty_wopadding, null);
+                convertView.setTag("Blank");
+                ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
+            }
             //LinearLayout main = (LinearLayout) convertView.findViewById(R.id.empty);
             //main.setPadding(100, 100, 0, 100);
 
@@ -312,11 +326,15 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 case TIME:
                     TextView timeGoal = new TextView(_context);
                     timeGoal.setText("Time: " + plan_metrics.get(i).getMetricIntValue());
+                    timeGoal.setLayoutParams(params);
+                    
                     goalLayout.addView(timeGoal);
                     break;
                 case REPETITIONS:
                     TextView repGoal = new TextView(_context);
                     repGoal.setText("Reps: " + plan_metrics.get(i).getMetricIntValue());
+                    repGoal.setLayoutParams(params);
+
                     goalLayout.addView(repGoal);
                     break;
                 case OTHER:
@@ -325,6 +343,8 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 case WEIGHT:
                     TextView weightGoal = new TextView(_context);
                     weightGoal.setText("Weight: " + plan_metrics.get(i).getMetricIntValue());
+                    weightGoal.setLayoutParams(params);
+
                     goalLayout.addView(weightGoal);
                     break;
             }
@@ -388,7 +408,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     timeRow.setOrientation(LinearLayout.HORIZONTAL);
                     timeRow.addView(timeText);
                     timeRow.addView(timeEdit);
-                    timeRow.setWeightSum(1);
+                    timeRow.setLayoutParams(params);
 
                     layout.addView(timeRow);
                     break;
@@ -448,7 +468,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     repRow.setOrientation(LinearLayout.HORIZONTAL);
                     repRow.addView(repText);
                     repRow.addView(repEdit);
-                    repRow.setWeightSum(1);
+                    repRow.setLayoutParams(params);
 
                     layout.addView(repRow);
                     break;
@@ -514,7 +534,8 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     wtRow.setOrientation(LinearLayout.HORIZONTAL);
                     wtRow.addView(wtText);
                     wtRow.addView(wtEdit);
-                    wtRow.setWeightSum(1);
+                    wtRow.setLayoutParams(params);
+
                     layout.addView(wtRow);
                     break;
                 default:

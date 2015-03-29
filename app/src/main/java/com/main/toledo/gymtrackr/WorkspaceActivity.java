@@ -24,7 +24,7 @@ public class WorkspaceActivity extends ActionBarActivity {
 
     int mode;
 
-    public static boolean isEditable = true;
+    public static boolean isEditable = false;
     boolean toBrowse, toEdit;
 
     final int PLAN = 1, WORKOUT = 2;
@@ -82,7 +82,6 @@ public class WorkspaceActivity extends ActionBarActivity {
         transaction.add(R.id.WorkspaceHeaderContainer, TabFragment);
         transaction.add(R.id.WorkspaceListContainer, ListFragment);
         transaction.commit();
-
     }
 
     @Override
@@ -90,7 +89,6 @@ public class WorkspaceActivity extends ActionBarActivity {
         mOptionsMenu = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_workspace, menu);
-        toggleEdit();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -99,7 +97,7 @@ public class WorkspaceActivity extends ActionBarActivity {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_toggle_edit:
-                toggleEdit();
+                toggleEdit(false);
                 return true;
             case R.id.save_changes:
                 if (mode == PLAN) {
@@ -137,26 +135,34 @@ public class WorkspaceActivity extends ActionBarActivity {
     }
     */
     //I feel like this should be in the header fragment...
-    public void toggleEdit(){
+    public void toggleEdit(boolean fromOnResume){
 
-        isEditable = !isEditable;
-        listAdapter.setEditable(isEditable);
-        ListFragment.workspaceListView.toggleListeners(isEditable);
-        ListFragment.workspaceListView.clearHandle();
 
-        if(isEditable){
-            mOptionsMenu.findItem(R.id.action_toggle_edit).setIcon(R.drawable.unlocked);
+        //if(fromOnResume)
+        //    isEditable = false;
+
+        if(!fromOnResume) {
+            isEditable = !isEditable;
+
+
+            if (isEditable) {
+                mOptionsMenu.findItem(R.id.action_toggle_edit).setIcon(R.drawable.unlocked);
             /*
             toggleButton.setBackgroundColor(Color.BLUE);
             toggleButton.setTextColor(Color.WHITE);
             */
-        }else{
-            mOptionsMenu.findItem(R.id.action_toggle_edit).setIcon(R.drawable.locked);
+            } else {
+                mOptionsMenu.findItem(R.id.action_toggle_edit).setIcon(R.drawable.locked);
             /*
             toggleButton.setBackgroundColor(android.R.drawable.btn_default_small);
             toggleButton.setTextColor(getResources().getColor(R.color.abc_primary_text_material_light));
             */
+            }
         }
+
+        listAdapter.setEditable(isEditable);
+        ListFragment.workspaceListView.toggleListeners(isEditable);
+        ListFragment.workspaceListView.clearHandle();
     }
 
     @Override
@@ -166,6 +172,9 @@ public class WorkspaceActivity extends ActionBarActivity {
         //ACTIVITY IS RESUMED AFTER BROWSE
         toBrowse = false;
         listAdapter = new WorkspaceExpandableListAdapterMKII(this);
+        toggleEdit(true);
+
+
         super.onResume();
     }
     @Override

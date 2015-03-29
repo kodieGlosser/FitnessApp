@@ -34,6 +34,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
     int mStartPosition;
     int mDragPointOffset;        //Used to adjust drag view location
+    int mCurrentPosition;
 
     int mLastPosition;
     int mPosition;
@@ -202,6 +203,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             }
             return true;
         }
+
         if(mRemoveMode) {
 
             switch (action) {
@@ -233,7 +235,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                                 toggle(mStartPosition);
                             }
                         }
-                    }, mDelay);
+                    }, 250);//mDelay);
 
 
                     super.onTouchEvent(ev);
@@ -265,6 +267,51 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                     if (!justRemovedHeader) {
                         super.onTouchEvent(ev);
                     }
+                    break;
+            }
+        }
+        if(justRemovedHeader){
+            return true;
+        }
+
+        if(!mRemoveMode) {
+
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+
+                    mStartPosition = pointToPosition(x, y);
+                    Log.d("DOUBLTETAP TESTS", "DOWN CALLED");
+                    if (mStartPosition != INVALID_POSITION) {
+                        currentX = x;
+                        currentY = y;
+                    }
+
+
+
+                    postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mCurrentPosition = -2;
+                        }
+                    }, 500);//mDelay);
+
+                    if (mStartPosition != mCurrentPosition){
+                        mCurrentPosition = mStartPosition;
+                    } else {
+                        Log.d("DOUBLTETAP TESTS", "Toggle called");
+                        toggle(mStartPosition);
+                    }
+
+                    super.onTouchEvent(ev);
+                    break;
+                case MotionEvent.ACTION_MOVE: //mose if moved
+                    super.onTouchEvent(ev);
+
+                    break; //mouse button is released
+                default:
+
+                    super.onTouchEvent(ev);
+
                     break;
             }
         }
