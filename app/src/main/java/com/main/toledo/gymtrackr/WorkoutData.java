@@ -307,6 +307,7 @@ public class WorkoutData {
 
     }
     public ExerciseHistory[] crapHistory(){
+        Log.d("SAVE TESTS", "SAVE TO HISTORY CALLED");
         ArrayList<ExerciseHistory> tempExerciseHolder = new ArrayList<>();
         //Pull all workout exercises into temp array
         for(Circuit c : Workout){

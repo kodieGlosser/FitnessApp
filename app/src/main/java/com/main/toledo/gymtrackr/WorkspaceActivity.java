@@ -100,17 +100,8 @@ public class WorkspaceActivity extends ActionBarActivity {
                 toggleEdit(false);
                 return true;
             case R.id.save_changes:
-                if (mode == PLAN) {
-                    //CODE FOR PLAN SAVE
-                    Plan p = WorkoutData.get(this).crapNewPlan();
-                    DatabaseWrapper db = new DatabaseWrapper();
-                    db.saveEntirePlan(p);
-                }
-                if (mode == WORKOUT) {
-                    //CODE FOR WORKOUT SAVE, EG EXPORT TO HISTORY
-                    DatabaseWrapper db = new DatabaseWrapper();
-                    db.addExerciseToHistory(WorkoutData.get(this).crapHistory());
-                }
+                WorkspaceConfirmDialog dialog = new WorkspaceConfirmDialog();
+                dialog.show(getFragmentManager(), "NameDialogFragment");
                 return true;
             case R.id.action_settings:
                 //openSettings();
@@ -126,6 +117,19 @@ public class WorkspaceActivity extends ActionBarActivity {
 
     public void setToEdit(boolean b){toEdit = b; }
 
+    public void save(){
+        if (mode == PLAN) {
+            //CODE FOR PLAN SAVE
+            Plan p = WorkoutData.get(this).crapNewPlan();
+            DatabaseWrapper db = new DatabaseWrapper();
+            db.saveEntirePlan(p);
+        }
+        if (mode == WORKOUT) {
+            //CODE FOR WORKOUT SAVE, EG EXPORT TO HISTORY
+            DatabaseWrapper db = new DatabaseWrapper();
+            db.addExerciseToHistory(WorkoutData.get(this).crapHistory());
+        }
+    }
     public boolean workoutFromPlan(){return workout_from_plan_flag;}
 
     public int getAppMode(){return mode;}

@@ -583,6 +583,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                             }
                         }
                     });
+
                     LinearLayout wtRow = new LinearLayout(_context);
                     wtRow.setOrientation(LinearLayout.HORIZONTAL);
                     wtRow.addView(wtText);
