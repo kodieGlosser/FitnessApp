@@ -267,6 +267,8 @@ public class DatabaseWrapper {
                 if (browseExerciseById(exercise).length == 1) {
                     exerciseName = browseExerciseById(exercise)[0].getName();
                 }
+                //GETTING JANKY ASS ID VALUES
+                Log.d("SAVE TESTS", "LOAD PLAN: ExerciseID: " + id + "ExerciseName: " + exerciseName);
                 exercises[z] = new Exercise(id, exerciseName, rep, weight, sequence1, oneRepMaxPercent, time, other);
                 z++;
             }
@@ -305,7 +307,7 @@ public class DatabaseWrapper {
                 if (browseExercisesByExactName(exercises[j].getName()).length == 1){
                     exerciseId = browseExercisesByExactName(exercises[j].getName())[0].getId();
                 }
-
+                Log.d("SAVE TESTS", "SAVE PLAN ExerciseID: " + exerciseId + "ExerciseName: " + exercises[j].getName());
                 circuitValues.put(COLUMN_EXERCISE, exerciseId);
                 circuitId = myDatabase.insert(COLUMN_CIRCUIT, null, circuitValues);
 

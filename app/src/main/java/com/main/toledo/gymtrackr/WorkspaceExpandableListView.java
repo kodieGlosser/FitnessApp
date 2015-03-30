@@ -111,6 +111,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         if ((action == MotionEvent.ACTION_DOWN && x > this.getWidth() / 4) && mToggle) {
             mRemoveMode = true;
         }
+
         //Log.d("TOUCH TESTS", "TRUE IF: " + x + "<" + this.getWidth()/4 );
         //if (!mDragMode)
         //    return super.onTouchEvent(ev);
@@ -118,19 +119,10 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         if (mDragMode) {
             switch (action) {
                 case MotionEvent.ACTION_DOWN: //mouse button is initially pressed
-                    //Log.d("TOUCH TESTS", "MOTION EVENT IS ACTION_DOWN");
-                    //maps a point to an integer position on list
+
                     mStartPosition = pointToPosition(x, y); //mstartposition is the TRUE position
 
                     if (mStartPosition != INVALID_POSITION) {
-                        //first item visible
-                        //get firstvisible position returns integer pointing to first
-                        //thing displayed on screen
-
-                        //openUI(getPackedPositionGroup(getExpandableListPosition(mStartPosition))
-                        //        ,getPackedPositionChild(getExpandableListPosition(mStartPosition)));
-                        //openUI code
-
                         int mItemPosition = mStartPosition - getFirstVisiblePosition();
                         mDragPointOffset = y - getChildAt(mItemPosition).getTop(); //returns top position of this view relative to parent in pixels
                         //mLayoutHeight = getChildAt(mItemPosition).getHeight();
@@ -186,17 +178,14 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
                     if (mDropListener != null && mStartPosition != INVALID_POSITION)//edit 3/19 && mEndPosition != INVALID_POSITION)
 
-                        m_endChildPosition = getPackedPositionChild(getExpandableListPosition(mLastPosition));
+                    m_endChildPosition = getPackedPositionChild(getExpandableListPosition(mLastPosition));
                     m_endGroupPosition = getPackedPositionGroup(getExpandableListPosition(mLastPosition));
                     //done
                     //Log.d("TOUCH TESTS", "MOVING CHILD: " + m_startChildPosition + " FROM GROUP: " + m_startGroupPosition);
                     Log.d("TOUCH TESTS", "TO CHILD: " + m_endChildPosition + " FROM GROUP: " + m_endGroupPosition);
                     if (!(m_endGroupPosition == -1 && m_endChildPosition == -1)) {
-                        //3/19****  if (m_endChildPosition < 0)
-                        //          m_endChildPosition = 0;
                         if (m_endGroupPosition < 0)
                             m_endGroupPosition = 0;
-
                         mDropListener.onDrop(mDraggedItemType, m_endChildPosition, m_endGroupPosition); //this gets passed the start and end LIST positions
                     }
                     break;
@@ -210,7 +199,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                 case MotionEvent.ACTION_DOWN:
                     Log.d("SELECT TESTS", "DOWN X: " + x + " -- Y: " + y);
                     justRemovedHeader = false;
-                    //mouse button is initially pressed
 
                     mStartPosition = pointToPosition(x, y);
 
@@ -237,11 +225,9 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                         }
                     }, 250);//mDelay);
 
-
                     super.onTouchEvent(ev);
                     break;
                 case MotionEvent.ACTION_MOVE: //mose if moved
-
                         currentX = x;
                         currentY = y;
                         Log.d("SELECT TESTS", "MOVE");
@@ -250,17 +236,13 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                                 mStartPosition = -1;
                             }
                             if ((x < (swipeX - 150)) && mStartPosition != -1) {
-                                int mItemPosition = mStartPosition - getFirstVisiblePosition();
                                 deleteItem(mStartPosition);
                                 mStartPosition = -1;
                             }
                         }
-
                         if (!justRemovedHeader) {
-
                             super.onTouchEvent(ev);
                         }
-
                     break; //mouse button is released
                 default:
                     Log.d("SELECT TESTS", "DEFAULT");
@@ -275,18 +257,14 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         }
 
         if(!mRemoveMode) {
-
             switch (action) {
                 case MotionEvent.ACTION_DOWN:
-
                     mStartPosition = pointToPosition(x, y);
                     Log.d("DOUBLTETAP TESTS", "DOWN CALLED");
                     if (mStartPosition != INVALID_POSITION) {
                         currentX = x;
                         currentY = y;
                     }
-
-
 
                     postDelayed(new Runnable() {
                         @Override
@@ -301,17 +279,13 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                         Log.d("DOUBLTETAP TESTS", "Toggle called");
                         toggle(mStartPosition);
                     }
-
                     super.onTouchEvent(ev);
                     break;
                 case MotionEvent.ACTION_MOVE: //mose if moved
                     super.onTouchEvent(ev);
-
                     break; //mouse button is released
                 default:
-
                     super.onTouchEvent(ev);
-
                     break;
             }
         }

@@ -110,7 +110,7 @@ public class WorkoutData {
         e.setName(mToggledExercise.getName());
         e.setEquipment(mToggledExercise.getEquipment());
         e.setMuscleGroup(mToggledExercise.getMuscleGroup());
-
+        e.setId(mToggledExercise.getId());
         for(Metric m : mToggledExercise.getMetrics()){
             Metric metric = new Metric();
             metric.setType(m.getType());
@@ -239,7 +239,7 @@ public class WorkoutData {
         for(Circuit_temp c : plan.getCircuits()){
             Log.d("CRAP PLAN TESTS", "CIRCUITNAME: " + c.getName() + " -- CIRCUIT SEQ: " + c.getSequence() + " -- CIRCUIT OPEN: " + c.isOpen());
             for(Exercise e : c.getExercises()){
-                Log.d("CRAP PLAN TESTS", "NAME: " + e.getName() + " -- WEIGHT: " + e.getWeight() + " -- REPS: " + e.getRepetitions());
+                Log.d("CRAP PLAN TESTS", "NAME: " + e.getName() + " -- WEIGHT: " + e.getWeight() + " -- REPS: " + e.getRepetitions() + " -- ID: " + e.getId());
             }
         }
         //end debug shit
@@ -295,6 +295,7 @@ public class WorkoutData {
                     Log.d("PLAN METRIC", "addSeparatePlanMetrics called");
                     e.addSeparatePlanMetrics();
                 }
+                Log.d("SAVE TESTS", "FROM RETREIVED PLAN.  EXERCISE NAME: " + e.getName() + " EXERCISE ID: " + e.getId());
                 c_new.add(e);
             }
             if(c_new.isOpen()){
@@ -313,6 +314,7 @@ public class WorkoutData {
         for(Circuit c : Workout){
             for (Exercise e : c.getExercises()){
                 if (e.isSaveToHistorySet()){
+                    Log.d("SAVE TESTS", e.getName() + " " + e.getId() + " IS BEING DIGESTED INTO EH");
                     int weight, reps;
                     Date d = new Date();
                     reps = e.getMetricValueByType(metricType.REPETITIONS);

@@ -127,7 +127,11 @@ public class WorkspaceActivity extends ActionBarActivity {
         if (mode == WORKOUT) {
             //CODE FOR WORKOUT SAVE, EG EXPORT TO HISTORY
             DatabaseWrapper db = new DatabaseWrapper();
-            db.addExerciseToHistory(WorkoutData.get(this).crapHistory());
+            ExerciseHistory[] eh = WorkoutData.get(this).crapHistory();
+            for (ExerciseHistory e : eh){
+                Log.d("SAVE TESTS", e.getExerciseId() + " IS BEING DIGESTED INTO EH");
+            }
+            db.addExerciseToHistory(eh);
         }
     }
     public boolean workoutFromPlan(){return workout_from_plan_flag;}
