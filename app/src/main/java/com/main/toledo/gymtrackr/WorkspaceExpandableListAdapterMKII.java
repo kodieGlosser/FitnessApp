@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapter implements DropListener{
@@ -34,6 +35,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
     final int CIRCUIT = 1;
     final int EXERCISE = 2;
+    final float mCheckedIndentation = 100;
 
     private int mSelectColor = Color.WHITE;
     private int mBackgroundColor = Color.GRAY;
@@ -175,7 +177,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 if (((WorkspaceActivity) _context).workoutFromPlan()){
                     dynamicViewLayout.addView(createGoalLayout(group, child));
                 }
-                FrameLayout exerciseViewHandle = (FrameLayout) convertView.findViewById(R.id.exercise_frame_handle);
+                RelativeLayout exerciseViewHandle = (RelativeLayout) convertView.findViewById(R.id.exercise_relative_layout_handle);
                 dynamicViewLayout.addView(createMetricEditTextLayout(group, child, exerciseViewHandle));
 
 
@@ -185,12 +187,21 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 textView.setText(Workout.get(group).getExercise(childPosition).getName());
 
                 if(Workout.get(group).getExercise(childPosition).isSaveToHistorySet()){
-                    if (exerciseViewHandle.getTag() == null || !exerciseViewHandle.getTag().equals("checked")) {
-                        ImageView mChecked = new ImageView(_context);
-                        mChecked.setImageResource(R.drawable.grn_check);
-                        exerciseViewHandle.addView(mChecked);
-                        exerciseViewHandle.setTag("checked");
-                    }
+
+                    RelativeLayout relativeLayout = (RelativeLayout) convertView
+                            .findViewById(R.id.exercise_relative_layout_handle);
+
+                    ImageView mChecked;
+
+                    mChecked = (ImageView) inflater.inflate(R.layout.w_check, null);
+
+                    relativeLayout.addView(mChecked);
+
+                    RelativeLayout.LayoutParams params =
+                            (RelativeLayout.LayoutParams) mChecked.getLayoutParams();
+                    params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                    LinearLayout layout = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
+                    layout.setTranslationX(mCheckedIndentation);
                 }
 
             } else {
@@ -371,7 +382,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         return goalLayout;
     }
 
-    private View createMetricEditTextLayout(final int group, final int child, final FrameLayout frameLayout){
+    private View createMetricEditTextLayout(final int group, final int child, final RelativeLayout frameLayout){
         final LinearLayout layout = new LinearLayout(_context);
         layout.setOrientation(LinearLayout.HORIZONTAL);
         //layout.removeAllViewsInLayout();
@@ -420,6 +431,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                     Workout.get(group).getExercise(child)
                                             .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
                                 }
+                                /*
                                 Log.d("CHECKED TESTS", "PERFORMING CHECK TESTS");
 
                                 if (!(frameLayout.getTag() == "checked") || (frameLayout.getTag() == null)) {
@@ -430,6 +442,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                     frameLayout.addView(mChecked);
                                     frameLayout.setTag("checked");
                                 }
+                                */
 
                             }
                         }
@@ -494,6 +507,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                     }
                                 Log.d("CHECKED TESTS", "PERFORMING CHECK TESTS");
 
+                                /*
                                 if (!(frameLayout.getTag() == "checked") || (frameLayout.getTag() == null)) {
                                     Log.d("CHECKED TESTS", "MAKING NEW CHECK");
                                     Workout.get(group).getExercise(child).setSaveToHistory(true);
@@ -502,6 +516,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                     frameLayout.addView(mChecked);
                                     frameLayout.setTag("checked");
                                 }
+                                */
 
                             }
                         }
@@ -571,6 +586,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                 }
                                 Log.d("CHECKED TESTS", "PERFORMING CHECK TESTS");
 
+                                /*
                                 if (!(frameLayout.getTag() == "checked") || (frameLayout.getTag() == null)) {
                                     Log.d("CHECKED TESTS", "MAKING NEW CHECK");
                                     Workout.get(group).getExercise(child).setSaveToHistory(true);
@@ -579,6 +595,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                     frameLayout.addView(mChecked);
                                     frameLayout.setTag("checked");
                                 }
+                                */
 
                             }
                         }

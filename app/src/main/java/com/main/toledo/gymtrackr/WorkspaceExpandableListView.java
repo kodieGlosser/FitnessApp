@@ -8,12 +8,15 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
@@ -43,6 +46,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     final int UP = 1;
     final int CIRCUIT = 1;
     final int EXERCISE = 2;
+    final int PLAN = 1, WORKOUT = 2;
 
     int mDraggedItemType;
     int mDirection;
@@ -53,8 +57,10 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
     int currentX;
     int currentY;
-
+    final int mCheckedIndentation = 100;
     private int mDelay;
+    private int mMode;
+
     Exercise mToggledExerciseHandle;
 
     ArrayList<Circuit> Workout = new ArrayList<>();
@@ -74,6 +80,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     public WorkspaceExpandableListView(Context context, AttributeSet attrs) {
 
         super(context, attrs);
+        mMode = ((WorkspaceActivity) context).getAppMode();
         mContext = context;
         Workout = WorkoutData.get(mContext).getWorkout();
     }
@@ -86,7 +93,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         mRemoveMode = false;
         mToggle = b;
     }
-
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         final int action = ev.getAction();
@@ -146,11 +152,12 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
                         if (mDirection == DOWN) {
                             mPosition = pointToPosition(x, (y + 300));
-                            Log.d("TOUCH TESTS", "DIRECTION IS DOWN");
+                            Log.d("OPEN TESTS", "POSITION: " + mPosition);
+                            //Log.d("TOUCH TESTS", "DIRECTION IS DOWN");
                         } else {
                             mPosition = pointToPosition(x, y);
                         }
-                        Log.d("TOUCH TESTS", "DRAG VIEW TOP: " + x + " -- DRAG VIEW BOTTOM: " + y);
+                        //Log.d("TOUCH TESTS", "DRAG VIEW TOP: " + x + " -- DRAG VIEW BOTTOM: " + y);
                         if (!(mPosition == mLastPosition)) {
                             switch (mDraggedItemType) {
                                 case EXERCISE:
@@ -256,12 +263,14 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             return true;
         }
 
-        if(!mRemoveMode) {
+        if(!mRemoveMode && (mMode == WORKOUT)) {
             switch (action) {
                 case MotionEvent.ACTION_DOWN:
                     mStartPosition = pointToPosition(x, y);
                     Log.d("DOUBLTETAP TESTS", "DOWN CALLED");
                     if (mStartPosition != INVALID_POSITION) {
+                        swipeX = x;
+                        swipeY = y;
                         currentX = x;
                         currentY = y;
                     }
@@ -282,6 +291,21 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                     super.onTouchEvent(ev);
                     break;
                 case MotionEvent.ACTION_MOVE: //mose if moved
+
+                    if (mStartPosition != -1) {
+                        if (pointToPosition(x, y) != mStartPosition) {
+                            mStartPosition = -1;
+                        }
+                        if ((x > (swipeX + 150)) && mStartPosition != -1) {
+                            check(mStartPosition);
+                            mStartPosition = -1;
+                        }
+                        if ((x < (swipeX - 150)) && mStartPosition != -1){
+                            uncheck(mStartPosition);
+                            mStartPosition = -1;
+                        }
+                    }
+
                     super.onTouchEvent(ev);
                     break; //mouse button is released
                 default:
@@ -292,7 +316,65 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         if(justRemovedHeader){
             return true;
         }
+
         return super.onTouchEvent(ev);
+    }
+
+    private void check(int position){
+        Log.d("check tests", "TOGGLE CALLED");
+        if (getPackedPositionType(getExpandableListPosition(position)) != PACKED_POSITION_TYPE_GROUP){
+            LinearLayout layout = (LinearLayout)getChildAt(position- getFirstVisiblePosition())
+                    .findViewById(R.id.exercise_data_layout);
+
+            ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(layout, "translationX", mCheckedIndentation);
+            mSlidInAnimator.setDuration(300);
+            mSlidInAnimator.start();
+
+            RelativeLayout relativeLayout = (RelativeLayout) getChildAt(position- getFirstVisiblePosition())
+                    .findViewById(R.id.exercise_relative_layout_handle);
+
+            ImageView mChecked;
+
+            LayoutInflater inflater = (LayoutInflater) this.mContext
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            mChecked = (ImageView) inflater.inflate(R.layout.w_check, null);
+
+            relativeLayout.addView(mChecked);
+
+            RelativeLayout.LayoutParams params =
+                    (RelativeLayout.LayoutParams) mChecked.getLayoutParams();
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
+
+            int group = getPackedPositionGroup(getExpandableListPosition(position));
+            int child = getPackedPositionChild(getExpandableListPosition(position));
+
+            Workout.get(group).getExercise(child).setSaveToHistory(true);
+        }
+    }
+
+    private void uncheck(int position){
+        if(getPackedPositionType(getExpandableListPosition(position))==PACKED_POSITION_TYPE_CHILD){
+            int group = getPackedPositionGroup(getExpandableListPosition(position));
+            int child = getPackedPositionChild(getExpandableListPosition(position));
+            if(Workout.get(group).getExercise(child).isSaveToHistorySet()){
+                LinearLayout layout = (LinearLayout)getChildAt(position- getFirstVisiblePosition())
+                        .findViewById(R.id.exercise_data_layout);
+
+                ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(layout, "translationX", 0);
+                mSlidInAnimator.setDuration(300);
+                mSlidInAnimator.start();
+
+                ImageView check = (ImageView) getChildAt(position- getFirstVisiblePosition())
+                        .findViewById(R.id.check);
+
+                ((RelativeLayout)check.getParent()).removeView(check);
+
+                Workout.get(group).getExercise(child).setSaveToHistory(false);
+
+
+            }
+        }
     }
 
     private void toggle(int position){
@@ -357,7 +439,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         int child = getPackedPositionChild(getExpandableListPosition(itemPosition));
         if (getPackedPositionType(getExpandableListPosition(itemPosition)) == PACKED_POSITION_TYPE_GROUP) {
             if(group < Workout.size() -1 ) {
-                Log.d("SWIPE TESTS", "HEADER: " + group + " SHOULD FALL OFF ITEM POS: " + itemPosition);
+                //Log.d("SWIPE TESTS", "HEADER: " + group + " SHOULD FALL OFF ITEM POS: " + itemPosition);
 
                 ((WorkspaceActivity) mContext).ListFragment.workspaceListView.collapseGroup(group);
 
@@ -382,7 +464,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                 justRemovedHeader = true;
             }
         } else {
-            Log.d("SWIPE TESTS", "CHILD " + child + " SHOULD FALL OFF ITEM POS: " + itemPosition);
+            //Log.d("SWIPE TESTS", "CHILD " + child + " SHOULD FALL OFF ITEM POS: " + itemPosition);
             if(child < Workout.get(group).getExercises().size() -1 || !Workout.get(group).isOpen()) {
                 ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(getChildAt(itemPosition- getFirstVisiblePosition()), "translationX", -1500);
                 mSlidInAnimator.setDuration(300);

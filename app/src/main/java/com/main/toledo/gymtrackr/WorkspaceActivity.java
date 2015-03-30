@@ -61,16 +61,7 @@ public class WorkspaceActivity extends ActionBarActivity {
         int aquaColor = Color.parseColor("#26d6cf");
         int greenColor = Color.parseColor("#00B800");
 
-        switch(mode){
-            case PLAN:
-                this.findViewById(R.id.mainLayoutHandle).setBackgroundColor(greenColor);
-                break;
-            case WORKOUT:
-                this.findViewById(R.id.mainLayoutHandle).setBackgroundColor(aquaColor);
-                break;
-            default:
-                break;
-        }
+
 
         //listAdapter = new WorkspaceExpandableListAdapterMKII(this);
 
@@ -82,6 +73,19 @@ public class WorkspaceActivity extends ActionBarActivity {
         transaction.add(R.id.WorkspaceHeaderContainer, TabFragment);
         transaction.add(R.id.WorkspaceListContainer, ListFragment);
         transaction.commit();
+
+        switch(mode){
+            case PLAN:
+                this.findViewById(R.id.mainLayoutHandle).setBackgroundColor(greenColor);
+                break;
+            case WORKOUT:
+                this.findViewById(R.id.mainLayoutHandle).setBackgroundColor(aquaColor);
+                break;
+            default:
+                break;
+        }
+
+
     }
 
     @Override
