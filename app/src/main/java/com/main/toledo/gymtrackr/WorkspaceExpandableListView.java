@@ -28,7 +28,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     boolean mToggle = true;
     boolean justRemovedHeader = false;
 
-
     int m_startGroupPosition;
     int m_startChildPosition;
 
@@ -586,11 +585,9 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         mDraggedItemDestination = itemIndex;
 
         if (mDraggedItemType == CIRCUIT) {
-
             ((WorkspaceActivity) mContext).ListFragment.setDragInProgress(true);
             ((WorkspaceActivity) mContext).ListFragment.collapseAllGroups();
             mDraggedItemDestination = pointToPosition(x, y) - getFirstVisiblePosition();
-
             Log.d("FINAL TESTS", "GROUP DETECTED, MLAST: " + mDraggedItemDestination);
         }
 
@@ -602,9 +599,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         Log.d("FINAL TESTS", "PADDING INFLATED");
         mLayoutHandle = (LinearLayout) getChildAt(mDraggedItemDestination).findViewById(R.id.paddingViewLayout);
         mLayoutHandle.setLayoutParams(mOpenParams);
-
         //delete item from list, save in a temp location, refresh adapter
-
     }
 
     private void stopDrag(){//int itemIndex) {

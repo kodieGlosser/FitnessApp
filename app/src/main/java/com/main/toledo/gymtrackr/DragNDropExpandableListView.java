@@ -34,8 +34,8 @@ public class DragNDropExpandableListView extends ExpandableListView {
     GestureDetector mGestureDetector;
 
     DropListener mDropListener;
-    RemoveListener mRemoveListener;
-    DragListener mDragListener;
+    //RemoveListener mRemoveListener;
+    //DragListener mDragListener;
 
     Context mContext;
 
@@ -45,18 +45,7 @@ public class DragNDropExpandableListView extends ExpandableListView {
         mContext = context;
     }
 
-    public void setDropListener(DropListener l) {
-        mDropListener = l;
-    }
 
-    public void setRemoveListener(RemoveListener l) {
-        mRemoveListener = l;
-    }
-
-    public void setDragListener(DragListener l) {
-//        Log.d("TOUCH TESTS", "DRAG LISTENER INITIATED");
-        mDragListener = l;
-    }
 
     public void toggleListeners(boolean b){
         mToggle = b;
@@ -151,8 +140,8 @@ public class DragNDropExpandableListView extends ExpandableListView {
                     .getSystemService(Context.WINDOW_SERVICE);
             mWindowManager.updateViewLayout(mDragView, layoutParams);
 
-            if (mDragListener != null)
-                mDragListener.onDrag(x, y, null);// change null to "this" when ready to use
+            //if (mDragListener != null)
+            //   mDragListener.onDrag(x, y, null);// change null to "this" when ready to use
         }
     }
 
@@ -163,8 +152,8 @@ public class DragNDropExpandableListView extends ExpandableListView {
         View item = getChildAt(itemIndex);
         if (item == null) return;
         item.setDrawingCacheEnabled(true);
-        if (mDragListener != null)
-            mDragListener.onStartDrag(item);
+        //if (mDragListener != null)
+        //    mDragListener.onStartDrag(item);
 
         // Create a copy of the drawing cache so that it does not get recycled
         // by the framework when the list tries to clean up memory
@@ -197,8 +186,8 @@ public class DragNDropExpandableListView extends ExpandableListView {
     // destroy drag view
     private void stopDrag(int itemIndex) {
         if (mDragView != null) {
-            if (mDragListener != null)
-                mDragListener.onStopDrag(getChildAt(itemIndex));
+            //if (mDragListener != null)
+             //   mDragListener.onStopDrag(getChildAt(itemIndex));
             mDragView.setVisibility(GONE);
             WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
             wm.removeView(mDragView);

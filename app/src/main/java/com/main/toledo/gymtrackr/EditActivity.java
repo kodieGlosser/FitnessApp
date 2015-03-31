@@ -23,9 +23,10 @@ public class EditActivity extends ActionBarActivity {
     //public static EditWorkoutMapAdapter mapAdapter;
     public static EditExerciseHistoryAdapter historyAdapter;
     //public static EditExerciseDetailsAdapter detailsAdapter;
-    int circuitValue;
-    int exerciseValue;
-    Exercise exercise;
+    private int circuitValue;
+    private int exerciseValue;
+    private Exercise exercise;
+    private Circuit circuit;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +42,9 @@ public class EditActivity extends ActionBarActivity {
 
             exercise = WorkoutData.get(this).getWorkout()
                     .get(circuitValue).getExercise(exerciseValue);
+
+            circuit = WorkoutData.get(this).getWorkout()
+                    .get(circuitValue);
         }
 
         setContentView(R.layout.e_activity_main);
@@ -95,4 +99,6 @@ public class EditActivity extends ActionBarActivity {
     public Exercise getExercise(){
         return exercise;
     }
+
+    public Circuit getCircuit() { return circuit; }
 }

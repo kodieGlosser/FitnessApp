@@ -21,8 +21,10 @@ import java.util.ArrayList;
  * Created by Adam on 2/26/2015.
  */
 public class EditExerciseDetailsFragment extends Fragment {
-    private EditText reps, weight, time;
+
     private Exercise exercise;
+    private Circuit circuit;
+    private String title;
     private ArrayList<EditText> editList = new ArrayList<>();
 
     @Override
@@ -34,12 +36,19 @@ public class EditExerciseDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState){
         exercise = ((EditActivity) getActivity()).getExercise();
+        circuit = ((EditActivity) getActivity()).getCircuit();
+
         //sets the view for the fragment
         View v = inflater.inflate(R.layout.e_frag_details, null);
         LinearLayout layout = (LinearLayout) v.findViewById(R.id.detailView);
 
-        TextView title = (TextView) v.findViewById(R.id.exerciseNameView);
-        title.setText(exercise.getName());
+        if (circuit.isOpen())
+            title = exercise.getName() + " in " + circuit.getName();
+        else
+            title = exercise.getName();
+
+        TextView titleView = (TextView) v.findViewById(R.id.exerciseNameView);
+        titleView.setText(title);
 
 
         for(int i = 0; i < exercise.getMetrics().size(); i++){
