@@ -66,7 +66,7 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
         public void initialize(){
             LayoutInflater inflater = (LayoutInflater) m_context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            m_view = (LinearLayout) inflater.inflate(R.layout.e_frag_list_history, null);
+            m_view = (LinearLayout) inflater.inflate(R.layout.e_frag_listItem_history, null);
 
             for(int i = 0; i < m_numMetrics; i++){
                 if( i % 2 == 0) {
