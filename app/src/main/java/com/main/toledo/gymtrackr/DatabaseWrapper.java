@@ -267,9 +267,8 @@ public class DatabaseWrapper {
                 if (browseExerciseById(exercise).length == 1) {
                     exerciseName = browseExerciseById(exercise)[0].getName();
                 }
-                //GETTING JANKY ASS ID VALUES
-                Log.d("SAVE TESTS", "LOAD PLAN: ExerciseID: " + id + "ExerciseName: " + exerciseName);
-                exercises[z] = new Exercise(id, exerciseName, rep, weight, sequence1, oneRepMaxPercent, time, other);
+
+                exercises[z] = new Exercise(exercise, exerciseName, rep, weight, sequence1, oneRepMaxPercent, time, other);
                 z++;
             }
         }
