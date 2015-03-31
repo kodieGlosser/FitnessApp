@@ -72,7 +72,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     GestureDetector mGestureDetector;
 
     DropListener mDropListener;
-    RemoveListener mRemoveListener;
+    //RemoveListener mRemoveListener;
     //DragListener mDragListener;
 
     Context mContext;

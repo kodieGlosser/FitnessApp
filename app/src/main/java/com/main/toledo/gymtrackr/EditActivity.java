@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.widget.LinearLayout;
 
 import java.io.IOException;
 import java.util.Date;
@@ -17,11 +18,11 @@ import java.util.Date;
  */
 public class EditActivity extends ActionBarActivity {
     //EditWorkoutMapFragment mapFragment;
-    EditExerciseDetailsFragment detailsFragment;
-    EditExerciseHistoryFragment historyFragment;
-    WorkspaceTabFragment tabFragment;
+    private EditExerciseDetailsFragment detailsFragment;
+    private EditExerciseHistoryFragment historyFragment;
+    private WorkspaceTabFragment tabFragment;
     //public static EditWorkoutMapAdapter mapAdapter;
-    public static EditExerciseHistoryAdapter historyAdapter;
+    private static EditExerciseHistoryAdapter historyAdapter;
     //public static EditExerciseDetailsAdapter detailsAdapter;
     private int circuitValue;
     private int exerciseValue;
@@ -50,15 +51,16 @@ public class EditActivity extends ActionBarActivity {
         setContentView(R.layout.e_activity_main);
 
         detailsFragment = new EditExerciseDetailsFragment();
-        //mapFragment = new EditWorkoutMapFragment();
         historyFragment = new EditExerciseHistoryFragment();
         tabFragment = new WorkspaceTabFragment();
+
         /*
         //Eats the workoutdata singleton
         mapAdapter = new EditWorkoutMapAdapter(this, 0, )
 
         eats an arraylist of exercise history elements from the db
         */
+
         DatabaseWrapper db = new DatabaseWrapper();
         ExerciseHistory[] history = db.loadHistoryByExerciseName(exercise.getName());
         ExerciseHistory[] historyStub = {new ExerciseHistory(new Date(), 666, 666, 136, 1,1, 1),
@@ -68,11 +70,13 @@ public class EditActivity extends ActionBarActivity {
         } else {
             historyAdapter = new EditExerciseHistoryAdapter(this, 0, historyStub);
         }
+
         /*
         //Eats an arraylist of metrcis from exercise it is sent
         detailsAdapter = new  EditExerciseDetailsAdapter(this, 0, )
 
         */
+
         //adds fragments to layout/b_activity.xml
         FragmentTransaction transaction =
                 getSupportFragmentManager().beginTransaction();
@@ -90,15 +94,19 @@ public class EditActivity extends ActionBarActivity {
         inflater.inflate(R.menu.menu_detail, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
+
+
     //public EditWorkoutMapAdapter getMapAdapter(){ return this.mapAdapter; }
 
     public EditExerciseHistoryAdapter getHistoryAdapter(){ return this.historyAdapter; }
 
     //public EditExerciseDetailsAdapter getDetailsAdapter(){ return this.detailsAdapter; }
 
-    public Exercise getExercise(){
-        return exercise;
+    public int getExercise(){
+        return exerciseValue;
     }
 
-    public Circuit getCircuit() { return circuit; }
+    public int getCircuit() { return circuitValue; }
+
 }

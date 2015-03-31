@@ -3,16 +3,19 @@ package com.main.toledo.gymtrackr;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.support.v4.view.MotionEventCompat;
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -22,6 +25,8 @@ import java.util.ArrayList;
  */
 public class EditExerciseDetailsFragment extends Fragment {
 
+    private int exerciseValue;
+    private int circuitValue;
     private Exercise exercise;
     private Circuit circuit;
     private String title;
@@ -35,12 +40,15 @@ public class EditExerciseDetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState){
-        exercise = ((EditActivity) getActivity()).getExercise();
-        circuit = ((EditActivity) getActivity()).getCircuit();
+        exerciseValue = ((EditActivity) getActivity()).getExercise();
+        circuitValue = ((EditActivity) getActivity()).getCircuit();
+
+        circuit = WorkoutData.get(getActivity()).getWorkout().get(circuitValue);
+        exercise = circuit.getExercise(exerciseValue);
 
         //sets the view for the fragment
         View v = inflater.inflate(R.layout.e_frag_details, null);
-        LinearLayout layout = (LinearLayout) v.findViewById(R.id.detailView);
+        LinearLayout layout = (LinearLayout) v.findViewById(R.id.detailLinearLayout);
 
         if (circuit.isOpen())
             title = exercise.getName() + " in " + circuit.getName();
@@ -50,6 +58,7 @@ public class EditExerciseDetailsFragment extends Fragment {
         TextView titleView = (TextView) v.findViewById(R.id.exerciseNameView);
         titleView.setText(title);
 
+        implementSwipeListener(v);
 
         for(int i = 0; i < exercise.getMetrics().size(); i++){
             switch(exercise.getMetrics().get(i).getType()){
@@ -192,6 +201,103 @@ public class EditExerciseDetailsFragment extends Fragment {
         return v;
     }
 
+    private void implementSwipeListener(View v){
+        RelativeLayout layout = (RelativeLayout) v.findViewById(R.id.detailView);
+
+        layout.setOnTouchListener(new View.OnTouchListener() {
+            private int swipeThreshold = 150;
+            private float currentY;
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int action = event.getAction();
+
+                switch (action){
+                    case MotionEvent.ACTION_DOWN: {
+                        Log.d("DETAIL SWIPE TESTS", "ACTION_DOWN");
+                        final int pointerIndex = MotionEventCompat.getActionIndex(event);
+                        final float startY = MotionEventCompat.getY(event, pointerIndex);
+
+                        v.postDelayed(new Runnable() {
+
+                            @Override
+                            public void run() {
+
+                                if(currentY > startY + swipeThreshold){
+                                    //swipe down (NEXT)
+                                    if(circuit.isOpen()){
+                                        int circuitSize = circuit.getSize();
+
+                                        if(exerciseValue == circuitSize - 2){
+                                            int numCircuitsInWorkout =
+                                                    WorkoutData.get(getActivity()).getWorkout().size();
+                                            if (circuitSize == numCircuitsInWorkout - 2){
+                                                //last item in last circuit handled here
+                                            }else{
+                                                //goto next circuit
+                                                //goto first exercise
+                                            }
+
+                                        }else{
+
+                                        }
+
+                                    }else{
+
+                                    }
+
+                                    Log.d("DETAIL SWIPE TESTS", "NEXT");
+                                }
+
+                                if(currentY < startY - swipeThreshold){
+
+                                    if(circuit.isOpen()){
+
+                                    }else{
+
+                                    }
+
+
+
+                                    Log.d("DETAIL SWIPE TESTS", "PREVIOUS");
+                                }
+
+                            }
+                        }, 500);
+
+
+
+
+                        break;
+                    }
+
+                    case MotionEvent.ACTION_MOVE: {
+
+                        currentY = event.getY();
+                        Log.d("DETAIL SWIPE TESTS", "ACTION_MOVE" + currentY);
+                        break;
+                    }
+
+                    case MotionEvent.ACTION_UP: {
+
+                        break;
+                    }
+
+                    case MotionEvent.ACTION_CANCEL: {
+
+                        break;
+                    }
+
+                    case MotionEvent.ACTION_POINTER_UP: {
+
+                        break;
+                    }
+                }
+                return true;
+            }
+        });
+
+    }
+    /*
     private void set(){
         for(int i = 0; i < exercise.getMetrics().size(); i++){
             if (editList.get(i) != null) {
@@ -202,5 +308,6 @@ public class EditExerciseDetailsFragment extends Fragment {
             }
         }
     }
+    */
 
 }
