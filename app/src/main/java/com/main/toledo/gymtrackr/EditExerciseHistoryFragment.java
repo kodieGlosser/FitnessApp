@@ -12,8 +12,12 @@ public class EditExerciseHistoryFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         //sets the list adapter to the one we made in the browse activity
-        setListAdapter(((EditActivity) getActivity()).getHistoryAdapter());
 
+    }
+
+    public void setAdapter(EditExerciseHistoryAdapter adapter){
+
+        setListAdapter(adapter);
     }
 
 }

@@ -95,9 +95,6 @@ public class EditExerciseDetailsFragment extends Fragment {
                             }
                         }, 500);
 
-
-
-
                         break;
                     }
 
@@ -220,11 +217,14 @@ public class EditExerciseDetailsFragment extends Fragment {
 
         circuit = WorkoutData.get(getActivity()).getWorkout().get(circuitValue);
         exercise = circuit.getExercise(exerciseValue);
+
         if(updateUI)
             updateUI();
     }
 
     private void updateUI(){
+
+        ((EditActivity) getActivity()).setHistoryAdapter(exercise.getName());
 
         if (circuit.isOpen())
             title = exercise.getName() + " in " + circuit.getName() + " -- DEBUG -- CIRCUIT: " + circuitValue + " EXERCISE: " + exerciseValue;

@@ -16,12 +16,12 @@ import java.util.ArrayList;
  */
 public class EditExerciseHistoryAdapter extends ArrayAdapter {
     private final DynamicView d;
-    private ExerciseHistory[] m_exerciseHistory;
+    private ArrayList<ExerciseHistory> m_exerciseHistory;
     private int m_numMetrics;
-    public EditExerciseHistoryAdapter(Context context, int resource, ExerciseHistory[] history){
+    public EditExerciseHistoryAdapter(Context context, int resource, ArrayList<ExerciseHistory> history){
         super(context, resource, history);
         m_exerciseHistory = history;
-        m_numMetrics = history[0].getMetrics().size();
+        m_numMetrics = history.get(0).getMetrics().size();
         d = new DynamicView(this.getContext() , m_numMetrics);
         d.initialize();
     }
@@ -33,7 +33,7 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
         //if( convertView == null ){
             final DynamicView d = new DynamicView(this.getContext(), m_numMetrics);
             d.initialize();
-            convertView = d.populateDynamicView(m_exerciseHistory[position]);
+            convertView = d.populateDynamicView(m_exerciseHistory.get(position));
         //}
         //    convertView = new DynamicView(d).populateDynamicView(m_exerciseHistory[position]);
 

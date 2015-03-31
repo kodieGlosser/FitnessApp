@@ -11,23 +11,27 @@ import android.view.MenuInflater;
 import android.widget.LinearLayout;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 /**
  * Created by Adam on 2/26/2015.
  */
 public class EditActivity extends ActionBarActivity {
-    //EditWorkoutMapFragment mapFragment;
+
     private EditExerciseDetailsFragment detailsFragment;
     private EditExerciseHistoryFragment historyFragment;
     private WorkspaceTabFragment tabFragment;
-    //public static EditWorkoutMapAdapter mapAdapter;
+
     private static EditExerciseHistoryAdapter historyAdapter;
-    //public static EditExerciseDetailsAdapter detailsAdapter;
+
     private int circuitValue;
     private int exerciseValue;
     private Exercise exercise;
     private Circuit circuit;
+
+    ArrayList<ExerciseHistory> history;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,38 +58,40 @@ public class EditActivity extends ActionBarActivity {
         historyFragment = new EditExerciseHistoryFragment();
         tabFragment = new WorkspaceTabFragment();
 
-        /*
-        //Eats the workoutdata singleton
-        mapAdapter = new EditWorkoutMapAdapter(this, 0, )
+        setHistoryAdapter(exercise.getName());
+        historyAdapter = new EditExerciseHistoryAdapter(this, 0, history);
+        historyFragment.setAdapter(historyAdapter);
 
-        eats an arraylist of exercise history elements from the db
-        */
 
-        DatabaseWrapper db = new DatabaseWrapper();
-        ExerciseHistory[] history = db.loadHistoryByExerciseName(exercise.getName());
-        ExerciseHistory[] historyStub = {new ExerciseHistory(new Date(), 666, 666, 136, 1,1, 1),
-                                         new ExerciseHistory(new Date(), 666, 666, 137, 1,1,1)};
-        if (history.length != 0) {
-            historyAdapter = new EditExerciseHistoryAdapter(this, 0, history);
-        } else {
-            historyAdapter = new EditExerciseHistoryAdapter(this, 0, historyStub);
-        }
-
-        /*
-        //Eats an arraylist of metrcis from exercise it is sent
-        detailsAdapter = new  EditExerciseDetailsAdapter(this, 0, )
-
-        */
-
-        //adds fragments to layout/b_activity.xml
         FragmentTransaction transaction =
                 getSupportFragmentManager().beginTransaction();
-        //transaction.add(R.id.editMapFragment, mapFragment);
         transaction.add(R.id.editDetailsFragment, detailsFragment);
         transaction.add(R.id.editHistoryFragment, historyFragment);
         transaction.add(R.id.tabFragment, tabFragment);
         transaction.commit();
 
+    }
+
+    public void setHistoryAdapter(String exerciseName){
+        if(history == null)
+            history = new ArrayList<>();
+
+        history.clear();
+
+        DatabaseWrapper db = new DatabaseWrapper();
+
+        ExerciseHistory[] exerciseHistories = db.loadHistoryByExerciseName(exerciseName);
+
+        if (exerciseHistories.length != 0) {
+            for (ExerciseHistory e : exerciseHistories)
+                history.add(e);
+        } else {
+            history.add(new ExerciseHistory(new Date(), 666, 666, 136, 1, 1, 1));
+            history.add(new ExerciseHistory(new Date(), 666, 666, 137, 1, 1, 1));
+        }
+
+        if(historyAdapter != null)
+            historyAdapter.notifyDataSetChanged();
     }
 
     @Override
