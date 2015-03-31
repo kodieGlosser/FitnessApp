@@ -4,20 +4,22 @@
     android:layout_height="fill_parent"
     android:id="@+id/detailView">
 
+    <TextView
+        android:id="@+id/exerciseNameView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/detailLinearLayout"
 
-        android:layout_alignParentTop="true">
+        android:layout_below="@+id/exerciseNameView">
 
         <!--android:focusable="true"
         android:focusableInTouchMode="true"-->
-        <TextView
-            android:id="@+id/exerciseNameView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+
 
     </LinearLayout>
 
