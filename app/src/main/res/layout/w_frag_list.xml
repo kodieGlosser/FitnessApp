@@ -15,6 +15,9 @@
         android:childDivider="@android:color/transparent"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:listSelector="@android:color/transparent"/>
+        android:listSelector="@android:color/transparent"
+        />
+
+
     <!-- android:childDivider="#00000000"-->
 </LinearLayout>

@@ -13,7 +13,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -29,6 +28,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     boolean mToggle = true;
     boolean justRemovedHeader = false;
 
+
     int m_startGroupPosition;
     int m_startChildPosition;
 
@@ -39,7 +39,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     int mDragPointOffset;        //Used to adjust drag view location
     int mCurrentPosition;
 
-    int mLastPosition;
+    int mDraggedItemDestination;
     int mPosition;
 
     final int DOWN = 2;
@@ -57,8 +57,9 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
     int currentX;
     int currentY;
+
     final int mCheckedIndentation = 100;
-    private int mDelay;
+
     private int mMode;
 
     Exercise mToggledExerciseHandle;
@@ -73,7 +74,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
     DropListener mDropListener;
     RemoveListener mRemoveListener;
-    DragListener mDragListener;
+    //DragListener mDragListener;
 
     Context mContext;
 
@@ -128,12 +129,13 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
                     mStartPosition = pointToPosition(x, y); //mstartposition is the TRUE position
 
+
                     if (mStartPosition != INVALID_POSITION) {
                         int mItemPosition = mStartPosition - getFirstVisiblePosition();
                         mDragPointOffset = y - getChildAt(mItemPosition).getTop(); //returns top position of this view relative to parent in pixels
                         //mLayoutHeight = getChildAt(mItemPosition).getHeight();
                         mDragPointOffset -= ((int) ev.getRawY()) - y;
-                        startDrag(mItemPosition, y);
+                        startDrag(mItemPosition, x, y);
                         //mItemPosition is the RELATIVE position on the list, 2nd item ON SCREEN vs 12th item
                         drag(0, y);// replace 0 with x if desired
                         mLastY = y;
@@ -152,18 +154,31 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
                         if (mDirection == DOWN) {
                             mPosition = pointToPosition(x, (y + 300));
-                            Log.d("OPEN TESTS", "POSITION: " + mPosition);
+                            Log.d("OPEN TESTS", "POSITION: " + mPosition + " -- LAST VISIBLE POSITION: " + getLastVisiblePosition());
                             //Log.d("TOUCH TESTS", "DIRECTION IS DOWN");
                         } else {
                             mPosition = pointToPosition(x, y);
                         }
                         //Log.d("TOUCH TESTS", "DRAG VIEW TOP: " + x + " -- DRAG VIEW BOTTOM: " + y);
-                        if (!(mPosition == mLastPosition)) {
+                        if (!(mPosition == mDraggedItemDestination)) {
                             switch (mDraggedItemType) {
                                 case EXERCISE:
+                                    if (mPosition == getLastVisiblePosition()){
+                                        View v = getChildAt(mPosition - getFirstVisiblePosition());
+                                        if (v.getId() == R.id.finalItem){
+                                            mPosition--;
+                                        }
+                                    }
                                     openUI(mPosition, getChildAt(mPosition - getFirstVisiblePosition()));
                                     break;
                                 case CIRCUIT:
+                                    if (mPosition == getLastVisiblePosition()){
+                                        View v = getChildAt(mPosition - getFirstVisiblePosition());
+                                        if (v.getId() == R.id.finalItem){
+                                            mPosition--;
+                                        }
+                                    }
+
                                     if (getPackedPositionType(getExpandableListPosition(mPosition)) == PACKED_POSITION_TYPE_GROUP) {
                                         openUI(mPosition, getChildAt(mPosition - getFirstVisiblePosition()));
                                     }
@@ -181,19 +196,23 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                     mDragMode = false;
                     mLayoutHandle.setLayoutParams(mClosedParams);
                     //mEndPosition = pointToPosition(x, y);
-                    stopDrag(mStartPosition - getFirstVisiblePosition());
+                    stopDrag();//mStartPosition - getFirstVisiblePosition());
 
-                    if (mDropListener != null && mStartPosition != INVALID_POSITION)//edit 3/19 && mEndPosition != INVALID_POSITION)
+                    //if (mDropListener != null && mStartPosition != INVALID_POSITION)//edit 3/19 && mEndPosition != INVALID_POSITION)
 
-                    m_endChildPosition = getPackedPositionChild(getExpandableListPosition(mLastPosition));
-                    m_endGroupPosition = getPackedPositionGroup(getExpandableListPosition(mLastPosition));
+                    m_endChildPosition = getPackedPositionChild(getExpandableListPosition(mDraggedItemDestination));
+                    m_endGroupPosition = getPackedPositionGroup(getExpandableListPosition(mDraggedItemDestination));
                     //done
                     //Log.d("TOUCH TESTS", "MOVING CHILD: " + m_startChildPosition + " FROM GROUP: " + m_startGroupPosition);
-                    Log.d("TOUCH TESTS", "TO CHILD: " + m_endChildPosition + " FROM GROUP: " + m_endGroupPosition);
+                    Log.d("FINAL TESTS", "TO CHILD: " + m_endChildPosition + " FROM GROUP: " + m_endGroupPosition + " LAST POSITION: " + mDraggedItemDestination);
                     if (!(m_endGroupPosition == -1 && m_endChildPosition == -1)) {
                         if (m_endGroupPosition < 0)
                             m_endGroupPosition = 0;
                         mDropListener.onDrop(mDraggedItemType, m_endChildPosition, m_endGroupPosition); //this gets passed the start and end LIST positions
+                    }
+                    if(mDraggedItemType == CIRCUIT) {
+                        ((WorkspaceActivity) mContext).ListFragment.onItemDrop();
+                        ((WorkspaceActivity) mContext).ListFragment.setDragInProgress(false);
                     }
                     break;
             }
@@ -372,7 +391,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
                 Workout.get(group).getExercise(child).setSaveToHistory(false);
 
-
             }
         }
     }
@@ -416,11 +434,19 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     }
 
     private void openUI(int position, View v){//int child, View v){
-
+        //Log.d("FINAL TESTS", "OPEN CALLED");
         if (v != null && position != -1) {
             Log.d("OPEN TESTS", "SHOW NOW CLOSE LAST PADDING");
-            if (!(!Workout.get(getPackedPositionGroup(getExpandableListPosition(position))).isOpen()
+
+            int group = getPackedPositionGroup(getExpandableListPosition(position));
+            while(group == -1){
+                position--;
+                group = getPackedPositionGroup(getExpandableListPosition(position));
+            }
+
+            if (!(!Workout.get(group).isOpen()
                     && (getPackedPositionChild(getExpandableListPosition(position)) == 0))) {
+
                 if (mLayoutHandle != null)
                     mLayoutHandle.setLayoutParams(mClosedParams);
 
@@ -428,7 +454,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                 Log.d("OPEN TESTS", "SHOW NOW OPEN PADDING AT: " + position);
                 mLayoutHandle.setLayoutParams(mOpenParams);
 
-                mLastPosition = position;
+                mDraggedItemDestination = position;
             }
         }
     }
@@ -496,21 +522,21 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                     .getSystemService(Context.WINDOW_SERVICE);
             mWindowManager.updateViewLayout(mDragView, layoutParams);
 
-            if (mDragListener != null)
-                mDragListener.onDrag(x, y, null);// change null to "this" when ready to use
+            //if (mDragListener != null)
+            //    mDragListener.onDrag(x, y, null);// change null to "this" when ready to use
         }
     }
 
     // enable the drag view for dragging
-    private void startDrag(int itemIndex, int y) {
-
-        stopDrag(itemIndex);
+    private void startDrag(int itemIndex, int x, int y) {
+        stopDrag();//itemIndex);
 
         View item = getChildAt(itemIndex);
         if (item == null) return;
         item.setDrawingCacheEnabled(true);
-        if (mDragListener != null)
-            mDragListener.onStartDrag(item);
+        //if (mDragListener != null)
+        //   mDragListener.onStartDrag(item);
+
 
         // Create a copy of the drawing cache so that it does not get recycled
         // by the framework when the list tries to clean up memory
@@ -556,18 +582,35 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         mClosedParams = new LinearLayout.LayoutParams(1, 0);
         mOpenParams = new LinearLayout.LayoutParams(1, 300);
 
-        mLayoutHandle = (LinearLayout)getChildAt(itemIndex).findViewById(R.id.paddingViewLayout);
-        mLayoutHandle.setLayoutParams(mOpenParams);
-        mLastPosition = itemIndex;
-        //delete item from list, save in a temp location, refresh adapter
 
+        mDraggedItemDestination = itemIndex;
+
+        if (mDraggedItemType == CIRCUIT) {
+
+            ((WorkspaceActivity) mContext).ListFragment.setDragInProgress(true);
+            ((WorkspaceActivity) mContext).ListFragment.collapseAllGroups();
+            mDraggedItemDestination = pointToPosition(x, y) - getFirstVisiblePosition();
+
+            Log.d("FINAL TESTS", "GROUP DETECTED, MLAST: " + mDraggedItemDestination);
+        }
+
+        m_endGroupPosition = getPackedPositionGroup(getExpandableListPosition(mDraggedItemDestination));
+        while(m_endGroupPosition == -1){
+            mDraggedItemDestination--;
+            m_endGroupPosition = getPackedPositionGroup(getExpandableListPosition(mDraggedItemDestination));
+        }
+        Log.d("FINAL TESTS", "PADDING INFLATED");
+        mLayoutHandle = (LinearLayout) getChildAt(mDraggedItemDestination).findViewById(R.id.paddingViewLayout);
+        mLayoutHandle.setLayoutParams(mOpenParams);
+
+        //delete item from list, save in a temp location, refresh adapter
 
     }
 
-    private void stopDrag(int itemIndex) {
+    private void stopDrag(){//int itemIndex) {
         if (mDragView != null) {
-            if (mDragListener != null)
-                mDragListener.onStopDrag(getChildAt(itemIndex));
+            //if (mDragListener != null)
+            //    mDragListener.onStopDrag(getChildAt(itemIndex));
             mDragView.setVisibility(GONE);
             WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
             wm.removeView(mDragView);

@@ -144,7 +144,6 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         }
                     }
                 });
-                    //convertView.setTag("End Button");
                 //}
             } else {
                 //if (convertView == null || (convertView.getTag() != "Blank")) {
@@ -171,9 +170,6 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 LinearLayout dynamicViewLayout = (LinearLayout) convertView.findViewById(R.id.dynamicViewLayout);
                 dynamicViewLayout.removeAllViewsInLayout();
 
-
-
-
                 if (((WorkspaceActivity) _context).workoutFromPlan()){
                     dynamicViewLayout.addView(createGoalLayout(group, child));
                 }
@@ -187,7 +183,6 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 textView.setText(Workout.get(group).getExercise(childPosition).getName());
 
                 if(Workout.get(group).getExercise(childPosition).isSaveToHistorySet()){
-
                     RelativeLayout relativeLayout = (RelativeLayout) convertView
                             .findViewById(R.id.exercise_relative_layout_handle);
 
@@ -203,6 +198,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     LinearLayout layout = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
                     layout.setTranslationX(mCheckedIndentation);
                 }
+
 
             } else {
                 //for the last items
@@ -302,6 +298,8 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 convertView = inflater.inflate(R.layout.w_empty_wopadding, null);
                 convertView.setTag("Blank");
                 ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
+                if(!editable)
+                convertView.setPadding(0,0,0,500);
             }
             //LinearLayout main = (LinearLayout) convertView.findViewById(R.id.empty);
             //main.setPadding(100, 100, 0, 100);

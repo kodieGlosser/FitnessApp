@@ -19,7 +19,7 @@ import android.widget.ExpandableListView;
 public class WorkspaceListFragment extends Fragment {
 
         WorkspaceExpandableListView workspaceListView;
-
+        boolean mDragInProgress;
         @Override
    public void onCreate(Bundle savedInstanceState) {
         Log.d("PAD BUGS", "ONCREATE() CALLED IN WLFRAG");
@@ -38,7 +38,8 @@ public class WorkspaceListFragment extends Fragment {
             @Override
             public void onGroupCollapse(int groupPosition) {
                 Log.d("PAD BUGS", "ON GROUP COLLAPSE CALLED");
-                WorkoutData.get(getActivity()).getWorkout().get(groupPosition).setExpanded(false);
+                if (!mDragInProgress)
+                    WorkoutData.get(getActivity()).getWorkout().get(groupPosition).setExpanded(false);
                 ((WorkspaceActivity)getActivity()).getAdapter().hideKeypad();
             }
         });
@@ -101,6 +102,27 @@ public class WorkspaceListFragment extends Fragment {
                 workspaceListView.collapseGroup(i);
             }
         }
+    }
+
+    public void collapseAllGroups(){
+        int length = WorkoutData.get(getActivity()).getWorkout().size();
+        for(int i = 0; i < length; i++){
+            if (WorkoutData.get(getActivity()).getWorkout().get(i).isOpen())
+                workspaceListView.collapseGroup(i);
+        }
+    }
+
+    public void onItemDrop(){
+        int length = WorkoutData.get(getActivity()).getWorkout().size();
+        for(int i = 0; i < length; i++){
+            if (WorkoutData.get(getActivity()).getWorkout().get(i).isExpanded()){
+                workspaceListView.expandGroup(i);
+            }
+        }
+    }
+
+    public void setDragInProgress(boolean b){
+        mDragInProgress = b;
     }
 
     private DropListener mDropListener =

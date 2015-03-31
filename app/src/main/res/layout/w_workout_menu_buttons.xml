@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- this XML specifies the layout for the buttons at the very end of the workout in the workspace-->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="30dp">
+    android:paddingTop="30dp"
+    android:paddingBottom="100dp"
+    android:id="@+id/finalItem">
 
     <Button
         android:layout_width="fill_parent"
