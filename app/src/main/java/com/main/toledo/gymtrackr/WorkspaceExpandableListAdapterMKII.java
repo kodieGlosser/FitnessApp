@@ -398,7 +398,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     timeEdit.setOnEditorActionListener(new TextView.OnEditorActionListener(){
                         @Override
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
-                            if (actionId == EditorInfo.IME_ACTION_DONE){
+                            if (actionId == EditorInfo.IME_ACTION_NEXT){
                                 if(v.getText().toString().equals("")){
                                     Workout.get(group).getExercise(child)
                                             .getMetrics().get(j).setMetricIntValue(0);
@@ -418,6 +418,10 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         public void onFocusChange(View v, boolean hasFocus) {
                             if (hasFocus){
                                 ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(false);
+                                timeEdit.setSelection(timeEdit.getText().toString().length());
+                                if(timeEdit.getText().toString().equals("0")){
+                                    timeEdit.setText("");
+                                }
                                 //Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + timeEdit.getText());
                             } else {
                                 ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(editable);
@@ -460,7 +464,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     final EditText repEdit = new EditText(_context);
                     repEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
                     repEdit.setText("" + metrics.get(i).getMetricIntValue());
-                    repEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                    repEdit.setImeOptions(EditorInfo.IME_ACTION_NEXT);
 
                     repEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                         @Override
@@ -491,7 +495,13 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                             if (hasFocus){
                                 //Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + repEdit.getText());
                                 ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(false);
+                                repEdit.setSelection(repEdit.getText().toString().length());
+
                                 m_editTextHandle = (EditText) v;
+
+                                if(repEdit.getText().toString().equals("0")){
+                                    repEdit.setText("");
+                                }
 
                             } else {
                                 ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(editable);
@@ -543,7 +553,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     final EditText wtEdit = new EditText(_context);
                     wtEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
                     wtEdit.setText("" + metrics.get(i).getMetricIntValue());
-                    wtEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                    wtEdit.setImeOptions(EditorInfo.IME_ACTION_NEXT);
 
                     wtEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                         @Override
@@ -571,6 +581,10 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                 //Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED: " + wtEdit.getText());
                                 ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(false);
                                 m_editTextHandle = (EditText) v;
+                                wtEdit.setSelection(wtEdit.getText().toString().length());
+                                if(wtEdit.getText().toString().equals("0")){
+                                    wtEdit.setText("");
+                                }
 
                             } else {
                                 //Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + wtEdit.getText());

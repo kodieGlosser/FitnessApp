@@ -1,13 +1,23 @@
 package com.main.toledo.gymtrackr;
 
 import android.app.ActionBar;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.io.IOException;
@@ -53,6 +63,9 @@ public class EditActivity extends ActionBarActivity {
         }
 
         setContentView(R.layout.e_activity_main);
+        int aquaColor = Color.parseColor("#26d6cf");
+        this.findViewById(R.id.detailActivityMainView).setBackgroundColor(aquaColor);
+        this.findViewById(R.id.detailFragmentView).setBackgroundColor(aquaColor);
 
         detailsFragment = new EditExerciseDetailsFragment();
         historyFragment = new EditExerciseHistoryFragment();
@@ -69,6 +82,7 @@ public class EditActivity extends ActionBarActivity {
         transaction.add(R.id.editHistoryFragment, historyFragment);
         transaction.add(R.id.tabFragment, tabFragment);
         transaction.commit();
+
 
     }
 
@@ -101,7 +115,29 @@ public class EditActivity extends ActionBarActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    public ImageView createTransitionScreen(){
 
+
+        View v = this.findViewById(R.id.detailFragmentView);
+        v.setDrawingCacheEnabled(true);
+
+
+        //if (mDragListener != null)
+        //   mDragListener.onStartDrag(item);
+
+
+        // Create a copy of the drawing cache so that it does not get recycled
+        // by the framework when the list tries to clean up memory
+        Bitmap bitmap = Bitmap.createBitmap(v.getDrawingCache());
+
+        Context context = this;
+
+        ImageView imageView = new ImageView(context);
+        imageView.setImageBitmap(bitmap);
+
+
+        return imageView;
+    }
 
     //public EditWorkoutMapAdapter getMapAdapter(){ return this.mapAdapter; }
 

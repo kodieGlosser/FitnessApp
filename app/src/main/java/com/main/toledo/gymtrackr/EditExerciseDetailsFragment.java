@@ -1,19 +1,28 @@
 package com.main.toledo.gymtrackr;
 
+import android.animation.ObjectAnimator;
+import android.content.Context;
+import android.graphics.PixelFormat;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.MotionEventCompat;
 import android.text.InputType;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -30,6 +39,8 @@ public class EditExerciseDetailsFragment extends Fragment {
     private Exercise exercise;
     private Circuit circuit;
     private String title;
+
+    final int NEXT = 1, PREVIOUS = 2;
 
     private LinearLayout editTextLayout;
     private TextView exerciseInfoTextView;
@@ -84,11 +95,12 @@ public class EditExerciseDetailsFragment extends Fragment {
 
                                 if(currentY > startY + swipeThreshold){
                                     //swipe down (NEXT)
-                                    next();
+                                    previous();
+
                                     Log.d("DETAIL SWIPE TESTS", "NEXT");
                                 }
                                 if(currentY < startY - swipeThreshold){
-                                    previous();
+                                    next();
                                     Log.d("DETAIL SWIPE TESTS", "PREVIOUS");
                                 }
 
@@ -165,17 +177,17 @@ public class EditExerciseDetailsFragment extends Fragment {
         circuit = WorkoutData.get(getActivity()).getWorkout().get(circuitValue);
         exercise = circuit.getExercise(exerciseValue);
         if(updateUI)
-            updateUI();
+            transition(NEXT);
     }
 
     private void previous(){
-        boolean updateUI = false;
+        boolean transition = false;
         if(circuit.isOpen()){ //for open circuit
             if(exerciseValue == 0){ //for first exercise
 
                 if(circuitValue == 0){ //for first circuit
                     //first item, do nothing
-                    updateUI = false;
+                    transition = false;
 
                 } else { //for not first circuit
                     //goto last item in next circuit
@@ -189,17 +201,17 @@ public class EditExerciseDetailsFragment extends Fragment {
                         exerciseValue = 0;
                     }
 
-                    updateUI = true;
+                    transition = true;
                 }
 
             } else { //for not first exercise
                 exerciseValue--;
-                updateUI = true;
+                transition = true;
             }
         }else{ //for closed circuit
 
             if(circuitValue == 0){//first circuit
-                updateUI = false;
+                transition = false;
             } else { //not first circuit
                 circuitValue--;
                 Circuit prevCircuit =
@@ -211,15 +223,108 @@ public class EditExerciseDetailsFragment extends Fragment {
                     exerciseValue = 0;
                 }
 
-                updateUI = true;
+                transition = true;
             }
         }
 
         circuit = WorkoutData.get(getActivity()).getWorkout().get(circuitValue);
         exercise = circuit.getExercise(exerciseValue);
 
-        if(updateUI)
-            updateUI();
+        if(transition)
+            transition(PREVIOUS);
+    }
+
+    private void transition(int action){
+        final ImageView oldView;
+        final ImageView newView;
+        final LinearLayout layout;
+        int actionBarOffset;
+        int layoutYoffset = 0;
+        int animationOffset = 0;
+
+        getActivity().getActionBar();
+
+        View v = getActivity().findViewById(R.id.detailActivityMainView);
+        int[] xy = new int[2];
+        v.getLocationOnScreen(xy);
+        actionBarOffset = xy[1];
+
+        Display d = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        d.getSize(size);
+        int totalViewSize = size.y - actionBarOffset;
+        int totalWidth = size.x;
+
+        //make views
+        oldView = ((EditActivity) getActivity()).createTransitionScreen();
+        oldView.setMinimumWidth(totalWidth);
+
+        layout = new LinearLayout(getActivity());
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.gravity = Gravity.TOP;
+        layoutParams.x = 0;
+        layoutParams.y = layoutYoffset;
+
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
+        layoutParams.format = PixelFormat.OPAQUE;
+        layoutParams.windowAnimations = 0;
+
+        WindowManager windowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+        windowManager.addView(layout, layoutParams);
+
+        //layout.bringToFront();
+        layout.addView(oldView);
+        layout.setMinimumWidth(totalWidth);
+        updateUI();
+
+        newView = ((EditActivity) getActivity()).createTransitionScreen();
+        newView.setMinimumWidth(totalWidth);
+
+        switch(action){
+            case PREVIOUS:
+                //swipe down so
+                layout.addView(newView, 0);
+                layout.setY(actionBarOffset - totalViewSize);
+                //totalViewSize = ac
+                break;
+            case NEXT:
+                //swipe up so
+                layout.addView(newView);
+                totalViewSize = totalViewSize * -1;
+                break;
+        }
+
+        Log.d("DETAIL ANIMATION TESTS", "NEW VIEW HEIGHT: " + totalViewSize + " -- TOTAL SCREEN SIZE: " + size.y + " -- ACTION BAR OFFSET: " + actionBarOffset + " -- TOTAL WIDTH: " + totalWidth);
+
+        ObjectAnimator oldSlidInAnimator = android.animation.ObjectAnimator.ofFloat(layout, "translationY", totalViewSize);
+        oldSlidInAnimator.setDuration(1500);
+        oldSlidInAnimator.start();
+
+
+
+        v.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+
+                layout.setVisibility(View.GONE);
+                WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+                wm.removeView(layout);
+
+            }
+        }, 1500);
+
+
+
+
     }
 
     private void updateUI(){
