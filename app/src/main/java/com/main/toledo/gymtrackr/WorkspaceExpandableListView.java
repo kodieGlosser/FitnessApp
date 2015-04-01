@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -69,13 +68,21 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     LinearLayout.LayoutParams mClosedParams;
 
     ImageView mDragView;
-    GestureDetector mGestureDetector;
 
     DropListener mDropListener;
-    //RemoveListener mRemoveListener;
-    //DragListener mDragListener;
+
 
     Context mContext;
+
+    //DRAG COUNTDOWN VARS
+    private boolean dragInProgress = false;
+    private int dragX;
+    private int dragY;
+    private int dragRawY;
+    private ImageView DragIcon;
+    private int dragTimerInterval = 200;
+    private int dragHoldBounds = 50;
+    private boolean cancelDrag;
 
     public WorkspaceExpandableListView(Context context, AttributeSet attrs) {
 
@@ -126,92 +133,53 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             switch (action) {
                 case MotionEvent.ACTION_DOWN: //mouse button is initially pressed
 
-                    mStartPosition = pointToPosition(x, y); //mstartposition is the TRUE position
+                    dragX = x;
+                    dragY = y;
+                    dragRawY = (int) ev.getRawY();
+                    dragDelayIcon(x, y);
+                    Log.d("DRAG DELAY TESTS", "DOWN -- X: " + dragX + " -- Y: " + dragY);
+                    dragTimer(x, y);
 
-
-                    if (mStartPosition != INVALID_POSITION) {
-                        int mItemPosition = mStartPosition - getFirstVisiblePosition();
-                        mDragPointOffset = y - getChildAt(mItemPosition).getTop(); //returns top position of this view relative to parent in pixels
-                        //mLayoutHeight = getChildAt(mItemPosition).getHeight();
-                        mDragPointOffset -= ((int) ev.getRawY()) - y;
-                        startDrag(mItemPosition, x, y);
-                        //mItemPosition is the RELATIVE position on the list, 2nd item ON SCREEN vs 12th item
-                        drag(0, y);// replace 0 with x if desired
-                        mLastY = y;
-                    }
                     break;
                 case MotionEvent.ACTION_MOVE: //mose if moved
 
-                    if (pointToPosition(x, y) != INVALID_POSITION) {
-                        if (y > mLastY) {
-                            mDirection = DOWN;
-                        } else if (y < mLastY) {
-                            mDirection = UP;
-                        }
-
-                        mLastY = y;
-
-                        if (mDirection == DOWN) {
-                            mPosition = pointToPosition(x, (y + 300));
-                            Log.d("OPEN TESTS", "POSITION: " + mPosition + " -- LAST VISIBLE POSITION: " + getLastVisiblePosition());
-                            //Log.d("TOUCH TESTS", "DIRECTION IS DOWN");
-                        } else {
-                            mPosition = pointToPosition(x, y);
-                        }
-                        //Log.d("TOUCH TESTS", "DRAG VIEW TOP: " + x + " -- DRAG VIEW BOTTOM: " + y);
-                        if (!(mPosition == mDraggedItemDestination)) {
-                            switch (mDraggedItemType) {
-                                case EXERCISE:
-                                    if (mPosition == getLastVisiblePosition()){
-                                        View v = getChildAt(mPosition - getFirstVisiblePosition());
-                                        if (v.getId() == R.id.finalItem){
-                                            mPosition--;
-                                        }
-                                    }
-                                    openUI(mPosition, getChildAt(mPosition - getFirstVisiblePosition()));
-                                    break;
-                                case CIRCUIT:
-                                    if (mPosition == getLastVisiblePosition()){
-                                        View v = getChildAt(mPosition - getFirstVisiblePosition());
-                                        if (v.getId() == R.id.finalItem){
-                                            mPosition--;
-                                        }
-                                    }
-
-                                    if (getPackedPositionType(getExpandableListPosition(mPosition)) == PACKED_POSITION_TYPE_GROUP) {
-                                        openUI(mPosition, getChildAt(mPosition - getFirstVisiblePosition()));
-                                    }
-                                    break;
-                            }
-                        }
-                    }
-                    drag(0, y);// replace 0 with x if desired
+                    dragX = x;
+                    dragY = y;
+                    dragRawY = (int) ev.getRawY();
+                    if(dragInProgress)
+                        dragHandling();
 
                     break;
                 case MotionEvent.ACTION_CANCEL:
                 case MotionEvent.ACTION_UP: //mouse button is released
                 default:
                     //Log.d("TOUCH TESTS", "MOTION EVENT IS DEFAULT");
+                    Log.d("DRAG DELAY TESTS", "DEFAULT -- X: " + x + " -- Y: " + y);
                     mDragMode = false;
-                    mLayoutHandle.setLayoutParams(mClosedParams);
-                    //mEndPosition = pointToPosition(x, y);
-                    stopDrag();//mStartPosition - getFirstVisiblePosition());
+                    abortCountdown();
+                    if (dragInProgress) {
 
-                    //if (mDropListener != null && mStartPosition != INVALID_POSITION)//edit 3/19 && mEndPosition != INVALID_POSITION)
+                        mLayoutHandle.setLayoutParams(mClosedParams);
+                        //mEndPosition = pointToPosition(x, y);
+                        stopDrag();//mStartPosition - getFirstVisiblePosition());
 
-                    m_endChildPosition = getPackedPositionChild(getExpandableListPosition(mDraggedItemDestination));
-                    m_endGroupPosition = getPackedPositionGroup(getExpandableListPosition(mDraggedItemDestination));
-                    //done
-                    //Log.d("TOUCH TESTS", "MOVING CHILD: " + m_startChildPosition + " FROM GROUP: " + m_startGroupPosition);
-                    Log.d("FINAL TESTS", "TO CHILD: " + m_endChildPosition + " FROM GROUP: " + m_endGroupPosition + " LAST POSITION: " + mDraggedItemDestination);
-                    if (!(m_endGroupPosition == -1 && m_endChildPosition == -1)) {
-                        if (m_endGroupPosition < 0)
-                            m_endGroupPosition = 0;
-                        mDropListener.onDrop(mDraggedItemType, m_endChildPosition, m_endGroupPosition); //this gets passed the start and end LIST positions
-                    }
-                    if(mDraggedItemType == CIRCUIT) {
-                        ((WorkspaceActivity) mContext).ListFragment.onItemDrop();
-                        ((WorkspaceActivity) mContext).ListFragment.setDragInProgress(false);
+                        //if (mDropListener != null && mStartPosition != INVALID_POSITION)//edit 3/19 && mEndPosition != INVALID_POSITION)
+
+                        m_endChildPosition = getPackedPositionChild(getExpandableListPosition(mDraggedItemDestination));
+                        m_endGroupPosition = getPackedPositionGroup(getExpandableListPosition(mDraggedItemDestination));
+                        //done
+                        //Log.d("TOUCH TESTS", "MOVING CHILD: " + m_startChildPosition + " FROM GROUP: " + m_startGroupPosition);
+                        Log.d("FINAL TESTS", "TO CHILD: " + m_endChildPosition + " FROM GROUP: " + m_endGroupPosition + " LAST POSITION: " + mDraggedItemDestination);
+                        if (!(m_endGroupPosition == -1 && m_endChildPosition == -1)) {
+                            if (m_endGroupPosition < 0)
+                                m_endGroupPosition = 0;
+                            mDropListener.onDrop(mDraggedItemType, m_endChildPosition, m_endGroupPosition); //this gets passed the start and end LIST positions
+                        }
+                        if (mDraggedItemType == CIRCUIT) {
+                            ((WorkspaceActivity) mContext).ListFragment.onItemDrop();
+                            ((WorkspaceActivity) mContext).ListFragment.setDragInProgress(false);
+                        }
+                        dragInProgress = false;
                     }
                     break;
             }
@@ -602,6 +570,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         //delete item from list, save in a temp location, refresh adapter
     }
 
+
     private void stopDrag(){//int itemIndex) {
         if (mDragView != null) {
             //if (mDragListener != null)
@@ -614,4 +583,177 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         }
     }
 
+    private void dragDelayIcon(int x, int y){
+        WindowManager.LayoutParams mWindowParams = new WindowManager.LayoutParams();
+        //mWindowParams.gravity = Gravity.TOP;
+        mWindowParams.x = x- 650;
+        mWindowParams.y = y - 800;
+
+        mWindowParams.height = 100;
+        mWindowParams.width = 100;
+        mWindowParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
+        mWindowParams.format = PixelFormat.TRANSLUCENT;
+        mWindowParams.windowAnimations = 0;
+
+        Context context = getContext();
+        DragIcon = new ImageView(context);
+
+        DragIcon.setImageDrawable(
+                context.getResources().getDrawable(R.drawable.drag));
+
+
+        WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        mWindowManager.addView(DragIcon, mWindowParams);
+
+    }
+
+    private void dragTimer(final int x, final int y){
+
+        cancelDrag = false;
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(inBounds(x, y) && !cancelDrag){
+                    Log.d("DRAG DELAY TESTS", "5...");
+                }
+            }
+        }, dragTimerInterval);
+
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(inBounds(x, y) && !cancelDrag){
+                    Log.d("DRAG DELAY TESTS", "4...");
+                } else {
+                    abortCountdown();
+                }
+            }
+        }, dragTimerInterval *2);
+
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(inBounds(x, y) && !cancelDrag){
+                    Log.d("DRAG DELAY TESTS", "3...");
+                } else {
+                    abortCountdown();
+                }
+            }
+        }, dragTimerInterval*3);
+
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(inBounds(x, y) && !cancelDrag){
+                    Log.d("DRAG DELAY TESTS", "2...");
+                } else {
+                    abortCountdown();
+                }
+            }
+        }, dragTimerInterval*4);
+
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(inBounds(x, y) && !cancelDrag){
+                    Log.d("DRAG DELAY TESTS", "1...");
+                    beginDragChecks();
+                } else {
+                    abortCountdown();
+                }
+            }
+        }, dragTimerInterval*5);
+
+    }
+
+    private boolean inBounds(int x, int y){
+        //X and Y are start x and Y values
+        if((dragX < dragHoldBounds + x) && (dragX > x - dragHoldBounds) &&
+                (dragY < dragHoldBounds + y) && (dragY > y - dragHoldBounds)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void abortCountdown() {
+        cancelDrag = true;
+        if (DragIcon != null){
+            DragIcon.setVisibility(GONE);
+            WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+            wm.removeView(DragIcon);
+            DragIcon.setImageDrawable(null);
+            DragIcon = null;
+        }
+    }
+
+    private void beginDragChecks(){
+        abortCountdown();
+        mStartPosition = pointToPosition(dragX, dragY); //mstartposition is the TRUE position
+        if (mStartPosition != INVALID_POSITION) {
+            int mItemPosition = mStartPosition - getFirstVisiblePosition();
+            mDragPointOffset = dragY - getChildAt(mItemPosition).getTop(); //returns top position of this view relative to parent in pixels
+            //mLayoutHeight = getChildAt(mItemPosition).getHeight();
+            mDragPointOffset -= dragRawY - dragY;
+            mLastY = dragY;
+            dragInProgress = true;
+            startDrag(mItemPosition, dragX, dragY);
+            //mItemPosition is the RELATIVE position on the list, 2nd item ON SCREEN vs 12th item
+
+            drag(0, dragY);// replace 0 with x if desired
+        }
+    }
+
+    private void dragHandling(){
+        if (pointToPosition(dragX, dragY) != INVALID_POSITION) {
+
+            if (dragY > mLastY) {
+                mDirection = DOWN;
+            } else if (dragY < mLastY) {
+                mDirection = UP;
+            }
+
+            mLastY = dragY;
+
+            if (mDirection == DOWN) {
+                mPosition = pointToPosition(dragX, (dragY + 300));
+                Log.d("OPEN TESTS", "POSITION: " + mPosition + " -- LAST VISIBLE POSITION: " + getLastVisiblePosition());
+                //Log.d("TOUCH TESTS", "DIRECTION IS DOWN");
+            } else {
+                mPosition = pointToPosition(dragX, dragY);
+            }
+
+            //Log.d("TOUCH TESTS", "DRAG VIEW TOP: " + x + " -- DRAG VIEW BOTTOM: " + y);
+            if (!(mPosition == mDraggedItemDestination)) {
+                switch (mDraggedItemType) {
+                    case EXERCISE:
+                        if (mPosition == getLastVisiblePosition()){
+                            View v = getChildAt(mPosition - getFirstVisiblePosition());
+                            if (v.getId() == R.id.finalItem){
+                                mPosition--;
+                            }
+                        }
+                        openUI(mPosition, getChildAt(mPosition - getFirstVisiblePosition()));
+                        break;
+                    case CIRCUIT:
+                        if (mPosition == getLastVisiblePosition()){
+                            View v = getChildAt(mPosition - getFirstVisiblePosition());
+                            if (v.getId() == R.id.finalItem){
+                                mPosition--;
+                            }
+                        }
+
+                        if (getPackedPositionType(getExpandableListPosition(mPosition)) == PACKED_POSITION_TYPE_GROUP) {
+                            openUI(mPosition, getChildAt(mPosition - getFirstVisiblePosition()));
+                        }
+                        break;
+                }
+            }
+        }
+        drag(0, dragY);// replace 0 with x if desired
+    }
 }
