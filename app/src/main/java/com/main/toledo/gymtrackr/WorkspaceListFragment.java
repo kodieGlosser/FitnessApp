@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -40,7 +41,7 @@ public class WorkspaceListFragment extends Fragment {
                 Log.d("PAD BUGS", "ON GROUP COLLAPSE CALLED");
                 if (!mDragInProgress)
                     WorkoutData.get(getActivity()).getWorkout().get(groupPosition).setExpanded(false);
-                ((WorkspaceActivity)getActivity()).getAdapter().hideKeypad();
+                //((WorkspaceActivity)getActivity()).getAdapter().hideKeypad();
             }
         });
 
@@ -52,6 +53,13 @@ public class WorkspaceListFragment extends Fragment {
             }
         });
 
+        workspaceListView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                ((WorkspaceActivity)getActivity()).getAdapter().hideKeypad();
+                return false;
+            }
+        });
         workspaceListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
             @Override
@@ -77,9 +85,9 @@ public class WorkspaceListFragment extends Fragment {
         workspaceListView.setAdapter(((WorkspaceActivity)getActivity()).getAdapter());
         restoreListExpansion();
         workspaceListView.setGroupIndicator(null);
-        final Rect hitRect = new Rect();
-        workspaceListView.getHitRect(hitRect);
-
+        //final Rect hitRect = new Rect();
+        //workspaceListView.getHitRect(hitRect);
+        /*
         workspaceListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -90,6 +98,7 @@ public class WorkspaceListFragment extends Fragment {
                 ((WorkspaceActivity) getActivity()).getAdapter().cleanView(hitRect);
             }
         });
+        */
         super.onResume();
     }
 
