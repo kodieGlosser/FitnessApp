@@ -42,9 +42,9 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
     private ArrayList<Circuit> Workout = new ArrayList<>();
 
-
-
     private LinearLayout.LayoutParams params;
+
+
     public WorkspaceExpandableListAdapterMKII(Context context){
         params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
 
@@ -56,7 +56,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     public Exercise getChild(int groupPosition, int childPosition) {
         return Workout.get(groupPosition).getExercise(childPosition);
     }
-
+    /*
     public void cleanView(Rect viewHitRect){
 
         Log.d("PAD BUGS", "CLEAN VIEW: CALLED");
@@ -72,6 +72,8 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
             }
         }
     }
+    */
+
     public void setEditable(boolean b){
         //Log.d("EDITABLE TEST", "setEditable() called in adapter.  editable: " + b);
         editable = b;
@@ -198,7 +200,6 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     LinearLayout layout = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
                     layout.setTranslationX(mCheckedIndentation);
                 }
-
 
             } else {
                 //for the last items
