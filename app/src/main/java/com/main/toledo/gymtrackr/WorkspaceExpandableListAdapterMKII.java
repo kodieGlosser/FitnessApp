@@ -252,7 +252,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         if(Workout.get(group).getExercise(child).isToggled()){
             convertView.setBackgroundColor(mSelectColor);
         } else if(!emptyFlag){
-            convertView.setBackgroundColor(mBackgroundColor);
+            //convertView.setBackgroundColor(mBackgroundColor);
         } else {
 
         }
@@ -284,6 +284,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
         //Log.d("TEST", "DOING STUFF FOR GROUP: " + groupPosition);
+
         final int group = groupPosition;
         if (!(Workout.get(groupPosition).isOpen())) {
             if( groupPosition != Workout.size()-1) {
@@ -312,7 +313,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.w_circuit_group, null);
             convertView.setTag("Data");
-            convertView.findViewById(R.id.groupHandle).setBackgroundColor(mBackgroundColor);
+            //convertView.findViewById(R.id.groupHandle).setBackgroundColor(mBackgroundColor);
             //LinearLayout main = (LinearLayout) convertView.findViewById(R.id.groupHandle);
             //main.setPadding(100, 100, 0, 100);
 
@@ -321,6 +322,15 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
             TextView textView = (TextView) convertView.findViewById(R.id.circuitNameHeader);
             textView.setTypeface(null, Typeface.BOLD);
             textView.setText(Workout.get(groupPosition).getName());
+        }
+
+        if (convertView != null) {
+            ImageView img_selection = (ImageView) convertView.findViewById(R.id.Arrow);
+            int imageResourceId = isExpanded ? R.drawable.ic_collapse_arrow_50
+                    : R.drawable.ic_expand_arrow_50;
+
+            if (img_selection != null)
+                img_selection.setImageResource(imageResourceId);
         }
 
         return convertView;

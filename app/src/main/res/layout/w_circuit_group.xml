@@ -19,16 +19,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:id="@+id/groupHandle">
+        android:id="@+id/groupHandle"
+        style="@style/myCircuit"
+        android:paddingBottom="10dp"
+        android:padding="10dp">
         <TextView
             android:id="@+id/circuitNameHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
-            android:textSize="17dp"
+            style="@style/MyTextViewStyle"
+            android:textSize="25dp"
+            android:textColor="#1ca4fb"
             android:text="TESTVAL"
             android:layout_weight="0.85"/>
-
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_collapse_arrow_50"
+            android:id="@+id/Arrow"/>
     </LinearLayout>
 
 </LinearLayout>
