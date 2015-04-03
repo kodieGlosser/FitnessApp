@@ -90,6 +90,19 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".CreateExerciseActivity"
+            android:label="Create Exercise"
+            android:noHistory="true"
+            android:theme="@style/Theme.AppCompat.Light"
+            android:parentActivityName="com.main.toledo.gymtrackr.BrowseActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.main.toledo.gymtrackr.BrowseActivity"
+                />
+
+        </activity>
+
     </application>
 
 </manifest>

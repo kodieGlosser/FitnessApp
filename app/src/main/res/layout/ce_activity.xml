@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/mainLayout">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Input name for exercise below."/>
+
+    <EditText
+        android:id="@+id/exerciseNameField"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Select relevant metrics."/>
+
+
+    <CheckBox
+        android:id="@+id/weight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Weight"
+        android:onClick="onCheckboxClicked"/>
+    <CheckBox
+        android:id="@+id/reps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Repetitions"
+        android:onClick="onCheckboxClicked"/>
+    <CheckBox
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time"
+        android:onClick="onCheckboxClicked"/>
+    <CheckBox
+        android:id="@+id/other"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Note"
+        android:onClick="onCheckboxClicked"/>
+
+</LinearLayout>

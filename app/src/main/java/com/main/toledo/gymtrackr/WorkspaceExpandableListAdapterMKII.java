@@ -286,7 +286,6 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                              View convertView, ViewGroup parent) {
         //Log.d("TEST", "DOING STUFF FOR GROUP: " + groupPosition);
 
-        final int group = groupPosition;
         if (!(Workout.get(groupPosition).isOpen())) {
             if( groupPosition != Workout.size()-1) {
                 LayoutInflater inflater = (LayoutInflater) this._context
@@ -395,7 +394,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         final LinearLayout layout = new LinearLayout(_context);
         layout.setOrientation(LinearLayout.HORIZONTAL);
         //layout.removeAllViewsInLayout();
-        ArrayList<Metric> metrics = Workout.get(group).getExercise(child).getMetrics();
+        final ArrayList<Metric> metrics = Workout.get(group).getExercise(child).getMetrics();
         for(int i = 0; i < metrics.size(); i++){
             final int j = i;
             switch(metrics.get(i).getType()){
@@ -405,20 +404,18 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     final EditText timeEdit = new EditText(_context);
                     timeEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
                     timeEdit.setText("" + metrics.get(i).getMetricIntValue());
-                    timeEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                    timeEdit.setImeOptions(EditorInfo.IME_ACTION_NEXT);
                     timeEdit.setOnEditorActionListener(new TextView.OnEditorActionListener(){
                         @Override
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
                             if (actionId == EditorInfo.IME_ACTION_NEXT){
                                 if(v.getText().toString().equals("")){
-                                    Workout.get(group).getExercise(child)
-                                            .getMetrics().get(j).setMetricIntValue(0);
+                                    metrics.get(j).setMetricIntValue(0);
+                                    timeEdit.setText("0");
                                 } else {
-                                    Workout.get(group).getExercise(child)
-                                            .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
+                                    metrics.get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
                                 }
                                 return true;
-
                             }
                             return false;
                         }
@@ -437,13 +434,11 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                             } else {
                                 ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(editable);
                                 //Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + timeEdit.getText());
-                                if(((EditText) v).getText().toString().equals("")) {
-                                    Workout.get(group).getExercise(child)
-                                            .getMetrics().get(j).setMetricIntValue(0);
-                                } else {
-                                    Workout.get(group).getExercise(child)
-                                            .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
-                                }
+                                    if (((EditText) v).getText().toString().equals("")) {
+                                        metrics.get(j).setMetricIntValue(0);
+                                    } else {
+                                        metrics.get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
+                                    }
                                 /*
                                 Log.d("CHECKED TESTS", "PERFORMING CHECK TESTS");
 
@@ -480,18 +475,15 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     repEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                         @Override
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            if (actionId == EditorInfo.IME_ACTION_NEXT) {
                                 if(v.getText().toString().equals("")){
-                                    Workout.get(group).getExercise(child)
-                                            .getMetrics().get(j).setMetricIntValue(0);
+                                    metrics.get(j).setMetricIntValue(0);
+                                    repEdit.setText("0");
                                 } else {
-                                    Workout.get(group).getExercise(child)
-                                            .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
+                                    metrics.get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
                                 }
-                                hideKeypad();
-                                //notifyDataSetInvalidated();
-                                notifyDataSetChanged();
-                                return true;
+                                //hideKeypad();
+
                             }
                             return false;
                         }
@@ -518,12 +510,12 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                 ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(editable);
                                     //Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + repEdit.getText());
                                     if (((EditText) v).getText().toString().equals("")) {
-                                        Workout.get(group).getExercise(child)
-                                                .getMetrics().get(j).setMetricIntValue(0);
+                                        metrics.get(j).setMetricIntValue(0);
                                     } else {
-                                        Workout.get(group).getExercise(child)
-                                                .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
-                                    }
+                                        metrics.get(j).setMetricIntValue(Integer
+                                                .parseInt(((EditText) v).getText().toString()));
+
+                                }
                                 Log.d("CHECKED TESTS", "PERFORMING CHECK TESTS");
 
                                 /*
@@ -569,27 +561,24 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     wtEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                         @Override
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            if (actionId == EditorInfo.IME_ACTION_NEXT) {
                                 if(v.getText().toString().equals("")){
-                                    Workout.get(group).getExercise(child)
-                                            .getMetrics().get(j).setMetricIntValue(0);
+                                    metrics.get(j).setMetricIntValue(0);
+                                    wtEdit.setText("0");
                                 } else {
-                                    Workout.get(group).getExercise(child)
-                                            .getMetrics().get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
+                                    metrics.get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
                                 }
-                                hideKeypad();
-                                return true;
+                                //hideKeypad();
+
                             }
                             return false;
                         }
                     });
-                    //time
 
                     wtEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                         @Override
                         public void onFocusChange(View v, boolean hasFocus) {
                             if (hasFocus){
-                                //Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED: " + wtEdit.getText());
                                 ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(false);
                                 m_editTextHandle = (EditText) v;
                                 wtEdit.setSelection(wtEdit.getText().toString().length());
@@ -598,28 +587,12 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                 }
 
                             } else {
-                                //Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + wtEdit.getText());
                                 ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(editable);
                                 if(((EditText) v).getText().toString().equals("")) {
-                                    Workout.get(group).getExercise(child)
-                                            .getMetrics().get(j).setMetricIntValue(0);
+                                    metrics.get(j).setMetricIntValue(0);
                                 } else {
-                                    Workout.get(group).getExercise(child)
-                                            .getMetrics().get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
+                                    metrics.get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
                                 }
-                                Log.d("CHECKED TESTS", "PERFORMING CHECK TESTS");
-
-                                /*
-                                if (!(frameLayout.getTag() == "checked") || (frameLayout.getTag() == null)) {
-                                    Log.d("CHECKED TESTS", "MAKING NEW CHECK");
-                                    Workout.get(group).getExercise(child).setSaveToHistory(true);
-                                    ImageView mChecked = new ImageView(_context);
-                                    mChecked.setImageResource(R.drawable.grn_check);
-                                    frameLayout.addView(mChecked);
-                                    frameLayout.setTag("checked");
-                                }
-                                */
-
                             }
                         }
                     });

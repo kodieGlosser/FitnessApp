@@ -570,6 +570,9 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         Log.d("41", "START DRAG ITEM: " + m_startChildPosition
                 +" -- GROUP: " + m_startGroupPosition);
 
+        Log.d("41", "CURRENT GROUP " + getPackedPositionGroup(getExpandableListPosition(mDraggedItemDestination))
+            + "CURRENT CHILD" + getPackedPositionChild(getExpandableListPosition(mDraggedItemDestination)));
+
         //openInitialPosition()
 
         setSpaceToOpen();

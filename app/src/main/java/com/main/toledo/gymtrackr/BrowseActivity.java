@@ -1,6 +1,7 @@
 package com.main.toledo.gymtrackr;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -8,6 +9,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -69,6 +71,21 @@ public class BrowseActivity extends ActionBarActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_add_exercise_item:
+                Intent i = new Intent(this, CreateExerciseActivity.class);
+                startActivity(i);
+                return true;
+            case R.id.action_settings:
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     //Adam:  This is a stub list of exercises used for the browse menu
     //in the format "Name, Muscle group, last used, equip used"
     //used to fetch the adapter from this activity in fragments.  the list fragment gets the adapter

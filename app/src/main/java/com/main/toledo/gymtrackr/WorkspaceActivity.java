@@ -52,8 +52,6 @@ public class WorkspaceActivity extends ActionBarActivity {
             //Log.d("W_HEADER_DEBUG", "DB CALL COMPLETED");
             WorkoutData.get(this).eatPlan(planList, workout_from_plan_flag);
             //Log.d("W_HEADER_DEBUG", "EATPLAN CALL COMPLETED");
-
-
         }
 
         setContentView(R.layout.w_activity_main);
@@ -185,6 +183,7 @@ public class WorkspaceActivity extends ActionBarActivity {
         toBrowse = false;
         listAdapter = new WorkspaceExpandableListAdapterMKII(this);
         toggleEdit(true);
+        listAdapter.hideKeypad();
 
 
         super.onResume();

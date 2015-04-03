@@ -82,8 +82,6 @@ public class EditActivity extends ActionBarActivity {
         transaction.add(R.id.editHistoryFragment, historyFragment);
         transaction.add(R.id.tabFragment, tabFragment);
         transaction.commit();
-
-
     }
 
     public void setHistoryAdapter(String exerciseName){

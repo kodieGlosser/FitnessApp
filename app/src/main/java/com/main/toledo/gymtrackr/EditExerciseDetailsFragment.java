@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.MotionEventCompat;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -40,8 +42,10 @@ public class EditExerciseDetailsFragment extends Fragment {
     private Circuit circuit;
     private String title;
 
+
     final int NEXT = 1, PREVIOUS = 2;
 
+    private EditText mEditTextHandle;
     private LinearLayout editTextLayout;
     private TextView exerciseInfoTextView;
     private ArrayList<EditText> editList = new ArrayList<>();
@@ -69,6 +73,7 @@ public class EditExerciseDetailsFragment extends Fragment {
         implementSwipeListener(v);
         updateUI();
 
+
         return v;
     }
 
@@ -88,11 +93,12 @@ public class EditExerciseDetailsFragment extends Fragment {
                         final int pointerIndex = MotionEventCompat.getActionIndex(event);
                         final float startY = MotionEventCompat.getY(event, pointerIndex);
 
+                        hideKeypad();
+
                         v.postDelayed(new Runnable() {
 
                             @Override
                             public void run() {
-
                                 if(currentY > startY + swipeThreshold){
                                     //swipe down (NEXT)
                                     previous();
@@ -103,7 +109,6 @@ public class EditExerciseDetailsFragment extends Fragment {
                                     next();
                                     Log.d("DETAIL SWIPE TESTS", "PREVIOUS");
                                 }
-
                             }
                         }, 500);
 
@@ -176,8 +181,17 @@ public class EditExerciseDetailsFragment extends Fragment {
         }
         circuit = WorkoutData.get(getActivity()).getWorkout().get(circuitValue);
         exercise = circuit.getExercise(exerciseValue);
-        if(updateUI)
-            transition(NEXT);
+        //if(updateUI)
+            //transition(NEXT);
+        hideKeypad();
+        //Delay a bit for keypad retract animation
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                updateUI();
+            }
+        }, 300);
     }
 
     private void previous(){
@@ -230,8 +244,19 @@ public class EditExerciseDetailsFragment extends Fragment {
         circuit = WorkoutData.get(getActivity()).getWorkout().get(circuitValue);
         exercise = circuit.getExercise(exerciseValue);
 
-        if(transition)
-            transition(PREVIOUS);
+        //if(transition)
+            //transition(PREVIOUS);
+
+        hideKeypad();
+        //Delay a bit for keypad retract animation
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                updateUI();
+            }
+        }, 300);
+
     }
 
     private void transition(int action){
@@ -242,7 +267,7 @@ public class EditExerciseDetailsFragment extends Fragment {
         int layoutYoffset = 0;
         int animationOffset = 0;
 
-        getActivity().getActionBar();
+       // getActivity().getActionBar();
 
         View v = getActivity().findViewById(R.id.detailActivityMainView);
         int[] xy = new int[2];
@@ -321,10 +346,6 @@ public class EditExerciseDetailsFragment extends Fragment {
 
             }
         }, 1500);
-
-
-
-
     }
 
     private void updateUI(){
@@ -340,17 +361,49 @@ public class EditExerciseDetailsFragment extends Fragment {
         exerciseInfoTextView.setText(title);
 
         editTextLayout.removeAllViewsInLayout();
-
-        for(int i = 0; i < exercise.getMetrics().size(); i++){
-            switch(exercise.getMetrics().get(i).getType()){
+        final ArrayList<Metric> metrics = exercise.getMetrics();
+        for(int i = 0; i < metrics.size(); i++){
+            final int j = i;
+            switch(metrics.get(i).getType()){
                 case TIME:
                     TextView timeText = new TextView(getActivity());
                     timeText.setText("Time: ");
-
-                    EditText timeEdit = new EditText(getActivity());
+                    final EditText timeEdit = new EditText(getActivity());
                     timeEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
-                    timeEdit.setText("" + exercise.getMetrics().get(i).getMetricIntValue());
-                    timeEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                    timeEdit.setText("" + metrics.get(i).getMetricIntValue());
+                    timeEdit.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                    timeEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                        @Override
+                        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+
+                                if(j == exercise.getMetrics().size()-1){
+                                    hideKeypad();
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }
+                    });
+
+                    timeEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        @Override
+                        public void onFocusChange(View v, boolean hasFocus) {
+                            if (hasFocus){
+                                mEditTextHandle = (EditText) v;
+                                ((EditText)v).setSelection(((EditText)v).getText().toString().length());
+                                if(timeEdit.getText().toString().equals("0")){
+                                    timeEdit.setText("");
+                                }
+                            } else {
+                                if(((EditText) v).getText().toString().equals("")) {
+                                    metrics.get(j).setMetricIntValue(0);
+                                } else {
+                                    metrics.get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
+                                }
+                            }
+                        }
+                    });
 
                     LinearLayout timeRow = new LinearLayout(getActivity());
                     timeRow.setOrientation(LinearLayout.HORIZONTAL);
@@ -358,123 +411,146 @@ public class EditExerciseDetailsFragment extends Fragment {
                     timeRow.addView(timeEdit);
 
                     editTextLayout.addView(timeRow);
-                    /*
-                    LinearLayout timeLayout = (LinearLayout) v.findViewById(R.id.detailTimeViewLayout);
-                    timeLayout.setVisibility(View.VISIBLE);
-                    TextView timeText = (TextView) v.findViewById(R.id.detailTimeView);
-                    timeText.setText("Time: ");
-
-                    time = (EditText)v.findViewById(R.id.time);
-
-                    time.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                        @Override
-                        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                            boolean handled = false;
-                            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                                set();
-                                handled = true;
-                            }
-                            return handled;
-                        }
-                    });
-
-                    editList.add(time);
-                    */
                     break;
                 case REPETITIONS:
                     TextView repText = new TextView(getActivity());
                     repText.setText("Reps: ");
-
-                    EditText repEdit = new EditText(getActivity());
+                    final EditText repEdit = new EditText(getActivity());
                     repEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
-                    repEdit.setText("" + exercise.getMetrics().get(i).getMetricIntValue());
-                    repEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                    repEdit.setText("" + metrics.get(i).getMetricIntValue());
+                    repEdit.setImeOptions(EditorInfo.IME_ACTION_NEXT);
 
+                    repEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                        @Override
+                        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+
+                                if(j == exercise.getMetrics().size()-1){
+                                    hideKeypad();
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }
+                    });
+
+                    //time
+
+                    repEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        @Override
+                        public void onFocusChange(View v, boolean hasFocus) {
+                            if (hasFocus){
+                                //Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + repEdit.getText());
+                                ((EditText)v).setSelection(((EditText)v).getText().toString().length());
+
+                                mEditTextHandle = (EditText) v;
+
+                                if(repEdit.getText().toString().equals("0")){
+                                    repEdit.setText("");
+                                }
+
+                            } else {
+                                //Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + repEdit.getText());
+                                if (((EditText) v).getText().toString().equals("")) {
+                                    metrics.get(j).setMetricIntValue(0);
+                                } else {
+                                    metrics.get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
+                                }
+
+                                /*
+                                if (!(frameLayout.getTag() == "checked") || (frameLayout.getTag() == null)) {
+                                    Log.d("CHECKED TESTS", "MAKING NEW CHECK");
+                                    Workout.get(group).getExercise(child).setSaveToHistory(true);
+                                    ImageView mChecked = new ImageView(_context);
+                                    mChecked.setImageResource(R.drawable.grn_check);
+                                    frameLayout.addView(mChecked);
+                                    frameLayout.setTag("checked");
+                                }
+                                */
+
+                            }
+                        }
+                    });
                     LinearLayout repRow = new LinearLayout(getActivity());
                     repRow.setOrientation(LinearLayout.HORIZONTAL);
                     repRow.addView(repText);
                     repRow.addView(repEdit);
+                    //repRow.setLayoutParams(params);
 
                     editTextLayout.addView(repRow);
-                    /*
-                    LinearLayout repLayout = (LinearLayout) v.findViewById(R.id.detailRepViewLayout);
-                    repLayout.setVisibility(View.VISIBLE);
-                    TextView repText = (TextView) v.findViewById(R.id.detailRepView);
-                    repText.setText("Reps: ");
-                    reps = (EditText)v.findViewById(R.id.reps);
-
-                    reps.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                        @Override
-                        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                            boolean handled = false;
-                            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                                set();
-                                handled = true;
-                            }
-                            return handled;
-                        }
-                    });
-                    editList.add(reps);
-                    */
                     break;
                 case OTHER:
                     TextView otherText = new TextView(getActivity());
-                    otherText.setText(exercise.getMetrics().get(i).getMetricStringValue());
-                    //EditText otherEdit = new EditText(getActivity());
+                    otherText.setText(metrics.get(i).getMetricStringValue());
 
                     LinearLayout otherRow = new LinearLayout(getActivity());
                     otherRow.setOrientation(LinearLayout.HORIZONTAL);
                     otherRow.addView(otherText);
-                    //otherRow.addView(otherEdit);
-                    /*
-                    LinearLayout otherLayout = (LinearLayout) v.findViewById(R.id.detailOtherViewLayout);
-                    otherLayout.setVisibility(View.VISIBLE);
-                    TextView otherText = (TextView) v.findViewById(R.id.detailOtherView);
-                    otherText.setText(exercise.getMetrics().get(i).getMetricName());
-                    */
+
                     break;
                 case WEIGHT:
                     TextView wtText = new TextView(getActivity());
                     wtText.setText("Weight: ");
 
-                    EditText wtEdit = new EditText(getActivity());
+                    final EditText wtEdit = new EditText(getActivity());
                     wtEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
-                    Log.d("METRIC TEST", "TYPE: " + exercise.getMetrics().get(i).getType() + "-- VALUE: " + exercise.getMetrics().get(i).getMetricIntValue());
-                    wtEdit.setText("" + exercise.getMetrics().get(i).getMetricIntValue());
-                    wtEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                    wtEdit.setText("" + metrics.get(i).getMetricIntValue());
+                    wtEdit.setImeOptions(EditorInfo.IME_ACTION_NEXT);
 
+                    wtEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                        @Override
+                        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+
+                                if(j == exercise.getMetrics().size()-1){
+                                    hideKeypad();
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }
+                    });
+
+                    wtEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        @Override
+                        public void onFocusChange(View v, boolean hasFocus) {
+                            if (hasFocus){
+                                mEditTextHandle = (EditText) v;
+                                ((EditText)v).setSelection(((EditText)v).getText().toString().length());
+                                Log.d("4/2 tests", "Wt edit cursor should be at"
+                                        + wtEdit.getText().toString().length());
+                                if(wtEdit.getText().toString().equals("0")){
+                                    wtEdit.setText("");
+                                }
+                            } else {
+                                if(((EditText) v).getText().toString().equals("")) {
+                                    metrics.get(j).setMetricIntValue(0);
+                                } else {
+                                    metrics.get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
+                                }
+                            }
+                        }
+                    });
                     LinearLayout wtRow = new LinearLayout(getActivity());
                     wtRow.setOrientation(LinearLayout.HORIZONTAL);
                     wtRow.addView(wtText);
                     wtRow.addView(wtEdit);
+                    //wtRow.setLayoutParams(params);
 
                     editTextLayout.addView(wtRow);
-                    /*
-                    LinearLayout weightLayout = (LinearLayout) v.findViewById(R.id.detailWeightViewLayout);
-                    weightLayout.setVisibility(View.VISIBLE);
-                    TextView weightText = (TextView) v.findViewById(R.id.detailWeightView);
-                    weightText.setText("Weight: ");
-
-                    weight = (EditText)v.findViewById(R.id.weight);
-
-                    weight.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                        @Override
-                        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                            boolean handled = false;
-                            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                                set();
-                                handled = true;
-                            }
-                            return handled;
-                        }
-                    });
-                    editList.add(weight);
-                    */
                     break;
                 default:
-                    Log.d("ERROR DETAIL FRAGMENT", "DEFAULT REACHED IN DETAIL FRAGMENT");
                     break;
             }
+        }
+
+    }
+    public void hideKeypad(){
+        if (mEditTextHandle != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(mEditTextHandle.getWindowToken(), 0);
+            mEditTextHandle.clearFocus();
         }
     }
     /*
