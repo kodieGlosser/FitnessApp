@@ -37,22 +37,13 @@ public class Exercise {
         this.m_equipmentType = equipmentType;
         //stub for metrics
 
-        Metric weightMetric = new Metric();
-        weightMetric.setType(metricType.WEIGHT);
-        //weightMetric.setMetricIntValue(weight);
-
-        Metric repMetric = new Metric();
-        repMetric.setType(metricType.REPETITIONS);
-        //repMetric.setMetricIntValue(repetitions);
-
-        m_metrics.add(weightMetric);
-        m_metrics.add(repMetric);
+        instantiateStubMetrics();
 
         //tests for whether exercise was used or not, used when saving history
         mSaveToHistory = false;
         mToggled = false;
     }
-
+    //db constructor
     public Exercise(int id, String name, int repetitions, int weight, int sequence, int oneRepMaxPercent, int time, int other){
         this.m_id = id;
         this.m_name = name;
@@ -90,17 +81,7 @@ public class Exercise {
         this.m_targetMuscle = targetMuscle;
         this.m_oneRepMax = oneRepMax;
 
-        //stub for metrics
-        Metric weightMetric = new Metric();
-        weightMetric.setType(metricType.WEIGHT);
-        //weightMetric.setMetricIntValue(weight);
-
-        Metric repMetric = new Metric();
-        repMetric.setType(metricType.REPETITIONS);
-        //repMetric.setMetricIntValue(repetitions);
-
-        m_metrics.add(weightMetric);
-        m_metrics.add(repMetric);
+        instantiateStubMetrics();
 
         mSaveToHistory = false;
         mToggled = false;
@@ -123,6 +104,22 @@ public class Exercise {
             plan_metric.setMetricIntValue(m.getMetricIntValue());
             m_plan_metrics.add(plan_metric);
         }
+    }
+
+    public void instantiateStubMetrics(){
+        //stub for metrics
+        Metric weightMetric = new Metric();
+        weightMetric.setType(metricType.WEIGHT);
+        weightMetric.setMetricIntValue(0);
+        //weightMetric.setMetricIntValue(weight);
+
+        Metric repMetric = new Metric();
+        repMetric.setType(metricType.REPETITIONS);
+        repMetric.setMetricIntValue(0);
+        //repMetric.setMetricIntValue(repetitions);
+
+        m_metrics.add(weightMetric);
+        m_metrics.add(repMetric);
     }
 
     public void setOneRepMax(int oneRepMax) { this.m_oneRepMax = oneRepMax; }

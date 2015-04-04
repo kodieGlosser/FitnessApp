@@ -30,13 +30,16 @@ public class BrowseActivity extends ActionBarActivity {
     private static ArrayList<Exercise> StubExercises = new ArrayList<Exercise>();
     //the adapter is responsible for populating the browse list
     public static BrowseAdapter adapter;
+
+
+    //needed for add exercise functionality
     private int circuitNumber;
     private boolean circuitOpen;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("FLOW TESTS", "----------------------IN BROWSE-------------------");
+        Log.d("BROWSE FLOW", "onCreate");
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
         if (extras != null){
@@ -61,7 +64,6 @@ public class BrowseActivity extends ActionBarActivity {
         transaction.add(R.id.exerciseFiltersContainer, FilterFragment);
         transaction.add(R.id.exerciseListContainer, ListFragment);
         transaction.commit();
-
     }
 
     @Override
@@ -77,15 +79,19 @@ public class BrowseActivity extends ActionBarActivity {
         switch (item.getItemId()) {
             case R.id.action_add_exercise_item:
                 Intent i = new Intent(this, CreateExerciseActivity.class);
+                //MONKEY CODE
+                i.putExtra("EXTRA_CIRCUIT_NUMBER", circuitNumber);
+                i.putExtra("EXTRA_CIRCUIT_OPEN", circuitOpen);
+                //END MONKEY CODE
                 startActivity(i);
                 return true;
             case R.id.action_settings:
-
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
     //Adam:  This is a stub list of exercises used for the browse menu
     //in the format "Name, Muscle group, last used, equip used"
     //used to fetch the adapter from this activity in fragments.  the list fragment gets the adapter
@@ -145,7 +151,6 @@ public class BrowseActivity extends ActionBarActivity {
             */
         }
     }
-
     //this is the actual adapter class used to populate layout/b_frag_exercise_list.xml
     public class BrowseAdapter extends ArrayAdapter<Exercise> {
 

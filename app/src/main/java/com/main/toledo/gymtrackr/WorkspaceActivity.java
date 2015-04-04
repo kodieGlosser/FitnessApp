@@ -32,7 +32,7 @@ public class WorkspaceActivity extends ActionBarActivity {
     boolean workout_from_plan_flag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("APP FLOW TESTS", "ON CREATE CALLED IN WORKSPACE ACTIVITY");
+        //Log.d("APP FLOW TESTS", "ON CREATE CALLED IN WORKSPACE ACTIVITY");
         super.onCreate(savedInstanceState);
         //gets relevant data from load activity, plan name and whether we are editing or working out.
         Bundle extras = getIntent().getExtras();
@@ -48,7 +48,7 @@ public class WorkspaceActivity extends ActionBarActivity {
             //Log.d("W_HEADER_DEBUG", "Plan name: " + planName);
             DatabaseWrapper db = new DatabaseWrapper();
             Plan planList = db.loadEntirePlan(planName);
-            Log.d("DB INTEGRATION TESTS", "PLAN ID: "+ planList.getPlanId() + " -- PLAN NAME: " + planList.getName());
+            //Log.d("DB INTEGRATION TESTS", "PLAN ID: "+ planList.getPlanId() + " -- PLAN NAME: " + planList.getName());
             //Log.d("W_HEADER_DEBUG", "DB CALL COMPLETED");
             WorkoutData.get(this).eatPlan(planList, workout_from_plan_flag);
             //Log.d("W_HEADER_DEBUG", "EATPLAN CALL COMPLETED");
@@ -56,9 +56,10 @@ public class WorkspaceActivity extends ActionBarActivity {
 
         setContentView(R.layout.w_activity_main);
 
+        /*
         int aquaColor = Color.parseColor("#26d6cf");
         int greenColor = Color.parseColor("#00B800");
-
+        */
 
 
         //listAdapter = new WorkspaceExpandableListAdapterMKII(this);
@@ -71,7 +72,7 @@ public class WorkspaceActivity extends ActionBarActivity {
         transaction.add(R.id.WorkspaceHeaderContainer, TabFragment);
         transaction.add(R.id.WorkspaceListContainer, ListFragment);
         transaction.commit();
-
+        /*
         switch(mode){
             case PLAN:
                 this.findViewById(R.id.mainLayoutHandle).setBackgroundColor(greenColor);
@@ -82,6 +83,7 @@ public class WorkspaceActivity extends ActionBarActivity {
             default:
                 break;
         }
+        */
 
 
     }
@@ -177,11 +179,12 @@ public class WorkspaceActivity extends ActionBarActivity {
 
     @Override
     public void onResume(){
-        //Log.d("APP FLOW TESTS", "ON RESUME CALLED IN WORKSPACE ACTIVITY");
+        Log.d("4/4", "ON RESUME CALLED IN WORKSPACE ACTIVITY");
         //THIS FIXES A BUG WHERE THE ADAPTER WONT BE UPDATED WHEN THE
         //ACTIVITY IS RESUMED AFTER BROWSE
         toBrowse = false;
-        listAdapter = new WorkspaceExpandableListAdapterMKII(this);
+        if(listAdapter==null)
+            listAdapter = new WorkspaceExpandableListAdapterMKII(this);
         toggleEdit(true);
         listAdapter.hideKeypad();
 

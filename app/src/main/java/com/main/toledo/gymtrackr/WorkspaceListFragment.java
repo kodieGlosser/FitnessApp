@@ -23,22 +23,23 @@ public class WorkspaceListFragment extends Fragment {
         boolean mDragInProgress;
         @Override
    public void onCreate(Bundle savedInstanceState) {
-        Log.d("PAD BUGS", "ONCREATE() CALLED IN WLFRAG");
+        //Log.d("PAD BUGS", "ONCREATE() CALLED IN WLFRAG");
         super.onCreate(savedInstanceState);
     }
 
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         //sets the view for the fragment
-        Log.d("PAD BUGS", "ON CREATE VIEW CALLED IN WLFRAG");
+        //Log.d("PAD BUGS", "ON CREATE VIEW CALLED IN WLFRAG");
         View v = inflater.inflate(R.layout.w_frag_list, null);
+
         workspaceListView = (WorkspaceExpandableListView)
                 v.findViewById(R.id.workspaceListView);
 
         workspaceListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
             @Override
             public void onGroupCollapse(int groupPosition) {
-                Log.d("PAD BUGS", "ON GROUP COLLAPSE CALLED");
+                //Log.d("PAD BUGS", "ON GROUP COLLAPSE CALLED");
                 if (!mDragInProgress)
                     WorkoutData.get(getActivity()).getWorkout().get(groupPosition).setExpanded(false);
                 //((WorkspaceActivity)getActivity()).getAdapter().hideKeypad();
@@ -48,7 +49,7 @@ public class WorkspaceListFragment extends Fragment {
         workspaceListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
-                Log.d("PAD BUGS", "ON GROUP COLLAPSE CALLED");
+                //Log.d("PAD BUGS", "ON GROUP COLLAPSE CALLED");
                 WorkoutData.get(getActivity()).getWorkout().get(groupPosition).setExpanded(true);
             }
         });
@@ -56,6 +57,7 @@ public class WorkspaceListFragment extends Fragment {
         workspaceListView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                Log.d("4/4", "Hide Keypad Called.");
                 ((WorkspaceActivity)getActivity()).getAdapter().hideKeypad();
                 return false;
             }
@@ -84,6 +86,7 @@ public class WorkspaceListFragment extends Fragment {
         Log.d("PAD BUGS", "ONRESUME() CALLED IN WLFRAG");
         workspaceListView.setAdapter(((WorkspaceActivity)getActivity()).getAdapter());
         restoreListExpansion();
+        //need a better way to do this
         workspaceListView.setGroupIndicator(null);
         //final Rect hitRect = new Rect();
         //workspaceListView.getHitRect(hitRect);

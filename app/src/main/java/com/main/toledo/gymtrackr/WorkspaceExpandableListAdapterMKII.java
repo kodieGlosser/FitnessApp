@@ -37,7 +37,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     final int EXERCISE = 2;
     final float mCheckedIndentation = 100;
 
-    private int mSelectColor = Color.WHITE;
+    private int mSelectColor = Color.GRAY;
     private int mBackgroundColor = Color.GRAY;
 
     private ArrayList<Circuit> Workout = new ArrayList<>();
@@ -347,6 +347,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     }
 
     public void hideKeypad(){
+        Log.d("4/4 Tests", "HIDEKEYPAD()");
         if (m_editTextHandle != null) {
             InputMethodManager imm = (InputMethodManager) _context.getSystemService(
                     Context.INPUT_METHOD_SERVICE);
@@ -428,7 +429,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                 ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(false);
                                 timeEdit.setSelection(timeEdit.getText().toString().length());
                                 if(timeEdit.getText().toString().equals("0")){
-                                    timeEdit.setText("");
+                                    //timeEdit.setText("");
                                 }
                                 //Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + timeEdit.getText());
                             } else {
@@ -503,7 +504,8 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                 m_editTextHandle = (EditText) v;
 
                                 if(repEdit.getText().toString().equals("0")){
-                                    repEdit.setText("");
+                                    Log.d("4/4", "DOOR 1");
+                                    //repEdit.setText("");
                                 }
 
                             } else {
@@ -511,9 +513,11 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                     //Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + repEdit.getText());
                                     if (((EditText) v).getText().toString().equals("")) {
                                         metrics.get(j).setMetricIntValue(0);
+                                        Log.d("4/4", "DOOR 2");
                                     } else {
                                         metrics.get(j).setMetricIntValue(Integer
                                                 .parseInt(((EditText) v).getText().toString()));
+                                        Log.d("4/4", "DOOR 3");
 
                                 }
                                 Log.d("CHECKED TESTS", "PERFORMING CHECK TESTS");
@@ -583,7 +587,8 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                 m_editTextHandle = (EditText) v;
                                 wtEdit.setSelection(wtEdit.getText().toString().length());
                                 if(wtEdit.getText().toString().equals("0")){
-                                    wtEdit.setText("");
+                                    //wtEdit.setText("");
+                                    //wtEdit.
                                 }
 
                             } else {

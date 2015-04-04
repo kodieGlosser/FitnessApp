@@ -26,7 +26,6 @@
         <activity
             android:name=".BrowseActivity"
             android:label="Browse Exercises"
-            android:noHistory="true"
             android:theme="@style/Theme.AppCompat.Light"
             android:parentActivityName="com.main.toledo.gymtrackr.WorkspaceActivity">
             <meta-data

@@ -3,6 +3,7 @@ package com.main.toledo.gymtrackr;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,18 +23,31 @@ public class CreateExerciseActivity extends ActionBarActivity {
     private boolean mReps = false;
     private boolean mTime = false;
     private boolean mOther = false;
+    private boolean nameIsTaken;
 
     private String mExerciseName;
     private String mOtherValue;
 
     private TextView mOtherTextView;
     private EditText mOtherEditText;
+    private EditText mExerciseNameText;
 
+    //PASSED FROM BROWSE, PROBABLY  a better way to do this
+    private int circuitNumber;
+    private boolean circuitOpen;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //MONKEY CODE
+        Bundle extras = getIntent().getExtras();
+        if (extras != null){
+            circuitNumber = extras.getInt("EXTRA_CIRCUIT_NUMBER");
+            circuitOpen = extras.getBoolean("EXTRA_CIRCUIT_OPEN");
+        }
+        //END MONKEY CODE
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ce_activity);
-
+        mExerciseNameText = (EditText) findViewById(R.id.exerciseNameField);
+        //getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -48,6 +62,15 @@ public class CreateExerciseActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
+            case android.R.id.home:
+                Log.d("BROWSE FLOW", "UP");
+                //MONKEY CODE
+                Intent i = new Intent(this, BrowseActivity.class);
+                i.putExtra("EXTRA_CIRCUIT_NUMBER", circuitNumber);
+                i.putExtra("EXTRA_CIRCUIT_OPEN", circuitOpen);
+                startActivity(i);
+                //END MONKEY CODE
+                return true;
             case R.id.save_changes:
                 performSaveCheck();
                 return true;
@@ -62,7 +85,6 @@ public class CreateExerciseActivity extends ActionBarActivity {
     public void onCheckboxClicked(View view) {
         // Is the view now checked?
         boolean checked = ((CheckBox) view).isChecked();
-
         // Check which checkbox was clicked
         switch(view.getId()) {
             case R.id.weight:
@@ -132,9 +154,51 @@ public class CreateExerciseActivity extends ActionBarActivity {
         mOtherEditText.setLayoutParams(textViewParams);
     }
 
+
     private void performSaveCheck(){
+
+        String exerciseName = mExerciseNameText.getText().toString();
+
+        DatabaseWrapper db = new DatabaseWrapper();
+        Exercise[] exercises = db.browseExercisesByExactName(exerciseName);
+
+        if(exercises.length == 0){
+            nameIsTaken = false;
+        } else {
+            for (Exercise e : exercises){
+                Log.d("CE ACT TEST", "COMPARING DB NAME: "
+                        + e.getName() + " WITH NEW NAME: " + exerciseName);
+                if (e.getName().equals(exerciseName)){
+                    nameIsTaken = true;
+                    break;
+                } else {
+                    nameIsTaken = false;
+                }
+            }
+        }
+
+        CreateExerciseDialog dialog = new CreateExerciseDialog();
+        dialog.show(getFragmentManager(), "Add Exercise Dialog.");
+    }
+
+    public boolean getError(){
+        return nameIsTaken;
+    }
+
+    public void save(){
 
     }
 
+
+    /*
+        public void addExerciseToExerciseTable(Exercise exercise) {
+        ContentValues exerciseValues = new ContentValues();
+        exerciseValues.put(COLUMN_EQUIPMENT_TYPE, exercise.getEquipment());
+        exerciseValues.put(COLUMN_NAME, exercise.getName());
+        exerciseValues.put(COLUMN_TARGET_MUSCLE, exercise.getTargetMuscle());
+        exerciseValues.put(COLUMN_MUSCLE_GROUP, exercise.getMuscleGroup());
+        myDatabase.insert(EXERCISE_TABLE, null, exerciseValues);
+
+     */
 
 }
