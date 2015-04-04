@@ -61,6 +61,7 @@ public class BrowseFilterFragment extends Fragment {
             }
         });
         return v;
+
     }
     public void testMethod(){
         ((BrowseActivity)getActivity()).searchForItem(editText.getText().toString());

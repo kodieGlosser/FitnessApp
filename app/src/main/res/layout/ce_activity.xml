@@ -19,31 +19,62 @@
         android:layout_height="wrap_content"
         android:text="Select relevant metrics."/>
 
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/metricLayout">
+        <CheckBox
+            android:id="@+id/weight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Weight"
+            android:onClick="onCheckboxClicked"/>
+        <CheckBox
+            android:id="@+id/reps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Repetitions"
+            android:onClick="onCheckboxClicked"/>
+        <CheckBox
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time"
+            android:onClick="onCheckboxClicked"/>
+        <CheckBox
+            android:id="@+id/other"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Note"
+            android:onClick="onCheckboxClicked"/>
+    </LinearLayout>
 
-    <CheckBox
-        android:id="@+id/weight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Weight"
-        android:onClick="onCheckboxClicked"/>
-    <CheckBox
-        android:id="@+id/reps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Repetitions"
-        android:onClick="onCheckboxClicked"/>
-    <CheckBox
-        android:id="@+id/time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Time"
-        android:onClick="onCheckboxClicked"/>
-    <CheckBox
-        android:id="@+id/other"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Note"
-        android:onClick="onCheckboxClicked"/>
+    <LinearLayout
+        android:orientation="horizontal" android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select equipment: "/>
+        <Spinner
+            android:id="@+id/equipment_spinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal" android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select muscle group: "/>
+        <Spinner
+            android:id="@+id/muscle_group_spinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown" />
+    </LinearLayout>
 
 
 </LinearLayout>

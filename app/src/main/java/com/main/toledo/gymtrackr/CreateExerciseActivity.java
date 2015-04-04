@@ -9,24 +9,40 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 /**
  * Created by Adam on 4/2/2015.
  */
 public class CreateExerciseActivity extends ActionBarActivity {
+    //Values used to write exercise to db
     private boolean mWeight = false;
     private boolean mReps = false;
     private boolean mTime = false;
     private boolean mOther = false;
-    private boolean nameIsTaken;
-
+    private String mMuscleGroup;
+    private String mSpecificMuscle;
+    private String mEquipment;
     private String mExerciseName;
     private String mOtherValue;
+
+    private boolean nameIsTaken;
+
+    private String[] mMuscleGroups = {"Legs", "Back", "Abs", "Arms", "Shoulders", "Chest"};
+    private String[] mLegs = {"Hamstrings", "Glutes", "Quadriceps", "Calves"};
+    private String[] mAbs = {"Abs"};
+    private String[] mArms = {"Bicep", "Tricep", "Forearm"};
+    private String[] mShoulders = {"Shoulders"};
+    private String[] mChest = {"Chest"};
+    private String[] mBack = {"Middle Back", "Lower Back", "Lats"};
+    private String[] mEquip = {"Barbell", "Body",  "Cable", "Dumbbell", "Machine", "Other"};
+
 
     private TextView mOtherTextView;
     private EditText mOtherEditText;
@@ -44,10 +60,26 @@ public class CreateExerciseActivity extends ActionBarActivity {
             circuitOpen = extras.getBoolean("EXTRA_CIRCUIT_OPEN");
         }
         //END MONKEY CODE
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ce_activity);
         mExerciseNameText = (EditText) findViewById(R.id.exerciseNameField);
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
+        /*
+        Spinner spinner = new Spinner(this);
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerArray); //selected item will look like a spinner set from XML
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerArrayAdapter);
+        */
+        Spinner equipmentSpinner = (Spinner) findViewById(R.id.equipment_spinner);
+        ArrayAdapter<String> spinnerEquipAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mEquip);
+        spinnerEquipAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        equipmentSpinner.setAdapter(spinnerEquipAdapter);
+
+        Spinner muscleGroupSpinner = (Spinner) findViewById(R.id.muscle_group_spinner);
+        ArrayAdapter<String> muscleGroupAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mMuscleGroups);
+        spinnerEquipAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        muscleGroupSpinner.setAdapter(muscleGroupAdapter);
+
     }
 
     @Override
@@ -118,7 +150,7 @@ public class CreateExerciseActivity extends ActionBarActivity {
     }
 
     private void updateUI(){
-        LinearLayout mainLayout = (LinearLayout)findViewById(R.id.mainLayout);
+        LinearLayout metricLayout = (LinearLayout)findViewById(R.id.metricLayout);
 
         if (mOther){
             if(mOtherEditText == null)
@@ -126,11 +158,11 @@ public class CreateExerciseActivity extends ActionBarActivity {
             if(mOtherTextView == null)
                 buildTextView();
 
-            mainLayout.addView(mOtherTextView);
-            mainLayout.addView(mOtherEditText);
+            metricLayout.addView(mOtherTextView);
+            metricLayout.addView(mOtherEditText);
         }else{
-            mainLayout.removeView(mOtherTextView);
-            mainLayout.removeView(mOtherEditText);
+            metricLayout.removeView(mOtherTextView);
+            metricLayout.removeView(mOtherEditText);
         }
     }
 
@@ -190,6 +222,7 @@ public class CreateExerciseActivity extends ActionBarActivity {
     }
 
 
+    //String[] myStringArray = {"a","b","c"};
     /*
         public void addExerciseToExerciseTable(Exercise exercise) {
         ContentValues exerciseValues = new ContentValues();
