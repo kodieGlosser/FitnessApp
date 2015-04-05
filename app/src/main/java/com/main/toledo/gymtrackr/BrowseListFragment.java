@@ -23,6 +23,7 @@ public class BrowseListFragment extends ListFragment{
 
 
     //this is the code that adds an item from the browse list to the workspace
+    /*
     @Override
     public void onListItemClick(ListView l, View v, int position, long id){
         //PROBABLY WAY BETTER TO PASS EXERCISE TO WORKSPACE ACTIVITY
@@ -52,4 +53,5 @@ public class BrowseListFragment extends ListFragment{
         Intent i = new Intent(getActivity(), WorkspaceActivity.class);
         startActivity(i);
     }
+    */
 }
