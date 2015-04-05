@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -156,11 +158,12 @@ public class BrowseActivity extends ActionBarActivity {
     }
 
     public class BrowseAdapter extends ArrayAdapter<Exercise>{
-
+        private Context mContext;
         private SwipableLinearLayout mTextViewHandle;
 
         public BrowseAdapter(Context context, int resource, ArrayList<Exercise> exercises){
             super(context, resource, exercises);
+            mContext = context;
         }
 
         private swipeLayoutListener listener =
@@ -183,7 +186,7 @@ public class BrowseActivity extends ActionBarActivity {
 
         @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
         @Override
-        public View getView(int position, View convertView, ViewGroup parent){
+        public View getView(final int position, View convertView, ViewGroup parent){
 
             if ((convertView == null)) {
                 convertView = getLayoutInflater()
@@ -195,8 +198,9 @@ public class BrowseActivity extends ActionBarActivity {
                     (SwipableLinearLayout) convertView.findViewById(R.id.swipeLayoutHandle);
             swipableLinearLayout.setSwipeOffset(slideVal);
             swipableLinearLayout.setSwipeLayoutListener(listener);
-            Exercise e = getItem(position);
+            swipableLinearLayout.percentageToDragEnable(75f);
 
+            final Exercise e = getItem(position);
             TextView nameTextView =
                     (TextView)convertView.findViewById(R.id.browseMenuExerciseNameView);
             nameTextView.setText(e.getName());
@@ -213,6 +217,35 @@ public class BrowseActivity extends ActionBarActivity {
                 mTextViewHandle = null;
             }
 
+            swipableLinearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Exercise exercise = new Exercise();
+                    exercise.setName(e.getName());
+                    exercise.setId(e.getId());
+                    //Stubs
+                    exercise.instantiateStubMetrics();
+
+                    WorkoutData.get(mContext).setToggledExerciseExplicit(e);//Sets this as the 'last' item added
+
+
+                    //if circuit is open
+                    if (((BrowseActivity) mContext).isCircuitOpen()) {
+                        //addToOpenCircuit to that circuit
+                        WorkoutData.get(mContext).addExerciseToOpenCircuit(exercise,
+                                ((BrowseActivity) mContext).getCircuitValue());
+                        //if circuit is closed
+                    } else if (!((BrowseActivity) mContext).isCircuitOpen()) {
+                        //add a closed circuit, with the exercise in it
+                        WorkoutData.get(mContext).addClosedCircuit(exercise,
+                                ((BrowseActivity) mContext).getCircuitValue());
+                    }
+                    //return to workspace
+                    Intent i = new Intent(mContext, WorkspaceActivity.class);
+                    startActivity(i);
+                }
+            });
+
             Button delete = (Button) convertView.findViewById(R.id.deleteButton);
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -222,7 +255,8 @@ public class BrowseActivity extends ActionBarActivity {
                     mTextViewHandle = null;
 
                     //CODE TO REMOVE ITEM FROM DB GOES HERE
-
+                    DatabaseWrapper db = new DatabaseWrapper();
+                    db.deleteExerciseInExerciseTable(e.getId());
                     notifyDataSetChanged();
                 }
             });

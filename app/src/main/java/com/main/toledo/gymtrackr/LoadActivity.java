@@ -180,6 +180,7 @@ public class LoadActivity extends ActionBarActivity {
                     (SwipableLinearLayout)convertView.findViewById(R.id.swipeLayoutHandleLoad);
             swipableLinearLayout.setSwipeOffset(slideVal);
             swipableLinearLayout.setSwipeLayoutListener(listener);
+            swipableLinearLayout.percentageToDragEnable(0f);
 
             TextView t = (TextView) convertView.findViewById(R.id.planName);
             t.setText(planName);
