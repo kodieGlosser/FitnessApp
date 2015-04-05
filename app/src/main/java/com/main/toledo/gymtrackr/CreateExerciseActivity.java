@@ -9,8 +9,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -20,33 +20,40 @@ import android.widget.TextView;
 /**
  * Created by Adam on 4/2/2015.
  */
-public class CreateExerciseActivity extends ActionBarActivity {
+public class CreateExerciseActivity extends ActionBarActivity implements AdapterView.OnItemSelectedListener{
     //Values used to write exercise to db
     private boolean mWeight = false;
     private boolean mReps = false;
     private boolean mTime = false;
     private boolean mOther = false;
-    private String mMuscleGroup;
-    private String mSpecificMuscle;
-    private String mEquipment;
+    private String mMuscleGroup = "Shoulders";          //THIS IS PROBABLY TERRIBLE
+    private String mSpecificMuscle = "Shoulders";       //ASSUMED INITIAL SPINNER VALUES
+    private String mEquipment = "Barbell";              //SHOULDN'T BE DIFFERENT, BUT THINGS HAPPEN
     private String mExerciseName;
     private String mOtherValue;
 
     private boolean nameIsTaken;
 
-    private String[] mMuscleGroups = {"Legs", "Back", "Abs", "Arms", "Shoulders", "Chest"};
-    private String[] mLegs = {"Hamstrings", "Glutes", "Quadriceps", "Calves"};
-    private String[] mAbs = {"Abs"};
-    private String[] mArms = {"Bicep", "Tricep", "Forearm"};
-    private String[] mShoulders = {"Shoulders"};
-    private String[] mChest = {"Chest"};
-    private String[] mBack = {"Middle Back", "Lower Back", "Lats"};
-    private String[] mEquip = {"Barbell", "Body",  "Cable", "Dumbbell", "Machine", "Other"};
+    final private String[] mMuscleGroups = {"Shoulders", "Legs", "Back", "Abs", "Arms", "Chest"};
+    final private String[] mLegs = {"Hamstrings", "Glutes", "Quadriceps", "Calves"};
+    final private String[] mArms = {"Bicep", "Tricep", "Forearm"};
+    //private String[] mAbs = {"Abs"};
+    //private String[] mShoulders = {"Shoulders"};
+    //private String[] mChest = {"Chest"};
+    final private String[] mBack = {"Middle Back", "Lower Back", "Lats"};
+    final private String[] mEquip = {"Barbell", "Body",  "Cable", "Dumbbell", "Machine", "Other"};
+    private String[] mSpecMuscleArray;
 
+    private ArrayAdapter<String> muscleAdapter;
+    private ArrayAdapter<String> spinnerEquipAdapter;
+    private ArrayAdapter<String> muscleGroupAdapter;
 
+    private Spinner muscleSpinner;
     private TextView mOtherTextView;
     private EditText mOtherEditText;
     private EditText mExerciseNameText;
+
+    final int mMuscleSpinnerId = View.generateViewId();
 
     //PASSED FROM BROWSE, PROBABLY  a better way to do this
     private int circuitNumber;
@@ -71,14 +78,18 @@ public class CreateExerciseActivity extends ActionBarActivity {
         spinner.setAdapter(spinnerArrayAdapter);
         */
         Spinner equipmentSpinner = (Spinner) findViewById(R.id.equipment_spinner);
-        ArrayAdapter<String> spinnerEquipAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mEquip);
+        spinnerEquipAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mEquip);
         spinnerEquipAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         equipmentSpinner.setAdapter(spinnerEquipAdapter);
+        equipmentSpinner.setOnItemSelectedListener(this);
 
         Spinner muscleGroupSpinner = (Spinner) findViewById(R.id.muscle_group_spinner);
-        ArrayAdapter<String> muscleGroupAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mMuscleGroups);
-        spinnerEquipAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        muscleGroupAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mMuscleGroups);
+        muscleGroupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         muscleGroupSpinner.setAdapter(muscleGroupAdapter);
+        muscleGroupSpinner.setOnItemSelectedListener(this);
+
+
 
     }
 
@@ -87,6 +98,32 @@ public class CreateExerciseActivity extends ActionBarActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_create_exercise, menu);
         return super.onCreateOptionsMenu(menu);
+
+    }
+
+    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id){
+        Log.d("4/4", "" + parent.getId());
+        switch(parent.getId()){
+
+            case R.id.equipment_spinner:
+                Log.d("4/4", "equipspin");
+                mEquipment = mEquip[pos];
+                break;
+            case R.id.muscle_group_spinner:
+                mMuscleGroup = mMuscleGroups[pos];
+                addAdditionalSpinner(mMuscleGroup);
+                Log.d("4/4", "mgroup spin");
+                break;
+            default:
+                mSpecificMuscle = mSpecMuscleArray[pos];
+                Log.d("4/4", "mspecgroup spin");
+                break;
+            //case R.id.muscle_spinner:
+            //    break;
+        }
+    }
+
+    public void onNothingSelected(AdapterView<?> parent){
 
     }
 
@@ -213,25 +250,68 @@ public class CreateExerciseActivity extends ActionBarActivity {
         dialog.show(getFragmentManager(), "Add Exercise Dialog.");
     }
 
+    public void addAdditionalSpinner(String muscleGroup){
+        boolean addSpinners = false;
+        LinearLayout layout = (LinearLayout)findViewById(R.id.muscle_spinner_layout);
+
+        switch(muscleGroup){
+            case "Abs":
+                mSpecificMuscle = "Abs";
+                if(muscleSpinner!=null)
+                    layout.removeView(muscleSpinner);
+                layout.removeAllViewsInLayout();
+                break;
+            case "Chest":
+                mSpecificMuscle = "Chest";
+                if(muscleSpinner!=null)
+                    layout.removeView(muscleSpinner);
+                layout.removeAllViewsInLayout();
+                break;
+            case "Shoulders":
+                mSpecificMuscle = "Shoulders";
+                Log.d("4/4", "Will not add spinner");
+                if(muscleSpinner!=null)
+                    layout.removeView(muscleSpinner);
+                layout.removeAllViewsInLayout();
+                layout.invalidate();
+                break;
+            case "Legs":
+                mSpecMuscleArray = mLegs;
+                addSpinners = true;
+                break;
+            case "Arms":
+                mSpecMuscleArray = mArms;
+                addSpinners = true;
+                break;
+            case "Back":
+                mSpecMuscleArray = mBack;
+                addSpinners = true;
+                break;
+        }
+        if(addSpinners){
+            layout.removeAllViewsInLayout();
+            TextView v = new TextView(this);
+            v.setText("Select specific muscles: ");
+            layout.addView(v);
+
+            if(muscleSpinner == null) {
+                muscleSpinner = new Spinner(this);
+            }
+
+            muscleAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mSpecMuscleArray);
+            muscleSpinner.setAdapter(muscleAdapter);
+            muscleSpinner.setId(mMuscleSpinnerId);
+            muscleSpinner.setOnItemSelectedListener(this);
+
+            layout.addView(muscleSpinner);
+        }
+    }
+
     public boolean getError(){
         return nameIsTaken;
     }
 
     public void save(){
-
+        //code to save to db goes here
     }
-
-
-    //String[] myStringArray = {"a","b","c"};
-    /*
-        public void addExerciseToExerciseTable(Exercise exercise) {
-        ContentValues exerciseValues = new ContentValues();
-        exerciseValues.put(COLUMN_EQUIPMENT_TYPE, exercise.getEquipment());
-        exerciseValues.put(COLUMN_NAME, exercise.getName());
-        exerciseValues.put(COLUMN_TARGET_MUSCLE, exercise.getTargetMuscle());
-        exerciseValues.put(COLUMN_MUSCLE_GROUP, exercise.getMuscleGroup());
-        myDatabase.insert(EXERCISE_TABLE, null, exerciseValues);
-
-     */
-
 }
