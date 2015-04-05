@@ -446,7 +446,7 @@ public class DatabaseWrapper {
     }
 
     public void deleteExerciseInExerciseTable(int exerciseId) {
-        myDatabase.delete(COLUMN_EXERCISE, COLUMN_ID + "= " + exerciseId, null);
+        myDatabase.delete(EXERCISE_TABLE, COLUMN_ID + "= " + exerciseId, null);
         myDatabase.delete(COLUMN_CIRCUIT, COLUMN_EXERCISE + "=" + exerciseId, null);
         myDatabase.delete(EXERCISE_HISTORY_TABLE, COLUMN_EXERCISE + "=" + exerciseId, null);
     }
