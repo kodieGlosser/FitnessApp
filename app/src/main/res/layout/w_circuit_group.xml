@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
             style="@style/MyTextViewStyle"
-            android:textSize="25dp"
+            android:textSize="20dp"
             android:textColor="#1ca4fb"
             android:text="TESTVAL"
             android:layout_weight="0.85"/>

@@ -21,15 +21,16 @@
     <style parent="android:Theme.Holo.Light" name="_gtr_theme">
         <item name="android:fastScrollThumbDrawable">@drawable/gtr_theme_fastscroll_thumb</item>
     </style>
-    <style name="myButton" parent="android:Theme.Material.Light">
+    <style name="myButton">
         <item name="android:background">@drawable/button</item>
         <item name="android:textViewStyle">@style/MyTextViewStyle</item>
+        <item name="android:layout_margin">5dp</item>
     </style>
-    <style name="myCircuit" parent="android:Theme.Material.Light">
+    <style name="myCircuit" >
         <item name="android:background">@drawable/circuit</item>
         <item name="android:padding">15dp</item>
     </style>
-    <style name="MyTextViewStyle" parent="android:Theme.Material.Light">
+    <style name="MyTextViewStyle" >
         <item name="android:textColor">#000000</item>
         <item name="android:textSize">20sp</item>
         <item name="android:layout_alignParentRight">true</item>

@@ -43,6 +43,7 @@ public class DatabaseWrapper {
     private static final String COLUMN_PLANNED_UNION= "Planned_Union";
     private static final String COLUMN_TIME= "time";
     private static final String COLUMN_OTHER= "other";
+    private static final String COLUMN_S_OTHER= "s_other";
     private static final String COLUMN_ONE_REP_MAX= "oneRepMax";
     private static final String COLUMN_ONE_REP_MAX_PERCENT= "oneRepMaxPercent";
     private static String DB_PATH = "/data/data/com.main.toledo.gymtrackr/databases/";
@@ -440,13 +441,14 @@ public class DatabaseWrapper {
     }
 
     public void deleteExerciseInExerciseTable(String exerciseName) {
-        String selectionArgs = COLUMN_NAME +  "= ? COLLATE NOCASE";
-        String[] whereArgs = new String[] { exerciseName };
-        myDatabase.delete(COLUMN_EXERCISE, selectionArgs, whereArgs);
+        int exerciseId = browseExercisesByExactName(exerciseName)[0].getId();
+        deleteExerciseInExerciseTable(exerciseId);
     }
 
     public void deleteExerciseInExerciseTable(int exerciseId) {
         myDatabase.delete(COLUMN_EXERCISE, COLUMN_ID + "= " + exerciseId, null);
+        myDatabase.delete(COLUMN_CIRCUIT, COLUMN_EXERCISE + "=" + exerciseId, null);
+        myDatabase.delete(EXERCISE_HISTORY_TABLE, COLUMN_EXERCISE + "=" + exerciseId, null);
     }
 
     public void addExerciseToExerciseTable(Exercise exercise) {
@@ -492,41 +494,6 @@ public class DatabaseWrapper {
         return convertCursorToExerciseHistory(c);
     }
 
-//    public void addCircuitToPlan(int sequence, int planNumber, String circuitName) {
-//        // query: insert into Planned_Union (plannedWorkout, plan, circuitName) values (sequence, planNumber, circuitName)
-//    }
-//
-//    /**
-//     * Adds the exercise to the Circuit
-//     * @param exercise the exercise to be added
-//     * @param circuitNumber the circuit number where its added
-//     * @param sequence the sequence inside the circuit
-//     * @param isItOpen true if open, false if not
-//     */
-//    public void addExerciseToCircuit(Exercise exercise, int circuitNumber, int sequence, boolean isItOpen, int planId) {
-//
-//    }
-//
-//    /**
-//     * If we want to delete it then we can just set the new position and new circuit to -1.
-//     * @param oldCircuitNumber
-//     * @param oldSequence
-//     * @param newCircuit
-//     * @param newSequence
-//     */
-//    public void alterExerciseInPlan(int oldCircuitNumber, int oldSequence, int newCircuit, int newSequence, int planId) {
-//
-//    }
-//
-//    /**
-//     * Passing -1 will delete the record
-//     * @param oldSequence
-//     * @param newSequence
-//     */
-//    public void alterCircuitInPlan(int oldSequence, int newSequence, int planId){
-//
-//    }
-
     private Exercise[] convertCursorToExercises(Cursor c) {
         int count = c.getCount();
         int i = 0;
@@ -536,8 +503,8 @@ public class DatabaseWrapper {
             while(c.moveToNext()) {
 
                 int val_id = -1, val_oneRepMax = -1;
-                String val_name = null, val_equipmentType = null, val_targetMuscle = null, val_muscleGroup = null, columnData = null;
-
+                String val_name = null, val_equipmentType = null, val_targetMuscle = null, val_muscleGroup = null, columnData = null, other = null;
+                boolean val_weight = false, val_reps = false, val_time = false, val_other = false;
                 for (int j = 0; j < c.getColumnCount(); j++) {
 
                     String columnName = c.getColumnName(j);
@@ -563,8 +530,32 @@ public class DatabaseWrapper {
                     else if (columnName.equalsIgnoreCase(COLUMN_ONE_REP_MAX)) {
                         val_oneRepMax = c.getInt(c.getColumnIndex(columnName));
                     }
+                    else if (columnName.equalsIgnoreCase(COLUMN_WEIGHT)) {
+                        int val = c.getInt(c.getColumnIndex(columnName));
+                        if (val == 1)
+                            val_weight = true;
+                    }
+                    else if (columnName.equalsIgnoreCase(COLUMN_REP)) {
+                        int val = c.getInt(c.getColumnIndex(columnName));
+                        if (val == 1)
+                            val_reps = true;
+                    }
+                    else if (columnName.equalsIgnoreCase(COLUMN_TIME)) {
+                        int val = c.getInt(c.getColumnIndex(columnName));
+                        if (val == 1)
+                            val_time = true;
+                    }
+                    else if (columnName.equalsIgnoreCase(COLUMN_OTHER)) {
+                        int val = c.getInt(c.getColumnIndex(columnName));
+                        if (val == 1)
+                            val_other = true;
+                    }
+                    else if (columnName.equalsIgnoreCase(COLUMN_S_OTHER)) {
+                        other = columnData;
+
+                    }
                 }
-                exercises[i] = new Exercise(val_id, val_name, val_muscleGroup, val_equipmentType, val_targetMuscle, val_oneRepMax);
+                exercises[i] = new Exercise(val_id, val_name, val_muscleGroup, val_equipmentType, val_targetMuscle, val_oneRepMax, val_weight, val_reps, val_time, val_other, other);
                 i++;
             }
 

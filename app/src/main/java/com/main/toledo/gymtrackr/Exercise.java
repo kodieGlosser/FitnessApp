@@ -21,6 +21,12 @@ public class Exercise {
     private int m_time;
     private int m_oneRepMax;
     private int m_oneRepMaxPercent;
+    private boolean m_bWeight;
+    private boolean m_bReps;
+    private boolean m_bTime;
+    private boolean m_bOther;
+    private String m_sOther;
+
     private int m_lastPerformed;  //this will be an integer value of the last time the exercise was
     //performed, used to organize browse menu
     private ExerciseStatus status;
@@ -73,14 +79,18 @@ public class Exercise {
         mToggled = false;
     }
 
-    public Exercise(int id, String name, String muscleGroup, String equipmentType, String targetMuscle, int oneRepMax){
+    public Exercise(int id, String name, String muscleGroup, String equipmentType, String targetMuscle, int oneRepMax, boolean weight, boolean reps, boolean time, boolean other, String s_other){
         this.m_id = id;
         this.m_name = name;
         this.m_muscleGroup = muscleGroup;
         this.m_equipmentType = equipmentType;
         this.m_targetMuscle = targetMuscle;
         this.m_oneRepMax = oneRepMax;
-
+        this.m_bWeight = weight;
+        this.m_bReps = reps;
+        this.m_bTime = time;
+        this.m_bOther = other;
+        this.m_sOther = s_other;
         instantiateStubMetrics();
 
         mSaveToHistory = false;

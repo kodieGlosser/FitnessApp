@@ -11,22 +11,29 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/inCircuitButtonHandle">
+        android:layout_height="45dp"
+        android:id="@+id/inCircuitButtonHandle"
+        android:background="#f7f7f7">
 
         <Button
-           android:layout_width="fill_parent"
-           android:layout_height="wrap_content"
+           android:layout_width="30dp"
+           android:layout_height="30dp"
            android:text="+"
            android:id="@+id/PlusButton"
-            android:layout_weight="1"/>
+            android:background="#1ca4fb"
+            android:textColor="#F0F0F0"
+            style="@style/myButton"
+            />
 
         <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:layout_height="30dp"
             android:text="Browse"
-            android:id="@+id/BrowseButton"
-            android:layout_weight="1"/>
+            android:layout_marginLeft="10dp"
+            android:background="#1ca4fb"
+            android:textColor="#F0F0F0"
+            style="@style/myButton"
+            android:id="@+id/BrowseButton" />
 
     </LinearLayout>
 
