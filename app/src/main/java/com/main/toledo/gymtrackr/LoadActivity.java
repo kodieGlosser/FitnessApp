@@ -1,22 +1,16 @@
 package com.main.toledo.gymtrackr;
 
-import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.gesture.Gesture;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.DragEvent;
-import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -146,25 +140,29 @@ public class LoadActivity extends ActionBarActivity {
 
     public class LoadAdapter extends ArrayAdapter{
 
-        private LoadTextView mTextViewHandle;
+        private SwipableLinearLayout mTextViewHandle;
 
         public LoadAdapter(Context context, int resource, ArrayList<String> plans){
             super(context, resource, plans);
         }
 
-        public void setTextViewHandle(LoadTextView l){
-            mTextViewHandle = l;
-        }
+        private swipeLayoutListener listener =
+                new swipeLayoutListener() {
 
-        public void CloseTextViewHandle(){
-            if (mTextViewHandle != null){
-                mTextViewHandle.close();
+            public void CloseTextViewHandle(){
+                if (mTextViewHandle != null){
+                    mTextViewHandle.close();
+                }
             }
-        }
 
-        public void clearHandle(){
-            mTextViewHandle = null;
-        }
+            public void setTextViewHandle(SwipableLinearLayout l){
+                mTextViewHandle = l;
+            }
+
+            public void clearHandle(){
+                mTextViewHandle = null;
+            };
+        };
 
         @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
         @Override
@@ -173,23 +171,31 @@ public class LoadActivity extends ActionBarActivity {
             if ((convertView == null)) {
                 convertView = getLayoutInflater()
                         .inflate(R.layout.l_frag_list_item, null);
+                Log.d("4/4", "X location of convert view: " + convertView.getX());
             }
 
             final String planName = (String)getItem(position);
 
-            final LoadTextView nameTextView =
-                    (LoadTextView)convertView.findViewById(R.id.planName);
-            nameTextView.setText(planName);
-            nameTextView.setAdapter(this);
+            final SwipableLinearLayout swipableLinearLayout =
+                    (SwipableLinearLayout)convertView.findViewById(R.id.swipeLayoutHandleLoad);
+            swipableLinearLayout.setSwipeOffset(slideVal);
+            swipableLinearLayout.setSwipeLayoutListener(listener);
 
+            TextView t = (TextView) convertView.findViewById(R.id.planName);
+            t.setText(planName);
+            if(swipableLinearLayout.getX() != 0){
+                swipableLinearLayout.setX(0f);
+                mTextViewHandle.setOpen(false);
+                mTextViewHandle = null;
+            }
             Button delete = (Button) convertView.findViewById(R.id.deleteButton);
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.d("DELETE TESTS", "plan name: " + planName);
 
-                    nameTextView.resetPosition();
-                    clearHandle();
+                    swipableLinearLayout.resetPosition();
+                    mTextViewHandle = null;
 
                     DatabaseWrapper db = new DatabaseWrapper();
                     db.deletePlan(planName);

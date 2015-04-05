@@ -1,22 +1,25 @@
 package com.main.toledo.gymtrackr;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.zip.Inflater;
 
 /**
  * Created by Adam on 2/10/2015.
@@ -35,7 +38,7 @@ public class BrowseActivity extends ActionBarActivity {
     //needed for add exercise functionality
     private int circuitNumber;
     private boolean circuitOpen;
-
+    private int slideVal = -200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,21 +154,47 @@ public class BrowseActivity extends ActionBarActivity {
             */
         }
     }
-    //this is the actual adapter class used to populate layout/b_frag_exercise_list.xml
-    public class BrowseAdapter extends ArrayAdapter<Exercise> {
+
+    public class BrowseAdapter extends ArrayAdapter<Exercise>{
+
+        private SwipableLinearLayout mTextViewHandle;
 
         public BrowseAdapter(Context context, int resource, ArrayList<Exercise> exercises){
             super(context, resource, exercises);
         }
 
+        private swipeLayoutListener listener =
+                new swipeLayoutListener() {
+
+                    public void CloseTextViewHandle(){
+                        if (mTextViewHandle != null){
+                            mTextViewHandle.close();
+                        }
+                    }
+
+                    public void setTextViewHandle(SwipableLinearLayout l){
+                        mTextViewHandle = l;
+                    }
+
+                    public void clearHandle(){
+                        mTextViewHandle = null;
+                    };
+                };
+
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
 
-            if (convertView == null) {
-                                convertView = getLayoutInflater()
-                        .inflate(R.layout.b_frag_exercise_list, null);
+            if ((convertView == null)) {
+                convertView = getLayoutInflater()
+                        .inflate(R.layout.b_frag_exercise_list_item, null);
             }
 
+
+            final SwipableLinearLayout swipableLinearLayout =
+                    (SwipableLinearLayout) convertView.findViewById(R.id.swipeLayoutHandle);
+            swipableLinearLayout.setSwipeOffset(slideVal);
+            swipableLinearLayout.setSwipeLayoutListener(listener);
             Exercise e = getItem(position);
 
             TextView nameTextView =
@@ -178,8 +207,29 @@ public class BrowseActivity extends ActionBarActivity {
                     (TextView)convertView.findViewById(R.id.browseMenuExerciseEquip);
             equipmentTextView.setText(e.getEquipment());
 
+            if(swipableLinearLayout.getX() != 0){
+                swipableLinearLayout.setX(0f);
+                mTextViewHandle.setOpen(false);
+                mTextViewHandle = null;
+            }
+
+            Button delete = (Button) convertView.findViewById(R.id.deleteButton);
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    //.resetPosition();
+                    mTextViewHandle = null;
+
+                    //CODE TO REMOVE ITEM FROM DB GOES HERE
+
+                    notifyDataSetChanged();
+                }
+            });
+
             return convertView;
         }
+    }
 
     }
-}
+

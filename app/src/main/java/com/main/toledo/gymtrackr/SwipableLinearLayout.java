@@ -8,45 +8,52 @@ import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 /**
  * Created by Adam on 3/18/2015.
  */
-public class LoadTextView extends TextView {
+public class SwipableLinearLayout extends LinearLayout {
 
     float mLastTouchX;
     float mLastTouchY;
     float mRightX;
     float mLeftX;
     float mStartX;
-    int slideVal = -650;
+    int slideVal = 0;
     boolean open = false;
 
     private int mActivePointerId = MotionEvent.INVALID_POINTER_ID;
     Context mContext;
-    LoadActivity.LoadAdapter mAdapter;
+    swipeLayoutListener mListener;
+    LoadActivity.LoadAdapter mLoadAdapter;
+    BrowseActivity.BrowseAdapter mBrowseAdapter;
 
-    public LoadTextView(Context c, AttributeSet attrs, int defStyle){
+    public SwipableLinearLayout(Context c, AttributeSet attrs, int defStyle){
         super(c, attrs, defStyle);
         mContext = c;
     }
 
-    public LoadTextView(Context context, AttributeSet attrs) {
+    public SwipableLinearLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public void setAdapter(LoadActivity.LoadAdapter loadAdapter){
-        mAdapter = loadAdapter;
-    }
 
+    public void setSwipeLayoutListener(swipeLayoutListener l){
+        mListener = l;
+    }
+    //public void setAdapter(LoadActivity.LoadAdapter loadAdapter){
+    //    mLoadAdapter = loadAdapter;
+    //}
+
+    public void setOpen(boolean b){open = b;}
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void resetPosition(){
         setX(0);
         open = false;
     }
 
-    public LoadTextView(Context context) {
+    public SwipableLinearLayout(Context context) {
         super(context);
     }
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -119,9 +126,8 @@ public class LoadTextView extends TextView {
         ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(this, "translationX", slideVal);
         mSlidInAnimator.setDuration(300);
         mSlidInAnimator.start();
-        mAdapter.CloseTextViewHandle();
-        mAdapter.setTextViewHandle(this);
-
+        mListener.CloseTextViewHandle();
+        mListener.setTextViewHandle(this);
 
         open = true;
     }
@@ -132,6 +138,11 @@ public class LoadTextView extends TextView {
         mSlidInAnimator.setDuration(300);
         mSlidInAnimator.start();
         open = false;
-        mAdapter.clearHandle();
+
+        mListener.clearHandle();
+
+    }
+    public void setSwipeOffset(int i){
+        slideVal = i;
     }
 }
