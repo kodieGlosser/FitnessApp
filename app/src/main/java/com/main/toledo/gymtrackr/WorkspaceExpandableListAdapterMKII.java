@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.text.InputType;
 import android.util.Log;
@@ -19,7 +18,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -140,7 +138,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     public void onClick(View v) {
                         if (WorkoutData.get(_context).isAnExerciseToggled()){
                             int WorkoutSize = Workout.size();
-                            Exercise e = WorkoutData.get(_context).getToggledExercise();
+                            Exercise e = WorkoutData.get(_context).getToggledExerciseCopy();
                             WorkoutData.get(_context).addClosedCircuit(e, WorkoutSize -1);
                             notifyDataSetChanged();
                         }
@@ -230,7 +228,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         public void onClick(View v) {
                             if (WorkoutData.get(_context).isAnExerciseToggled()){
                                 int CircuitSize = Workout.get(group).getSize();
-                                Exercise e = WorkoutData.get(_context).getToggledExercise();
+                                Exercise e = WorkoutData.get(_context).getToggledExerciseCopy();
                                 Workout.get(group).addExerciseAtIndex(CircuitSize - 1, e);
                                 notifyDataSetChanged();
                             }

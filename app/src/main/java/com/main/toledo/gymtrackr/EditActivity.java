@@ -48,6 +48,7 @@ public class EditActivity extends ActionBarActivity {
         Bundle extras = getIntent().getExtras();
 
         if (extras != null){
+            Log.d("4/5", "EXTRAS NOT NULL");
             circuitValue = extras.getInt("CIRCUIT_VALUE");
             exerciseValue = extras.getInt("EXERCISE_VALUE");
             if (circuitValue == -1 && exerciseValue == -1){
@@ -62,6 +63,8 @@ public class EditActivity extends ActionBarActivity {
                     .get(circuitValue);
         }
 
+
+        Log.d("4/5", circuitValue + " " + exerciseValue);
         setContentView(R.layout.e_activity_main);
         int aquaColor = Color.parseColor("#26d6cf");
         this.findViewById(R.id.detailActivityMainView).setBackgroundColor(aquaColor);

@@ -160,10 +160,11 @@ public class BrowseActivity extends ActionBarActivity {
     public class BrowseAdapter extends ArrayAdapter<Exercise>{
         private Context mContext;
         private SwipableLinearLayout mTextViewHandle;
-
+        private ArrayList<Exercise> mExercises;
         public BrowseAdapter(Context context, int resource, ArrayList<Exercise> exercises){
             super(context, resource, exercises);
             mContext = context;
+            mExercises = exercises;
         }
 
         private swipeLayoutListener listener =
@@ -252,12 +253,19 @@ public class BrowseActivity extends ActionBarActivity {
                 public void onClick(View v) {
 
                     //.resetPosition();
-                    mTextViewHandle = null;
+                    //mTextViewHandle = null;
 
                     //CODE TO REMOVE ITEM FROM DB GOES HERE
+                    WorkoutData.get(mContext).exerciseRemoved(e.getId());
                     DatabaseWrapper db = new DatabaseWrapper();
                     db.deleteExerciseInExerciseTable(e.getId());
+                    mExercises.remove(e);
                     notifyDataSetChanged();
+                    if(WorkoutData.get(mContext).isAnExerciseToggled()){
+                        if (WorkoutData.get(mContext).getToggledExercise() == e){
+                            WorkoutData.get(mContext).clearToggledExercise();
+                        }
+                    }
                 }
             });
 

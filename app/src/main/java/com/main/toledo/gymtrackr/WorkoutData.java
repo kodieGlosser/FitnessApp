@@ -98,6 +98,7 @@ public class WorkoutData {
     }
 
     public void clearToggledExercise(){ mToggledExercise = null;}
+
     public boolean isAnExerciseToggled(){
         if (mToggledExercise == null){
             return false;
@@ -105,7 +106,9 @@ public class WorkoutData {
         return true;
     }
 
-    public Exercise getToggledExercise(){
+    public Exercise getToggledExercise(){return mToggledExercise;}
+
+    public Exercise getToggledExerciseCopy(){
         Exercise e = new Exercise();
         e.setName(mToggledExercise.getName());
         e.setEquipment(mToggledExercise.getEquipment());
@@ -344,6 +347,29 @@ public class WorkoutData {
         return exerciseHistory;
     }
 
+    public void exerciseRemoved(int id){
+        ArrayList<Integer> circuitsToRemove = new ArrayList<>();
+
+        for(int i = 0; i<Workout.size();i++) {
+            Circuit c = Workout.get(i);         //for each circuit
+            for (int j = c.getSize()-1; j>=0; j--) {   //for each exercise
+                Exercise e = c.getExercise(j);
+                if (e.getId() == id) {  //if the exercise id = the removed exercise id
+                    c.getExercises().remove(e);
+                    if(!c.isOpen()){ //if the circuit is open
+                        circuitsToRemove.add(i); //add its index to a list
+                    }
+                }
+            }
+        }
+        for(int i = circuitsToRemove.size()-1; i>=0; i--){
+            int j = circuitsToRemove.get(i);
+            Workout.remove(j);
+        }
+        for(Circuit c: Workout){
+            Log.d("4/5", c.getName() + " -- OPEN: " + c.isOpen());
+        }
+    }
     public void clear(){
         Workout.clear();
         m_name = "";

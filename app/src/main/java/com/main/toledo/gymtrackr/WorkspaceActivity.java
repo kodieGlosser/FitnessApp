@@ -215,6 +215,7 @@ public class WorkspaceActivity extends ActionBarActivity {
         mToggledExercise = exercise;
         mToggledCircuit = circuit;
     }
+
     public int getToggledExercise(){return mToggledExercise;}
     public int getToggledCircuit(){return mToggledCircuit;}
 

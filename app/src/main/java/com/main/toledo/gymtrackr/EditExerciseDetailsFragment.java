@@ -61,8 +61,21 @@ public class EditExerciseDetailsFragment extends Fragment {
         exerciseValue = ((EditActivity) getActivity()).getExercise();
         circuitValue = ((EditActivity) getActivity()).getCircuit();
 
+
+        if(exerciseValue == 0 && circuitValue == 0){
+            if(WorkoutData.get(getActivity()).getWorkout().get(circuitValue).getExercise(exerciseValue).getName().equals("test")){
+                Log.d("4/5", "0, 0 is test");
+                findNextExerciseAscending();
+            }
+        }
+
+        if(exerciseValue == 0 && circuitValue == 0) {
+            Log.d("EDITACTIVITY", "NO VALID EXERCISES IN WORKOUT");
+            //CODE TO HANDLE THAT CASE GOES HERE... (HOPEFULLY)
+        }
         circuit = WorkoutData.get(getActivity()).getWorkout().get(circuitValue);
         exercise = circuit.getExercise(exerciseValue);
+
 
         //sets the view for the fragment
         View v = inflater.inflate(R.layout.e_frag_details, null);
@@ -145,40 +158,8 @@ public class EditExerciseDetailsFragment extends Fragment {
 
     private void next(){
         boolean updateUI = false;
-        int numCircuitsInWorkout =
-                WorkoutData.get(getActivity()).getWorkout().size();
 
-        if(circuit.isOpen()){
-            int circuitSize = circuit.getSize();
-
-            if(exerciseValue == circuitSize - 2){ //if last exercise in open circuit
-
-                if (circuitValue == numCircuitsInWorkout - 2){ //if last circuit
-                    //last item in last circuit handled here
-                    updateUI = false;
-                }else{  //not last circuit
-                    //goto next circuit
-                    //goto first exercise
-                    circuitValue++;
-                    exerciseValue = 0;
-                    updateUI = true;
-                }
-
-            }else{ //not last exercise in open circuit
-                //
-                exerciseValue++;
-                updateUI = true;
-            }
-
-        }else{ //closed circuit
-            if(circuitValue == numCircuitsInWorkout - 2){ //last circuit
-                updateUI = false;
-            } else { //not last circuit
-                circuitValue++;
-                exerciseValue = 0;
-                updateUI = true;
-            }
-        }
+        updateUI = findNextExerciseAscending();
         circuit = WorkoutData.get(getActivity()).getWorkout().get(circuitValue);
         exercise = circuit.getExercise(exerciseValue);
         //if(updateUI)
@@ -196,51 +177,7 @@ public class EditExerciseDetailsFragment extends Fragment {
 
     private void previous(){
         boolean transition = false;
-        if(circuit.isOpen()){ //for open circuit
-            if(exerciseValue == 0){ //for first exercise
-
-                if(circuitValue == 0){ //for first circuit
-                    //first item, do nothing
-                    transition = false;
-
-                } else { //for not first circuit
-                    //goto last item in next circuit
-                    circuitValue--;
-                    Circuit prevCircuit =
-                            WorkoutData.get(getActivity()).getWorkout().get(circuitValue);
-
-                    if(prevCircuit.isOpen()){ //dest circuit is open
-                        exerciseValue = prevCircuit.getSize() - 2;
-                    } else { //dest circuit is closed
-                        exerciseValue = 0;
-                    }
-
-                    transition = true;
-                }
-
-            } else { //for not first exercise
-                exerciseValue--;
-                transition = true;
-            }
-        }else{ //for closed circuit
-
-            if(circuitValue == 0){//first circuit
-                transition = false;
-            } else { //not first circuit
-                circuitValue--;
-                Circuit prevCircuit =
-                        WorkoutData.get(getActivity()).getWorkout().get(circuitValue);
-
-                if(prevCircuit.isOpen()){ //dest circuit is open
-                    exerciseValue = prevCircuit.getSize() - 2;
-                } else { //dest circuit is closed
-                    exerciseValue = 0;
-                }
-
-                transition = true;
-            }
-        }
-
+        transition = findNextExerciseDescending();
         circuit = WorkoutData.get(getActivity()).getWorkout().get(circuitValue);
         exercise = circuit.getExercise(exerciseValue);
 
@@ -257,6 +194,58 @@ public class EditExerciseDetailsFragment extends Fragment {
             }
         }, 300);
 
+    }
+    //set cir and exercise value to the next 'good' exercise value true if one exists
+    private boolean findNextExerciseDescending(){
+        int loopCircuitVal = circuitValue;
+        int exerciseLoopVal = exerciseValue - 1;
+        boolean foundExercise = false;
+        Circuit prevCircuit =
+                WorkoutData.get(getActivity()).getWorkout().get(loopCircuitVal);
+        while(loopCircuitVal >= 0 && !foundExercise){
+            for(int i = exerciseLoopVal; i>= 0; i--){
+                Exercise e = prevCircuit.getExercise(i);
+                if(!e.getName().equals("test")){
+                    exerciseValue = i;
+                    circuitValue = loopCircuitVal;
+                    foundExercise = true;
+                }
+            }
+            if(!foundExercise) {
+                loopCircuitVal--;
+                if(loopCircuitVal>=0) {
+                    prevCircuit =
+                            WorkoutData.get(getActivity()).getWorkout().get(loopCircuitVal);
+                    exerciseLoopVal = prevCircuit.getExercises().size() - 1;
+                }
+            }
+        }
+        return foundExercise;
+    }
+
+    private boolean findNextExerciseAscending(){
+        ArrayList<Circuit> workout = WorkoutData.get(getActivity()).getWorkout();
+        int workoutSize = workout.size();
+        boolean breakFlag = false;
+        int counter = circuitValue;
+        int forCounter = exerciseValue + 1;
+
+
+        while((!breakFlag) && (counter < workoutSize)){
+            Circuit c = workout.get(counter);
+            int circuitSize = c.getSize();
+            for(int i = forCounter; i < circuitSize; i++){
+                if(!c.getExercise(i).getName().equals("test")){
+                    breakFlag = true;
+                    exerciseValue = i;
+                    circuitValue = counter;
+                    break;
+                }
+            }
+            forCounter = 0;
+            counter++;
+        }
+        return breakFlag;
     }
 
     private void transition(int action){
