@@ -23,57 +23,63 @@ import java.util.ArrayList;
  * WARNING:  THIS CODE IS BUTT
  */
 public class WorkspaceExpandableListView extends ExpandableListView {
-    boolean mDragMode;
-    boolean mRemoveMode;
-    boolean mToggle = true;
-    boolean justRemovedHeader = false;
+    private boolean mDragMode;
+    private boolean mRemoveMode;
+    private boolean mToggle = true;
+    private boolean justRemovedHeader = false;
 
-    int m_startGroupPosition;
-    int m_startChildPosition;
+    private int m_startGroupPosition;
+    private int m_startChildPosition;
 
-    int m_endGroupPosition;
-    int m_endChildPosition;
+    private int m_endGroupPosition;
+    private int m_endChildPosition;
 
-    int mStartPosition;
-    int mDragPointOffset;        //Used to adjust drag view location
-    int mCurrentPosition;
+    private int mStartPosition;
+    private int mDragPointOffset;        //Used to adjust drag view location
+    private int mCurrentPosition;
 
-    int mDraggedItemDestination;
-    int mPosition;
+    private int mDraggedItemDestination;
+    private int mPosition;
 
-    final int DOWN = 2;
-    final int UP = 1;
-    final int CIRCUIT = 1;
-    final int EXERCISE = 2;
-    final int PLAN = 1, WORKOUT = 2;
+    private final int DOWN = 2;
+    private final int UP = 1;
+    private final int CIRCUIT = 1;
+    private final int EXERCISE = 2;
+    private final int PLAN = 1, WORKOUT = 2;
 
-    int mDraggedItemType;
-    int mDirection;
-    int mLastY;
+    private int mDraggedItemType;
+    private int mDirection;
+    private int mLastY;
 
-    int swipeX;
-    int swipeY;
+    private int swipeX;
+    private int swipeY;
 
-    int currentX;
-    int currentY;
+    private int currentX;
+    private int currentY;
 
-    final int mCheckedIndentation = 100;
+    //Removal Icon CODE
+    private int mRemoveOffset = 100;
+    private int mDragBarPixelsToIncrement = 30;
+    private boolean mRemovalInprogress = false;
+    private ImageView DeleteIcon;
+    private final int mCheckedIndentation = 100;
+    private boolean mSameGesture = false;
 
     private int mMode;
 
-    Exercise mToggledExerciseHandle;
+    private Exercise mToggledExerciseHandle;
 
-    ArrayList<Circuit> Workout = new ArrayList<>();
-    LinearLayout mLayoutHandle;
-    LinearLayout.LayoutParams mOpenParams;
-    LinearLayout.LayoutParams mClosedParams;
+    private ArrayList<Circuit> Workout = new ArrayList<>();
+    private LinearLayout mLayoutHandle;
+    private LinearLayout.LayoutParams mOpenParams;
+    private LinearLayout.LayoutParams mClosedParams;
 
-    ImageView mDragView;
+    private ImageView mDragView;
 
-    DropListener mDropListener;
+    private DropListener mDropListener;
 
 
-    Context mContext;
+    private Context mContext;
 
     //DRAG COUNTDOWN VARS
     private boolean dragInProgress = false;
@@ -190,14 +196,14 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             }
             return true;
         }
-
+        //REMOVE HANDLING/TOGGLE IN EDIT
         if(mRemoveMode) {
 
             switch (action) {
                 case MotionEvent.ACTION_DOWN:
                     Log.d("SELECT TESTS", "DOWN X: " + x + " -- Y: " + y);
                     justRemovedHeader = false;
-
+                    mSameGesture = true;
                     mStartPosition = pointToPosition(x, y);
 
                     if (mStartPosition != INVALID_POSITION) {
@@ -229,15 +235,27 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                         currentX = x;
                         currentY = y;
                         Log.d("SELECT TESTS", "MOVE");
-                        if (mStartPosition != -1) {
-                            if (pointToPosition(x, y) != mStartPosition) {
-                                mStartPosition = -1;
-                            }
-                            if ((x < (swipeX - 150)) && mStartPosition != -1) {
-                                deleteItem(mStartPosition);
-                                mStartPosition = -1;
+                        if(mRemovalInprogress){
+                            Log.d("4/7", "HANDLE CALLED!  REMOVAL IN PROGRESS: " + mRemovalInprogress);
+                            handleRemoval();
+                            //handle remove image
+                        } else {
+                            if (mStartPosition != -1) {
+                                if (pointToPosition(x, y) != mStartPosition) {
+                                    mStartPosition = -1;
+                                }
+                                if ((x < (swipeX - mRemoveOffset)) && mStartPosition != -1) {
+                                    Log.d("4/7", "should show delete icon");
+                                    if(mSameGesture) {
+                                        showDeleteIcon();
+                                        mSameGesture = false;//Adds delete icon, sets removalinprogress
+                                    }
+                                    //GOING TO GO IN REMOVE CODE: deleteItem(mStartPosition);
+                                    //mStartPosition = -1;
+                                }
                             }
                         }
+
                         if (!justRemovedHeader) {
                             super.onTouchEvent(ev);
                         }
@@ -247,13 +265,16 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                     if (!justRemovedHeader) {
                         super.onTouchEvent(ev);
                     }
+                    Log.d("4/7", "remove icon in default");
+                    cancelDeleteIconDrag();
                     break;
             }
         }
+
         if(justRemovedHeader){
             return true;
         }
-
+        //CHECK HANDLING
         if(!mRemoveMode && (mMode == WORKOUT)) {
             switch (action) {
                 case MotionEvent.ACTION_DOWN:
@@ -431,12 +452,136 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         }
     }
 
+    private void showDeleteIcon(){
+        boolean validPosition = false;
+        final int group = getPackedPositionGroup(getExpandableListPosition(mStartPosition));
+        int child = getPackedPositionChild(getExpandableListPosition(mStartPosition));
+        if (getPackedPositionType(getExpandableListPosition(mStartPosition)) == PACKED_POSITION_TYPE_GROUP) {
+            if( Workout.get(group).isOpen() ) {
+                validPosition = true;
+            }
+        } else if (getPackedPositionType(getExpandableListPosition(mStartPosition)) == PACKED_POSITION_TYPE_CHILD) {
+            if(!Workout.get(group).getExercise(child).getName().equals("test")) {
+                validPosition = true;
+            }
+        }
+
+        if(validPosition) {
+            WindowManager.LayoutParams mWindowParams = new WindowManager.LayoutParams();
+            //mWindowParams.gravity = Gravity.TOP;
+            mWindowParams.x = currentX - 650;
+            mWindowParams.y = currentY - 800;
+
+            mWindowParams.height = 100;
+            mWindowParams.width = 200;
+            mWindowParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                    | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                    | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                    | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                    | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
+            mWindowParams.format = PixelFormat.TRANSLUCENT;
+            mWindowParams.windowAnimations = 0;
+
+            Context context = getContext();
+            DeleteIcon = new ImageView(context);
+
+            DeleteIcon.setImageDrawable(
+                    context.getResources().getDrawable(R.drawable.deleteplac));
+
+
+            WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            mWindowManager.addView(DeleteIcon, mWindowParams);
+            mRemovalInprogress = true;
+        }
+    }
+
+    private void handleRemoval(){
+        int removeStartX = swipeX - mRemoveOffset; //this is the x position when the remove icon was first added
+                                                    //cuurentX is the current X value
+        int xOffset = removeStartX - currentX;
+        double rawIncrement = xOffset / mDragBarPixelsToIncrement;
+        rawIncrement = Math.floor(rawIncrement);
+        int increment = (int) rawIncrement;
+
+        if((currentX > removeStartX) || (pointToPosition(currentX, currentY) != mStartPosition)){
+            //if x is to the right of where the icon was created,
+            //or the user has moused over a new list item
+            cancelDeleteIconDrag();
+        } else {
+            //Drag our icon
+            dragDeleteIcon();
+            //Determine how many increments of mDragBarPixelsToIncrement we have moved...
+
+            //set image based on our increments
+            //delete item at 10 increments
+            switch (increment) {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    break;
+                case 8:
+                    break;
+                case 9:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+            if ((currentX < (swipeX - mRemoveOffset - (10 * mDragBarPixelsToIncrement)))
+                    && mStartPosition != -1
+                    && mRemovalInprogress) {
+                Log.d("4/7", "REMOVING ITEM!  REMOVAL IN PROGRESS: " + mRemovalInprogress);
+                deleteItem(mStartPosition);
+                cancelDeleteIconDrag();
+
+            }
+    }
+
+    private void cancelDeleteIconDrag(){
+        mRemovalInprogress = false;
+        removeDeleteIcon();
+    }
+
+    private void dragDeleteIcon(){
+        if (DeleteIcon != null) {
+            WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) DeleteIcon.getLayoutParams();
+            layoutParams.x = currentX- 650;
+            layoutParams.y = currentY - 800;
+            WindowManager mWindowManager = (WindowManager) getContext()
+                    .getSystemService(Context.WINDOW_SERVICE);
+            mWindowManager.updateViewLayout(DeleteIcon, layoutParams);
+        }
+    }
+
+    private void removeDeleteIcon(){
+        if (DeleteIcon != null) {
+            DeleteIcon.setVisibility(GONE);
+            WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+            wm.removeView(DeleteIcon);
+            DeleteIcon.setImageDrawable(null);
+            DeleteIcon = null;
+        }
+    }
+
     private void deleteItem(final int itemPosition){
 
         final int group = getPackedPositionGroup(getExpandableListPosition(itemPosition));
         int child = getPackedPositionChild(getExpandableListPosition(itemPosition));
         if (getPackedPositionType(getExpandableListPosition(itemPosition)) == PACKED_POSITION_TYPE_GROUP) {
-            if(group < Workout.size() -1 ) {
+            if(Workout.get(group).isOpen()) {
                 Log.d("4/6", "IN GROUP HEADER: " + group + " SHOULD FALL OFF ITEM POS: " + itemPosition);
 
                 ((WorkspaceActivity) mContext).ListFragment.workspaceListView.collapseGroup(group);
@@ -482,8 +627,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                 }, 300);
             }
         }
-
-
     }
     // move the drag view
     private void drag(int x, int y) {
@@ -494,9 +637,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             WindowManager mWindowManager = (WindowManager) getContext()
                     .getSystemService(Context.WINDOW_SERVICE);
             mWindowManager.updateViewLayout(mDragView, layoutParams);
-
-            //if (mDragListener != null)
-            //    mDragListener.onDrag(x, y, null);// change null to "this" when ready to use
         }
     }
 
