@@ -136,10 +136,12 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                     currentXPos = x;
                     currentYPos = y;
                     dragRawY = (int) ev.getRawY();
-                    dragDelayIcon(x, y);
-                    Log.d("DRAG DELAY TESTS", "DOWN -- X: " + currentXPos + " -- Y: " + currentYPos);
-                    dragTimer(x, y);
-
+                    boolean okayToDrag = checkIfValidPosition();
+                    if(okayToDrag) {
+                        dragDelayIcon(x, y);
+                        Log.d("DRAG DELAY TESTS", "DOWN -- X: " + currentXPos + " -- Y: " + currentYPos);
+                        dragTimer(x, y);
+                    }
                     break;
                 case MotionEvent.ACTION_MOVE: //mose if moved
 
@@ -779,5 +781,32 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             }
         }
         drag(0, currentYPos);// replace 0 with x if desired
+    }
+    private boolean checkIfValidPosition(){
+        boolean okayToDrag = false;
+        int position = pointToPosition(currentXPos, currentYPos);
+        int groupPosition;
+        int childPosition;
+        Exercise e;
+        Circuit c;
+        if(position != INVALID_POSITION) {
+            if (getPackedPositionType(getExpandableListPosition(position)) == PACKED_POSITION_TYPE_CHILD) {
+                childPosition = getPackedPositionChild(getExpandableListPosition(position));
+                groupPosition = getPackedPositionGroup(getExpandableListPosition(position));
+                e = Workout.get(groupPosition).getExercise(childPosition);
+                if (!e.getName().equals("test")){
+                    okayToDrag = true;
+                }
+            } else if (getPackedPositionType(getExpandableListPosition(mStartPosition)) == PACKED_POSITION_TYPE_GROUP) {
+                childPosition = -1;
+                groupPosition = getPackedPositionGroup(getExpandableListPosition(position));
+                c = Workout.get(groupPosition);
+                int workoutLength = Workout.size();
+                if(c.isOpen() || groupPosition != (workoutLength-1)){
+                    okayToDrag = true;
+                }
+            }
+        }
+        return okayToDrag;
     }
 }

@@ -204,11 +204,13 @@ public class EditExerciseDetailsFragment extends Fragment {
                 WorkoutData.get(getActivity()).getWorkout().get(loopCircuitVal);
         while(loopCircuitVal >= 0 && !foundExercise){
             for(int i = exerciseLoopVal; i>= 0; i--){
+                Log.d("4/6", "IN FOR: CIRCUIT VAL " + loopCircuitVal + " -- EXERCISE VAL" + i);
                 Exercise e = prevCircuit.getExercise(i);
                 if(!e.getName().equals("test")){
                     exerciseValue = i;
                     circuitValue = loopCircuitVal;
                     foundExercise = true;
+                    break;
                 }
             }
             if(!foundExercise) {
@@ -217,6 +219,7 @@ public class EditExerciseDetailsFragment extends Fragment {
                     prevCircuit =
                             WorkoutData.get(getActivity()).getWorkout().get(loopCircuitVal);
                     exerciseLoopVal = prevCircuit.getExercises().size() - 1;
+                    Log.d("4/6", "END OF WHILE: CIRCUIT VAL " + loopCircuitVal + " -- EXERCISE VAL" + exerciseLoopVal);
                 }
             }
         }
