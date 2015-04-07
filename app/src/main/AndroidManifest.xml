@@ -78,6 +78,18 @@
 
         </activity>
 
+        <activity
+            android:name=".historyActivity"
+            android:label="Detail View"
+            android:noHistory="true"
+            android:theme="@style/Theme.AppCompat.Light"
+            android:parentActivityName="com.main.toledo.gymtrackr.StartActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.main.toledo.gymtrackr.StartActivity"
+                />
+        </activity>
+
         <activity android:name=".SplashScreen"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" >

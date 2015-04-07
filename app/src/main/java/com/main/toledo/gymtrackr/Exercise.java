@@ -29,7 +29,6 @@ public class Exercise {
 
     private int m_lastPerformed;  //this will be an integer value of the last time the exercise was
     //performed, used to organize browse menu
-    private ExerciseStatus status;
     private ArrayList<Metric> m_metrics = new ArrayList<Metric>();
     private ArrayList<Metric> m_plan_metrics = new ArrayList<>();
     private boolean mSaveToHistory; //tests for whether exercise was used or not, used when saving history
@@ -224,9 +223,25 @@ public class Exercise {
     @Override
     public String toString() { return m_name; }
 
-    public enum ExerciseStatus {
-        PLAN, COMPLETED
-    }
+    /*
+    private boolean m_bWeight;
+    private boolean m_bReps;
+    private boolean m_bTime;
+    private boolean m_bOther;
+    private String m_sOther;
+     */
+    public boolean usesWeight(){return m_bWeight;}
+    public boolean usesTime(){return m_bTime;}
+    public boolean usesReps(){return m_bReps;}
+    public boolean usesOther(){return m_bOther;}
+    public String getOtherName(){return m_sOther;}
+
+    public void setUsesWeight(boolean b){m_bWeight = b;}
+    public void setUsesTime(boolean b){m_bTime = b;}
+    public void setUsesReps(boolean b){m_bReps = b;}
+    public void setUsesOthers(boolean b){m_bOther = b;}
+    public void setOtherName(String s){m_sOther = s;}
+
 
 }
 

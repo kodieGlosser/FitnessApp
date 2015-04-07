@@ -37,35 +37,13 @@ public class StartActivity extends Activity {
             }
         });
 
-        /* Disabling these two buttons for now, we can always change them back later
-
-        Button createPlanButton = (Button)findViewById(R.id.createPlanButton);
-
-        createPlanButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent i = new Intent(StartActivity.this, WorkspaceActivity.class);
-                startActivity(i);
-            }
-        });
-
-        Button modifyPlanButton = (Button)findViewById(R.id.modifyPlanButton);
-
-        modifyPlanButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-
-            }
-        });
-
-        */
-
         Button viewHistoryButton = (Button)findViewById(R.id.viewHistory);
 
         viewHistoryButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                //our history call will go here
+                Intent i = new Intent(StartActivity.this, historyActivity.class);
+                startActivity(i);
             }
         });
     }

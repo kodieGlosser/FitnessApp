@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Adam on 2/22/2015.
+ * WARNING:  THIS CODE IS BUTT
  */
 public class WorkspaceExpandableListView extends ExpandableListView {
     boolean mDragMode;
@@ -436,7 +437,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         int child = getPackedPositionChild(getExpandableListPosition(itemPosition));
         if (getPackedPositionType(getExpandableListPosition(itemPosition)) == PACKED_POSITION_TYPE_GROUP) {
             if(group < Workout.size() -1 ) {
-                //Log.d("SWIPE TESTS", "HEADER: " + group + " SHOULD FALL OFF ITEM POS: " + itemPosition);
+                Log.d("4/6", "IN GROUP HEADER: " + group + " SHOULD FALL OFF ITEM POS: " + itemPosition);
 
                 ((WorkspaceActivity) mContext).ListFragment.workspaceListView.collapseGroup(group);
 
@@ -460,9 +461,10 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
                 justRemovedHeader = true;
             }
-        } else {
+        } else if (getPackedPositionType(getExpandableListPosition(itemPosition)) == PACKED_POSITION_TYPE_CHILD) {
             //Log.d("SWIPE TESTS", "CHILD " + child + " SHOULD FALL OFF ITEM POS: " + itemPosition);
-            if(child < Workout.get(group).getExercises().size() -1 || !Workout.get(group).isOpen()) {
+            if(!Workout.get(group).getExercise(child).getName().equals("test")) {
+                Log.d("4/6", "IN CHILD HEADER: " + group + " SHOULD FALL OFF ITEM POS: " + itemPosition);
                 ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(getChildAt(itemPosition- getFirstVisiblePosition()), "translationX", -1500);
                 mSlidInAnimator.setDuration(300);
                 mSlidInAnimator.start();

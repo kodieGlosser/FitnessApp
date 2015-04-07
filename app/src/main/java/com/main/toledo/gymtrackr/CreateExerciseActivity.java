@@ -226,24 +226,28 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
 
     private void performSaveCheck(){
 
-        String exerciseName = mExerciseNameText.getText().toString();
+        mExerciseName = mExerciseNameText.getText().toString();
 
         DatabaseWrapper db = new DatabaseWrapper();
-        Exercise[] exercises = db.browseExercisesByExactName(exerciseName);
+        Exercise[] exercises = db.browseExercisesByExactName(mExerciseName);
 
         if(exercises.length == 0){
             nameIsTaken = false;
         } else {
             for (Exercise e : exercises){
                 Log.d("CE ACT TEST", "COMPARING DB NAME: "
-                        + e.getName() + " WITH NEW NAME: " + exerciseName);
-                if (e.getName().equals(exerciseName)){
+                        + e.getName() + " WITH NEW NAME: " + mExerciseName);
+                if (e.getName().equals(mExerciseName)){
                     nameIsTaken = true;
                     break;
                 } else {
                     nameIsTaken = false;
                 }
             }
+        }
+
+        if(mExerciseName.trim().length()==0 || mExerciseName.equals("test")){
+            nameIsTaken = true;
         }
 
         CreateExerciseDialog dialog = new CreateExerciseDialog();
@@ -312,6 +316,11 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
     }
 
     public void save(){
-        //code to save to db goes here
+        Exercise e = new Exercise();
+        e.setName(mExerciseName);
+        e.setEquipment(mEquipment);
+        e.setMuscleGroup(mMuscleGroup);
+        e.setTargetMuscle(mSpecificMuscle);
+
     }
 }
