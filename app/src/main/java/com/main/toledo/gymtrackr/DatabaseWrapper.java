@@ -457,6 +457,11 @@ public class DatabaseWrapper {
         exerciseValues.put(COLUMN_NAME, exercise.getName());
         exerciseValues.put(COLUMN_TARGET_MUSCLE, exercise.getTargetMuscle());
         exerciseValues.put(COLUMN_MUSCLE_GROUP, exercise.getMuscleGroup());
+        exerciseValues.put(COLUMN_WEIGHT, exercise.getWeight());
+        exerciseValues.put(COLUMN_REP, exercise.getWeight());
+        exerciseValues.put(COLUMN_TIME, exercise.getTime());
+        exerciseValues.put(COLUMN_OTHER, exercise.getOtherName());
+        exerciseValues.put(COLUMN_S_OTHER, exercise.getOther());
         myDatabase.insert(EXERCISE_TABLE, null, exerciseValues);
     }
 
