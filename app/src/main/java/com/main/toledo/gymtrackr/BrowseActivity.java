@@ -5,15 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -21,7 +18,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 /**
  * Created by Adam on 2/10/2015.
@@ -32,7 +28,7 @@ public class BrowseActivity extends ActionBarActivity {
     BrowseListFragment ListFragment;
 
     //this is the stub list
-    private static ArrayList<Exercise> StubExercises = new ArrayList<Exercise>();
+    private static ArrayList<Exercise> mBrowseExerciseList = new ArrayList<Exercise>();
     //the adapter is responsible for populating the browse list
     public static BrowseAdapter adapter;
 
@@ -40,7 +36,7 @@ public class BrowseActivity extends ActionBarActivity {
     //needed for add exercise functionality
     private int circuitNumber;
     private boolean circuitOpen;
-    private int slideVal = -200;
+    private int slideVal = -200; //should change this to some fraction of screen width
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +57,7 @@ public class BrowseActivity extends ActionBarActivity {
         ListFragment = new BrowseListFragment();
 
         //creates a list adapter for our stub exercises
-        adapter = new BrowseAdapter(this, 0, StubExercises);
+        adapter = new BrowseAdapter(this, 0, mBrowseExerciseList);
 
         //adds fragments to layout/b_activity.xml
         FragmentTransaction transaction =
@@ -118,25 +114,11 @@ public class BrowseActivity extends ActionBarActivity {
         return circuitOpen;
     }
 
-    public void searchForItem(String search_value){
-        StubExercises.clear();
-        DatabaseWrapper db = new DatabaseWrapper();
-        Exercise[] exercises = db.browseExercisesByName(search_value);
+    public void putBrowseExerciseList(Exercise[] exercises){
+        mBrowseExerciseList.clear();
         for (int i = 0; i < exercises.length; i++) {
-            StubExercises.add(exercises[i]);
-            //THIS IS WHERE IM ADDING SET METRICS STUB
-            //adds weight and reps for everything
-            /*
-            Metric weight = new Metric();
-            weight.setType(metricType.WEIGHT);
-            Metric reps = new Metric();
-            reps.setType(metricType.REPETITIONS);
-
-            StubExercises.get(i).addMetrics(weight);
-            StubExercises.get(i).addMetrics(reps);
-            */
+            mBrowseExerciseList.add(exercises[i]);
         }
-        //this lets the adapter know that it's data is different, display wont update otherwise
         adapter.notifyDataSetChanged();
     }
 
@@ -145,15 +127,7 @@ public class BrowseActivity extends ActionBarActivity {
         DatabaseWrapper db = new DatabaseWrapper();
         Exercise[] exercises = db.browseExercisesByName("");
         for (int i = 0; i < exercises.length; i++) {
-            StubExercises.add(exercises[i]);
-            /*
-            Metric weight = new Metric();
-            weight.setType(metricType.WEIGHT);
-            Metric reps = new Metric();
-            reps.setType(metricType.REPETITIONS);
-            StubExercises.get(i).addMetrics(weight);
-            StubExercises.get(i).addMetrics(reps);
-            */
+            mBrowseExerciseList.add(exercises[i]);
         }
     }
 

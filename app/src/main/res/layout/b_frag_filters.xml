@@ -2,19 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/exercise_name_search"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/defaultSearchText"
+            android:inputType="text"
+            android:imeOptions="actionSearch"/>
 
-    <EditText
-        android:id="@+id/exercise_name_search"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/defaultSearchText"
-        android:inputType="text"
-        android:imeOptions="actionSearch"/>
-    <!--
-    <Button
-        android:id = "@+id/filterTestButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="test"/>
-    -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Filtering Options: "/>
+            <Spinner
+                android:id="@+id/filter_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/filterLayoutHandle">
+
+        </LinearLayout>
+
+    </LinearLayout>
 </LinearLayout>
