@@ -19,10 +19,6 @@ public class StartActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.s_activity_main);
 
-        Button workoutNoPlanButton = (Button)findViewById(R.id.workoutNow);
-        DatabaseWrapper db = new DatabaseWrapper();
-        ArrayList<Date> ex = db.getSpecificDaysFromHistory();
-
         workoutNoPlanButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
