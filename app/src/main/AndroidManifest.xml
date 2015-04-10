@@ -65,7 +65,7 @@
         </activity>
 
         <activity
-            android:name=".EditActivity"
+            android:name=".DetailActivity"
             android:windowSoftInputMode="adjustPan"
             android:label="Detail View"
             android:noHistory="true"

@@ -188,6 +188,9 @@ public class WorkoutData {
                     if( j != numExercises - 1){
                         //puts metric stubs into DB speak
                         exercisesArray[j] = exerciseArrayList.get(j);
+                        exercisesArray[j].setTime(-1);
+                        exercisesArray[j].setWeight(-1);
+                        exercisesArray[j].setRepetitions(-1);
                         for(Metric m : exerciseArrayList.get(j).getMetrics()){
                             switch(m.getType()) {
                                 case WEIGHT:
@@ -197,6 +200,7 @@ public class WorkoutData {
                                     exercisesArray[j].setRepetitions(m.getMetricIntValue());
                                     break;
                                 case TIME:
+                                    exercisesArray[j].setTime(m.getMetricIntValue());
                                     //we don't support time yet
                                     break;
                                 case OTHER:
@@ -213,7 +217,12 @@ public class WorkoutData {
             } else { //handles closed circuit case
                 //closed circuit is array of one
                 Exercise[] exercisesArray = new Exercise[1];
+
                 exercisesArray[0] = exerciseArrayList.get(0);
+                exercisesArray[0].setTime(-1);
+                exercisesArray[0].setWeight(-1);
+                exercisesArray[0].setRepetitions(-1);
+
                 circuits[i].setExercises(exercisesArray);
                 for(Metric m : exerciseArrayList.get(0).getMetrics()){
                     switch(m.getType()) {
@@ -224,6 +233,7 @@ public class WorkoutData {
                             exercisesArray[0].setRepetitions(m.getMetricIntValue());
                             break;
                         case TIME:
+                            exercisesArray[0].setTime(m.getMetricIntValue());
                             //we don't support time yet
                             break;
                         case OTHER:
@@ -320,12 +330,31 @@ public class WorkoutData {
                     Log.d("SAVE TESTS", e.getName() + " " + e.getId() + " IS BEING DIGESTED INTO EH");
                     int weight, reps;
                     Date d = new Date();
-                    reps = e.getMetricValueByType(metricType.REPETITIONS);
-                    weight = e.getMetricValueByType(metricType.WEIGHT);
-
-                    // update adam!
                     int time = 0;
                     int other = 0;
+                    weight = -1;
+                    reps = -1;
+                    ArrayList<Metric> metrics = e.getMetrics();
+                    for(Metric m : metrics){
+                        switch(m.getType()) {
+                            case WEIGHT:
+                                weight = m.getMetricIntValue();
+                                break;
+                            case REPETITIONS:
+                                reps = m.getMetricIntValue();
+                                break;
+                            case TIME:
+                                time = m.getMetricIntValue();
+                                //we don't support time yet
+                                break;
+                            case OTHER:
+                                //we don't support other yet
+                                break;
+                            default:
+                                Log.d("TERRIBLE THINGS", "SOMETHING TERRIBLE HAPPENED WHEN WORKOUTDATA TRIED TO CRAP");
+                                break;
+                        }
+                    }
 
                     ExerciseHistory eh = new ExerciseHistory(
                         d, //date
@@ -336,6 +365,7 @@ public class WorkoutData {
                         time,
                         other
                     );
+
                     tempExerciseHolder.add(eh);
                 }
             }

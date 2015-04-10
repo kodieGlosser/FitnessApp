@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -67,7 +69,7 @@ public class EditActivity extends ActionBarActivity {
         Log.d("4/5", circuitValue + " " + exerciseValue);
         setContentView(R.layout.e_activity_main);
         int aquaColor = Color.parseColor("#26d6cf");
-        this.findViewById(R.id.detailActivityMainView).setBackgroundColor(aquaColor);
+        //this.findViewById(R.id.detailActivityMainView).setBackgroundColor(aquaColor);
         this.findViewById(R.id.detailFragmentView).setBackgroundColor(aquaColor);
 
         detailsFragment = new EditExerciseDetailsFragment();
@@ -134,9 +136,12 @@ public class EditActivity extends ActionBarActivity {
         Context context = this;
 
         ImageView imageView = new ImageView(context);
-        imageView.setImageBitmap(bitmap);
 
+        Drawable d = new BitmapDrawable(getResources(), bitmap);
+        imageView.setImageDrawable(d);
 
+        imageView.setAdjustViewBounds(false);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         return imageView;
     }
 

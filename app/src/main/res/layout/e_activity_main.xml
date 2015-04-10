@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="1920px"
     android:id="@+id/detailActivityMainView">
 
-
-    <!--<FrameLayout
-        android:id="@+id/editMapFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="top"
-        android:layout_weight="1"
-        />-->
-
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical" android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="10"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/topLayout">
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:id="@+id/topSpring"/>
+    </LinearLayout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/detailFragmentView">
 
         <FrameLayout
@@ -29,7 +28,7 @@
         <FrameLayout
             android:id="@+id/editDetailsFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="top"
             android:layout_weight="1"
             />
@@ -37,10 +36,63 @@
         <FrameLayout
             android:id="@+id/editHistoryFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="top"
             android:layout_weight="1"
             />
 
     </LinearLayout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bottomLayout">
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bottomSpring"/>
+    </LinearLayout>
 </LinearLayout>
+
+    <!--
+        <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/detailActivityMainView">
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:orientation="vertical" android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:id="@+id/topLayout">
+</LinearLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:orientation="vertical" android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_weight="10"
+android:id="@+id/detailFragmentView">
+
+<FrameLayout
+    android:id="@+id/tabFragment"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="top"
+    />
+
+<FrameLayout
+    android:id="@+id/editDetailsFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="top"
+    android:layout_weight="1"
+    />
+
+<FrameLayout
+    android:id="@+id/editHistoryFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="top"
+    android:layout_weight="1"
+    />
+
+</LinearLayout>
+    </LinearLayout>-->

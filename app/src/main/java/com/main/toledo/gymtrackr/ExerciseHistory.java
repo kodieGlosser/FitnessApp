@@ -22,18 +22,24 @@ public class ExerciseHistory {
         this.m_time = time;
         this.m_other = other;
 
-
-        //Stub for metrics
-        Metric weightMetric = new Metric();
-        weightMetric.setType(metricType.WEIGHT);
-        weightMetric.setMetricIntValue(weight);
-
-        Metric repMetric = new Metric();
-        repMetric.setType(metricType.REPETITIONS);
-        repMetric.setMetricIntValue(rep);
-
-        m_metrics.add(weightMetric);
-        m_metrics.add(repMetric);
+        if(m_weight != -1){
+            Metric weightMetric = new Metric();
+            weightMetric.setType(metricType.WEIGHT);
+            weightMetric.setMetricIntValue(m_weight);
+            m_metrics.add(weightMetric);
+        }
+        if(m_rep != -1){
+            Metric repMetric = new Metric();
+            repMetric.setType(metricType.REPETITIONS);
+            repMetric.setMetricIntValue(m_rep);
+            m_metrics.add(repMetric);
+        }
+        if(m_time != -1){
+            Metric timeMetric = new Metric();
+            timeMetric.setType(metricType.TIME);
+            timeMetric.setMetricIntValue(m_time);
+            m_metrics.add(timeMetric);
+        }
     }
 
     public int getTime() { return this.m_time;}

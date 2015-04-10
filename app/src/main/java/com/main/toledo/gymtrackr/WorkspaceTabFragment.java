@@ -52,7 +52,7 @@ public class WorkspaceTabFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (parentActivity == WORKSPACE) {
-                    Intent i = new Intent(getActivity(), EditActivity.class);
+                    Intent i = new Intent(getActivity(), DetailActivity.class);
                     int circuitValue = ((WorkspaceActivity) getActivity()).getToggledCircuit();
                     int exerciseValue = ((WorkspaceActivity) getActivity()).getToggledExercise();
                     i.putExtra("CIRCUIT_VALUE", circuitValue);

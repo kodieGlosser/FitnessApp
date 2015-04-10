@@ -34,14 +34,9 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     final int CIRCUIT = 1;
     final int EXERCISE = 2;
     final float mCheckedIndentation = 100;
-
-    private int mSelectColor = Color.GRAY;
-    private int mBackgroundColor = Color.GRAY;
-
     private ArrayList<Circuit> Workout = new ArrayList<>();
 
     private LinearLayout.LayoutParams params;
-
 
     public WorkspaceExpandableListAdapterMKII(Context context){
         params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
@@ -249,7 +244,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         }
 
         if(Workout.get(group).getExercise(child).isToggled()){
-            convertView.setBackgroundColor(mSelectColor);
+            convertView.findViewById(R.id.exercise_relative_layout_handle).setPressed(true);
         } else if(!emptyFlag){
             //convertView.setBackgroundColor(mBackgroundColor);
         } else {
@@ -438,19 +433,6 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                     } else {
                                         metrics.get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
                                     }
-                                /*
-                                Log.d("CHECKED TESTS", "PERFORMING CHECK TESTS");
-
-                                if (!(frameLayout.getTag() == "checked") || (frameLayout.getTag() == null)) {
-                                    Log.d("CHECKED TESTS", "MAKING NEW CHECK");
-                                    Workout.get(group).getExercise(child).setSaveToHistory(true);
-                                    ImageView mChecked = new ImageView(_context);
-                                    mChecked.setImageResource(R.drawable.grn_check);
-                                    frameLayout.addView(mChecked);
-                                    frameLayout.setTag("checked");
-                                }
-                                */
-
                             }
                         }
                     });
@@ -482,7 +464,6 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                     metrics.get(j).setMetricIntValue(Integer.parseInt(v.getText().toString()));
                                 }
                                 //hideKeypad();
-
                             }
                             return false;
                         }
@@ -519,18 +500,6 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
                                 }
                                 Log.d("CHECKED TESTS", "PERFORMING CHECK TESTS");
-
-                                /*
-                                if (!(frameLayout.getTag() == "checked") || (frameLayout.getTag() == null)) {
-                                    Log.d("CHECKED TESTS", "MAKING NEW CHECK");
-                                    Workout.get(group).getExercise(child).setSaveToHistory(true);
-                                    ImageView mChecked = new ImageView(_context);
-                                    mChecked.setImageResource(R.drawable.grn_check);
-                                    frameLayout.addView(mChecked);
-                                    frameLayout.setTag("checked");
-                                }
-                                */
-
                             }
                         }
                     });

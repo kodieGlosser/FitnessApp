@@ -282,6 +282,5 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
                 ((BrowseActivity)getActivity()).putBrowseExerciseList(exercises);
                 break;
         }
-        db = null;
     }
 }

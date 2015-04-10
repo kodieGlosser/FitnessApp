@@ -71,12 +71,7 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ce_activity);
         mExerciseNameText = (EditText) findViewById(R.id.exerciseNameField);
-        /*
-        Spinner spinner = new Spinner(this);
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerArray); //selected item will look like a spinner set from XML
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(spinnerArrayAdapter);
-        */
+
         Spinner equipmentSpinner = (Spinner) findViewById(R.id.equipment_spinner);
         spinnerEquipAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mEquip);
         spinnerEquipAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -317,10 +312,24 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
 
     public void save(){
         Exercise e = new Exercise();
+
         e.setName(mExerciseName);
         e.setEquipment(mEquipment);
         e.setMuscleGroup(mMuscleGroup);
         e.setTargetMuscle(mSpecificMuscle);
 
+        e.setUsesTime(mTime);
+        e.setUsesReps(mReps);
+        e.setUsesWeight(mWeight);
+        /*  Disabled unless we wire other
+        e.setUsesOthers(mOther);
+
+        if (mOther) {
+            mOtherValue = mOtherEditText.getText().toString();
+            e.setOtherName(mOtherValue);
+        }
+        */
+        DatabaseWrapper db = new DatabaseWrapper();
+        db.addExerciseToExerciseTable(e);
     }
 }

@@ -49,6 +49,7 @@ public class Exercise {
         mToggled = false;
     }
     //db constructor
+    //called when loading a plan
     public Exercise(int id, String name, int repetitions, int weight, int sequence, int oneRepMaxPercent, int time, int other){
         this.m_id = id;
         this.m_name = name;
@@ -61,23 +62,39 @@ public class Exercise {
         //Log.d("EXERCISE CONSTRUCTOR TEST", "WEIGHT: " + weight + "REPS: " + repetitions);
 
         //stub for metrics
-
-        Metric weightMetric = new Metric();
-        weightMetric.setType(metricType.WEIGHT);
-        weightMetric.setMetricIntValue(weight);
-
-        Metric repMetric = new Metric();
-        repMetric.setType(metricType.REPETITIONS);
-        repMetric.setMetricIntValue(repetitions);
-
-        m_metrics.add(weightMetric);
-        m_metrics.add(repMetric);
+        if(m_weight != -1){
+            Metric weightMetric = new Metric();
+            weightMetric.setType(metricType.WEIGHT);
+            weightMetric.setMetricIntValue(m_weight);
+            m_metrics.add(weightMetric);
+        }
+        if(m_repetitions != -1){
+            Metric repMetric = new Metric();
+            repMetric.setType(metricType.REPETITIONS);
+            repMetric.setMetricIntValue(m_repetitions);
+            m_metrics.add(repMetric);
+        }
+        if(m_time != -1){
+            Metric timeMetric = new Metric();
+            timeMetric.setType(metricType.TIME);
+            timeMetric.setMetricIntValue(m_time);
+            m_metrics.add(timeMetric);
+        }
+        /* missing things for other
+        if(m_bOther){
+            Metric otherMetric = new Metric();
+            otherMetric.setType(metricType.OTHER);
+            otherMetric.setMetricName(m_sOther);
+            otherMetric.setMetricStringValue("");
+        }
+        */
 
 
         mSaveToHistory = false;
         mToggled = false;
     }
 
+    //called from browse
     public Exercise(int id, String name, String muscleGroup, String equipmentType, String targetMuscle, int oneRepMax, boolean weight, boolean reps, boolean time, boolean other, String s_other){
         this.m_id = id;
         this.m_name = name;
@@ -90,8 +107,30 @@ public class Exercise {
         this.m_bTime = time;
         this.m_bOther = other;
         this.m_sOther = s_other;
-        instantiateStubMetrics();
 
+        if(m_bWeight){
+            Metric weightMetric = new Metric();
+            weightMetric.setType(metricType.WEIGHT);
+            weightMetric.setMetricIntValue(0);
+        }
+        if(m_bReps){
+            Metric repMetric = new Metric();
+            repMetric.setType(metricType.REPETITIONS);
+            repMetric.setMetricIntValue(0);
+        }
+        if(m_bTime){
+            Metric timeMetric = new Metric();
+            timeMetric.setType(metricType.TIME);
+            timeMetric.setMetricIntValue(0);
+        }
+        /*missing things for other
+        if(m_bOther){
+            Metric otherMetric = new Metric();
+            otherMetric.setType(metricType.OTHER);
+            otherMetric.setMetricName(m_sOther);
+            otherMetric.setMetricStringValue("");
+        }
+        */
         mSaveToHistory = false;
         mToggled = false;
     }

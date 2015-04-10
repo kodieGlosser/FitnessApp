@@ -1,30 +1,19 @@
 package com.main.toledo.gymtrackr;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.PixelFormat;
-import android.graphics.Point;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.support.v4.view.MotionEventCompat;
 import android.text.InputType;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -38,18 +27,13 @@ public class EditExerciseDetailsFragment extends Fragment {
 
     private int exerciseValue;
     private int circuitValue;
-    private Exercise exercise;
+    private Exercise mExercise;
     private Circuit circuit;
     private String title;
-
-
-    final int NEXT = 1, PREVIOUS = 2;
 
     private EditText mEditTextHandle;
     private LinearLayout editTextLayout;
     private TextView exerciseInfoTextView;
-    private ArrayList<EditText> editList = new ArrayList<>();
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,36 +42,18 @@ public class EditExerciseDetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState){
-        exerciseValue = ((EditActivity) getActivity()).getExercise();
-        circuitValue = ((EditActivity) getActivity()).getCircuit();
-
-
-        if(exerciseValue == 0 && circuitValue == 0){
-            if(WorkoutData.get(getActivity()).getWorkout().get(circuitValue).getExercise(exerciseValue).getName().equals("test")){
-                Log.d("4/5", "0, 0 is test");
-                findNextExerciseAscending();
-            }
-        }
-
-        if(exerciseValue == 0 && circuitValue == 0) {
-            Log.d("EDITACTIVITY", "NO VALID EXERCISES IN WORKOUT");
-            //CODE TO HANDLE THAT CASE GOES HERE... (HOPEFULLY)
-        }
-        circuit = WorkoutData.get(getActivity()).getWorkout().get(circuitValue);
-        exercise = circuit.getExercise(exerciseValue);
-
-
-        //sets the view for the fragment
+        Log.d("4/9", "InfotextView initialized");
         View v = inflater.inflate(R.layout.e_frag_details, null);
-
         editTextLayout = (LinearLayout) v.findViewById(R.id.detailLinearLayout);
         exerciseInfoTextView = (TextView) v.findViewById(R.id.exerciseNameView);
 
         implementSwipeListener(v);
         updateUI();
-
-
         return v;
+    }
+
+    public void putExercise(Exercise e){
+        mExercise = e;
     }
 
     private void implementSwipeListener(View v){
@@ -113,14 +79,13 @@ public class EditExerciseDetailsFragment extends Fragment {
                             @Override
                             public void run() {
                                 if(currentY > startY + swipeThreshold){
-                                    //swipe down (NEXT)
-                                    previous();
 
-                                    Log.d("DETAIL SWIPE TESTS", "NEXT");
+                                    ((DetailActivity)getActivity()).previous();
+
                                 }
                                 if(currentY < startY - swipeThreshold){
-                                    next();
-                                    Log.d("DETAIL SWIPE TESTS", "PREVIOUS");
+                                    ((DetailActivity)getActivity()).next();
+
                                 }
                             }
                         }, 500);
@@ -129,9 +94,7 @@ public class EditExerciseDetailsFragment extends Fragment {
                     }
 
                     case MotionEvent.ACTION_MOVE: {
-
                         currentY = event.getY();
-                        Log.d("DETAIL SWIPE TESTS", "ACTION_MOVE" + currentY);
                         break;
                     }
 
@@ -156,204 +119,13 @@ public class EditExerciseDetailsFragment extends Fragment {
 
     }
 
-    private void next(){
-        boolean updateUI = false;
-
-        updateUI = findNextExerciseAscending();
-        circuit = WorkoutData.get(getActivity()).getWorkout().get(circuitValue);
-        exercise = circuit.getExercise(exerciseValue);
-        //if(updateUI)
-            //transition(NEXT);
-        hideKeypad();
-        //Delay a bit for keypad retract animation
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateUI();
-            }
-        }, 300);
-    }
-
-    private void previous(){
-        boolean transition = false;
-        transition = findNextExerciseDescending();
-        circuit = WorkoutData.get(getActivity()).getWorkout().get(circuitValue);
-        exercise = circuit.getExercise(exerciseValue);
-
-        //if(transition)
-            //transition(PREVIOUS);
-
-        hideKeypad();
-        //Delay a bit for keypad retract animation
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateUI();
-            }
-        }, 300);
-
-    }
-    //set cir and exercise value to the next 'good' exercise value true if one exists
-    private boolean findNextExerciseDescending(){
-        int loopCircuitVal = circuitValue;
-        int exerciseLoopVal = exerciseValue - 1;
-        boolean foundExercise = false;
-        Circuit prevCircuit =
-                WorkoutData.get(getActivity()).getWorkout().get(loopCircuitVal);
-        while(loopCircuitVal >= 0 && !foundExercise){
-            for(int i = exerciseLoopVal; i>= 0; i--){
-                Log.d("4/6", "IN FOR: CIRCUIT VAL " + loopCircuitVal + " -- EXERCISE VAL" + i);
-                Exercise e = prevCircuit.getExercise(i);
-                if(!e.getName().equals("test")){
-                    exerciseValue = i;
-                    circuitValue = loopCircuitVal;
-                    foundExercise = true;
-                    break;
-                }
-            }
-            if(!foundExercise) {
-                loopCircuitVal--;
-                if(loopCircuitVal>=0) {
-                    prevCircuit =
-                            WorkoutData.get(getActivity()).getWorkout().get(loopCircuitVal);
-                    exerciseLoopVal = prevCircuit.getExercises().size() - 1;
-                    Log.d("4/6", "END OF WHILE: CIRCUIT VAL " + loopCircuitVal + " -- EXERCISE VAL" + exerciseLoopVal);
-                }
-            }
-        }
-        return foundExercise;
-    }
-
-    private boolean findNextExerciseAscending(){
-        ArrayList<Circuit> workout = WorkoutData.get(getActivity()).getWorkout();
-        int workoutSize = workout.size();
-        boolean breakFlag = false;
-        int counter = circuitValue;
-        int forCounter = exerciseValue + 1;
-
-
-        while((!breakFlag) && (counter < workoutSize)){
-            Circuit c = workout.get(counter);
-            int circuitSize = c.getSize();
-            for(int i = forCounter; i < circuitSize; i++){
-                if(!c.getExercise(i).getName().equals("test")){
-                    breakFlag = true;
-                    exerciseValue = i;
-                    circuitValue = counter;
-                    break;
-                }
-            }
-            forCounter = 0;
-            counter++;
-        }
-        return breakFlag;
-    }
-
-    private void transition(int action){
-        final ImageView oldView;
-        final ImageView newView;
-        final LinearLayout layout;
-        int actionBarOffset;
-        int layoutYoffset = 0;
-        int animationOffset = 0;
-
-       // getActivity().getActionBar();
-
-        View v = getActivity().findViewById(R.id.detailActivityMainView);
-        int[] xy = new int[2];
-        v.getLocationOnScreen(xy);
-        actionBarOffset = xy[1];
-
-        Display d = getActivity().getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        d.getSize(size);
-        int totalViewSize = size.y - actionBarOffset;
-        int totalWidth = size.x;
-
-        //make views
-        oldView = ((EditActivity) getActivity()).createTransitionScreen();
-        oldView.setMinimumWidth(totalWidth);
-
-        layout = new LinearLayout(getActivity());
-        layout.setOrientation(LinearLayout.VERTICAL);
-
-        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-        layoutParams.gravity = Gravity.TOP;
-        layoutParams.x = 0;
-        layoutParams.y = layoutYoffset;
-
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
-        layoutParams.format = PixelFormat.OPAQUE;
-        layoutParams.windowAnimations = 0;
-
-        WindowManager windowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-        windowManager.addView(layout, layoutParams);
-
-        //layout.bringToFront();
-        layout.addView(oldView);
-        layout.setMinimumWidth(totalWidth);
-        updateUI();
-
-        newView = ((EditActivity) getActivity()).createTransitionScreen();
-        newView.setMinimumWidth(totalWidth);
-
-        switch(action){
-            case PREVIOUS:
-                //swipe down so
-                layout.addView(newView, 0);
-                layout.setY(actionBarOffset - totalViewSize);
-                //totalViewSize = ac
-                break;
-            case NEXT:
-                //swipe up so
-                layout.addView(newView);
-                totalViewSize = totalViewSize * -1;
-                break;
-        }
-
-        Log.d("DETAIL ANIMATION TESTS", "NEW VIEW HEIGHT: " + totalViewSize + " -- TOTAL SCREEN SIZE: " + size.y + " -- ACTION BAR OFFSET: " + actionBarOffset + " -- TOTAL WIDTH: " + totalWidth);
-
-        ObjectAnimator oldSlidInAnimator = android.animation.ObjectAnimator.ofFloat(layout, "translationY", totalViewSize);
-        oldSlidInAnimator.setDuration(1500);
-        oldSlidInAnimator.start();
-
-
-
-        v.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-
-                layout.setVisibility(View.GONE);
-                WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-                wm.removeView(layout);
-
-            }
-        }, 1500);
-    }
-
     private void updateUI(){
-
-        ((EditActivity) getActivity()).setHistoryAdapter(exercise.getName());
-
-        if (circuit.isOpen())
-            title = exercise.getName() + " in " + circuit.getName() + " -- DEBUG -- CIRCUIT: " + circuitValue + " EXERCISE: " + exerciseValue;
-        else
-            title = exercise.getName();
-
+        title = mExercise.getName();
 
         exerciseInfoTextView.setText(title);
 
         editTextLayout.removeAllViewsInLayout();
-        final ArrayList<Metric> metrics = exercise.getMetrics();
+        final ArrayList<Metric> metrics = mExercise.getMetrics();
         for(int i = 0; i < metrics.size(); i++){
             final int j = i;
             switch(metrics.get(i).getType()){
@@ -369,7 +141,7 @@ public class EditExerciseDetailsFragment extends Fragment {
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                             if (actionId == EditorInfo.IME_ACTION_NEXT) {
 
-                                if(j == exercise.getMetrics().size()-1){
+                                if(j == mExercise.getMetrics().size()-1){
                                     hideKeypad();
                                     return true;
                                 }
@@ -417,7 +189,7 @@ public class EditExerciseDetailsFragment extends Fragment {
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                             if (actionId == EditorInfo.IME_ACTION_NEXT) {
 
-                                if(j == exercise.getMetrics().size()-1){
+                                if(j == mExercise.getMetrics().size()-1){
                                     hideKeypad();
                                     return true;
                                 }
@@ -494,7 +266,7 @@ public class EditExerciseDetailsFragment extends Fragment {
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                             if (actionId == EditorInfo.IME_ACTION_NEXT) {
 
-                                if(j == exercise.getMetrics().size()-1){
+                                if(j == mExercise.getMetrics().size()-1){
                                     hideKeypad();
                                     return true;
                                 }
@@ -535,8 +307,8 @@ public class EditExerciseDetailsFragment extends Fragment {
                     break;
             }
         }
-
     }
+
     public void hideKeypad(){
         if (mEditTextHandle != null) {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
@@ -545,17 +317,4 @@ public class EditExerciseDetailsFragment extends Fragment {
             mEditTextHandle.clearFocus();
         }
     }
-    /*
-    private void set(){
-        for(int i = 0; i < exercise.getMetrics().size(); i++){
-            if (editList.get(i) != null) {
-                int metricValue = Integer.parseInt(editList.get(i).getText().toString());
-                exercise.getMetrics().get(i).setMetricIntValue(metricValue);
-                Log.d("EDIT TEST", "METRIC: " + exercise.getMetrics().get(i).getType()
-                        + " --- VALUE: " + metricValue);
-            }
-        }
-    }
-    */
-
 }

@@ -234,7 +234,7 @@ public class DatabaseWrapper {
         int z = 0;
         if (count2 >= 1) {
             while(c2.moveToNext()) {
-                int weight = -1, rep = -1, sequence1 = -1, exercise = -1, id = -1, oneRepMaxPercent = 0, time = 0, other = -1;
+                int weight = -1, rep = -1, sequence1 = -1, exercise = -1, id = -1, oneRepMaxPercent = 0, time = -1, other = -1;
 
                 for (int y = 0; y < c2.getColumnCount(); y++) {
                     String columnName2 = c2.getColumnName(y);
@@ -275,6 +275,7 @@ public class DatabaseWrapper {
         }
         return exercises;
     }
+
 
     public int saveEntirePlan(Plan plan) {
 
@@ -458,13 +459,28 @@ public class DatabaseWrapper {
         exerciseValues.put(COLUMN_TARGET_MUSCLE, exercise.getTargetMuscle());
         exerciseValues.put(COLUMN_MUSCLE_GROUP, exercise.getMuscleGroup());
         exerciseValues.put(COLUMN_WEIGHT, exercise.getWeight());
-        exerciseValues.put(COLUMN_REP, exercise.getWeight());
+        exerciseValues.put(COLUMN_REP, exercise.getRepetitions());
         exerciseValues.put(COLUMN_TIME, exercise.getTime());
         exerciseValues.put(COLUMN_OTHER, exercise.getOtherName());
         exerciseValues.put(COLUMN_S_OTHER, exercise.getOther());
         myDatabase.insert(EXERCISE_TABLE, null, exerciseValues);
     }
 
+    /*
+    public void addExerciseToExerciseTable(Exercise exercise) {
+        ContentValues exerciseValues = new ContentValues();
+        exerciseValues.put(COLUMN_EQUIPMENT_TYPE, exercise.getEquipment());
+        exerciseValues.put(COLUMN_NAME, exercise.getName());
+        exerciseValues.put(COLUMN_TARGET_MUSCLE, exercise.getTargetMuscle());
+        exerciseValues.put(COLUMN_MUSCLE_GROUP, exercise.getMuscleGroup());
+        exerciseValues.put(COLUMN_WEIGHT, exercise.usesWeight());
+        exerciseValues.put(COLUMN_REP, exercise.usesReps());
+        exerciseValues.put(COLUMN_TIME, exercise.usesTime());
+        exerciseValues.put(COLUMN_OTHER, exercise.usesOther());
+        exerciseValues.put(COLUMN_S_OTHER, exercise.getOtherName());
+        myDatabase.insert(EXERCISE_TABLE, null, exerciseValues);
+    }
+    */
     public void setOneRepMaxForExercise(String exerciseName, int max) {
         String whereClause = "exerciseName like ? COLLATE NOCASE";
         String[] whereArgs = {exerciseName};
