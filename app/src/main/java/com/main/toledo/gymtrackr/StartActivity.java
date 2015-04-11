@@ -8,6 +8,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 
 public class StartActivity extends Activity {
     final int WORKOUT = 2;
@@ -15,8 +18,6 @@ public class StartActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.s_activity_main);
-
-        Button workoutNoPlanButton = (Button)findViewById(R.id.workoutNow);
 
         workoutNoPlanButton.setOnClickListener(new View.OnClickListener(){
             @Override
