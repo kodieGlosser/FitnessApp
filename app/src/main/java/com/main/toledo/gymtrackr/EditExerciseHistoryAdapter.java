@@ -15,33 +15,146 @@ import java.util.ArrayList;
  * Created by Adam on 2/26/2015.
  */
 public class EditExerciseHistoryAdapter extends ArrayAdapter {
-    private final DynamicView d;
+    //private final DynamicView d;
     private ArrayList<ExerciseHistory> m_exerciseHistory;
-    private int m_numMetrics;
+
+    private LinearLayout metricLayout;
+
+    private final int dateId = View.generateViewId();
+    private final int firstMetricId = View.generateViewId();
+    private final int secondMetricId = View.generateViewId();
+    private final int thirdMetricId = View.generateViewId();
+
+    private final Context mContext;
+
+    private int mNumMetrics;
+
     public EditExerciseHistoryAdapter(Context context, int resource, ArrayList<ExerciseHistory> history){
         super(context, resource, history);
         m_exerciseHistory = history;
-        m_numMetrics = history.get(0).getMetrics().size();
-        d = new DynamicView(this.getContext() , m_numMetrics);
-        d.initialize();
+        mContext = context;
+
+        if(history.size() != 0){
+            mNumMetrics = history.get(0).getMetrics().size();
+            initializeView();
+        } else {
+            //empty data set
+        }
+
+        //Log.d("4.11", "CONSTRUCTIING ADAPTER, NUM METRICS: " + mNumMetrics);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
-        Log.d("EDIT HISTORY", "getView called on position: " + position);
+        //Log.d("4.11", "getView called on position: " + position);
+        ViewHolder holder = null;
+        ArrayList<Metric> metrics = m_exerciseHistory.get(position).getMetrics();
+        if( convertView == null ){
+            holder = new ViewHolder();
+            metricLayout = null;
+            initializeView();
+            convertView = metricLayout;
+            holder.date = (TextView)convertView.findViewById(dateId);
+            switch(mNumMetrics){
+                case 0:
+                    break;
+                case 1:
+                    holder.firstMetric = (TextView)convertView.findViewById(firstMetricId);
+                    break;
+                case 2:
+                    holder.firstMetric = (TextView)convertView.findViewById(firstMetricId);
+                    holder.secondMetric = (TextView)convertView.findViewById(secondMetricId);
+                    break;
+                case 3:
+                    holder.firstMetric = (TextView)convertView.findViewById(firstMetricId);
+                    holder.secondMetric = (TextView)convertView.findViewById(secondMetricId);
+                    holder.thirdMetric = (TextView)convertView.findViewById(thirdMetricId);
+                    break;
+                default:
+                    break;
+            }
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder)convertView.getTag();
+        }
 
-        //if( convertView == null ){
-            final DynamicView d = new DynamicView(this.getContext(), m_numMetrics);
-            d.initialize();
-            convertView = d.populateDynamicView(m_exerciseHistory.get(position));
-        //}
-        //    convertView = new DynamicView(d).populateDynamicView(m_exerciseHistory[position]);
+        holder.date.setText(m_exerciseHistory.get(position).getDate().toString());
+        String s;
+        switch(mNumMetrics){
+            case 0:
+                break;
+            case 1:
+                s = "" + metrics.get(0).getType() + ": " + metrics.get(0).getMetricIntValue();
+                holder.firstMetric.setText(s);
+                break;
+            case 2:
+                s = "" + metrics.get(0).getType() + ": " + metrics.get(0).getMetricIntValue();
+                holder.firstMetric.setText(s);
+                s = "" + metrics.get(1).getType() + ": " + metrics.get(1).getMetricIntValue();
+                holder.firstMetric.setText(s);
+                break;
+            case 3:
+                s = "" + metrics.get(0).getType() + ": " + metrics.get(0).getMetricIntValue();
+                holder.firstMetric.setText(s);
+                s = "" + metrics.get(1).getType() + ": " + metrics.get(1).getMetricIntValue();
+                holder.firstMetric.setText(s);
+                s = "" + metrics.get(2).getType() + ": " + metrics.get(2).getMetricIntValue();
+                holder.firstMetric.setText(s);
+                break;
+            default:
+                break;
+        }
 
-        //final View v = m_view;
-        //convertView = v;
         return convertView;
     }
 
+    private void initializeView(){
+        metricLayout = new LinearLayout(mContext);
+        metricLayout.setOrientation(LinearLayout.VERTICAL);
+
+        TextView dateView = new TextView(mContext);
+        dateView.setId(dateId);
+
+        metricLayout.addView(dateView);
+
+        TextView firstMetricView = new TextView(mContext);
+        firstMetricView.setId(firstMetricId);
+
+        TextView secondMetricView = new TextView(mContext);
+        secondMetricView.setId(secondMetricId);
+
+        TextView thirdMetricView = new TextView(mContext);
+        thirdMetricView.setId(thirdMetricId);
+
+        switch(mNumMetrics) {
+            case 0:
+                break;
+            case 1:
+                metricLayout.addView(firstMetricView);
+                break;
+            case 2:
+                metricLayout.addView(firstMetricView);
+                metricLayout.addView(secondMetricView);
+                break;
+            case 3:
+                metricLayout.addView(firstMetricView);
+                metricLayout.addView(secondMetricView);
+                metricLayout.addView(thirdMetricView);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public static class ViewHolder{
+        public TextView date;
+        public TextView firstMetric;
+        public TextView secondMetric;
+        public TextView thirdMetric;
+    }
+}
+
+    /*
     public class DynamicView{
         private LinearLayout m_view;
         private ArrayList<TextView> m_metricTextViews = new ArrayList<>();
@@ -54,7 +167,7 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
             m_context = c;
         }
         //copy constructor:  may not be needed
-        /*
+
         public DynamicView(DynamicView d){
             this.m_view = d.m_view;
             this.m_metricTextViews = d.m_metricTextViews;
@@ -62,7 +175,7 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
             this.m_context = d.m_context;
             this.m_numMetrics = d.m_numMetrics;
         }
-        */
+
         public void initialize(){
             LayoutInflater inflater = (LayoutInflater) m_context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -101,6 +214,9 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
             return m_view;
 
         }
+
+
     }
-}
+    */
+
 

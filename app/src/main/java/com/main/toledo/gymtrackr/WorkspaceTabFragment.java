@@ -71,7 +71,7 @@ public class WorkspaceTabFragment extends Fragment {
         if (callingActivity.equals("WorkspaceActivity")){
             parentActivity = WORKSPACE;
         }
-        if (callingActivity.equals("EditActivity")){
+        if (callingActivity.equals("DetailActivity")){
             parentActivity = DETAILS;
         }
 

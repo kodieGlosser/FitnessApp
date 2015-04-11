@@ -19,6 +19,7 @@ public class StartActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.s_activity_main);
 
+        Button workoutNoPlanButton = (Button)findViewById(R.id.workoutNow);
         workoutNoPlanButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){

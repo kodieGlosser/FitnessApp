@@ -57,7 +57,7 @@ public class EditExerciseDetailsFragment extends Fragment {
     }
 
     private void implementSwipeListener(View v){
-        RelativeLayout layout = (RelativeLayout) v.findViewById(R.id.detailView);
+        LinearLayout layout = (LinearLayout) v.findViewById(R.id.detailView);
 
         layout.setOnTouchListener(new View.OnTouchListener() {
             private int swipeThreshold = 150;
