@@ -330,7 +330,7 @@ public class WorkoutData {
                     Log.d("SAVE TESTS", e.getName() + " " + e.getId() + " IS BEING DIGESTED INTO EH");
                     int weight, reps;
                     Date d = new Date();
-                    int time = 0;
+                    int time = -1;
                     int other = 0;
                     weight = -1;
                     reps = -1;

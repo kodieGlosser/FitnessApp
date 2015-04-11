@@ -514,7 +514,7 @@ public class DatabaseWrapper {
 
         return convertCursorToExerciseHistory(c);
     }
-
+    /*
     private Exercise[] convertCursorToExercises(Cursor c) {
         int count = c.getCount();
         int i = 0;
@@ -570,6 +570,77 @@ public class DatabaseWrapper {
                         int val = c.getInt(c.getColumnIndex(columnName));
                         if (val == 1)
                             val_other = true;
+                    }
+                    else if (columnName.equalsIgnoreCase(COLUMN_S_OTHER)) {
+                        other = columnData;
+
+                    }
+                }
+                exercises[i] = new Exercise(val_id, val_name, val_muscleGroup, val_equipmentType, val_targetMuscle, val_oneRepMax, val_weight, val_reps, val_time, val_other, other);
+                i++;
+            }
+
+        }
+
+        return exercises;
+    }
+    */
+
+    private Exercise[] convertCursorToExercises(Cursor c) {
+        int count = c.getCount();
+        int i = 0;
+        Exercise[] exercises= new Exercise[count];
+
+        if(count >= 1) {
+            while(c.moveToNext()) {
+
+                int val_id = -1, val_oneRepMax = -1;
+                String val_name = null, val_equipmentType = null, val_targetMuscle = null, val_muscleGroup = null, columnData = null, other = null;
+                boolean val_weight = true, val_reps = true, val_time = true, val_other = true;
+                for (int j = 0; j < c.getColumnCount(); j++) {
+
+                    String columnName = c.getColumnName(j);
+                    if (!columnName.equalsIgnoreCase(COLUMN_ID)) {
+                        columnData = c.getString(c.getColumnIndex(columnName));
+                    }
+
+                    if (columnName.equalsIgnoreCase(COLUMN_ID)) {
+                        val_id = c.getInt(c.getColumnIndex(columnName));
+                    }
+                    else if (columnName.equalsIgnoreCase(COLUMN_NAME)) {
+                        val_name = columnData;
+                    }
+                    else if (columnName.equalsIgnoreCase(COLUMN_EQUIPMENT_TYPE)) {
+                        val_equipmentType = columnData;
+                    }
+                    else if (columnName.equalsIgnoreCase(COLUMN_MUSCLE_GROUP)) {
+                        val_muscleGroup = columnData;
+                    }
+                    else if (columnName.equalsIgnoreCase(COLUMN_TARGET_MUSCLE)) {
+                        val_targetMuscle = columnData;
+                    }
+                    else if (columnName.equalsIgnoreCase(COLUMN_ONE_REP_MAX)) {
+                        val_oneRepMax = c.getInt(c.getColumnIndex(columnName));
+                    }
+                    else if (columnName.equalsIgnoreCase(COLUMN_WEIGHT)) {
+                        int val = c.getInt(c.getColumnIndex(columnName));
+                        if (val == -1)
+                            val_weight = false;
+                    }
+                    else if (columnName.equalsIgnoreCase(COLUMN_REP)) {
+                        int val = c.getInt(c.getColumnIndex(columnName));
+                        if (val == -1)
+                            val_reps = false;
+                    }
+                    else if (columnName.equalsIgnoreCase(COLUMN_TIME)) {
+                        int val = c.getInt(c.getColumnIndex(columnName));
+                        if (val == -1)
+                            val_time = false;
+                    }
+                    else if (columnName.equalsIgnoreCase(COLUMN_OTHER)) {
+                        int val = c.getInt(c.getColumnIndex(columnName));
+                        if (val == -1)
+                            val_other = false;
                     }
                     else if (columnName.equalsIgnoreCase(COLUMN_S_OTHER)) {
                         other = columnData;

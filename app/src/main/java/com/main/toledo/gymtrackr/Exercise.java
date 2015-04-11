@@ -14,11 +14,11 @@ public class Exercise {
     private String m_muscleGroup; //leaving out muscle for now
     private String m_equipmentType;
     private String m_targetMuscle;
-    private int m_repetitions;
-    private int m_weight;
+    private int m_repetitions = -1;
+    private int m_weight = -1;
     private int m_sequence;
     private int m_other;
-    private int m_time;
+    private int m_time = -1;
     private int m_oneRepMax;
     private int m_oneRepMaxPercent;
     private boolean m_bWeight;
@@ -42,7 +42,7 @@ public class Exercise {
         this.m_equipmentType = equipmentType;
         //stub for metrics
 
-        instantiateStubMetrics();
+        //instantiateStubMetrics();
 
         //tests for whether exercise was used or not, used when saving history
         mSaveToHistory = false;
@@ -107,21 +107,26 @@ public class Exercise {
         this.m_bTime = time;
         this.m_bOther = other;
         this.m_sOther = s_other;
+        //if(m_name.equals("1"))// || m_name.equals("2") || m_name.equals("3"))
+        //Log.d("4/9", "PULL FROM DB - BROWSE CONSTRUCTOR CALLED NAME: " + m_name + " -- WEIGHT: " + m_bWeight + " -- TIME: " + m_bTime + " -- REPS: " + m_bReps);
 
         if(m_bWeight){
             Metric weightMetric = new Metric();
             weightMetric.setType(metricType.WEIGHT);
             weightMetric.setMetricIntValue(0);
+            m_metrics.add(weightMetric);
         }
         if(m_bReps){
             Metric repMetric = new Metric();
             repMetric.setType(metricType.REPETITIONS);
             repMetric.setMetricIntValue(0);
+            m_metrics.add(repMetric);
         }
         if(m_bTime){
             Metric timeMetric = new Metric();
             timeMetric.setType(metricType.TIME);
             timeMetric.setMetricIntValue(0);
+            m_metrics.add(timeMetric);
         }
         /*missing things for other
         if(m_bOther){
@@ -131,6 +136,10 @@ public class Exercise {
             otherMetric.setMetricStringValue("");
         }
         */
+        if(m_name.equals("1"))// || m_name.equals("2") || m_name.equals("3"))
+        for (Metric m : m_metrics){
+            Log.d("4/9", "METRIC: " + m.getType() + " -- ADDED TO: " + m_name + " -- TOTAL SIZE: " + m_metrics.size());
+        }
         mSaveToHistory = false;
         mToggled = false;
     }
@@ -153,7 +162,7 @@ public class Exercise {
             m_plan_metrics.add(plan_metric);
         }
     }
-
+    /*
     public void instantiateStubMetrics(){
         //stub for metrics
         Metric weightMetric = new Metric();
@@ -169,7 +178,7 @@ public class Exercise {
         m_metrics.add(weightMetric);
         m_metrics.add(repMetric);
     }
-
+    */
     public void setOneRepMax(int oneRepMax) { this.m_oneRepMax = oneRepMax; }
 
     public int getOneRepMax() { return this.m_oneRepMax; }

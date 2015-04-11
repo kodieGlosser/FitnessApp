@@ -1,31 +1,31 @@
 package com.main.toledo.gymtrackr;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
+        import android.content.Intent;
+        import android.os.Bundle;
+        import android.support.v7.app.ActionBarActivity;
+        import android.util.Log;
+        import android.view.Menu;
+        import android.view.MenuInflater;
+        import android.view.MenuItem;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.widget.AdapterView;
+        import android.widget.ArrayAdapter;
+        import android.widget.CheckBox;
+        import android.widget.EditText;
+        import android.widget.LinearLayout;
+        import android.widget.Spinner;
+        import android.widget.TextView;
 
 /**
  * Created by Adam on 4/2/2015.
  */
 public class CreateExerciseActivity extends ActionBarActivity implements AdapterView.OnItemSelectedListener{
     //Values used to write exercise to db
-    private boolean mWeight = false;
-    private boolean mReps = false;
-    private boolean mTime = false;
-    private boolean mOther = false;
+    private int mWeight = -1;
+    private int mReps = -1;
+    private int mTime = -1;
+    private int mOther = -1;
     private String mMuscleGroup = "Shoulders";          //THIS IS PROBABLY TERRIBLE
     private String mSpecificMuscle = "Shoulders";       //ASSUMED INITIAL SPINNER VALUES
     private String mEquipment = "Barbell";              //SHOULDN'T BE DIFFERENT, BUT THINGS HAPPEN
@@ -145,7 +145,7 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
                 return super.onOptionsItemSelected(item);
         }
     }
-
+    /*
     public void onCheckboxClicked(View view) {
         // Is the view now checked?
         boolean checked = ((CheckBox) view).isChecked();
@@ -180,11 +180,47 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
                 break;
         }
     }
+    */
 
+    public void onCheckboxClicked(View view) {
+        // Is the view now checked?
+        boolean checked = ((CheckBox) view).isChecked();
+        // Check which checkbox was clicked
+        switch(view.getId()) {
+            case R.id.weight:
+                if (checked)
+                    mWeight=0;
+                else
+                    mWeight=-1;
+                break;
+            case R.id.reps:
+                if (checked)
+                    mReps=0;
+                else
+                    mReps=-1;
+                break;
+            case R.id.time:
+                if (checked)
+                    mTime=0;
+                else
+                    mTime=-1;
+                break;
+            case R.id.other:
+                if (checked) {
+                    mOther = 0;
+                    updateUI();
+                } else {
+                    mOther = -1;
+                    updateUI();
+                }
+
+                break;
+        }
+    }
     private void updateUI(){
         LinearLayout metricLayout = (LinearLayout)findViewById(R.id.metricLayout);
 
-        if (mOther){
+        if (mOther == 0){
             if(mOtherEditText == null)
                 buildEditText();
             if(mOtherTextView == null)
@@ -318,10 +354,11 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
         e.setMuscleGroup(mMuscleGroup);
         e.setTargetMuscle(mSpecificMuscle);
 
+        /*
         e.setUsesTime(mTime);
         e.setUsesReps(mReps);
         e.setUsesWeight(mWeight);
-        /*  Disabled unless we wire other
+         Disabled unless we wire other
         e.setUsesOthers(mOther);
 
         if (mOther) {
@@ -329,6 +366,13 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
             e.setOtherName(mOtherValue);
         }
         */
+
+        e.setTime(mTime);
+        e.setRepetitions(mReps);
+        e.setWeight(mWeight);
+        Log.d("4/9", "CREATE -- BROWSE CONSTRUCTOR CALLED NAME: " + e.getName()
+                + " -- WEIGHT: " + e.getWeight() + " -- TIME: "
+                + e.getTime() + " -- REPS: " + e.getRepetitions());
         DatabaseWrapper db = new DatabaseWrapper();
         db.addExerciseToExerciseTable(e);
     }

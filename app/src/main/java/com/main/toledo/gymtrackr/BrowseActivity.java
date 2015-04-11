@@ -199,8 +199,13 @@ public class BrowseActivity extends ActionBarActivity {
                     exercise.setName(e.getName());
                     exercise.setId(e.getId());
                     //Stubs
-                    exercise.instantiateStubMetrics();
-
+                    //exercise.instantiateStubMetrics();
+                    for (Metric m : e.getMetrics()){
+                        Metric nm = new Metric();
+                        nm.setType(m.getType());
+                        nm.setMetricIntValue(m.getMetricIntValue());
+                        exercise.addMetrics(nm);
+                    }
                     WorkoutData.get(mContext).setToggledExerciseExplicit(e);//Sets this as the 'last' item added
 
 

@@ -388,11 +388,15 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         final LinearLayout layout = new LinearLayout(_context);
         layout.setOrientation(LinearLayout.HORIZONTAL);
         //layout.removeAllViewsInLayout();
+
         final ArrayList<Metric> metrics = Workout.get(group).getExercise(child).getMetrics();
+        Log.d("4/9", "Adding metricis for: " + Workout.get(group).getExercise(child).getName() + " -- METRIC LIST SIZE = " + metrics.size() + " -- from not final: " + Workout.get(group).getExercise(child).getMetrics().size());
         for(int i = 0; i < metrics.size(); i++){
+            Log.d("4/9", "Looking at metric of TYPE: " + metrics.get(i).getType());
             final int j = i;
             switch(metrics.get(i).getType()){
                 case TIME:
+                    Log.d("4/9", "Adding metricis for: " + Workout.get(group).getExercise(child).getName() + " -- TIME: " + metrics.get(i).getType());
                     TextView timeText = new TextView(_context);
                     timeText.setText("Time: ");
                     final EditText timeEdit = new EditText(_context);
@@ -446,6 +450,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     layout.addView(timeRow);
                     break;
                 case REPETITIONS:
+                    Log.d("4/9", "Adding metricis for: " + Workout.get(group).getExercise(child).getName() + " -- REPS: " + metrics.get(i).getType());
                     TextView repText = new TextView(_context);
                     repText.setText("Reps: ");
                     final EditText repEdit = new EditText(_context);
@@ -521,6 +526,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
                     break;
                 case WEIGHT:
+                    Log.d("4/9", "Adding metricis for: " + Workout.get(group).getExercise(child).getName() + " -- WEIGHT: " + metrics.get(i).getType());
                     TextView wtText = new TextView(_context);
                     wtText.setText("Weight: ");
 

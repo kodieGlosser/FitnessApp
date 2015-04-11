@@ -99,7 +99,7 @@ public class DetailActivity extends ActionBarActivity{
                 currentLayout = (LinearLayout)inflater.inflate(R.layout.d_terminal, null);
                 TextView t = (TextView)currentLayout.findViewById(R.id.terminalViewText);
                 t.setText("ADD AN EXERCISE IN THE WORKSPACE TO GET STARTED!");
-                currentLayout.setTag(VIEW_TYPE, EMPTY);
+                currentLayout.setTag(EMPTY);
             }
             mainLayoutHandle.addView(currentLayout);
         } else {//we start at a valid exercise
@@ -119,19 +119,19 @@ public class DetailActivity extends ActionBarActivity{
                 nextLayout = (LinearLayout)inflater.inflate(R.layout.d_terminal, null);
                 TextView t = (TextView)nextLayout.findViewById(R.id.terminalViewText);
                 t.setText("END OF WORKOUT!");
-                nextLayout.setTag(VIEW_TYPE, LAST);
+                nextLayout.setTag(LAST);
             }
             nextLayout.setVisibility(View.GONE);
 
             if(findNextExerciseDescending()){
                 previousExercise = Workout.get(previousCircuitValue).getExercise(previousExerciseValue);
                 previousLayout = createFragments(previousExercise);
-                previousLayout.setTag(VIEW_TYPE, EXERCISE);
+                previousLayout.setTag(EXERCISE);
             } else {
                 previousLayout = (LinearLayout)inflater.inflate(R.layout.d_terminal, null);
                 TextView t = (TextView)previousLayout.findViewById(R.id.terminalViewText);
                 t.setText("SWIPE UP TO BEGIN");
-                previousLayout.setTag(VIEW_TYPE, FIRST);
+                previousLayout.setTag(FIRST);
             }
             previousLayout.setVisibility(View.GONE);
 
@@ -205,9 +205,7 @@ public class DetailActivity extends ActionBarActivity{
         fragmentLayout.addView(editFrame);
         fragmentLayout.addView(listFrame);
 
-        fragmentLayout.setTag(VIEW_TYPE, EXERCISE);
-        fragmentLayout.setTag(EDIT_ID, first_id);
-        fragmentLayout.setTag(LIST_ID, second_id);
+        fragmentLayout.setTag(EXERCISE);
         return fragmentLayout;
     }
 
