@@ -1,7 +1,10 @@
 package com.main.toledo.gymtrackr;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ListFragment;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 /**
  * Created by Adam on 2/26/2015.
@@ -18,6 +21,42 @@ public class EditExerciseHistoryFragment extends ListFragment {
     public void setAdapter(EditExerciseHistoryAdapter adapter){
 
         setListAdapter(adapter);
+    }
+
+    public void animateOut(){
+        int totalDelay = 2000;
+        int numVisibleItems = getListView().getLastVisiblePosition();
+        int lastItemIndex = getListView().getLastVisiblePosition() - 1;
+        int delayPerItem = totalDelay/numVisibleItems;
+
+        int delay = 0;
+
+        final Animation anim = AnimationUtils.loadAnimation(
+                getActivity(), android.R.anim.slide_out_right
+        );
+        anim.setDuration(delayPerItem);
+
+        while(lastItemIndex >= 0) {
+            final int index = lastItemIndex;
+
+            new Handler().postDelayed(new Runnable() {
+
+                public void run() {
+                    if (getListView().getChildAt(index) != null)
+                        getListView().getChildAt(index).startAnimation(anim);
+                }
+
+            }, delay);
+
+
+            delay = delay + delayPerItem;
+            lastItemIndex--;
+        }
+
+    }
+
+    public void animateIn(){
+
     }
 
 }

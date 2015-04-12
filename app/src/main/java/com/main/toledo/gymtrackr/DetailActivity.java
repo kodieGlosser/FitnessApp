@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -19,6 +21,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Handler;
 import java.util.zip.Inflater;
 
 /**
@@ -39,11 +42,18 @@ public class DetailActivity extends ActionBarActivity{
     private Exercise currentExercise;
     private Exercise nextExercise;
 
-    private Circuit circuit;
+    private ArrayList<Integer> mListIds = new ArrayList<>();
+    private ArrayList<Integer> mDetailIds = new ArrayList<>();
+    private int mCurrentListID;
+    private int mCurrentDetailID;
+    private int mIdPointer;
+
     //private LinearLayout previousLayout;
     //private LinearLayout currentLayout;
     //private LinearLayout nextLayout;
     private LinearLayout mainLayoutHandle;
+
+
 
     final int FIRST = 0, LAST = 1, EXERCISE = 2, EMPTY = 3;
     final int LIST_ID = 0, EDIT_ID = 1, VIEW_TYPE = 2;
@@ -121,30 +131,39 @@ public class DetailActivity extends ActionBarActivity{
             }
             mainLayoutHandle.addView(currentLayout);
         } else {//we start at a valid exercise
+            initializePointer();
+
+            if(findNextExerciseDescending()){
+                decrementPointer();
+                previousExercise = Workout.get(previousCircuitValue).getExercise(previousExerciseValue);
+                previousLayout = createFragments(previousExercise); //0
+                incrementPointer();
+                previousLayout.setTag(EXERCISE);
+            } else {
+                previousLayout = getTerminalLayout(FIRST);
+            }
+
+
             currentExercise = Workout.get(currentCircuitValue).getExercise(currentExerciseValue);
-            currentLayout = createFragments(currentExercise);
+            currentLayout = createFragments(currentExercise); //1
             currentLayout.setLayoutParams(mParams);
 
 
+
             if(findNextExerciseAscending()){
+                incrementPointer();
                 nextExercise = Workout.get(nextCircuitValue).getExercise(nextExerciseValue);
-                nextLayout = createFragments(nextExercise);
+                nextLayout = createFragments(nextExercise); //2
                 nextLayout.setTag(EXERCISE);
+                decrementPointer();
             } else {
                 nextLayout = getTerminalLayout(LAST);
             }
             nextLayout.setVisibility(View.GONE);
 
 
-            if(findNextExerciseDescending()){
-                previousExercise = Workout.get(previousCircuitValue).getExercise(previousExerciseValue);
-                previousLayout = createFragments(previousExercise);
-                previousLayout.setTag(EXERCISE);
-            } else {
-                previousLayout = getTerminalLayout(FIRST);
-            }
-            previousLayout.setVisibility(View.GONE);
 
+            previousLayout.setVisibility(View.GONE);
 
             mainLayoutHandle.addView(previousLayout);
             mainLayoutHandle.addView(currentLayout);
@@ -169,10 +188,12 @@ public class DetailActivity extends ActionBarActivity{
             case FIRST:
                 t.setText("SWIPE UP TO BEGIN");
                 layout.setTag(FIRST);
+                implementSwipeListener(layout);
                 break;
             case LAST:
                 t.setText("END OF WORKOUT!");
                 layout.setTag(LAST);
+                implementSwipeListener(layout);
                 break;
             case EMPTY:
                 t.setText("ADD AN EXERCISE IN THE WORKSPACE TO GET STARTED!");
@@ -186,13 +207,57 @@ public class DetailActivity extends ActionBarActivity{
         return layout;
     }
 
+    private void initializePointer(){
+        mIdPointer = 1;
+        mListIds.add(View.generateViewId());
+        mListIds.add(View.generateViewId());
+        mListIds.add(View.generateViewId());
+        mDetailIds.add(View.generateViewId());
+        mDetailIds.add(View.generateViewId());
+        mDetailIds.add(View.generateViewId());
+
+        mCurrentDetailID = mDetailIds.get(1);
+        mCurrentListID = mListIds.get(1);
+        Log.d("pointer tests", "Initialize, pointer ID: " + mIdPointer);
+        for(Integer i : mListIds)
+            Log.d("pointer tests", "" + i);
+    }
+
+    private void incrementPointer(){
+        mIdPointer++;
+        int nextPointer = mIdPointer + 1;
+        if (nextPointer == mListIds.size()){
+            mListIds.add(View.generateViewId());
+            mDetailIds.add(View.generateViewId());
+        }
+
+        mCurrentDetailID = mDetailIds.get(mIdPointer);
+        mCurrentListID = mListIds.get(mIdPointer);
+        Log.d("pointer tests", "Initialize, pointer ID: " + mIdPointer);
+        for(Integer i : mListIds)
+            Log.d("pointer tests", "" + i);
+    }
+
+    private void decrementPointer(){
+        if (mIdPointer == 1){
+            mListIds.add(0, View.generateViewId());
+            mDetailIds.add(0, View.generateViewId());
+            mCurrentDetailID = mDetailIds.get(1);
+            mCurrentListID = mListIds.get(1);
+        } else {
+            mIdPointer--;
+            mCurrentDetailID = mDetailIds.get(mIdPointer);
+            mCurrentListID = mListIds.get(mIdPointer);
+        }
+        Log.d("pointer tests", "Initialize, pointer ID: " + mIdPointer);
+        for(Integer i : mListIds)
+            Log.d("pointer tests", "" + i);
+    }
+
     private LinearLayout createFragments(Exercise e){
         //create 3 ids
-        int detail_id = View.generateViewId();
-        int list_id = View.generateViewId();
-
         //pass three ids to make fragment layout
-        LinearLayout fragmentLayout = createDynamicFragmentLayout(detail_id, list_id);
+        LinearLayout fragmentLayout = createDynamicFragmentLayout();
         //return fragment layout
         FragmentTransaction transaction =
                 getSupportFragmentManager().beginTransaction();
@@ -200,8 +265,10 @@ public class DetailActivity extends ActionBarActivity{
         EditExerciseDetailsFragment detailsFragment = new EditExerciseDetailsFragment();
         EditExerciseHistoryFragment historyFragment = new EditExerciseHistoryFragment();
 
-        transaction.add(detail_id, detailsFragment);
-        transaction.add(list_id, historyFragment);
+        transaction.add(mCurrentDetailID, detailsFragment);
+        transaction.add(mCurrentListID, historyFragment);
+
+        Log.d("pointer tests", "CREATING FRAG FOR EXERCISE: " + e.getName() + " -- @ ID: " + mCurrentListID + " -- PTR: " + mIdPointer);
         //put fragments in layout
         transaction.commit();
 
@@ -219,12 +286,12 @@ public class DetailActivity extends ActionBarActivity{
         return fragmentLayout;
     }
 
-    private LinearLayout createDynamicFragmentLayout(int first_id, int second_id){
+    private LinearLayout createDynamicFragmentLayout(){
         FrameLayout tabHandle = (FrameLayout) findViewById(R.id.tabHandle);
         int tabBottom = getRelativeBottom(tabHandle);
 
-        int fragmentLayoutHeight = mScreenHeight - tabBottom;
-        Log.d("4/11", "Remaining height: " + fragmentLayoutHeight);
+        //int fragmentLayoutHeight = mScreenHeight - tabBottom;
+        //Log.d("4/11", "Remaining height: " + fragmentLayoutHeight);
 
 
         LinearLayout fragmentLayout = new LinearLayout(this);
@@ -258,8 +325,8 @@ public class DetailActivity extends ActionBarActivity{
                 .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 0, 1f);
         listFrame.setLayoutParams(listParams);
-        editFrame.setId(first_id);
-        listFrame.setId(second_id);
+        editFrame.setId(mCurrentDetailID);
+        listFrame.setId(mCurrentListID);
 
         fragmentLayout.setLayoutParams(mainParams);
         fragmentLayout.addView(editFrame);
@@ -278,7 +345,7 @@ public class DetailActivity extends ActionBarActivity{
 
         switch (viewType){
             case FIRST:
-                Log.d("4.11", "incUIcalled");
+                Log.d("4.11", "incUIcalled pointer: " + mIdPointer);
                 incrementUI();
                 break;
             case LAST:
@@ -286,7 +353,7 @@ public class DetailActivity extends ActionBarActivity{
             case EMPTY:
                 break;
             case EXERCISE:
-                Log.d("4.11", "incUIcalled");
+                Log.d("4.11", "incUIcalled pointer: " + mIdPointer);
                 incrementUI();
                 break;
         }
@@ -299,43 +366,41 @@ public class DetailActivity extends ActionBarActivity{
             case FIRST:
                 break;
             case LAST:
-                Log.d("4.11", "decUIcalled");
+                Log.d("4.11", "decUIcalled pointer: "  + mIdPointer);
                 decrementUI();
                 break;
             case EMPTY:
                 break;
             case EXERCISE:
-                Log.d("4.11", "decUIcalled");
+                Log.d("4.11", "decUIcalled pointer: " + mIdPointer);
                 decrementUI();
                 break;
         }
+    }
+
+    private void removeList(){
+
     }
 
     private void incrementUI(){
         //remove previous
         //mainLayoutHandle.removeView(previousLayout);
         //animate transition bottom expands, top shrinks
-        Log.d("4.11", "INCREMENTING EX: " + currentExerciseValue + " -- CIR: " + currentCircuitValue);
-        LinearLayout nextLayout;
-        mainLayoutHandle.getChildAt(1).setVisibility(View.GONE);
-        mainLayoutHandle.getChildAt(2).setVisibility(View.VISIBLE);
-        mainLayoutHandle.getChildAt(2).setLayoutParams(mParams);
-        mainLayoutHandle.invalidate();
-        boolean foundExercise = findNextExerciseAscending();
-        if(foundExercise) {
-            nextExercise = Workout.get(nextCircuitValue).getExercise(nextExerciseValue);
-            nextLayout = createFragments(nextExercise);
-            currentExercise = nextExercise;
-            currentExerciseValue = nextExerciseValue;
-            currentCircuitValue = nextCircuitValue;
-        } else {
-            nextLayout = getTerminalLayout(LAST);
-        }
-        mainLayoutHandle.removeViewAt(0);
-        nextLayout.setVisibility(View.GONE);
-        mainLayoutHandle.addView(nextLayout);
+        //Log.d("4.11", "INCREMENTING EX: " + currentExerciseValue + " -- CIR: " + currentCircuitValue);
+        /*
+        int list_id = mListIds.get(mIdPointer);
+        ((EditExerciseHistoryFragment)getSupportFragmentManager().findFragmentById(list_id)).animateOut();
+        new android.os.Handler().postDelayed(new Runnable() {
 
-        Log.d("4.11", "incUI post invalidate");
+            public void run() {
+                increment();
+            }
+
+        }, 2000);
+
+        */
+        increment();
+        //Log.d("4.11", "incUI post invalidate");
         //MyCustomAnimation a = new MyCustomAnimation(currentLayout, nextLayout, 1000, totalLayoutHeight);
         //currentLayout.startAnimation(a);
         //previous = current
@@ -344,10 +409,37 @@ public class DetailActivity extends ActionBarActivity{
         //add new next to layout
     }
 
+    private void increment(){
+        incrementPointer();
+        LinearLayout nextLayout;
+        mainLayoutHandle.getChildAt(1).setVisibility(View.GONE);
+        mainLayoutHandle.getChildAt(2).setVisibility(View.VISIBLE);
+        mainLayoutHandle.getChildAt(2).setLayoutParams(mParams);
+        mainLayoutHandle.invalidate();
+        boolean foundExercise = findNextExerciseAscending();
+
+        if(foundExercise) {
+            incrementPointer();
+            nextExercise = Workout.get(nextCircuitValue).getExercise(nextExerciseValue);
+            nextLayout = createFragments(nextExercise);
+            Log.d("pointer tests", "PULLING FRAG FOR EXERCISE: " + nextExercise.getName() + " -- @ ID: " + mCurrentListID + " -- PTR: " + mIdPointer);
+            currentExercise = nextExercise;
+            currentExerciseValue = nextExerciseValue;
+            currentCircuitValue = nextCircuitValue;
+            decrementPointer();
+        } else {
+            nextLayout = getTerminalLayout(LAST);
+        }
+        mainLayoutHandle.removeViewAt(0);
+        nextLayout.setVisibility(View.GONE);
+        mainLayoutHandle.addView(nextLayout);
+    }
+
     private void decrementUI(){
+        decrementPointer();
         //remove next
         //mainLayoutHandle.removeView(nextLayout);
-        Log.d("4.11", "DECREMENTING EX: " + currentExerciseValue + " -- CIR: " + currentCircuitValue);
+        //Log.d("4.11", "DECREMENTING EX: " + currentExerciseValue + " -- CIR: " + currentCircuitValue);
         LinearLayout prevLayout;
         mainLayoutHandle.getChildAt(1).setVisibility(View.GONE);
         mainLayoutHandle.getChildAt(0).setVisibility(View.VISIBLE);
@@ -355,18 +447,20 @@ public class DetailActivity extends ActionBarActivity{
         mainLayoutHandle.invalidate();
         boolean foundExercise = findNextExerciseDescending();
         if(foundExercise) {
+            decrementPointer();
             previousExercise = Workout.get(previousCircuitValue).getExercise(previousExerciseValue);
             prevLayout = createFragments(previousExercise);
             currentExercise = previousExercise;
             currentExerciseValue = previousExerciseValue;
             currentCircuitValue = previousCircuitValue;
+            incrementPointer();
         } else {
             prevLayout = getTerminalLayout(FIRST);
         }
         mainLayoutHandle.removeViewAt(2);
         prevLayout.setVisibility(View.GONE);
         mainLayoutHandle.addView(prevLayout, 0);
-        Log.d("4.11", "decUI post invalidate");
+        //Log.d("4.11", "decUI post invalidate");
         //animate transition, top expands, bottom shrinks
         //MyCustomAnimation a = new MyCustomAnimation(currentLayout, previousLayout, 1000, totalLayoutHeight);
         //previousLayout.startAnimation(a);
@@ -409,7 +503,7 @@ public class DetailActivity extends ActionBarActivity{
                 WorkoutData.get(this).getWorkout().get(loopCircuitVal);
         while(loopCircuitVal >= 0 && !foundExercise){
             for(int i = exerciseLoopVal; i>= 0; i--){
-                Log.d("4/6", "IN FOR: CIRCUIT VAL " + loopCircuitVal + " -- EXERCISE VAL" + i);
+                //Log.d("4/6", "IN FOR: CIRCUIT VAL " + loopCircuitVal + " -- EXERCISE VAL" + i);
                 Exercise e = prevCircuit.getExercise(i);
                 if(!e.getName().equals("test")){
                     previousExerciseValue = i;
@@ -424,12 +518,74 @@ public class DetailActivity extends ActionBarActivity{
                     prevCircuit =
                             WorkoutData.get(this).getWorkout().get(loopCircuitVal);
                     exerciseLoopVal = prevCircuit.getExercises().size() - 1;
-                    Log.d("4/6", "END OF WHILE: CIRCUIT VAL " + loopCircuitVal + " -- EXERCISE VAL" + exerciseLoopVal);
+                    //Log.d("4/6", "END OF WHILE: CIRCUIT VAL " + loopCircuitVal + " -- EXERCISE VAL" + exerciseLoopVal);
                 }
             }
         }
         return foundExercise;
     }
+
+
+    private void implementSwipeListener(View v){
+
+        v.setOnTouchListener(new View.OnTouchListener() {
+            private int swipeThreshold = 150;
+            private float currentY;
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int action = event.getAction();
+
+                switch (action){
+                    case MotionEvent.ACTION_DOWN: {
+                        //Log.d("DETAIL SWIPE TESTS", "ACTION_DOWN");
+                        final int pointerIndex = MotionEventCompat.getActionIndex(event);
+                        final float startY = MotionEventCompat.getY(event, pointerIndex);
+
+                        v.postDelayed(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                if(currentY > startY + swipeThreshold){
+
+                                    previous();
+
+                                }
+                                if(currentY < startY - swipeThreshold){
+                                    next();
+
+                                }
+                            }
+                        }, 500);
+
+                        break;
+                    }
+
+                    case MotionEvent.ACTION_MOVE: {
+                        currentY = event.getY();
+                        break;
+                    }
+
+                    case MotionEvent.ACTION_UP: {
+
+                        break;
+                    }
+
+                    case MotionEvent.ACTION_CANCEL: {
+
+                        break;
+                    }
+
+                    case MotionEvent.ACTION_POINTER_UP: {
+
+                        break;
+                    }
+                }
+                return true;
+            }
+        });
+
+    }
+
 
     private int getRelativeLeft(View myView) {
         if (myView.getParent() == myView.getRootView())
@@ -450,4 +606,5 @@ public class DetailActivity extends ActionBarActivity{
         else
             return myView.getBottom() + getRelativeBottom((View) myView.getParent());
     }
+
 }
