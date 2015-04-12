@@ -29,6 +29,7 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
 
     private int mNumMetrics;
 
+
     public EditExerciseHistoryAdapter(Context context, int resource, ArrayList<ExerciseHistory> history){
         super(context, resource, history);
         m_exerciseHistory = history;
@@ -44,6 +45,9 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
         //Log.d("4.11", "CONSTRUCTIING ADAPTER, NUM METRICS: " + mNumMetrics);
     }
 
+    public void reloadAdapter(){
+
+    }
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         //Log.d("4.11", "getView called on position: " + position);

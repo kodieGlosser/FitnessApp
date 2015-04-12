@@ -46,12 +46,13 @@ public class DetailActivity extends ActionBarActivity{
     private int mTotalValidExercises;
     private int mIdPointer;
 
+    private boolean mBootstrap = true;
     //private LinearLayout previousLayout;
     //private LinearLayout currentLayout;
     //private LinearLayout nextLayout;
     private LinearLayout mainLayoutHandle;
 
-
+    private Context mContext;
 
     final int FIRST = 0, LAST = 1, EXERCISE = 2, EMPTY = 3;
     final int LIST_ID = 0, EDIT_ID = 1, VIEW_TYPE = 2;
@@ -67,6 +68,7 @@ public class DetailActivity extends ActionBarActivity{
         setContentView(R.layout.d_activity_main);
         mainLayoutHandle = (LinearLayout) findViewById(R.id.mainLayoutHandle);
         Bundle extras = getIntent().getExtras();
+        mContext = this;
 
         //Get total view height.
         /*
@@ -273,6 +275,8 @@ public class DetailActivity extends ActionBarActivity{
             history.add(eh);
         EditExerciseHistoryAdapter adapter = new EditExerciseHistoryAdapter(this, 0, history);
         historyFragment.setAdapter(adapter);
+        historyFragment.setAnimationDataSet(history, mContext, mBootstrap);
+        mBootstrap = false;
         //return layout
         return fragmentLayout;
     }
@@ -354,15 +358,18 @@ public class DetailActivity extends ActionBarActivity{
         //animate transition bottom expands, top shrinks
         //Log.d("4.11", "INCREMENTING EX: " + currentExerciseValue + " -- CIR: " + currentCircuitValue);
 
-       // int list_id = mListIds.get(mIdPointer);
-      //  ((EditExerciseHistoryFragment)getSupportFragmentManager().findFragmentById(list_id)).animateOut();
-       // new android.os.Handler().postDelayed(new Runnable() {
+       int list_id;
+       if(mIdPointer != -1) {
+           list_id = mListIds.get(mIdPointer);
+           ((EditExerciseHistoryFragment) getSupportFragmentManager().findFragmentById(list_id)).animateOut();
+       }
+       new android.os.Handler().postDelayed(new Runnable() {
 
-        //    public void run() {
+            public void run() {
                 increment();
-          //  }
+            }
 
-       // }, 1000);
+        }, 1000);
 
 
         //Log.d("4.11", "incUI post invalidate");
@@ -386,6 +393,11 @@ public class DetailActivity extends ActionBarActivity{
         mainLayoutHandle.getChildAt(0).setVisibility(View.GONE);
         mainLayoutHandle.getChildAt(1).setVisibility(View.VISIBLE);
         mainLayoutHandle.getChildAt(1).setLayoutParams(mParams);
+
+        if(mIdPointer != mTotalValidExercises){ //animate view
+            int list_id = mListIds.get(mIdPointer);
+            ((EditExerciseHistoryFragment) getSupportFragmentManager().findFragmentById(list_id)).animateIn();
+        }
 
         if (mIdPointer == mTotalValidExercises){
             //we are at end, add nothing
@@ -421,6 +433,11 @@ public class DetailActivity extends ActionBarActivity{
         mainLayoutHandle.getChildAt(0).setVisibility(View.VISIBLE);
         mainLayoutHandle.getChildAt(0).setLayoutParams(mParams);
         mainLayoutHandle.getChildAt(1).setVisibility(View.GONE);
+
+        if(mIdPointer != 0){ //animate view
+            int list_id = mListIds.get(mIdPointer);
+            ((EditExerciseHistoryFragment) getSupportFragmentManager().findFragmentById(list_id)).animateIn();
+        }
 
         if(mIdPointer == -1){
             //we are at the very end, do nothing

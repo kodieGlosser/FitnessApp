@@ -52,6 +52,7 @@ public class EditExerciseDetailsFragment extends Fragment {
         return v;
     }
 
+
     public void putExercise(Exercise e){
         mExercise = e;
     }
