@@ -42,7 +42,7 @@ public class DetailActivity extends ActionBarActivity{
     private ArrayList<Integer> mCircuitVals = new ArrayList<>();
     private ArrayList<Integer> mListIds = new ArrayList<>();
     private ArrayList<Integer> mDetailIds = new ArrayList<>();
-    private ArrayList<Boolean> mFragmentsCreated = new ArrayList<>();
+    //private ArrayList<Boolean> mFragmentsCreated = new ArrayList<>();
     private int mTotalValidExercises;
     private int mIdPointer;
 
@@ -143,7 +143,7 @@ public class DetailActivity extends ActionBarActivity{
             currentLayout.setLayoutParams(mParams);
             currentLayout.setTag(EXERCISE);
 
-            if(mIdPointer + 1 <= mTotalValidExercises){
+            if(mIdPointer + 1 < mTotalValidExercises){
                 mIdPointer++;
                 e = Workout.get(mCircuitVals.get(mIdPointer)).getExercise(mExerciseVals.get(mIdPointer));
                 nextLayout = createFragments(e);
@@ -200,7 +200,7 @@ public class DetailActivity extends ActionBarActivity{
 
     private boolean mapWorkout(int startCircuit, int startExercise){
         boolean emptyDataSet = true;
-        int counter = 0;
+        int counter = -1;
         mIdPointer = 0;
         currentExerciseValue = 0;
         currentCircuitValue = 0;
@@ -210,9 +210,11 @@ public class DetailActivity extends ActionBarActivity{
             mDetailIds.add(View.generateViewId());
             mExerciseVals.add(currentExerciseValue);
             mCircuitVals.add(currentCircuitValue);
-            mFragmentsCreated.add(false);
+           // mFragmentsCreated.add(false);
             counter++;
             emptyDataSet = false;
+            Log.d("4/12", "ID: " + counter + " -- EXERCISE: " + Workout.get(currentCircuitValue).getExercise(currentExerciseValue).getName() +
+                " -- " + mExerciseVals + " -- " + mCircuitVals);
         }
 
         boolean hasExercises = findNextExerciseAscending();
@@ -231,10 +233,14 @@ public class DetailActivity extends ActionBarActivity{
             mDetailIds.add(View.generateViewId());
             mExerciseVals.add(currentExerciseValue);
             mCircuitVals.add(currentCircuitValue);
-            mFragmentsCreated.add(false);
+         //   mFragmentsCreated.add(false);
+            Log.d("4/12", "ID: " + counter + " -- EXERCISE: " + Workout.get(currentCircuitValue).getExercise(currentExerciseValue).getName() +
+                    " -- " + mExerciseVals + " -- " + mCircuitVals);
             hasExercises = findNextExerciseAscending();
         }
-        mTotalValidExercises = counter;
+
+        mTotalValidExercises = counter + 1;
+        Log.d("4/1", "Start Pointer: " + mIdPointer + " -- Total valid Exercises: " + mTotalValidExercises);
         return emptyDataSet;
     }
 
@@ -251,9 +257,9 @@ public class DetailActivity extends ActionBarActivity{
 
         transaction.add(mDetailIds.get(mIdPointer), detailsFragment);
         transaction.add(mListIds.get(mIdPointer), historyFragment);
-        mFragmentsCreated.set(mIdPointer, true);
+      //  mFragmentsCreated.set(mIdPointer, true);
 
-        //Log.d("pointer tests", "CREATING FRAG FOR EXERCISE: " + e.getName() + " -- @ ID: " + mCurrentListID + " -- PTR: " + mIdPointer);
+        Log.d("4/12", "CREATING FRAG FOR EXERCISE: " + e.getName() + " -- PTR: " + mIdPointer);
         //put fragments in layout
         transaction.commit();
 
@@ -272,29 +278,13 @@ public class DetailActivity extends ActionBarActivity{
     }
 
     private LinearLayout createDynamicFragmentLayout(){
-        FrameLayout tabHandle = (FrameLayout) findViewById(R.id.tabHandle);
-        //int fragmentLayoutHeight = mScreenHeight - tabBottom;
-        //Log.d("4/11", "Remaining height: " + fragmentLayoutHeight);
-
 
         LinearLayout fragmentLayout = new LinearLayout(this);
         fragmentLayout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams mainParams = new LinearLayout
                 .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        /*
-        LinearLayout editFrame = new LinearLayout(this);
-        LinearLayout.LayoutParams editParams = new LinearLayout
-                .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
-        editFrame.setLayoutParams(editParams);
 
-        LinearLayout listFrame = new LinearLayout(this);
-        LinearLayout.LayoutParams listParams = new LinearLayout
-                .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
-        listFrame.setLayoutParams(listParams);
-        */
         FrameLayout editFrame = new FrameLayout(this);
 
         LinearLayout.LayoutParams editParams = new LinearLayout
@@ -322,7 +312,6 @@ public class DetailActivity extends ActionBarActivity{
     public void next(){
         LinearLayout currentLayout = (LinearLayout)mainLayoutHandle.getChildAt(1);
         int viewType = (int)currentLayout.getTag();
-        if (currentLayout.getTag() == null)
 
         switch (viewType){
             case FIRST:
@@ -386,65 +375,74 @@ public class DetailActivity extends ActionBarActivity{
     }
 
     private void increment(){
-        if(mIdPointer != mTotalValidExercises)
-            mIdPointer++;
+
+        mIdPointer++;
 
         LinearLayout nextLayout;
-        mainLayoutHandle.getChildAt(1).setVisibility(View.GONE);
-        mainLayoutHandle.getChildAt(2).setVisibility(View.VISIBLE);
-        mainLayoutHandle.getChildAt(2).setLayoutParams(mParams);
+        if (mIdPointer != 0){
+            mainLayoutHandle.removeViewAt(0);
+        }
 
-        if(mIdPointer+1 <= mTotalValidExercises) {
-            if(!mFragmentsCreated.get(mIdPointer+1)) {
+        mainLayoutHandle.getChildAt(0).setVisibility(View.GONE);
+        mainLayoutHandle.getChildAt(1).setVisibility(View.VISIBLE);
+        mainLayoutHandle.getChildAt(1).setLayoutParams(mParams);
+
+        if (mIdPointer == mTotalValidExercises){
+            //we are at end, add nothing
+        } else {
+            //add something
+            if(mIdPointer+1 == mTotalValidExercises){
+                //preload end message
+                nextLayout = getTerminalLayout(LAST);
+                nextLayout.setVisibility(View.GONE);
+            } else {
+                //preload next exercise
                 mIdPointer++;
                 Exercise e = Workout.get(mCircuitVals.get(mIdPointer)).getExercise(mExerciseVals.get(mIdPointer));
                 nextLayout = createFragments(e);
                 nextLayout.setVisibility(View.GONE);
-                mainLayoutHandle.addView(nextLayout);
-                mFragmentsCreated.set(mIdPointer+1, true);
                 mIdPointer--;
             }
-        } else {
-            nextLayout = getTerminalLayout(LAST);
-            nextLayout.setVisibility(View.GONE);
+            //add the corrected something
             mainLayoutHandle.addView(nextLayout);
         }
-        mainLayoutHandle.removeViewAt(0);
     }
 
     private void decrementUI(){
-        //remove next
-        //mainLayoutHandle.removeView(nextLayout);
-        //Log.d("4.11", "DECREMENTING EX: " + currentExerciseValue + " -- CIR: " + currentCircuitValue);
-        if(mIdPointer != 0)
-            mIdPointer--;
-        
+        mIdPointer--;
+
         LinearLayout prevLayout;
-        mainLayoutHandle.getChildAt(1).setVisibility(View.GONE);
+
+        if(mIdPointer!=mTotalValidExercises-1){
+            mainLayoutHandle.removeViewAt(2);
+        }
+
+
         mainLayoutHandle.getChildAt(0).setVisibility(View.VISIBLE);
         mainLayoutHandle.getChildAt(0).setLayoutParams(mParams);
+        mainLayoutHandle.getChildAt(1).setVisibility(View.GONE);
 
-        if(foundExercise) {
+        if(mIdPointer == -1){
+            //we are at the very end, do nothing
+        }else{
+            //load next item
+            if(mIdPointer-1 == -1){
+                //next item is very end
+                prevLayout = getTerminalLayout(FIRST);
+                prevLayout.setVisibility(View.GONE);
 
-            previousExercise = Workout.get(previousCircuitValue).getExercise(previousExerciseValue);
-            prevLayout = createFragments(previousExercise);
+            } else {
+                //next item is exercise
+                mIdPointer--;
+                Exercise e = Workout.get(mCircuitVals.get(mIdPointer)).getExercise(mExerciseVals.get(mIdPointer));
+                prevLayout = createFragments(e);
+                prevLayout.setVisibility(View.GONE);
 
-        } else {
-            prevLayout = getTerminalLayout(FIRST);
+                //   mFragmentsCreated.set(mIdPointer, true);
+                mIdPointer++;
+            }
+            mainLayoutHandle.addView(prevLayout, 0);
         }
-        mainLayoutHandle.removeViewAt(2);
-        prevLayout.setVisibility(View.GONE);
-        mainLayoutHandle.addView(prevLayout, 0);
-
-
-        //Log.d("4.11", "decUI post invalidate");
-        //animate transition, top expands, bottom shrinks
-        //MyCustomAnimation a = new MyCustomAnimation(currentLayout, previousLayout, 1000, totalLayoutHeight);
-        //previousLayout.startAnimation(a);
-        //next = current
-        //current = previous
-        //find new previous
-        //add new previous to layout
     }
     private boolean findNextExerciseAscending(){
         ArrayList<Circuit> workout = WorkoutData.get(this).getWorkout();
@@ -473,117 +471,6 @@ public class DetailActivity extends ActionBarActivity{
         }
         return breakFlag;
     }
-    /*
-    private boolean findNextExerciseAscending(){
-        ArrayList<Circuit> workout = WorkoutData.get(this).getWorkout();
-        int workoutSize = workout.size();
-        boolean breakFlag = false;
-        //int counter = currentCircuitValue;
-        int counter = mCircuitVals.get(mIdPointer);
-        //int counter = 0;
-        //int forCounter = currentExerciseValue + 1;
-        int forCounter = mExerciseVals.get(mIdPointer) + 1;
-        //int forCounter = 1;
-
-        while((!breakFlag) && (counter < workoutSize)){
-            Circuit c = workout.get(counter);
-            int circuitSize = c.getSize();
-            for(int i = forCounter; i < circuitSize; i++){
-                if(!c.getExercise(i).getName().equals("test")){
-                    breakFlag = true;
-                    nextExerciseValue = i;
-                    nextCircuitValue = counter;
-                    break;
-                }
-            }
-            forCounter = 0;
-            counter++;
-        }
-        return breakFlag;
-    }
-
-    private boolean findNextExerciseDescending(){
-        //int loopCircuitVal = currentCircuitValue;
-        int loopCircuitVal = mCircuitVals.get(mIdPointer);
-        //int exerciseLoopVal = currentExerciseValue - 1;
-        int exerciseLoopVal = mExerciseVals.get(mIdPointer) - 1;
-
-        boolean foundExercise = false;
-        Circuit prevCircuit =
-                WorkoutData.get(this).getWorkout().get(loopCircuitVal);
-        while(loopCircuitVal >= 0 && !foundExercise){
-            for(int i = exerciseLoopVal; i>= 0; i--){
-                //Log.d("4/6", "IN FOR: CIRCUIT VAL " + loopCircuitVal + " -- EXERCISE VAL" + i);
-                Exercise e = prevCircuit.getExercise(i);
-                if(!e.getName().equals("test")){
-                    previousExerciseValue = i;
-                    previousCircuitValue = loopCircuitVal;
-                    foundExercise = true;
-                    break;
-                }
-            }
-            if(!foundExercise) {
-                loopCircuitVal--;
-                if(loopCircuitVal>=0) {
-                    prevCircuit =
-                            WorkoutData.get(this).getWorkout().get(loopCircuitVal);
-                    exerciseLoopVal = prevCircuit.getExercises().size() - 1;
-                    //Log.d("4/6", "END OF WHILE: CIRCUIT VAL " + loopCircuitVal + " -- EXERCISE VAL" + exerciseLoopVal);
-                }
-            }
-        }
-        return foundExercise;
-    }
-
-
-    private void initializePointer(){
-        mIdPointer = 1;
-        mListIds.add(View.generateViewId());
-        mListIds.add(View.generateViewId());
-        mListIds.add(View.generateViewId());
-        mDetailIds.add(View.generateViewId());
-        mDetailIds.add(View.generateViewId());
-        mDetailIds.add(View.generateViewId());
-
-        mCurrentDetailID = mDetailIds.get(1);
-        mCurrentListID = mListIds.get(1);
-        //Log.d("pointer tests", "Initialize, pointer ID: " + mIdPointer);
-        //for(Integer i : mListIds)
-            //Log.d("pointer tests", "" + i);
-    }
-
-    private void incrementPointer(){
-        mIdPointer++;
-        int nextPointer = mIdPointer + 1;
-        if (nextPointer == mListIds.size()){
-            mListIds.add(View.generateViewId());
-            mDetailIds.add(View.generateViewId());
-        }
-
-        mCurrentDetailID = mDetailIds.get(mIdPointer);
-        mCurrentListID = mListIds.get(mIdPointer);
-        Log.d("pointer tests", "INC, pointer ID: " + mIdPointer);
-        //for(Integer i : mListIds)
-         //   Log.d("pointer tests", "" + i);
-    }
-
-    private void decrementPointer(){
-        if (mIdPointer == 1){
-            mListIds.add(0, View.generateViewId());
-            mDetailIds.add(0, View.generateViewId());
-            mCurrentDetailID = mDetailIds.get(1);
-            mCurrentListID = mListIds.get(1);
-        } else {
-            mIdPointer--;
-            mCurrentDetailID = mDetailIds.get(mIdPointer);
-            mCurrentListID = mListIds.get(mIdPointer);
-        }
-        Log.d("pointer tests", "DEC, pointer ID: " + mIdPointer);
-        //for(Integer i : mListIds)
-            //Log.d("pointer tests", "" + i);
-    }
-    */
-
 
     private void implementSwipeListener(View v){
 
@@ -644,7 +531,6 @@ public class DetailActivity extends ActionBarActivity{
         });
 
     }
-
 
     private int getRelativeLeft(View myView) {
         if (myView.getParent() == myView.getRootView())
