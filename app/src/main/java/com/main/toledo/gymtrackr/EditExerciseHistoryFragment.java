@@ -3,6 +3,7 @@ package com.main.toledo.gymtrackr;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ListFragment;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
@@ -26,8 +27,8 @@ public class EditExerciseHistoryFragment extends ListFragment {
     public void animateOut(){
         int totalDelay = 2000;
         int numVisibleItems = getListView().getLastVisiblePosition();
-        int lastItemIndex = getListView().getLastVisiblePosition() - 1;
-        int delayPerItem = totalDelay/numVisibleItems;
+        int lastItemIndex = getListView().getLastVisiblePosition();
+        final int delayPerItem = totalDelay/numVisibleItems;
 
         int delay = 0;
 
@@ -36,14 +37,25 @@ public class EditExerciseHistoryFragment extends ListFragment {
         );
         anim.setDuration(delayPerItem);
 
-        while(lastItemIndex >= 0) {
+        //getListView().getChildAt(2).startAnimation(anim);
+
+        //while(lastItemIndex >= 0) {
             final int index = lastItemIndex;
 
             new Handler().postDelayed(new Runnable() {
 
                 public void run() {
                     if (getListView().getChildAt(index) != null)
-                        getListView().getChildAt(index).startAnimation(anim);
+                        (getListView().getChildAt(index)).startAnimation(anim);
+                    new Handler().postDelayed(new Runnable() {
+
+                        public void run() {
+                            if (getListView().getChildAt(index) != null)
+                                getListView().getChildAt(index).setVisibility(View.GONE);
+
+                        }
+
+                    }, delayPerItem);
                 }
 
             }, delay);
@@ -51,7 +63,8 @@ public class EditExerciseHistoryFragment extends ListFragment {
 
             delay = delay + delayPerItem;
             lastItemIndex--;
-        }
+        //}
+
 
     }
 
