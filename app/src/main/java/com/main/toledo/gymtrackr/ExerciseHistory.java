@@ -8,12 +8,13 @@ import java.util.Date;
  */
 public class ExerciseHistory {
 
-    private int m_id, m_weight, m_rep, m_exerciseId, m_planId, m_time, m_other;
+    private int m_id, m_weight, m_rep, m_exerciseId, m_planId, m_time;
+    private String m_other;
     private Date m_date;
     //stubs
     private ArrayList<Metric> m_metrics = new ArrayList<Metric>();
 
-    public ExerciseHistory(Date date, int weight, int rep, int exerciseId, int planId, int time, int other){
+    public ExerciseHistory(Date date, int weight, int rep, int exerciseId, int planId, int time, String other){
         this.m_date = date;
         this.m_weight = weight;
         this.m_rep = rep;
@@ -44,7 +45,7 @@ public class ExerciseHistory {
 
     public int getTime() { return this.m_time;}
 
-    public int getOther() {return this.m_other;}
+    public String getOther() {return this.m_other;}
 
     public Date getDate() { return this.m_date; }
 
