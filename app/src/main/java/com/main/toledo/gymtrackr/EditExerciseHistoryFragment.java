@@ -7,9 +7,12 @@ import android.os.Looper;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.view.animation.TranslateAnimation;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -27,6 +30,7 @@ public class EditExerciseHistoryFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
         //sets the list adapter to the one we made in the browse activity
 
     }
@@ -55,8 +59,10 @@ public class EditExerciseHistoryFragment extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
-        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(mContext, R.anim.list_layout_controller);
-        getListView().setLayoutAnimation(animation);
+        getListView().setDivider(null);
+        getListView().setDividerHeight(0);
+        //LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(mContext, R.anim.list_layout_controller);
+        //getListView().setLayoutAnimation(animation);
         if (mBoot)
             new Handler().postDelayed(new Runnable() {
 
@@ -72,51 +78,82 @@ public class EditExerciseHistoryFragment extends ListFragment {
     }
 
     public void animateOut() {
-        /*
-        final int totalDelay = 2000;
+
+        int totalDelay = 2000;
         ListView thisListView = getListView();
 
         int lastIndex = thisListView.getLastVisiblePosition();
         int firstIndex = thisListView.getFirstVisiblePosition();
         int numVisibleItems = lastIndex - firstIndex;
 
-        final int delayPerItem = totalDelay / numVisibleItems;
+        int delayPerItem = totalDelay / numVisibleItems;
 
         //int delay = 0;
 
-        final Animation anim = AnimationUtils.loadAnimation(
-                getActivity(), android.R.anim.slide_out_right
-        );
 
-        anim.setDuration(delayPerItem);
 
         int delay = 0;
-        int mIndex = lastIndex;
 
-        while (mIndex >= 0) {
-            final int whileIndex = mIndex;
-            new Handler().postDelayed(new Runnable() {
-                final int index = whileIndex;
+        AnimationSet set = new AnimationSet(true);
 
-                public void run() {
-                    if (getListView().getChildAt(index) != null)
-                        (getListView().getChildAt(index)).startAnimation(anim);
-                    new Handler().postDelayed(new Runnable() {
+        Animation animation = new AlphaAnimation(1.0f, 0.0f);
+        animation.setDuration(200);
+        set.addAnimation(animation);
+        /*
+        animation = new AlphaAnimation(0.0f, 0.0f);
+        animation.setDuration(1000);
+        set.addAnimation(animation);
+        */
 
-                        public void run() {
-                            //removeItem(index);
-                            getListView().getChildAt(index).setVisibility(View.INVISIBLE);
+        animation = new TranslateAnimation(
+                Animation.RELATIVE_TO_SELF, 0.0f,Animation.RELATIVE_TO_SELF, 5.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f,Animation.RELATIVE_TO_SELF, 0.0f
+        );
+        animation.setDuration(1000);
 
-                        }
+        set.addAnimation(animation);
 
-                    }, (delayPerItem/2));
+
+
+
+        LayoutAnimationController controller = new LayoutAnimationController(set, 0.1f);
+        controller.setOrder(LayoutAnimationController.ORDER_REVERSE);
+        ListView listView = getListView();
+        listView.setLayoutAnimation(controller);
+        listView.startLayoutAnimation();
+        /*
+        while (lastIndex >= 0) {
+            final int index = lastIndex;
+
+
+
+            TranslateAnimation anim = new TranslateAnimation(0, 1080, 0, 0);
+
+            anim.setDuration(delayPerItem);
+            anim.setStartTime(delay);
+            anim.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
                 }
 
-            }, delay);
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    //getListView().getChildAt(index).clearAnimation();
+                    getListView().getChildAt(index).setVisibility(View.INVISIBLE);
+                }
 
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+
+            //if (getListView().getChildAt(lastIndex) != null)
+                getListView().getChildAt(index).startAnimation(anim);
 
             delay = delay + delayPerItem;
-            mIndex--;
+            lastIndex--;
         }
 
 
@@ -136,6 +173,8 @@ public class EditExerciseHistoryFragment extends ListFragment {
     public void animateIn(){
         setListAdapter(mAdapter);
         //EditExerciseHistoryAdapter adapter = new EditExerciseHistoryAdapter(getActivity(), 0, mHistory);
+        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(mContext, R.anim.list_layout_controller);
+        getListView().setLayoutAnimation(animation);
         getListView().startLayoutAnimation();
     }
 
