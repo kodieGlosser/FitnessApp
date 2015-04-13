@@ -3,11 +3,14 @@ package com.main.toledo.gymtrackr;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 
@@ -16,10 +19,11 @@ import java.util.ArrayList;
  */
 public class EditExerciseHistoryFragment extends ListFragment {
     private EditExerciseHistoryAdapter mAdapter;
+    //private ArrayList<ExerciseHistory> mTempHistory;
     private ArrayList<ExerciseHistory> mHistory;
     private Context mContext;
     private boolean mBoot;
-
+    private String mName;
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -32,13 +36,20 @@ public class EditExerciseHistoryFragment extends ListFragment {
     }
 
     public void refreshAdapter(){
-        mAdapter = new EditExerciseHistoryAdapter(mContext, 0, mHistory);
+        /*
+        mHistory.clear();
+        DatabaseWrapper db = new DatabaseWrapper();
+        ExerciseHistory[] exerciseHistories = db.loadHistoryByExerciseName(mName);
+        for (ExerciseHistory eh : exerciseHistories)
+            mHistory.add(eh);
+            */
     }
 
-    public void setAnimationDataSet(ArrayList<ExerciseHistory> history, Context c, boolean b){
+    public void setAnimationDataSet(ArrayList<ExerciseHistory> history, Context c, boolean b, String name){
         mBoot = b;
         mContext = c;
         mHistory = history;
+        mName = name;
     }
 
     @Override
@@ -60,25 +71,32 @@ public class EditExerciseHistoryFragment extends ListFragment {
 
     }
 
-    public void animateOut(){
-        int totalDelay = 600;
-        int numVisibleItems = getListView().getLastVisiblePosition();
-        int lastItemIndex = getListView().getLastVisiblePosition();
-        final int delayPerItem = totalDelay/numVisibleItems;
+    public void animateOut() {
+        /*
+        final int totalDelay = 2000;
+        ListView thisListView = getListView();
 
-        int delay = 0;
+        int lastIndex = thisListView.getLastVisiblePosition();
+        int firstIndex = thisListView.getFirstVisiblePosition();
+        int numVisibleItems = lastIndex - firstIndex;
+
+        final int delayPerItem = totalDelay / numVisibleItems;
+
+        //int delay = 0;
 
         final Animation anim = AnimationUtils.loadAnimation(
                 getActivity(), android.R.anim.slide_out_right
         );
+
         anim.setDuration(delayPerItem);
 
-        //getListView().getChildAt(2).startAnimation(anim);
+        int delay = 0;
+        int mIndex = lastIndex;
 
-        while(lastItemIndex >= 0) {
-            final int index = lastItemIndex;
-
+        while (mIndex >= 0) {
+            final int whileIndex = mIndex;
             new Handler().postDelayed(new Runnable() {
+                final int index = whileIndex;
 
                 public void run() {
                     if (getListView().getChildAt(index) != null)
@@ -86,18 +104,21 @@ public class EditExerciseHistoryFragment extends ListFragment {
                     new Handler().postDelayed(new Runnable() {
 
                         public void run() {
-                            removeItem(index);
+                            //removeItem(index);
+                            getListView().getChildAt(index).setVisibility(View.INVISIBLE);
+
                         }
 
-                    }, delayPerItem * 3/4);
+                    }, (delayPerItem/2));
                 }
 
             }, delay);
 
 
             delay = delay + delayPerItem;
-            lastItemIndex--;
+            mIndex--;
         }
+
 
         new Handler().postDelayed(new Runnable() {
 
@@ -109,6 +130,7 @@ public class EditExerciseHistoryFragment extends ListFragment {
             }
 
         }, totalDelay + (int)(totalDelay*.3));
+        */
     }
 
     public void animateIn(){

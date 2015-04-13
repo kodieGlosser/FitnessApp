@@ -480,13 +480,45 @@ public class DatabaseWrapper {
         exerciseValues.put(COLUMN_S_OTHER, exercise.getOtherName());
         myDatabase.insert(EXERCISE_TABLE, null, exerciseValues);
     }
-    */
+
 
     public ArrayList<Date> getSpecificDaysFromHistory() {
 
         Cursor c = myDatabase.query(EXERCISE_HISTORY_TABLE, null, null, null, null, null, null);
         ExerciseHistory[] allExercises = convertCursorToExerciseHistory(c);
         ArrayList<Date> listOfDates = null;
+
+        for (int i =0; i < allExercises.length; i++){
+            Date date = allExercises[i].getDate();
+            boolean isItAlreadyUsed = false;
+
+            for (int j =0; j < listOfDates.size(); j++){
+                Calendar calInExistingList = Calendar.getInstance();
+                calInExistingList.setTime(listOfDates.get(j));
+                Calendar calInListBeingChecked = Calendar.getInstance();
+                calInListBeingChecked.setTime(date);
+
+                if (calInExistingList.get(Calendar.MONTH) == calInListBeingChecked.get(Calendar.MONTH) && calInExistingList.get(Calendar.DAY_OF_MONTH) == calInListBeingChecked.get(Calendar.DAY_OF_MONTH)) {
+                    isItAlreadyUsed = true;
+                }
+            }
+
+            if (!isItAlreadyUsed) {
+                listOfDates.add(date);
+            }
+
+        }
+
+        return listOfDates;
+    }
+
+    */
+
+    public ArrayList<Date> getSpecificDaysFromHistory() {
+
+        Cursor c = myDatabase.query(EXERCISE_HISTORY_TABLE, null, null, null, null, null, null);
+        ExerciseHistory[] allExercises = convertCursorToExerciseHistory(c);
+        ArrayList<Date> listOfDates = new ArrayList<>();
 
         for (int i =0; i < allExercises.length; i++){
             Date date = allExercises[i].getDate();

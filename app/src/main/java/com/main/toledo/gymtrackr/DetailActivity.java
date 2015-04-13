@@ -275,7 +275,7 @@ public class DetailActivity extends ActionBarActivity{
             history.add(eh);
         EditExerciseHistoryAdapter adapter = new EditExerciseHistoryAdapter(this, 0, history);
         historyFragment.setAdapter(adapter);
-        historyFragment.setAnimationDataSet(history, mContext, mBootstrap);
+        historyFragment.setAnimationDataSet(history, mContext, mBootstrap, e.getName());
         mBootstrap = false;
         //return layout
         return fragmentLayout;
@@ -357,7 +357,7 @@ public class DetailActivity extends ActionBarActivity{
         //mainLayoutHandle.removeView(previousLayout);
         //animate transition bottom expands, top shrinks
         //Log.d("4.11", "INCREMENTING EX: " + currentExerciseValue + " -- CIR: " + currentCircuitValue);
-
+       /*
        int list_id;
        if(mIdPointer != -1) {
            list_id = mListIds.get(mIdPointer);
@@ -370,8 +370,8 @@ public class DetailActivity extends ActionBarActivity{
             }
 
         }, 1000);
-
-
+        */
+        increment();
         //Log.d("4.11", "incUI post invalidate");
         //MyCustomAnimation a = new MyCustomAnimation(currentLayout, nextLayout, 1000, totalLayoutHeight);
         //currentLayout.startAnimation(a);
@@ -434,7 +434,7 @@ public class DetailActivity extends ActionBarActivity{
         mainLayoutHandle.getChildAt(0).setLayoutParams(mParams);
         mainLayoutHandle.getChildAt(1).setVisibility(View.GONE);
 
-        if(mIdPointer != 0){ //animate view
+        if(mIdPointer != -1){ //animate view
             int list_id = mListIds.get(mIdPointer);
             ((EditExerciseHistoryFragment) getSupportFragmentManager().findFragmentById(list_id)).animateIn();
         }

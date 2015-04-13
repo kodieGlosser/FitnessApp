@@ -925,6 +925,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         drag(0, currentYPos);// replace 0 with x if desired
     }
     private boolean checkIfValidPosition(){
+        Log.d("drag bug", "check if valid called");
         boolean okayToDrag = false;
         int position = pointToPosition(currentXPos, currentYPos);
         int groupPosition;
@@ -939,7 +940,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                 if (!e.getName().equals("test")){
                     okayToDrag = true;
                 }
-            } else if (getPackedPositionType(getExpandableListPosition(mStartPosition)) == PACKED_POSITION_TYPE_GROUP) {
+            } else if (getPackedPositionType(getExpandableListPosition(position)) == PACKED_POSITION_TYPE_GROUP) {
                 childPosition = -1;
                 groupPosition = getPackedPositionGroup(getExpandableListPosition(position));
                 c = Workout.get(groupPosition);

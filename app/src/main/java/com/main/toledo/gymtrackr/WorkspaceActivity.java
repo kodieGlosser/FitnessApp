@@ -32,9 +32,7 @@ public class WorkspaceActivity extends ActionBarActivity {
     boolean workout_from_plan_flag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //Log.d("APP FLOW TESTS", "ON CREATE CALLED IN WORKSPACE ACTIVITY");
         super.onCreate(savedInstanceState);
-        //gets relevant data from load activity, plan name and whether we are editing or working out.
         Bundle extras = getIntent().getExtras();
 
         if (extras != null){
@@ -45,24 +43,12 @@ public class WorkspaceActivity extends ActionBarActivity {
             } else {
                 workout_from_plan_flag = false;
             }
-            //Log.d("W_HEADER_DEBUG", "Plan name: " + planName);
             DatabaseWrapper db = new DatabaseWrapper();
             Plan planList = db.loadEntirePlan(planName);
-            //Log.d("DB INTEGRATION TESTS", "PLAN ID: "+ planList.getPlanId() + " -- PLAN NAME: " + planList.getName());
-            //Log.d("W_HEADER_DEBUG", "DB CALL COMPLETED");
             WorkoutData.get(this).eatPlan(planList, workout_from_plan_flag);
-            //Log.d("W_HEADER_DEBUG", "EATPLAN CALL COMPLETED");
         }
 
         setContentView(R.layout.w_activity_main);
-
-        /*
-        int aquaColor = Color.parseColor("#26d6cf");
-        int greenColor = Color.parseColor("#00B800");
-        */
-
-
-        //listAdapter = new WorkspaceExpandableListAdapterMKII(this);
 
         TabFragment = new WorkspaceTabFragment();
         ListFragment = new WorkspaceListFragment();
@@ -72,20 +58,6 @@ public class WorkspaceActivity extends ActionBarActivity {
         transaction.add(R.id.WorkspaceHeaderContainer, TabFragment);
         transaction.add(R.id.WorkspaceListContainer, ListFragment);
         transaction.commit();
-        /*
-        switch(mode){
-            case PLAN:
-                this.findViewById(R.id.mainLayoutHandle).setBackgroundColor(greenColor);
-                break;
-            case WORKOUT:
-                this.findViewById(R.id.mainLayoutHandle).setBackgroundColor(aquaColor);
-                break;
-            default:
-                break;
-        }
-        */
-
-
     }
 
     @Override
@@ -93,6 +65,21 @@ public class WorkspaceActivity extends ActionBarActivity {
         mOptionsMenu = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_workspace, menu);
+
+        if(!workout_from_plan_flag){
+            isEditable = true;
+            listAdapter.setEditable(isEditable);
+            ListFragment.workspaceListView.toggleListeners(isEditable);
+            ListFragment.workspaceListView.clearHandle();
+            mOptionsMenu.findItem(R.id.action_toggle_edit).setIcon(R.drawable.unlocked);
+        } else {
+            isEditable = false;
+            listAdapter.setEditable(isEditable);
+            ListFragment.workspaceListView.toggleListeners(isEditable);
+            ListFragment.workspaceListView.clearHandle();
+            mOptionsMenu.findItem(R.id.action_toggle_edit).setIcon(R.drawable.locked);
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -101,7 +88,7 @@ public class WorkspaceActivity extends ActionBarActivity {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_toggle_edit:
-                toggleEdit(false);
+                toggleEdit();
                 return true;
             case R.id.save_changes:
                 WorkspaceConfirmDialog dialog = new WorkspaceConfirmDialog();
@@ -147,30 +134,15 @@ public class WorkspaceActivity extends ActionBarActivity {
     }
     */
     //I feel like this should be in the header fragment...
-    public void toggleEdit(boolean fromOnResume){
+    public void toggleEdit(){
+        isEditable = !isEditable;
 
-
-        //if(fromOnResume)
-        //    isEditable = false;
-
-        if(!fromOnResume) {
-            isEditable = !isEditable;
-
-
-            if (isEditable) {
-                mOptionsMenu.findItem(R.id.action_toggle_edit).setIcon(R.drawable.unlocked);
-            /*
-            toggleButton.setBackgroundColor(Color.BLUE);
-            toggleButton.setTextColor(Color.WHITE);
-            */
-            } else {
-                mOptionsMenu.findItem(R.id.action_toggle_edit).setIcon(R.drawable.locked);
-            /*
-            toggleButton.setBackgroundColor(android.R.drawable.btn_default_small);
-            toggleButton.setTextColor(getResources().getColor(R.color.abc_primary_text_material_light));
-            */
-            }
+        if (isEditable) {
+            mOptionsMenu.findItem(R.id.action_toggle_edit).setIcon(R.drawable.unlocked);
+        } else {
+            mOptionsMenu.findItem(R.id.action_toggle_edit).setIcon(R.drawable.locked);
         }
+
         listAdapter.hideKeypad();
         listAdapter.setEditable(isEditable);
         ListFragment.workspaceListView.toggleListeners(isEditable);
@@ -185,8 +157,9 @@ public class WorkspaceActivity extends ActionBarActivity {
         toBrowse = false;
         if(listAdapter==null)
             listAdapter = new WorkspaceExpandableListAdapterMKII(this);
-        toggleEdit(true);
+
         listAdapter.hideKeypad();
+
 
 
         super.onResume();
