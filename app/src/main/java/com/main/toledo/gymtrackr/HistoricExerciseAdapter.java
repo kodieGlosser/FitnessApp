@@ -60,7 +60,6 @@ public class HistoricExerciseAdapter extends ArrayAdapter {
             metricLayout = null;
             initializeView();
             convertView = metricLayout;
-            holder.date = (TextView)convertView.findViewById(dateId);
             holder.name = (TextView)convertView.findViewById(nameId);
             switch(mNumMetrics){
                 case 0:
@@ -85,7 +84,6 @@ public class HistoricExerciseAdapter extends ArrayAdapter {
             holder = (ViewHolder)convertView.getTag();
         }
 
-        holder.date.setText(m_exerciseHistory.get(position).getDate().toString());
         holder.name.setText(m_exerciseHistory.get(position).getExerciseName());
         String s;
         switch(mNumMetrics){
@@ -119,11 +117,6 @@ public class HistoricExerciseAdapter extends ArrayAdapter {
     private void initializeView(){
         metricLayout = new LinearLayout(mContext);
         metricLayout.setOrientation(LinearLayout.VERTICAL);
-
-        TextView dateView = new TextView(mContext);
-        dateView.setId(dateId);
-
-        metricLayout.addView(dateView);
 
         TextView nameView = new TextView(mContext);
         nameView.setId(nameId);
@@ -161,7 +154,6 @@ public class HistoricExerciseAdapter extends ArrayAdapter {
 
     public static class ViewHolder{
         public TextView name;
-        public TextView date;
         public TextView firstMetric;
         public TextView secondMetric;
         public TextView thirdMetric;

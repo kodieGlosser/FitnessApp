@@ -39,16 +39,6 @@ public class EditExerciseHistoryFragment extends ListFragment {
         mAdapter = adapter;
     }
 
-    public void refreshAdapter(){
-        /*
-        mHistory.clear();
-        DatabaseWrapper db = new DatabaseWrapper();
-        ExerciseHistory[] exerciseHistories = db.loadHistoryByExerciseName(mName);
-        for (ExerciseHistory eh : exerciseHistories)
-            mHistory.add(eh);
-            */
-    }
-
     public void setAnimationDataSet(ArrayList<ExerciseHistory> history, Context c, String name){
         mContext = c;
         mHistory = history;
@@ -89,8 +79,6 @@ public class EditExerciseHistoryFragment extends ListFragment {
 
         //int delay = 0;
 
-
-
         int delay = 0;
 
         AnimationSet set = new AnimationSet(true);
@@ -112,61 +100,12 @@ public class EditExerciseHistoryFragment extends ListFragment {
 
         set.addAnimation(animation);
 
-
-
-
         LayoutAnimationController controller = new LayoutAnimationController(set, 0.1f);
         controller.setOrder(LayoutAnimationController.ORDER_REVERSE);
         ListView listView = getListView();
         listView.setLayoutAnimation(controller);
         listView.startLayoutAnimation();
-        /*
-        while (lastIndex >= 0) {
-            final int index = lastIndex;
 
-
-
-            TranslateAnimation anim = new TranslateAnimation(0, 1080, 0, 0);
-
-            anim.setDuration(delayPerItem);
-            anim.setStartTime(delay);
-            anim.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    //getListView().getChildAt(index).clearAnimation();
-                    getListView().getChildAt(index).setVisibility(View.INVISIBLE);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-
-            //if (getListView().getChildAt(lastIndex) != null)
-                getListView().getChildAt(index).startAnimation(anim);
-
-            delay = delay + delayPerItem;
-            lastIndex--;
-        }
-
-
-        new Handler().postDelayed(new Runnable() {
-
-            public void run() {
-
-                refreshAdapter();
-
-
-            }
-
-        }, totalDelay + (int)(totalDelay*.3));
-        */
     }
 
     public void animateIn(){
@@ -175,10 +114,5 @@ public class EditExerciseHistoryFragment extends ListFragment {
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(mContext, R.anim.list_layout_controller);
         getListView().setLayoutAnimation(animation);
         getListView().startLayoutAnimation();
-    }
-
-    public void removeItem(int index){
-        mAdapter.remove(mAdapter.getItem(index));
-        mAdapter.notifyDataSetChanged();
     }
 }

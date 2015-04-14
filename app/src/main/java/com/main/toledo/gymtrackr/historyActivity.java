@@ -51,10 +51,16 @@ public class historyActivity extends ActionBarActivity{
     }
 
     private void implementHistoryAdapter(){
-        DatabaseWrapper db = new DatabaseWrapper();
-        mHistoryDates = db.getSpecificDaysFromHistory();
-        mHistoryAdapter = new HistoryAdapter(this, 0, mHistoryDates);
+        if(mHistoryDates == null) {
+            DatabaseWrapper db = new DatabaseWrapper();
+            mHistoryDates = db.getSpecificDaysFromHistory();
+            mHistoryAdapter = new HistoryAdapter(this, 0, mHistoryDates);
+        }
+
         mListFragment.setAdapter(mHistoryAdapter, TOTAL_HISTORY);
+
+        mHeaderFragment.tryTotalHistoryText();
+
         mCurrentView = TOTAL_HISTORY;
     }
 
@@ -71,10 +77,13 @@ public class historyActivity extends ActionBarActivity{
 
         for(ExerciseHistory e : eh)
             mWorkoutHistory.add(e);
+
         mDayHistoryAdapter = new HistoricExerciseAdapter(this, 0, mWorkoutHistory);
+
         mListFragment.setAdapter(mDayHistoryAdapter, DAY_HISTORY);
 
-        mHistoryDates.clear();
+        mHeaderFragment.setDayHistoryText(selectedDate);
+
         mCurrentView = DAY_HISTORY;
     }
 
@@ -90,8 +99,13 @@ public class historyActivity extends ActionBarActivity{
 
         for(ExerciseHistory e : eh)
             mExerciseHistory.add(e);
-        mExerciseHistoryAdapter = new EditExerciseHistoryAdapter(this, 0, mExerciseHistory);
+        mExerciseHistoryAdapter =
+                new EditExerciseHistoryAdapter(this, 0, mExerciseHistory);
+
         mListFragment.setAdapter(mExerciseHistoryAdapter, EXERCISE_HISTORY);
+
+        mHeaderFragment.setExerciseHistoryText(exerciseName);
+
         mCurrentView = EXERCISE_HISTORY;
     }
 

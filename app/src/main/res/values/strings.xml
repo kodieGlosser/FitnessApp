@@ -24,4 +24,10 @@
     <string name="load_radioText_workout">Workout</string>
     <string name="load_radioText_edit">Edit</string>
     <string name="load_buttonText_workout">Add plan</string>
+
+    <!--History Strings-->
+    <string name="TOTAL_HISTORY_STRING">Workout data by day</string>
+    <string name="DAY_HISTORY_STRING">Workout data for date</string>
+    <string name="EXERCISE_HISTORY_STRING">Workout data for exercise</string>
+
 </resources>
