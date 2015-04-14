@@ -46,14 +46,14 @@ public class DetailActivity extends ActionBarActivity{
     private int mTotalValidExercises;
     private int mIdPointer;
 
-    private boolean mBootstrap = true;
+
     //private LinearLayout previousLayout;
     //private LinearLayout currentLayout;
     //private LinearLayout nextLayout;
     private LinearLayout mainLayoutHandle;
 
     private Context mContext;
-
+    private boolean mFirst;
     final int FIRST = 0, LAST = 1, EXERCISE = 2, EMPTY = 3;
     final int LIST_ID = 0, EDIT_ID = 1, VIEW_TYPE = 2;
     private ArrayList<Circuit> Workout = WorkoutData.get(this).getWorkout();
@@ -134,22 +134,22 @@ public class DetailActivity extends ActionBarActivity{
                 mIdPointer--;
                 e = Workout.get(mCircuitVals.get(mIdPointer)).getExercise(mExerciseVals.get(mIdPointer));
                 previousLayout = createFragments(e);
-                //previousLayout.setTag(EXERCISE);
                 mIdPointer++;
             } else {
                 previousLayout = getTerminalLayout(FIRST);
             }
 
+            mFirst = true;
             e = Workout.get(mCircuitVals.get(mIdPointer)).getExercise(mExerciseVals.get(mIdPointer));
             currentLayout = createFragments(e);
             currentLayout.setLayoutParams(mParams);
-            //currentLayout.setTag(EXERCISE);
+
+            mFirst = false;
 
             if(mIdPointer + 1 < mTotalValidExercises){
                 mIdPointer++;
                 e = Workout.get(mCircuitVals.get(mIdPointer)).getExercise(mExerciseVals.get(mIdPointer));
                 nextLayout = createFragments(e);
-                //nextLayout.setTag(EXERCISE);
                 mIdPointer--;
             } else {
                 nextLayout = getTerminalLayout(LAST);
@@ -275,8 +275,10 @@ public class DetailActivity extends ActionBarActivity{
             history.add(eh);
         EditExerciseHistoryAdapter adapter = new EditExerciseHistoryAdapter(this, 0, history);
         historyFragment.setAdapter(adapter);
-        historyFragment.setAnimationDataSet(history, mContext, mBootstrap, e.getName());
-        mBootstrap = false;
+        historyFragment.setAnimationDataSet(history, mContext, e.getName());
+
+        if(mFirst)
+            historyFragment.setFirstFragment();
         //return layout
         return fragmentLayout;
     }
@@ -321,20 +323,6 @@ public class DetailActivity extends ActionBarActivity{
         } else {
             //do nothing, at last thing
         }
-        /*
-        switch (viewType){
-            case FIRST:
-
-                break;
-            case LAST:
-                break;
-            case EMPTY:
-                break;
-            case EXERCISE:
-                incrementUI();
-                break;
-        }
-        */
     }
 
     public void previous(){
@@ -343,22 +331,6 @@ public class DetailActivity extends ActionBarActivity{
         } else {
             //do nothing
         }
-        /*
-        LinearLayout currentLayout = (LinearLayout)mainLayoutHandle.getChildAt(1);
-        int viewType = (int)currentLayout.getTag();
-        switch (viewType){
-            case FIRST:
-                break;
-            case LAST:
-                decrementUI();
-                break;
-            case EMPTY:
-                break;
-            case EXERCISE:
-                decrementUI();
-                break;
-        }
-        */
     }
 
     private void removeList(){

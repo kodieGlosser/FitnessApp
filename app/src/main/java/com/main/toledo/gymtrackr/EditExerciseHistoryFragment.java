@@ -25,7 +25,7 @@ public class EditExerciseHistoryFragment extends ListFragment {
     //private ArrayList<ExerciseHistory> mTempHistory;
     private ArrayList<ExerciseHistory> mHistory;
     private Context mContext;
-    private boolean mBoot;
+    private boolean mBoot = false;
     private String mName;
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -49,8 +49,7 @@ public class EditExerciseHistoryFragment extends ListFragment {
             */
     }
 
-    public void setAnimationDataSet(ArrayList<ExerciseHistory> history, Context c, boolean b, String name){
-        mBoot = b;
+    public void setAnimationDataSet(ArrayList<ExerciseHistory> history, Context c, String name){
         mContext = c;
         mHistory = history;
         mName = name;
@@ -70,13 +69,13 @@ public class EditExerciseHistoryFragment extends ListFragment {
 
                     animateIn();
 
-
                 }
 
             }, 100);
-
+        mBoot = false;
     }
 
+    public void setFirstFragment(){mBoot = true;}
     public void animateOut() {
 
         int totalDelay = 2000;
