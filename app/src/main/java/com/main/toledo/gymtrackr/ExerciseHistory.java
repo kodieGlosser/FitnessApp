@@ -8,12 +8,13 @@ import java.util.Date;
  */
 public class ExerciseHistory {
 
-    private int m_id, m_weight, m_rep, m_exerciseId, m_planId, m_time, m_other;
+    private int m_id, m_weight, m_rep, m_exerciseId, m_planId, m_time;
+    private String m_other, m_exerciseName;
     private Date m_date;
     //stubs
     private ArrayList<Metric> m_metrics = new ArrayList<Metric>();
 
-    public ExerciseHistory(Date date, int weight, int rep, int exerciseId, int planId, int time, int other){
+    public ExerciseHistory(Date date, int weight, int rep, int exerciseId, int planId, int time, String other, String exerciseName){
         this.m_date = date;
         this.m_weight = weight;
         this.m_rep = rep;
@@ -21,6 +22,7 @@ public class ExerciseHistory {
         this.m_planId = planId;
         this.m_time = time;
         this.m_other = other;
+        this.m_exerciseName = exerciseName;
 
         if(m_weight != -1){
             Metric weightMetric = new Metric();
@@ -44,7 +46,7 @@ public class ExerciseHistory {
 
     public int getTime() { return this.m_time;}
 
-    public int getOther() {return this.m_other;}
+    public String getOther() {return this.m_other;}
 
     public Date getDate() { return this.m_date; }
 
@@ -55,6 +57,8 @@ public class ExerciseHistory {
     public int getExerciseId() { return this.m_exerciseId; }
 
     public int getPlanId() { return this.m_planId; }
+
+    public String getExerciseName() {return this.m_exerciseName;}
     //stub methods
     public void addMetric(Metric m){m_metrics.add(m);}
 

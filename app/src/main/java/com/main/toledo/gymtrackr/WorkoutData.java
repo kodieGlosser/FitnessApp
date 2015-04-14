@@ -331,7 +331,7 @@ public class WorkoutData {
                     int weight, reps;
                     Date d = new Date();
                     int time = -1;
-                    int other = 0;
+                    String other = null;
                     weight = -1;
                     reps = -1;
                     ArrayList<Metric> metrics = e.getMetrics();
@@ -363,7 +363,8 @@ public class WorkoutData {
                         e.getId(),          //exercise id
                         mPlanId,     //plan id
                         time,
-                        other
+                        other,
+                        e.getName()
                     );
 
                     tempExerciseHolder.add(eh);
