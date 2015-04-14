@@ -8,6 +8,9 @@ import android.util.Log;
 
 import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -466,54 +469,6 @@ public class DatabaseWrapper {
         myDatabase.insert(EXERCISE_TABLE, null, exerciseValues);
     }
 
-    /*
-    public void addExerciseToExerciseTable(Exercise exercise) {
-        ContentValues exerciseValues = new ContentValues();
-        exerciseValues.put(COLUMN_EQUIPMENT_TYPE, exercise.getEquipment());
-        exerciseValues.put(COLUMN_NAME, exercise.getName());
-        exerciseValues.put(COLUMN_TARGET_MUSCLE, exercise.getTargetMuscle());
-        exerciseValues.put(COLUMN_MUSCLE_GROUP, exercise.getMuscleGroup());
-        exerciseValues.put(COLUMN_WEIGHT, exercise.usesWeight());
-        exerciseValues.put(COLUMN_REP, exercise.usesReps());
-        exerciseValues.put(COLUMN_TIME, exercise.usesTime());
-        exerciseValues.put(COLUMN_OTHER, exercise.usesOther());
-        exerciseValues.put(COLUMN_S_OTHER, exercise.getOtherName());
-        myDatabase.insert(EXERCISE_TABLE, null, exerciseValues);
-    }
-
-
-    public ArrayList<Date> getSpecificDaysFromHistory() {
-
-        Cursor c = myDatabase.query(EXERCISE_HISTORY_TABLE, null, null, null, null, null, null);
-        ExerciseHistory[] allExercises = convertCursorToExerciseHistory(c);
-        ArrayList<Date> listOfDates = null;
-
-        for (int i =0; i < allExercises.length; i++){
-            Date date = allExercises[i].getDate();
-            boolean isItAlreadyUsed = false;
-
-            for (int j =0; j < listOfDates.size(); j++){
-                Calendar calInExistingList = Calendar.getInstance();
-                calInExistingList.setTime(listOfDates.get(j));
-                Calendar calInListBeingChecked = Calendar.getInstance();
-                calInListBeingChecked.setTime(date);
-
-                if (calInExistingList.get(Calendar.MONTH) == calInListBeingChecked.get(Calendar.MONTH) && calInExistingList.get(Calendar.DAY_OF_MONTH) == calInListBeingChecked.get(Calendar.DAY_OF_MONTH)) {
-                    isItAlreadyUsed = true;
-                }
-            }
-
-            if (!isItAlreadyUsed) {
-                listOfDates.add(date);
-            }
-
-        }
-
-        return listOfDates;
-    }
-
-    */
-
     public ArrayList<Date> getSpecificDaysFromHistory() {
 
         Cursor c = myDatabase.query(EXERCISE_HISTORY_TABLE, null, null, null, null, null, null);
@@ -538,8 +493,9 @@ public class DatabaseWrapper {
             if (!isItAlreadyUsed) {
                 listOfDates.add(date);
             }
-
         }
+
+        Collections.sort(listOfDates, Collections.reverseOrder());
 
         return listOfDates;
     }
@@ -726,7 +682,8 @@ public class DatabaseWrapper {
 
         if(count >= 1) {
             while (c.moveToNext()) {
-                String s_val_date; int val_weight= -1, val_rep= -1, val_exerciseId = -1, val_planId = -1, columnData = -1, val_time = -1, val_other = -1;
+                String s_val_date, val_other = null, val_exercise_name = null; int val_weight= -1, val_rep= -1, val_exerciseId = -1, val_planId = -1, columnData = -1, val_time = -1;
+
                 Date val_date = null;
                 for (int j = 0; j < c.getColumnCount(); j++) {
 
@@ -754,6 +711,9 @@ public class DatabaseWrapper {
                     }
                     else if (columnName.equalsIgnoreCase(COLUMN_EXERCISE)){
                         val_exerciseId = columnData;
+                        if (browseExerciseById(val_exerciseId).length == 1) {
+                            val_exercise_name = browseExerciseById(val_exerciseId)[0].getName();
+                        }
                     }
                     else if (columnName.equalsIgnoreCase(COLUMN_PLAN)) {
                         val_planId = columnData;
@@ -762,11 +722,11 @@ public class DatabaseWrapper {
                         val_time = columnData;
                     }
                     else if (columnName.equalsIgnoreCase(COLUMN_OTHER)) {
-                        val_other = columnData;
+                        val_other = c.getString(c.getColumnIndex(columnName));
                     }
                 }
 
-                exerciseHistory[i] = new ExerciseHistory(val_date, val_weight, val_rep, val_exerciseId, val_planId, val_time, val_other);
+                exerciseHistory[i] = new ExerciseHistory(val_date, val_weight, val_rep, val_exerciseId, val_planId, val_time, val_other, val_exercise_name);
                 i++;
             }
         }
