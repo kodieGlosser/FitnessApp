@@ -80,7 +80,7 @@
 
         <activity
             android:name=".historyActivity"
-            android:label="Detail View"
+            android:label="History"
             android:noHistory="true"
             android:theme="@style/Theme.AppCompat.Light"
             android:parentActivityName="com.main.toledo.gymtrackr.StartActivity">
@@ -89,6 +89,9 @@
                 android:value="com.main.toledo.gymtrackr.StartActivity"
                 />
         </activity>
+
+
+
 
         <activity android:name=".SplashScreen"
             android:screenOrientation="portrait"

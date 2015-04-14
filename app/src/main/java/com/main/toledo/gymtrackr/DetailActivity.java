@@ -277,8 +277,10 @@ public class DetailActivity extends ActionBarActivity{
         historyFragment.setAdapter(adapter);
         historyFragment.setAnimationDataSet(history, mContext, e.getName());
 
-        if(mFirst)
+        if(mFirst) {
             historyFragment.setFirstFragment();
+            detailsFragment.setFirstFragment();
+        }
         //return layout
         return fragmentLayout;
     }
@@ -333,10 +335,6 @@ public class DetailActivity extends ActionBarActivity{
         }
     }
 
-    private void removeList(){
-
-    }
-
     private void incrementUI(){
        int list_id;
        if(mIdPointer != -1) {
@@ -383,6 +381,13 @@ public class DetailActivity extends ActionBarActivity{
         if(mIdPointer != mTotalValidExercises){ //animate view
             int list_id = mListIds.get(mIdPointer);
             ((EditExerciseHistoryFragment) getSupportFragmentManager().findFragmentById(list_id)).animateIn();
+            new android.os.Handler().postDelayed(new Runnable() {
+
+                public void run() {
+                    setDetailEditFocus();
+                }
+
+            }, 800);
         }
 
         if (mIdPointer == mTotalValidExercises){
@@ -423,6 +428,14 @@ public class DetailActivity extends ActionBarActivity{
         if(mIdPointer != -1){ //animate view
             int list_id = mListIds.get(mIdPointer);
             ((EditExerciseHistoryFragment) getSupportFragmentManager().findFragmentById(list_id)).animateIn();
+
+            new android.os.Handler().postDelayed(new Runnable() {
+
+                public void run() {
+                    setDetailEditFocus();
+                }
+
+            }, 800);
         }
 
         if(mIdPointer == -1){
@@ -447,6 +460,12 @@ public class DetailActivity extends ActionBarActivity{
             mainLayoutHandle.addView(prevLayout, 0);
         }
     }
+
+    private void setDetailEditFocus(){
+        int detail_id = mDetailIds.get(mIdPointer);
+        ((EditExerciseDetailsFragment) getSupportFragmentManager().findFragmentById(detail_id)).focusFirstEdit();
+    }
+
     private boolean findNextExerciseAscending(){
         ArrayList<Circuit> workout = WorkoutData.get(this).getWorkout();
         int workoutSize = workout.size();

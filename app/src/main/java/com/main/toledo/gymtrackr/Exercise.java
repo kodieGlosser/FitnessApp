@@ -17,7 +17,7 @@ public class Exercise {
     private int m_repetitions = -1;
     private int m_weight = -1;
     private int m_sequence;
-    private int m_other;
+    private int m_other = -1;
     private int m_time = -1;
     private int m_oneRepMax;
     private int m_oneRepMaxPercent;
@@ -33,6 +33,7 @@ public class Exercise {
     private ArrayList<Metric> m_plan_metrics = new ArrayList<>();
     private boolean mSaveToHistory; //tests for whether exercise was used or not, used when saving history
     private boolean mToggled;//used for ui stuffs
+    private boolean hasPlanMetrics = false;
     //performed, used to organize browse menu
 
     public Exercise(String name, String muscleGroup, int lastPerformed, String equipmentType){
@@ -80,13 +81,16 @@ public class Exercise {
             timeMetric.setMetricIntValue(m_time);
             m_metrics.add(timeMetric);
         }
-        /* missing things for other
-        if(m_bOther){
+                /* missing things for other
+        if(m_other != -1){
             Metric otherMetric = new Metric();
             otherMetric.setType(metricType.OTHER);
             otherMetric.setMetricName(m_sOther);
             otherMetric.setMetricStringValue("");
+            m_metrics.add(otherMetric);
         }
+
+
         */
 
 
@@ -128,12 +132,13 @@ public class Exercise {
             timeMetric.setMetricIntValue(0);
             m_metrics.add(timeMetric);
         }
-        /*missing things for other
+        /*
         if(m_bOther){
             Metric otherMetric = new Metric();
             otherMetric.setType(metricType.OTHER);
             otherMetric.setMetricName(m_sOther);
             otherMetric.setMetricStringValue("");
+            m_metrics.add(otherMetric);
         }
         */
         if(m_name.equals("1"))// || m_name.equals("2") || m_name.equals("3"))
@@ -161,6 +166,7 @@ public class Exercise {
             plan_metric.setMetricIntValue(m.getMetricIntValue());
             m_plan_metrics.add(plan_metric);
         }
+        hasPlanMetrics = true;
     }
     /*
     public void instantiateStubMetrics(){
@@ -271,6 +277,7 @@ public class Exercise {
     @Override
     public String toString() { return m_name; }
 
+    public boolean hasPlanMetrics(){return hasPlanMetrics;}
     /*
     private boolean m_bWeight;
     private boolean m_bReps;

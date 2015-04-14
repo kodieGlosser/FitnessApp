@@ -1,22 +1,11 @@
 package com.main.toledo.gymtrackr;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,10 +16,15 @@ import java.util.Date;
 public class historyActivity extends ActionBarActivity{
     final static int TOTAL_HISTORY = 0, DAY_HISTORY = 1, EXERCISE_HISTORY = 2;
     private HistoryAdapter mHistoryAdapter;
+    private HistoricExerciseAdapter mDayHistoryAdapter;
     private EditExerciseHistoryAdapter mExerciseHistoryAdapter;
     private ArrayList<Date> mHistoryDates;
     private ArrayList<ExerciseHistory> mWorkoutHistory;
     private ArrayList<ExerciseHistory> mExerciseHistory;
+
+    private int mCurrentView;
+
+    private int mLastSelectedPos;
 
     historyHeaderFragment mHeaderFragment;
     historyListFragment mListFragment;
@@ -61,10 +55,12 @@ public class historyActivity extends ActionBarActivity{
         mHistoryDates = db.getSpecificDaysFromHistory();
         mHistoryAdapter = new HistoryAdapter(this, 0, mHistoryDates);
         mListFragment.setAdapter(mHistoryAdapter, TOTAL_HISTORY);
+        mCurrentView = TOTAL_HISTORY;
     }
 
     public void implementWorkoutHistoryAdapter(int pos){
         Date selectedDate = mHistoryDates.get(pos);
+        mLastSelectedPos = pos;
         DatabaseWrapper db = new DatabaseWrapper();
         ExerciseHistory[] eh = db.loadExercisesByDate(selectedDate);
 
@@ -75,12 +71,15 @@ public class historyActivity extends ActionBarActivity{
 
         for(ExerciseHistory e : eh)
             mWorkoutHistory.add(e);
-        mExerciseHistoryAdapter = new EditExerciseHistoryAdapter(this, 0, mWorkoutHistory);
-        mListFragment.setAdapter(mExerciseHistoryAdapter, DAY_HISTORY);
+        mDayHistoryAdapter = new HistoricExerciseAdapter(this, 0, mWorkoutHistory);
+        mListFragment.setAdapter(mDayHistoryAdapter, DAY_HISTORY);
+
+        mHistoryDates.clear();
+        mCurrentView = DAY_HISTORY;
     }
-    /*
+
     public void implementExerciseHistoryAdapter(int pos){
-        String exerciseName = mWorkoutHistory.get(pos).;
+        String exerciseName = mWorkoutHistory.get(pos).getExerciseName();
         DatabaseWrapper db = new DatabaseWrapper();
         ExerciseHistory[] eh = db.loadHistoryByExerciseName(exerciseName);
 
@@ -93,12 +92,13 @@ public class historyActivity extends ActionBarActivity{
             mExerciseHistory.add(e);
         mExerciseHistoryAdapter = new EditExerciseHistoryAdapter(this, 0, mExerciseHistory);
         mListFragment.setAdapter(mExerciseHistoryAdapter, EXERCISE_HISTORY);
+        mCurrentView = EXERCISE_HISTORY;
     }
-    */
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_browse, menu);
+        inflater.inflate(R.menu.menu_history, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -106,6 +106,22 @@ public class historyActivity extends ActionBarActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
+            case android.R.id.home:
+                switch(mCurrentView){
+                    case TOTAL_HISTORY:
+                        super.onBackPressed();
+                        break;
+                    case DAY_HISTORY:
+                        implementHistoryAdapter();
+                        break;
+                    case EXERCISE_HISTORY:
+                        implementWorkoutHistoryAdapter(mLastSelectedPos);
+                        break;
+                    default:
+                        super.onBackPressed();
+                        break;
+                }
+                return true;
             case R.id.action_settings:
                 return true;
             default:

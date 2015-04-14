@@ -35,7 +35,7 @@ public class historyListFragment extends ListFragment{
                 ((historyActivity)getActivity()).implementWorkoutHistoryAdapter(position);
                 break;
             case historyActivity.DAY_HISTORY:
-                //((historyActivity)getActivity()).implementExerciseHistoryAdapter(position);
+                ((historyActivity)getActivity()).implementExerciseHistoryAdapter(position);
                 break;
             case historyActivity.EXERCISE_HISTORY:
 

@@ -2,6 +2,7 @@ package com.main.toledo.gymtrackr;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MotionEventCompat;
 import android.text.InputType;
@@ -30,7 +31,9 @@ public class EditExerciseDetailsFragment extends Fragment {
     private Exercise mExercise;
     private Circuit circuit;
     private String title;
+    private boolean mBoot;
 
+    private EditText mFirstEditTextHandle;
     private EditText mEditTextHandle;
     private LinearLayout editTextLayout;
     private TextView exerciseInfoTextView;
@@ -52,9 +55,33 @@ public class EditExerciseDetailsFragment extends Fragment {
         return v;
     }
 
-
+    public void focusFirstEdit(){
+        Log.d("DETAIL FOCUS TESTS", "FOCUSFIRSTEDITCALLED");
+        mFirstEditTextHandle.requestFocus();
+        showKeypad();
+    }
     public void putExercise(Exercise e){
         mExercise = e;
+    }
+    public void setFirstFragment(){
+        mBoot = true;
+    }
+    public void setExerciseCompleted(){
+
+    }
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState){
+        super.onActivityCreated(savedInstanceState);
+
+        if (mBoot)
+            new Handler().postDelayed(new Runnable() {
+
+                public void run() {
+                    focusFirstEdit();
+                }
+
+            }, 600);
+        mBoot = false;
     }
 
     private void implementSwipeListener(View v){
@@ -80,9 +107,7 @@ public class EditExerciseDetailsFragment extends Fragment {
                             @Override
                             public void run() {
                                 if(currentY > startY + swipeThreshold){
-
                                     ((DetailActivity)getActivity()).previous();
-
                                 }
                                 if(currentY < startY - swipeThreshold){
                                     ((DetailActivity)getActivity()).next();
@@ -98,21 +123,6 @@ public class EditExerciseDetailsFragment extends Fragment {
                         currentY = event.getY();
                         break;
                     }
-
-                    case MotionEvent.ACTION_UP: {
-
-                        break;
-                    }
-
-                    case MotionEvent.ACTION_CANCEL: {
-
-                        break;
-                    }
-
-                    case MotionEvent.ACTION_POINTER_UP: {
-
-                        break;
-                    }
                 }
                 return true;
             }
@@ -121,12 +131,20 @@ public class EditExerciseDetailsFragment extends Fragment {
     }
 
     private void updateUI(){
+        boolean hasPlanMetrics = false;
+
         title = mExercise.getName();
 
         exerciseInfoTextView.setText(title);
 
         editTextLayout.removeAllViewsInLayout();
         final ArrayList<Metric> metrics = mExercise.getMetrics();
+        ArrayList<Metric> planMetrics = new ArrayList<>();
+        if (mExercise.hasPlanMetrics()) {
+            planMetrics = mExercise.getPlanMetrics();
+            hasPlanMetrics = true;
+        }
+
         for(int i = 0; i < metrics.size(); i++){
             final int j = i;
             switch(metrics.get(i).getType()){
@@ -136,16 +154,26 @@ public class EditExerciseDetailsFragment extends Fragment {
                     final EditText timeEdit = new EditText(getActivity());
                     timeEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
                     timeEdit.setText("" + metrics.get(i).getMetricIntValue());
-                    timeEdit.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+
+                    if (i != metrics.size()-1) {
+                        timeEdit.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                    }else{
+                        timeEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                    }
+
                     timeEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                         @Override
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                             if (actionId == EditorInfo.IME_ACTION_NEXT) {
 
-                                if(j == mExercise.getMetrics().size()-1){
-                                    hideKeypad();
-                                    return true;
-                                }
+
+                            } else if(actionId == EditorInfo.IME_ACTION_DONE){
+
+                                ((DetailActivity)getActivity()).next();
+                                hideKeypad();
+                                setExerciseCompleted();
+                                return true;
+
                             }
                             return false;
                         }
@@ -175,7 +203,18 @@ public class EditExerciseDetailsFragment extends Fragment {
                     timeRow.addView(timeText);
                     timeRow.addView(timeEdit);
 
+                    if(hasPlanMetrics){
+                        TextView goalText = new TextView(getActivity());
+                        String text = "target: " + planMetrics.get(i).getMetricIntValue();
+                        goalText.setText(text);
+                        timeRow.addView(goalText);
+                    }
+
                     editTextLayout.addView(timeRow);
+
+                    if (i==0)
+                        mFirstEditTextHandle = timeEdit;
+
                     break;
                 case REPETITIONS:
                     TextView repText = new TextView(getActivity());
@@ -183,23 +222,29 @@ public class EditExerciseDetailsFragment extends Fragment {
                     final EditText repEdit = new EditText(getActivity());
                     repEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
                     repEdit.setText("" + metrics.get(i).getMetricIntValue());
-                    repEdit.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                    if (i != metrics.size()-1) {
+                        repEdit.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                    }else{
+                        repEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                    }
 
                     repEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                         @Override
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                             if (actionId == EditorInfo.IME_ACTION_NEXT) {
 
-                                if(j == mExercise.getMetrics().size()-1){
-                                    hideKeypad();
-                                    return true;
-                                }
+
+                            } else if(actionId == EditorInfo.IME_ACTION_DONE){
+
+                                ((DetailActivity)getActivity()).next();
+                                hideKeypad();
+                                setExerciseCompleted();
+                                return true;
+
                             }
                             return false;
                         }
                     });
-
-                    //time
 
                     repEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                         @Override
@@ -221,18 +266,6 @@ public class EditExerciseDetailsFragment extends Fragment {
                                 } else {
                                     metrics.get(j).setMetricIntValue(Integer.parseInt(((EditText) v).getText().toString()));
                                 }
-
-                                /*
-                                if (!(frameLayout.getTag() == "checked") || (frameLayout.getTag() == null)) {
-                                    Log.d("CHECKED TESTS", "MAKING NEW CHECK");
-                                    Workout.get(group).getExercise(child).setSaveToHistory(true);
-                                    ImageView mChecked = new ImageView(_context);
-                                    mChecked.setImageResource(R.drawable.grn_check);
-                                    frameLayout.addView(mChecked);
-                                    frameLayout.setTag("checked");
-                                }
-                                */
-
                             }
                         }
                     });
@@ -242,15 +275,67 @@ public class EditExerciseDetailsFragment extends Fragment {
                     repRow.addView(repEdit);
                     //repRow.setLayoutParams(params);
 
+                    if(hasPlanMetrics){
+                        TextView goalText = new TextView(getActivity());
+                        String text = "target: " + planMetrics.get(i).getMetricIntValue();
+                        goalText.setText(text);
+                        repRow.addView(goalText);
+                    }
+
                     editTextLayout.addView(repRow);
+
+                    if (i==0)
+                        mFirstEditTextHandle = repEdit;
+
                     break;
                 case OTHER:
+
                     TextView otherText = new TextView(getActivity());
-                    otherText.setText(metrics.get(i).getMetricStringValue());
+                    otherText.setText(metrics.get(i).getMetricName());
+
+                    LinearLayout.LayoutParams params =
+                            new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT);
+                    final EditText editOther = new EditText(getActivity());
+                    editOther.setLayoutParams(params);
+                    editOther.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+                    editOther.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                        @Override
+                        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+
+                            } else if(actionId == EditorInfo.IME_ACTION_DONE){
+
+                                ((DetailActivity)getActivity()).next();
+                                hideKeypad();
+                                setExerciseCompleted();
+                                return true;
+
+                            }
+                            return false;
+                        }
+                    });
+
+                    editOther.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        @Override
+                        public void onFocusChange(View v, boolean hasFocus) {
+                            if (hasFocus){
+                                mEditTextHandle = (EditText) v;
+                            } else {
+                                metrics.get(j).setMetricStringValue(((EditText) v).getText().toString());
+                            }
+                        }
+                    });
 
                     LinearLayout otherRow = new LinearLayout(getActivity());
-                    otherRow.setOrientation(LinearLayout.HORIZONTAL);
+                    otherRow.setOrientation(LinearLayout.VERTICAL);
                     otherRow.addView(otherText);
+                    otherRow.addView(editOther);
+                    editTextLayout.addView(otherRow);
+
+                    if (i==0)
+                        mFirstEditTextHandle = editOther;
 
                     break;
                 case WEIGHT:
@@ -260,17 +345,25 @@ public class EditExerciseDetailsFragment extends Fragment {
                     final EditText wtEdit = new EditText(getActivity());
                     wtEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
                     wtEdit.setText("" + metrics.get(i).getMetricIntValue());
-                    wtEdit.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                    if (i != metrics.size()-1) {
+                        wtEdit.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                    }else{
+                        wtEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                    }
 
                     wtEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                         @Override
                         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                             if (actionId == EditorInfo.IME_ACTION_NEXT) {
 
-                                if(j == mExercise.getMetrics().size()-1){
-                                    hideKeypad();
-                                    return true;
-                                }
+
+                            } else if(actionId == EditorInfo.IME_ACTION_DONE){
+
+                                ((DetailActivity)getActivity()).next();
+                                hideKeypad();
+                                setExerciseCompleted();
+                                return true;
+
                             }
                             return false;
                         }
@@ -301,8 +394,18 @@ public class EditExerciseDetailsFragment extends Fragment {
                     wtRow.addView(wtText);
                     wtRow.addView(wtEdit);
                     //wtRow.setLayoutParams(params);
+                    if(hasPlanMetrics){
+                        TextView goalText = new TextView(getActivity());
+                        String text = "target: " + planMetrics.get(i).getMetricIntValue();
+                        goalText.setText(text);
+                        wtRow.addView(goalText);
+                    }
 
                     editTextLayout.addView(wtRow);
+
+                    if (i==0)
+                        mFirstEditTextHandle = wtEdit;
+
                     break;
                 default:
                     break;
@@ -317,5 +420,11 @@ public class EditExerciseDetailsFragment extends Fragment {
             imm.hideSoftInputFromWindow(mEditTextHandle.getWindowToken(), 0);
             mEditTextHandle.clearFocus();
         }
+    }
+
+    public void showKeypad(){
+        InputMethodManager imm = (InputMethodManager) getActivity()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(mEditTextHandle, InputMethodManager.SHOW_IMPLICIT);
     }
 }

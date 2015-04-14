@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Created by Adam on 2/26/2015.
  */
-public class EditExerciseHistoryAdapter extends ArrayAdapter {
+public class HistoricExerciseAdapter extends ArrayAdapter {
     //private final DynamicView d;
     private ArrayList<ExerciseHistory> m_exerciseHistory;
 
@@ -24,13 +24,15 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
     private final int firstMetricId = View.generateViewId();
     private final int secondMetricId = View.generateViewId();
     private final int thirdMetricId = View.generateViewId();
+    private final int nameId = View.generateViewId();
+
 
     private final Context mContext;
 
     private int mNumMetrics;
 
 
-    public EditExerciseHistoryAdapter(Context context, int resource, ArrayList<ExerciseHistory> history){
+    public HistoricExerciseAdapter(Context context, int resource, ArrayList<ExerciseHistory> history){
         super(context, resource, history);
         m_exerciseHistory = history;
         mContext = context;
@@ -59,6 +61,7 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
             initializeView();
             convertView = metricLayout;
             holder.date = (TextView)convertView.findViewById(dateId);
+            holder.name = (TextView)convertView.findViewById(nameId);
             switch(mNumMetrics){
                 case 0:
                     break;
@@ -83,6 +86,7 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
         }
 
         holder.date.setText(m_exerciseHistory.get(position).getDate().toString());
+        holder.name.setText(m_exerciseHistory.get(position).getExerciseName());
         String s;
         switch(mNumMetrics){
             case 0:
@@ -121,6 +125,11 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
 
         metricLayout.addView(dateView);
 
+        TextView nameView = new TextView(mContext);
+        nameView.setId(nameId);
+
+        metricLayout.addView(nameView);
+
         TextView firstMetricView = new TextView(mContext);
         firstMetricView.setId(firstMetricId);
 
@@ -151,11 +160,10 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
     }
 
     public static class ViewHolder{
+        public TextView name;
         public TextView date;
         public TextView firstMetric;
         public TextView secondMetric;
         public TextView thirdMetric;
     }
 }
-
-

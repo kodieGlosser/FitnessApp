@@ -162,6 +162,7 @@ public class DatabaseWrapper {
                 i++;
             }
         }
+        clearCursor(c);
         return names;
     }
 
@@ -225,6 +226,7 @@ public class DatabaseWrapper {
             }
         }
         plan = new Plan(planName, circuits, planId);
+        clearCursor(c);
         return plan;
     }
 
@@ -276,6 +278,7 @@ public class DatabaseWrapper {
                 z++;
             }
         }
+        clearCursor(c2);
         return exercises;
     }
 
@@ -372,7 +375,7 @@ public class DatabaseWrapper {
 
             }
         }
-
+        clearCursor(c);
         return planId;
     }
 
@@ -496,7 +499,7 @@ public class DatabaseWrapper {
         }
 
         Collections.sort(listOfDates, Collections.reverseOrder());
-
+        clearCursor(c);
         return listOfDates;
     }
 
@@ -671,7 +674,7 @@ public class DatabaseWrapper {
             }
 
         }
-
+        clearCursor(c);
         return exercises;
     }
 
@@ -730,7 +733,11 @@ public class DatabaseWrapper {
                 i++;
             }
         }
-
+        clearCursor(c);
         return exerciseHistory;
+    }
+
+    private void clearCursor(Cursor c){
+        c.close();
     }
 }
