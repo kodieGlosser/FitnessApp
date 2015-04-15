@@ -37,6 +37,10 @@
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:textScaleX">1.2</item>
     </style>
+    <style name="MyTextViewStyleBrowseExerciseName" >
+        <item name="android:textColor">#1ca4fb</item>
+        <item name="android:textSize">20sp</item>
+    </style>
     <style name="myExercises" parent="myCircuit">
     </style>
 
