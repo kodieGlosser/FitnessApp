@@ -343,7 +343,8 @@ public class DetailActivity extends ActionBarActivity{
        new android.os.Handler().postDelayed(new Runnable() {
 
             public void run() {
-                increment();
+                if(mIdPointer<=mTotalValidExercises-1)
+                    increment();
             }
 
         }, 800);
@@ -358,7 +359,8 @@ public class DetailActivity extends ActionBarActivity{
         new android.os.Handler().postDelayed(new Runnable() {
 
             public void run() {
-                decrement();
+                if(mIdPointer>=0)
+                    decrement();
             }
 
         }, 800);
@@ -461,11 +463,13 @@ public class DetailActivity extends ActionBarActivity{
     }
 
     private void setDetailEditFocus(){
-        int detail_id = mDetailIds.get(mIdPointer);
-        ((EditExerciseDetailsFragment) getSupportFragmentManager()
-                .findFragmentById(detail_id)).focusFirstEdit();
-        ((EditExerciseDetailsFragment) getSupportFragmentManager()
-                .findFragmentById(detail_id)).implementSwipeListener();
+        if(mIdPointer < mTotalValidExercises) {
+            int detail_id = mDetailIds.get(mIdPointer);
+            ((EditExerciseDetailsFragment) getSupportFragmentManager()
+                    .findFragmentById(detail_id)).focusFirstEdit();
+            ((EditExerciseDetailsFragment) getSupportFragmentManager()
+                    .findFragmentById(detail_id)).implementSwipeListener();
+        }
     }
 
     private boolean findNextExerciseAscending(){

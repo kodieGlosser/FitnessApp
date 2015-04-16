@@ -67,7 +67,9 @@ public class EditExerciseDetailsFragment extends Fragment {
         mBoot = true;
     }
     public void setExerciseCompleted(){
-
+         ((DetailActivity)getActivity()).next();
+         mExercise.setSaveToHistory(true);
+         hideKeypad();
     }
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
@@ -109,11 +111,11 @@ public class EditExerciseDetailsFragment extends Fragment {
                             public void run() {
                                 if(currentY > startY + swipeThreshold){
                                     ((DetailActivity)getActivity()).previous();
-                                    removeListener();
+                                    //removeListener();
                                 }
                                 if(currentY < startY - swipeThreshold){
                                     ((DetailActivity)getActivity()).next();
-                                    removeListener();
+                                    //removeListener();
                                 }
                             }
                         }, 500);
@@ -132,9 +134,10 @@ public class EditExerciseDetailsFragment extends Fragment {
 
     }
 
-    private void removeListener(){
-        editTextLayout.setOnTouchListener(null);
-    }
+    //private void removeListener(){
+        //Log.d("THING I CARE ABOUT", "LISTENER SHOULDBE REMOVED");
+       // mLayout.setOnTouchListener(null);
+    //}
     private void updateUI(){
         boolean hasPlanMetrics = false;
 
@@ -173,10 +176,6 @@ public class EditExerciseDetailsFragment extends Fragment {
 
 
                             } else if(actionId == EditorInfo.IME_ACTION_DONE){
-
-                                ((DetailActivity)getActivity()).next();
-                                removeListener();
-                                hideKeypad();
                                 setExerciseCompleted();
                                 return true;
 
@@ -241,10 +240,6 @@ public class EditExerciseDetailsFragment extends Fragment {
 
 
                             } else if(actionId == EditorInfo.IME_ACTION_DONE){
-
-                                ((DetailActivity)getActivity()).next();
-                                removeListener();
-                                hideKeypad();
                                 setExerciseCompleted();
                                 return true;
 
@@ -313,10 +308,6 @@ public class EditExerciseDetailsFragment extends Fragment {
                             if (actionId == EditorInfo.IME_ACTION_NEXT) {
 
                             } else if(actionId == EditorInfo.IME_ACTION_DONE){
-
-                                ((DetailActivity)getActivity()).next();
-                                removeListener();
-                                hideKeypad();
                                 setExerciseCompleted();
                                 return true;
 
@@ -366,10 +357,6 @@ public class EditExerciseDetailsFragment extends Fragment {
 
 
                             } else if(actionId == EditorInfo.IME_ACTION_DONE){
-
-                                ((DetailActivity)getActivity()).next();
-                                removeListener();
-                                hideKeypad();
                                 setExerciseCompleted();
                                 return true;
 

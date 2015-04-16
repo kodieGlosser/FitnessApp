@@ -64,7 +64,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     private ImageView DeleteIcon;
     private final int mCheckedIndentation = 100;
     private boolean mSameGesture = false;
-    private int mTouchCount = 0;
+
 
     private int mMode;
 
@@ -78,9 +78,9 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     private ImageView mDragView;
 
     private DropListener mDropListener;
-
-
     private Context mContext;
+    //CHECK VAR
+    private boolean areChecking = false;
 
     //DRAG COUNTDOWN VARS
     private boolean dragInProgress = false;
@@ -91,6 +91,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     private int dragTimerInterval = 150;
     private int dragHoldBounds = 50;
     private boolean cancelDrag;
+    private int mTouchCount = 0;
 
     public WorkspaceExpandableListView(Context context, AttributeSet attrs) {
 
@@ -133,10 +134,10 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             mRemoveMode = true;
         }
 
-        //Log.d("TOUCH TESTS", "TRUE IF: " + x + "<" + this.getWidth()/4 );
-        //if (!mDragMode)
-        //    return super.onTouchEvent(ev);
-
+        //
+        //  DRAG LOGIC
+        //
+        //
         if (mDragMode) {
             switch (action) {
                 case MotionEvent.ACTION_DOWN: //mouse button is initially pressed
@@ -279,6 +280,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         if(!mRemoveMode && (mMode == WORKOUT)) {
             switch (action) {
                 case MotionEvent.ACTION_DOWN:
+                    areChecking = false;
                     mStartPosition = pointToPosition(x, y);
                     Log.d("DOUBLTETAP TESTS", "DOWN CALLED");
                     if (mStartPosition != INVALID_POSITION) {
@@ -304,6 +306,12 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                     super.onTouchEvent(ev);
                     break;
                 case MotionEvent.ACTION_MOVE: //mose if moved
+                    if ((x > (swipeX + 50)) && mStartPosition != -1) {
+                        areChecking = true;
+                    }
+                    if ((x < (swipeX - 50)) && mStartPosition != -1){
+                        areChecking = true;
+                    }
 
                     if (mStartPosition != -1) {
                         if (pointToPosition(x, y) != mStartPosition) {
@@ -318,8 +326,11 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                             mStartPosition = -1;
                         }
                     }
+                    if(areChecking)
+                        return true;
 
                     super.onTouchEvent(ev);
+
                     break; //mouse button is released
                 default:
                     super.onTouchEvent(ev);
