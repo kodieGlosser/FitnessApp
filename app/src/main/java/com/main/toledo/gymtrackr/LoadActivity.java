@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -189,7 +190,7 @@ public class LoadActivity extends ActionBarActivity {
                 mTextViewHandle.setOpen(false);
                 mTextViewHandle = null;
             }
-            Button delete = (Button) convertView.findViewById(R.id.deleteButton);
+            ImageButton delete = (ImageButton) convertView.findViewById(R.id.deleteButton);
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -206,7 +207,7 @@ public class LoadActivity extends ActionBarActivity {
                 }
             });
 
-            Button edit = (Button) convertView.findViewById(R.id.editButton);
+            ImageButton edit = (ImageButton) convertView.findViewById(R.id.editButton);
             edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -220,7 +221,7 @@ public class LoadActivity extends ActionBarActivity {
                 }
             });
 
-            Button workout = (Button) convertView.findViewById(R.id.workoutButton);
+            ImageButton workout = (ImageButton) convertView.findViewById(R.id.workoutButton);
             workout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -238,5 +239,6 @@ public class LoadActivity extends ActionBarActivity {
 
             return convertView;
         }
+
     }
 }

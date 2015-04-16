@@ -8,6 +8,7 @@ import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 /**
@@ -141,6 +142,12 @@ public class SwipableLinearLayout extends LinearLayout {
         mListener.setTextViewHandle(this);
 
         open = true;
+
+        ImageView img_selection = (ImageView) findViewById(R.id.Arrow_in_plan);
+        int imageResourceId = R.drawable.ic_ic_collapse_arrow_side_50;
+
+        if (img_selection != null)
+            img_selection.setImageResource(imageResourceId);
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -151,6 +158,13 @@ public class SwipableLinearLayout extends LinearLayout {
         open = false;
 
         mListener.clearHandle();
+
+        ImageView img_selection = (ImageView) findViewById(R.id.Arrow_in_plan);
+        int imageResourceId = R.drawable.ic_ic_expand_arrow_side_50;
+
+        if (img_selection != null)
+            img_selection.setImageResource(imageResourceId);
+
 
     }
     public void setSwipeOffset(int i){

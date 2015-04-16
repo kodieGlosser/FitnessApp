@@ -13,29 +13,33 @@
         android:gravity="right"
         android:layout_weight="2">
 
-        <Button
+        <ImageButton
             android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             style="@style/myButton"
-            android:text="DELETE"
-            android:textSize="15dp"/>
+            android:padding="10dp"
+            android:src="@drawable/ic_delete_50" />
 
-        <Button
+        <ImageButton
             android:id="@+id/editButton"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             style="@style/myButton"
-            android:text="EDIT"
-            android:textSize="15dp"/>
+            android:padding="10dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/ic_edit_50"
+            />
 
-        <Button
+        <ImageButton
             android:id="@+id/workoutButton"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             style="@style/myButton"
-            android:text="WORKOUT"
-            android:textSize="15dp"/>
+            android:padding="10dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/ic_hand_biceps_icon" />
+
     </LinearLayout>
 
     <!--<TextView-->
@@ -43,17 +47,28 @@
         android:id="@+id/swipeLayoutHandleLoad"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:text="Plan Name"
         android:minHeight="?android:attr/listPreferredItemHeight"
         android:background="#F0F0F0">
 
         <TextView
             android:id="@+id/planName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:text="test"
+            style="@style/MyTextViewStyleBrowseExerciseName"
+            android:textSize="30dp"
+            android:layout_weight="0.9"
         />
-
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="right"
+            android:src="@drawable/ic_ic_expand_arrow_side_50"
+            android:id="@+id/Arrow_in_plan"
+            android:layout_weight="0.1"
+            />
     </com.main.toledo.gymtrackr.SwipableLinearLayout>
 
 </FrameLayout>
