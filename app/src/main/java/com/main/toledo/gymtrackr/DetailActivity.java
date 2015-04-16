@@ -143,7 +143,6 @@ public class DetailActivity extends ActionBarActivity{
             e = Workout.get(mCircuitVals.get(mIdPointer)).getExercise(mExerciseVals.get(mIdPointer));
             currentLayout = createFragments(e);
             currentLayout.setLayoutParams(mParams);
-
             mFirst = false;
 
             if(mIdPointer + 1 < mTotalValidExercises){
@@ -463,7 +462,10 @@ public class DetailActivity extends ActionBarActivity{
 
     private void setDetailEditFocus(){
         int detail_id = mDetailIds.get(mIdPointer);
-        ((EditExerciseDetailsFragment) getSupportFragmentManager().findFragmentById(detail_id)).focusFirstEdit();
+        ((EditExerciseDetailsFragment) getSupportFragmentManager()
+                .findFragmentById(detail_id)).focusFirstEdit();
+        ((EditExerciseDetailsFragment) getSupportFragmentManager()
+                .findFragmentById(detail_id)).implementSwipeListener();
     }
 
     private boolean findNextExerciseAscending(){

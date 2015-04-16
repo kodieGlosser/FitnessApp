@@ -36,6 +36,7 @@ public class EditExerciseDetailsFragment extends Fragment {
     private EditText mFirstEditTextHandle;
     private EditText mEditTextHandle;
     private LinearLayout editTextLayout;
+    private LinearLayout mLayout;
     private TextView exerciseInfoTextView;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,8 +50,7 @@ public class EditExerciseDetailsFragment extends Fragment {
         View v = inflater.inflate(R.layout.e_frag_details, null);
         editTextLayout = (LinearLayout) v.findViewById(R.id.detailLinearLayout);
         exerciseInfoTextView = (TextView) v.findViewById(R.id.exerciseNameView);
-
-        implementSwipeListener(v);
+        mLayout = (LinearLayout) v.findViewById(R.id.detailView);
         updateUI();
         return v;
     }
@@ -77,6 +77,7 @@ public class EditExerciseDetailsFragment extends Fragment {
             new Handler().postDelayed(new Runnable() {
 
                 public void run() {
+                    implementSwipeListener();
                     focusFirstEdit();
                 }
 
@@ -84,10 +85,10 @@ public class EditExerciseDetailsFragment extends Fragment {
         mBoot = false;
     }
 
-    private void implementSwipeListener(View v){
-        LinearLayout layout = (LinearLayout) v.findViewById(R.id.detailView);
+   public void implementSwipeListener(){
 
-        layout.setOnTouchListener(new View.OnTouchListener() {
+
+        mLayout.setOnTouchListener(new View.OnTouchListener() {
             private int swipeThreshold = 150;
             private float currentY;
             @Override
@@ -108,10 +109,11 @@ public class EditExerciseDetailsFragment extends Fragment {
                             public void run() {
                                 if(currentY > startY + swipeThreshold){
                                     ((DetailActivity)getActivity()).previous();
+                                    removeListener();
                                 }
                                 if(currentY < startY - swipeThreshold){
                                     ((DetailActivity)getActivity()).next();
-
+                                    removeListener();
                                 }
                             }
                         }, 500);
@@ -130,6 +132,9 @@ public class EditExerciseDetailsFragment extends Fragment {
 
     }
 
+    private void removeListener(){
+        editTextLayout.setOnTouchListener(null);
+    }
     private void updateUI(){
         boolean hasPlanMetrics = false;
 
@@ -170,6 +175,7 @@ public class EditExerciseDetailsFragment extends Fragment {
                             } else if(actionId == EditorInfo.IME_ACTION_DONE){
 
                                 ((DetailActivity)getActivity()).next();
+                                removeListener();
                                 hideKeypad();
                                 setExerciseCompleted();
                                 return true;
@@ -237,6 +243,7 @@ public class EditExerciseDetailsFragment extends Fragment {
                             } else if(actionId == EditorInfo.IME_ACTION_DONE){
 
                                 ((DetailActivity)getActivity()).next();
+                                removeListener();
                                 hideKeypad();
                                 setExerciseCompleted();
                                 return true;
@@ -308,6 +315,7 @@ public class EditExerciseDetailsFragment extends Fragment {
                             } else if(actionId == EditorInfo.IME_ACTION_DONE){
 
                                 ((DetailActivity)getActivity()).next();
+                                removeListener();
                                 hideKeypad();
                                 setExerciseCompleted();
                                 return true;
@@ -360,6 +368,7 @@ public class EditExerciseDetailsFragment extends Fragment {
                             } else if(actionId == EditorInfo.IME_ACTION_DONE){
 
                                 ((DetailActivity)getActivity()).next();
+                                removeListener();
                                 hideKeypad();
                                 setExerciseCompleted();
                                 return true;

@@ -64,6 +64,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     private ImageView DeleteIcon;
     private final int mCheckedIndentation = 100;
     private boolean mSameGesture = false;
+    private int mTouchCount = 0;
 
     private int mMode;
 
@@ -140,14 +141,14 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             switch (action) {
                 case MotionEvent.ACTION_DOWN: //mouse button is initially pressed
 
+                    mTouchCount++;
                     currentXPos = x;
                     currentYPos = y;
                     dragRawY = (int) ev.getRawY();
                     boolean okayToDrag = checkIfValidPosition();
                     if(okayToDrag) {
                         dragDelayIcon(x, y);
-                        Log.d("DRAG DELAY TESTS", "DOWN -- X: " + currentXPos + " -- Y: " + currentYPos);
-                        dragTimer(x, y);
+                        dragTimer(x, y, mTouchCount);
                     }
                     break;
                 case MotionEvent.ACTION_MOVE: //mose if moved
@@ -754,7 +755,15 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     private void dragDelayIcon(int x, int y){
         WindowManager.LayoutParams mWindowParams = new WindowManager.LayoutParams();
         //mWindowParams.gravity = Gravity.TOP;
-        mWindowParams.x = x- 650;
+        int xLocation;
+
+        if ((x - 650)< -450)
+            xLocation = -500;
+        else
+
+            xLocation = x - 650;
+            Log.d("THING I CARE ABOUT", ""+ xLocation);
+        mWindowParams.x = xLocation;
         mWindowParams.y = y - 800;
 
         mWindowParams.height = 100;
@@ -779,13 +788,13 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
     }
 
-    private void dragTimer(final int x, final int y){
+    private void dragTimer(final int x, final int y, final int touchCount){
 
         cancelDrag = false;
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(inBounds(x, y) && !cancelDrag){
+                if(inBounds(x, y) && !cancelDrag  && (touchCount == mTouchCount)){
                     Log.d("DRAG DELAY TESTS", "5...");
                 }
             }
@@ -794,7 +803,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(inBounds(x, y) && !cancelDrag){
+                if(inBounds(x, y) && !cancelDrag && (touchCount == mTouchCount)){
                     Log.d("DRAG DELAY TESTS", "4...");
                 } else {
                     abortCountdown();
@@ -805,7 +814,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(inBounds(x, y) && !cancelDrag){
+                if(inBounds(x, y) && !cancelDrag && (touchCount == mTouchCount)){
                     Log.d("DRAG DELAY TESTS", "3...");
                 } else {
                     abortCountdown();
@@ -816,7 +825,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(inBounds(x, y) && !cancelDrag){
+                if(inBounds(x, y) && !cancelDrag && (touchCount == mTouchCount)){
                     Log.d("DRAG DELAY TESTS", "2...");
                 } else {
                     abortCountdown();
@@ -827,7 +836,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(inBounds(x, y) && !cancelDrag){
+                if(inBounds(x, y) && !cancelDrag && (touchCount == mTouchCount)){
                     Log.d("DRAG DELAY TESTS", "1...");
                     beginDragChecks();
                 } else {

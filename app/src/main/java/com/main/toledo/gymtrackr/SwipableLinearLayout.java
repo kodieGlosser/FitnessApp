@@ -89,13 +89,13 @@ public class SwipableLinearLayout extends LinearLayout {
                 }
 
                 case MotionEvent.ACTION_MOVE: {
-                    Log.d("VIEWTEST", "ACTION_MOVE");
-                    if ((ev.getX() < mLeftX) && !open) {
-                        open();
-                    }
-                    if ((ev.getX() > mRightX) && open) {
-                        close();
-                    }
+                        Log.d("VIEWTEST", "ACTION_MOVE");
+                        if ((ev.getX() < mLeftX) && !open) {
+                            open();
+                        }
+                        if ((ev.getX() > mRightX) && open) {
+                            close();
+                        }
                     break;
                 }
 
