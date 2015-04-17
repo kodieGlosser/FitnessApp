@@ -252,7 +252,6 @@ public class EditExerciseDetailsFragment extends Fragment {
                         @Override
                         public void onFocusChange(View v, boolean hasFocus) {
                             if (hasFocus){
-                                //Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + repEdit.getText());
                                 ((EditText)v).setSelection(((EditText)v).getText().toString().length());
 
                                 mEditTextHandle = (EditText) v;
@@ -262,7 +261,6 @@ public class EditExerciseDetailsFragment extends Fragment {
                                 }
 
                             } else {
-                                //Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + repEdit.getText());
                                 if (((EditText) v).getText().toString().equals("")) {
                                     metrics.get(j).setMetricIntValue(0);
                                 } else {

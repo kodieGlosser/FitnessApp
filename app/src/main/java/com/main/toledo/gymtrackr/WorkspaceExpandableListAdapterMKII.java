@@ -54,7 +54,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
         Log.d("PAD BUGS", "CLEAN VIEW: CALLED");
         if (m_editTextHandle != null) {
-            //Log.d("PAD BUGS", "CLEAN VIEW: EDIT TEXT IS NOT NULL");
+            //Log.d("PAD BUGS", "CLEAN VIEW: PLAN TEXT IS NOT NULL");
             if (!m_editTextHandle.getLocalVisibleRect(viewHitRect)
                     || viewHitRect.height() < m_editTextHandle.getHeight()) {
                 //Log.d("PAD BUGS", "CLEAN VIEW: SHOULD HIDE KEYPAD");
@@ -164,10 +164,15 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
                 LinearLayout dynamicViewLayout = (LinearLayout) convertView.findViewById(R.id.dynamicViewLayout);
                 dynamicViewLayout.removeAllViewsInLayout();
-
+                /*
                 if (((WorkspaceActivity) _context).workoutFromPlan()){
                     dynamicViewLayout.addView(createGoalLayout(group, child));
                 }
+                */
+                if (Workout.get(group).getExercise(childPosition).hasPlanMetrics()){
+                    dynamicViewLayout.addView(createGoalLayout(group, child));
+                }
+
                 RelativeLayout exerciseViewHandle = (RelativeLayout) convertView.findViewById(R.id.exercise_relative_layout_handle);
                 dynamicViewLayout.addView(createMetricEditTextLayout(group, child, exerciseViewHandle));
 
@@ -245,7 +250,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
         if(Workout.get(group).getExercise(child).isToggled()){
             //convertView.findViewById(R.id.exerciseMainLayout).setBackgroundColor(Color.RED);
-            //convertView.findViewById(R.id.exercise_relative_layout_handle).setPressed(true);
+            convertView.findViewById(R.id.exercise_relative_layout_handle).setPressed(true);
         } else if(!emptyFlag){
             //convertView.findViewById(R.id.exerciseMainLayout).setBackgroundColor(Color.BLUE);
             //convertView.setBackgroundColor(mBackgroundColor);
@@ -430,10 +435,10 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                                 if(timeEdit.getText().toString().equals("0")){
                                     //timeEdit.setText("");
                                 }
-                                //Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + timeEdit.getText());
+                                //Log.d("WORKSPACELISTFOCUS", "PLAN FOCUSED" + timeEdit.getText());
                             } else {
                                 ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(editable);
-                                //Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + timeEdit.getText());
+                                //Log.d("WORKSPACELISTFOCUS", "PLAN LOST FOCUS" + timeEdit.getText());
                                     if (((EditText) v).getText().toString().equals("")) {
                                         metrics.get(j).setMetricIntValue(0);
                                     } else {
@@ -483,7 +488,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         @Override
                         public void onFocusChange(View v, boolean hasFocus) {
                             if (hasFocus){
-                                //Log.d("WORKSPACELISTFOCUS", "EDIT FOCUSED" + repEdit.getText());
+                                //Log.d("WORKSPACELISTFOCUS", "PLAN FOCUSED" + repEdit.getText());
                                 ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(false);
                                 repEdit.setSelection(repEdit.getText().toString().length());
 
@@ -496,7 +501,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
                             } else {
                                 ((WorkspaceActivity)_context).ListFragment.workspaceListView.toggleListeners(editable);
-                                    //Log.d("WORKSPACELISTFOCUS", "EDIT LOST FOCUS" + repEdit.getText());
+                                    //Log.d("WORKSPACELISTFOCUS", "PLAN LOST FOCUS" + repEdit.getText());
                                     if (((EditText) v).getText().toString().equals("")) {
                                         metrics.get(j).setMetricIntValue(0);
                                         Log.d("4/4", "DOOR 2");

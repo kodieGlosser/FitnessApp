@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -30,7 +29,7 @@ public class LoadActivity extends ActionBarActivity {
     LoadListFragment ListFragment;
     private int actionToPerform;
     //Program State Constants
-    final int EDIT = 1, WORKOUT = 2, WORKOUT_FROM_PLAN_FLAG = 3, WORKOUT_WITH_PLAN = 4;
+    final int PLAN = 1, WORKOUT = 2, WORKOUT_FROM_PLAN_FLAG = 3, WORKOUT_WITH_PLAN = 4, LOAD_PLAN = 5;
     //Error constants
     final int OTHER = 10, INVALID_NAME_VALUE = 11, TAKEN_NAME_VALUE = 12;
     //
@@ -211,12 +210,15 @@ public class LoadActivity extends ActionBarActivity {
             edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    /*
                     Intent i = new Intent(getContext(), WorkspaceActivity.class);
-                    //gettag should return plan name of clicked item
-                    Log.d("W_HEADER_DEBUG", "Plan name: " + planName);
                     i.putExtra("EXTRA_PLAN_NAME", planName);
-                    //puts actiontoperform (EDIT or WORKOUT) into the intent
-                    i.putExtra("EXTRA_MODE", EDIT);
+                    i.putExtra("EXTRA_MODE", PLAN);
+                    startActivity(i);
+                    */
+                    Intent i = new Intent(getContext(), WorkspaceActivity.class);
+                    WorkoutData.get(getApplicationContext()).setWorkoutState(LOAD_PLAN);
+                    WorkoutData.get(getApplicationContext()).setWorkoutPlanName(planName);
                     startActivity(i);
                 }
             });
@@ -225,13 +227,16 @@ public class LoadActivity extends ActionBarActivity {
             workout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    /*
                     Intent i = new Intent(getContext(), WorkspaceActivity.class);
-                    //gettag should return plan name of clicked item
-                    Log.d("W_HEADER_DEBUG", "Plan name: " + planName);
                     i.putExtra("EXTRA_PLAN_NAME", planName);
-                    //puts actiontoperform (EDIT or WORKOUT) into the intent
                     i.putExtra("EXTRA_MODE", WORKOUT_WITH_PLAN);
                     //another flag used for ui stuff
+                    startActivity(i);
+                    */
+                    Intent i = new Intent(getContext(), WorkspaceActivity.class);
+                    WorkoutData.get(getApplicationContext()).setWorkoutState(WORKOUT_WITH_PLAN);
+                    WorkoutData.get(getApplicationContext()).setWorkoutPlanName(planName);
                     startActivity(i);
                 }
             });

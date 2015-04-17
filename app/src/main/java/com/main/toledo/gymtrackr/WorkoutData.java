@@ -21,6 +21,11 @@ public class WorkoutData {
     private Exercise mTempExercise;
     private Exercise mToggledExercise;
 
+
+
+    private int mState;
+    private String mPlanName;
+
     private WorkoutData(Context appContext){
         //adds initial values
         mAppContext = appContext;
@@ -202,7 +207,6 @@ public class WorkoutData {
                                     break;
                                 case TIME:
                                     exercisesArray[j].setTime(m.getMetricIntValue());
-                                    //we don't support time yet
                                     break;
                                 case OTHER:
                                     //we don't support other yet
@@ -235,7 +239,6 @@ public class WorkoutData {
                             break;
                         case TIME:
                             exercisesArray[0].setTime(m.getMetricIntValue());
-                            //we don't support time yet
                             break;
                         case OTHER:
                             //we don't support other yet
@@ -418,4 +421,16 @@ public class WorkoutData {
         mPlanId = -1;
         mToggledExercise = null;
     }
+
+    public void setWorkoutState(int state){
+        mState = state;
+    }
+
+    public int getState(){
+        return mState;
+    }
+
+    public void setWorkoutPlanName(String name){mPlanName = name;}
+
+    public String getWorkoutPlanName(){return mPlanName;}
 }

@@ -49,8 +49,10 @@ public class historyHeaderFragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
-        if(fireOnStart)
+        if(fireOnStart) {
             setTotalHistoryText();
+            fireOnStart = false;
+        }
     }
 
 

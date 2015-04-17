@@ -27,12 +27,13 @@ public class WorkspaceActivity extends ActionBarActivity {
     public static boolean isEditable = false;
     boolean toBrowse, toEdit;
 
-    final int PLAN = 1, WORKOUT = 2, WORKOUT_WITH_PLAN = 4;
+    final int PLAN = 1, WORKOUT = 2, WORKOUT_WITH_PLAN = 4, LOAD_PLAN = 5;
 
     boolean workout_from_plan_flag = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*
         Bundle extras = getIntent().getExtras();
 
         if (extras != null){
@@ -53,6 +54,29 @@ public class WorkspaceActivity extends ActionBarActivity {
                     WorkoutData.get(this).eatPlan(planList2, workout_from_plan_flag);
                     break;
             }
+        }
+        */
+        mode = WorkoutData.get(this).getState();
+        switch(mode){
+            case PLAN:
+                break;
+            case LOAD_PLAN:
+                DatabaseWrapper db = new DatabaseWrapper();
+                planName = WorkoutData.get(this).getWorkoutPlanName();
+                Plan planList = db.loadEntirePlan(planName);
+                WorkoutData.get(this).eatPlan(planList, workout_from_plan_flag);
+                WorkoutData.get(this).setWorkoutState(PLAN);
+                mode = PLAN;
+                break;
+            case WORKOUT:
+                break;
+            case WORKOUT_WITH_PLAN:
+                workout_from_plan_flag = true;
+                DatabaseWrapper db2 = new DatabaseWrapper();
+                planName = WorkoutData.get(this).getWorkoutPlanName();
+                Plan planList2 = db2.loadEntirePlan(planName);
+                WorkoutData.get(this).eatPlan(planList2, workout_from_plan_flag);
+                break;
         }
         /*
         if (extras != null){
@@ -135,13 +159,10 @@ public class WorkspaceActivity extends ActionBarActivity {
             DatabaseWrapper db = new DatabaseWrapper();
             db.saveEntirePlan(p);
         }
-        if (mode == WORKOUT) {
+        if (mode == WORKOUT || mode == WORKOUT_WITH_PLAN) {
             //CODE FOR WORKOUT SAVE, EG EXPORT TO HISTORY
             DatabaseWrapper db = new DatabaseWrapper();
             ExerciseHistory[] eh = WorkoutData.get(this).crapHistory();
-            for (ExerciseHistory e : eh){
-                Log.d("SAVE TESTS", e.getExerciseId() + " IS BEING DIGESTED INTO EH");
-            }
             db.addExerciseToHistory(eh);
         }
     }
@@ -180,32 +201,31 @@ public class WorkspaceActivity extends ActionBarActivity {
 
         listAdapter.hideKeypad();
 
-
-
         super.onResume();
     }
+    /*
     @Override
     public void onDestroy(){
         //Log.d("CLEAR WORKOUTDATA TEST", "onDestroy() called.");
-        /*
+
         if(!toBrowse || !toEdit) {
             //WorkoutData.get(this).clear();
             WorkoutData.get(this).initialize();
         }
-        */
+
         super.onDestroy();
     }
     @Override
     public void onStart(){
-        /*
+
         Log.d("APP FLOW TESTS", "ON start CALLED IN WORKSPACE ACTIVITY");
         for (Circuit c : WorkoutData.get(this).getWorkout()){
             Log.d("APP FLOW TESTS", "CIRCUIT: " + c.getName());
         }
-        */
+
         super.onStart();
     }
-
+    */
     public void putToggledExerciseCircuit(int exercise, int circuit){
         mToggledExercise = exercise;
         mToggledCircuit = circuit;

@@ -14,19 +14,20 @@ import java.util.Date;
 
 
 public class StartActivity extends Activity {
-    final int WORKOUT = 2;
+    final int PLAN = 1, WORKOUT = 2, LOAD_PLAN = 5;
 
+    private Button resumeWorkoutButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.s_activity_main);
 
-        Button resumeWorkoutButton = (Button)findViewById(R.id.newWorkout);
-        resumeWorkoutButton.setOnClickListener(new View.OnClickListener(){
+        resumeWorkoutButton = (Button)findViewById(R.id.newWorkout);
+        resumeWorkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
+
                 Intent i = new Intent(StartActivity.this, WorkspaceActivity.class);
-                i.putExtra("EXTRA_MODE", WORKOUT);
                 startActivity(i);
             }
         });
@@ -35,11 +36,13 @@ public class StartActivity extends Activity {
         workoutNoPlanButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+
                 Intent i = new Intent(StartActivity.this, WorkspaceActivity.class);
                 WorkoutData.get(getApplicationContext()).clear();
                 WorkoutData.get(getApplicationContext()).initialize();
-                i.putExtra("EXTRA_MODE", WORKOUT);
+                WorkoutData.get(getApplicationContext()).setWorkoutState(WORKOUT);
                 startActivity(i);
+
             }
         });
 
@@ -67,6 +70,11 @@ public class StartActivity extends Activity {
             resumeWorkoutButton.setVisibility(View.GONE);
         } else {
             resumeWorkoutButton.setVisibility(View.VISIBLE);
+            if (WorkoutData.get(getApplicationContext()).getState() == PLAN){
+                resumeWorkoutButton.setText("Resume planning");
+            } else {
+                resumeWorkoutButton.setText("Resume workout");
+            }
         }
     }
 
