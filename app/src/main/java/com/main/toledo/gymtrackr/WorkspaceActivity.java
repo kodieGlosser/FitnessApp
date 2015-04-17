@@ -27,14 +27,34 @@ public class WorkspaceActivity extends ActionBarActivity {
     public static boolean isEditable = false;
     boolean toBrowse, toEdit;
 
-    final int PLAN = 1, WORKOUT = 2;
+    final int PLAN = 1, WORKOUT = 2, WORKOUT_WITH_PLAN = 4;
 
-    boolean workout_from_plan_flag;
+    boolean workout_from_plan_flag = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
 
+        if (extras != null){
+            planName = extras.getString("EXTRA_PLAN_NAME");
+            mode = extras.getInt("EXTRA_MODE");
+            switch(mode){
+                case PLAN:
+                    DatabaseWrapper db = new DatabaseWrapper();
+                    Plan planList = db.loadEntirePlan(planName);
+                    WorkoutData.get(this).eatPlan(planList, workout_from_plan_flag);
+                    break;
+                case WORKOUT:
+                    break;
+                case WORKOUT_WITH_PLAN:
+                    workout_from_plan_flag = true;
+                    DatabaseWrapper db2 = new DatabaseWrapper();
+                    Plan planList2 = db2.loadEntirePlan(planName);
+                    WorkoutData.get(this).eatPlan(planList2, workout_from_plan_flag);
+                    break;
+            }
+        }
+        /*
         if (extras != null){
             planName = extras.getString("EXTRA_PLAN_NAME");
             mode = extras.getInt("EXTRA_MODE");
@@ -47,7 +67,7 @@ public class WorkspaceActivity extends ActionBarActivity {
             Plan planList = db.loadEntirePlan(planName);
             WorkoutData.get(this).eatPlan(planList, workout_from_plan_flag);
         }
-
+        */
         setContentView(R.layout.w_activity_main);
 
         TabFragment = new WorkspaceTabFragment();
@@ -167,10 +187,12 @@ public class WorkspaceActivity extends ActionBarActivity {
     @Override
     public void onDestroy(){
         //Log.d("CLEAR WORKOUTDATA TEST", "onDestroy() called.");
+        /*
         if(!toBrowse || !toEdit) {
-            WorkoutData.get(this).clear();
+            //WorkoutData.get(this).clear();
             WorkoutData.get(this).initialize();
         }
+        */
         super.onDestroy();
     }
     @Override

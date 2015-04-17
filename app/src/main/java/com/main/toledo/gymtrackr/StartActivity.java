@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,16 +15,29 @@ import java.util.Date;
 
 public class StartActivity extends Activity {
     final int WORKOUT = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.s_activity_main);
+
+        Button resumeWorkoutButton = (Button)findViewById(R.id.newWorkout);
+        resumeWorkoutButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent i = new Intent(StartActivity.this, WorkspaceActivity.class);
+                i.putExtra("EXTRA_MODE", WORKOUT);
+                startActivity(i);
+            }
+        });
 
         Button workoutNoPlanButton = (Button)findViewById(R.id.workoutNow);
         workoutNoPlanButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 Intent i = new Intent(StartActivity.this, WorkspaceActivity.class);
+                WorkoutData.get(getApplicationContext()).clear();
+                WorkoutData.get(getApplicationContext()).initialize();
                 i.putExtra("EXTRA_MODE", WORKOUT);
                 startActivity(i);
             }
@@ -48,6 +62,12 @@ public class StartActivity extends Activity {
                 startActivity(i);
             }
         });
+
+        if(WorkoutData.get(this).isEmpty()){
+            resumeWorkoutButton.setVisibility(View.GONE);
+        } else {
+            resumeWorkoutButton.setVisibility(View.VISIBLE);
+        }
     }
 
 

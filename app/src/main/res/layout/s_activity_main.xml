@@ -10,8 +10,17 @@
     tools:context="com.main.toledo.gymtrackr.StartActivity">
 
     <Button
+        android:id="@+id/newWorkout"
+        android:text="Resume Workout"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        style="@style/myButton"
+        android:layout_above="@+id/workoutNow"
+        android:visibility="gone"/>
+
+    <Button
         android:id="@+id/workoutNow"
-        android:text="Workout"
+        android:text="New Workout"
         android:layout_width="fill_parent"
         android:layout_height="60dp"
         style="@style/myButton"
@@ -38,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:src="@drawable/ic_logo"
-        android:layout_above="@+id/workoutNow"
+        android:layout_above="@+id/newWorkout"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="46dp" />

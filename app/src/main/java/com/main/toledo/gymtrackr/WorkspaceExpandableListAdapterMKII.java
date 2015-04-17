@@ -244,8 +244,10 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         }
 
         if(Workout.get(group).getExercise(child).isToggled()){
-            convertView.findViewById(R.id.exercise_relative_layout_handle).setPressed(true);
+            //convertView.findViewById(R.id.exerciseMainLayout).setBackgroundColor(Color.RED);
+            //convertView.findViewById(R.id.exercise_relative_layout_handle).setPressed(true);
         } else if(!emptyFlag){
+            //convertView.findViewById(R.id.exerciseMainLayout).setBackgroundColor(Color.BLUE);
             //convertView.setBackgroundColor(mBackgroundColor);
         } else {
 

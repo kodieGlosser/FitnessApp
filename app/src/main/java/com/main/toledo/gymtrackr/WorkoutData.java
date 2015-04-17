@@ -28,6 +28,7 @@ public class WorkoutData {
     }
 
     public void initialize(){
+        Log.d("Initialize tests", "Initialize called.");
         Circuit c = new Circuit();
         c.setOpenStatus(false);
         Exercise e = new Exercise();
@@ -260,8 +261,8 @@ public class WorkoutData {
     }
 
     public void eatPlan(Plan p, boolean workout_from_plan_flag ){
-
-        Workout.clear();
+        Log.d("4/16", "EAT PLAN CALLED");
+        this.clear();
         //mPlanId = p.getPlanId();
         mPlanId = p.getPlanId();
         m_name = p.getName();
@@ -305,10 +306,10 @@ public class WorkoutData {
                 e.addMetrics(reps);
                 */
                 if(workout_from_plan_flag){
-                    Log.d("PLAN METRIC", "addSeparatePlanMetrics called");
+                    //Log.d("PLAN METRIC", "addSeparatePlanMetrics called");
                     e.addSeparatePlanMetrics();
                 }
-                Log.d("SAVE TESTS", "FROM RETREIVED PLAN.  EXERCISE NAME: " + e.getName() + " EXERCISE ID: " + e.getId());
+                //Log.d("SAVE TESTS", "FROM RETREIVED PLAN.  EXERCISE NAME: " + e.getName() + " EXERCISE ID: " + e.getId());
                 c_new.add(e);
             }
             if(c_new.isOpen()){
@@ -321,13 +322,13 @@ public class WorkoutData {
 
     }
     public ExerciseHistory[] crapHistory(){
-        Log.d("SAVE TESTS", "SAVE TO HISTORY CALLED");
+        //Log.d("SAVE TESTS", "SAVE TO HISTORY CALLED");
         ArrayList<ExerciseHistory> tempExerciseHolder = new ArrayList<>();
         //Pull all workout exercises into temp array
         for(Circuit c : Workout){
             for (Exercise e : c.getExercises()){
                 if (e.isSaveToHistorySet()){
-                    Log.d("SAVE TESTS", e.getName() + " " + e.getId() + " IS BEING DIGESTED INTO EH");
+                    //Log.d("SAVE TESTS", e.getName() + " " + e.getId() + " IS BEING DIGESTED INTO EH");
                     int weight, reps;
                     Date d = new Date();
                     int time = -1;
@@ -345,13 +346,12 @@ public class WorkoutData {
                                 break;
                             case TIME:
                                 time = m.getMetricIntValue();
-                                //we don't support time yet
                                 break;
                             case OTHER:
                                 //we don't support other yet
                                 break;
                             default:
-                                Log.d("TERRIBLE THINGS", "SOMETHING TERRIBLE HAPPENED WHEN WORKOUTDATA TRIED TO CRAP");
+                                //Log.d("TERRIBLE THINGS", "SOMETHING TERRIBLE HAPPENED WHEN WORKOUTDATA TRIED TO CRAP");
                                 break;
                         }
                     }
@@ -377,6 +377,16 @@ public class WorkoutData {
 
         return exerciseHistory;
     }
+    public boolean isEmpty(){
+        boolean empty = true;
+        if(Workout.get(0).getExercises().size()>1){
+            empty = false;
+        }
+        if(Workout.size() > 1){
+            empty = false;
+        }
+        return empty;
+    }
 
     public void exerciseRemoved(int id){
         ArrayList<Integer> circuitsToRemove = new ArrayList<>();
@@ -401,6 +411,7 @@ public class WorkoutData {
             Log.d("4/5", c.getName() + " -- OPEN: " + c.isOpen());
         }
     }
+
     public void clear(){
         Workout.clear();
         m_name = "";
