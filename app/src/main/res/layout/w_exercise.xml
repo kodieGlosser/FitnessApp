@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/exercise_relative_layout_handle"
-        style="@style/myCircuit"
+        style="@style/myExercises"
         android:paddingBottom="10dp">
         <!--style="@style/myCircuit"-->
         <LinearLayout
