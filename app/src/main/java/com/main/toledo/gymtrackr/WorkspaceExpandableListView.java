@@ -619,6 +619,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                         ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
                     }
                 }, 300);
+
             }
         }
     }

@@ -192,6 +192,7 @@ public class LoadActivity extends ActionBarActivity {
             swipableLinearLayout.setSwipeOffset(slideVal);
             swipableLinearLayout.setSwipeLayoutListener(listener);
             swipableLinearLayout.percentageToDragEnable(0f);
+            swipableLinearLayout.refreshIcon();
 
             TextView t = (TextView) convertView.findViewById(R.id.planName);
             t.setText(planName);
@@ -199,8 +200,6 @@ public class LoadActivity extends ActionBarActivity {
                 swipableLinearLayout.setX(0f);
                 mTextViewHandle.setOpen(false);
                 mTextViewHandle = null;
-                ImageView iview = (ImageView)convertView.findViewById(R.id.Arrow_in_plan);
-                iview.setBackground(getResources().getDrawable(R.drawable.ic_ic_expand_arrow_side_50));
             }
             ImageButton delete = (ImageButton) convertView.findViewById(R.id.deleteButton);
             delete.setOnClickListener(new View.OnClickListener() {

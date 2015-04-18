@@ -155,6 +155,7 @@ public class WorkspaceActivity extends ActionBarActivity {
             DatabaseWrapper db = new DatabaseWrapper();
             ExerciseHistory[] eh = WorkoutData.get(this).crapHistory();
             db.addExerciseToHistory(eh);
+            removeChecked();
         }
     }
     public boolean workoutFromPlan(){return workout_from_plan_flag;}
@@ -165,6 +166,9 @@ public class WorkspaceActivity extends ActionBarActivity {
         ListFragment.collapseLists(listAdapter);
     }
     */
+    private void removeChecked(){
+
+    }
     //I feel like this should be in the header fragment...
     public void toggleEdit(){
         isEditable = !isEditable;

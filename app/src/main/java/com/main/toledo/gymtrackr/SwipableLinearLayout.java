@@ -167,6 +167,20 @@ public class SwipableLinearLayout extends LinearLayout {
 
 
     }
+
+    public void refreshIcon(){
+        ImageView img_selection = (ImageView) findViewById(R.id.Arrow_in_plan);
+        int imageResourceExpand = R.drawable.ic_ic_expand_arrow_side_50;
+        int imageResourceCollapse = R.drawable.ic_ic_collapse_arrow_side_50;
+
+        if(img_selection != null){
+            if(open){
+                img_selection.setImageResource(imageResourceCollapse);
+            } else {
+                img_selection.setImageResource(imageResourceExpand);
+            }
+        }
+    }
     public void setSwipeOffset(int i){
         slideVal = i;
     }
