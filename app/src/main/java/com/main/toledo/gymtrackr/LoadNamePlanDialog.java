@@ -5,11 +5,9 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 /**
  * Created by Adam on 3/10/2015.
@@ -33,14 +31,14 @@ public class LoadNamePlanDialog extends DialogFragment {
         builder.setMessage("ENTER PLAN NAME");
         final EditText t = (EditText) v.findViewById(R.id.planName);
         builder.setView(v)
-                .setPositiveButton("SURE", new DialogInterface.OnClickListener() {
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //EditText t = (EditText) v.findViewById(R.id.planName);
                         String planName = t.getText().toString();
                         //ERROR HAPPENS
                         if (((LoadActivity) getActivity()).getPlanList().contains(planName) || (planName.equals(""))) {
                             //pass the plan name string value to the activity for storage
-                            ((LoadActivity) getActivity()).setPlanName(planName);
+                            ((LoadActivity) getActivity()).setNewPlanName(planName);
                             //call error dialog asking how to proceed
                             int errorFlag = OTHER;
                             //TODO:  WE NEED MORE CHECKS, MULTIPLE SPACES ETC
@@ -54,14 +52,14 @@ public class LoadNamePlanDialog extends DialogFragment {
                             ((LoadActivity) getActivity()).showErrorDialog(errorFlag);
                         } else {
                             //NO ERROR
-                            ((LoadActivity) getActivity()).setPlanName(planName);
+                            ((LoadActivity) getActivity()).setNewPlanName(planName);
                             ((LoadActivity) getActivity()).createNewPlan();
                             //m_Listener.onDialogPositiveClick(WorkspaceNameDialog.this);
                         }
 
                     }
                 })
-                .setNegativeButton("BUGGER OFF", new DialogInterface.OnClickListener() {
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //m_Listener.onDialogNegativeClick(WorkspaceNameDialog.this);
 

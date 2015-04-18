@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class LoadActivity extends ActionBarActivity {
     //private static ArrayList<Plan> workoutPlans = new ArrayList<>();
     //the adapter is responsible for populating the load list
     public static LoadAdapter adapter;
-    private String planName;
+    private String newPlanName;
     //testvals
     String s;
 
@@ -103,17 +104,27 @@ public class LoadActivity extends ActionBarActivity {
         return this.adapter;
     }
 
-    public void setPlanName(String s){planName = s;};
+    public void setNewPlanName(String s){
+        newPlanName = s;};
 
     public ArrayList<String> getPlanList(){return planList; }
 
     public void createNewPlan(){
         //might be able to just create a new plan
-        Plan p = WorkoutData.get(this).crapNewPlan();
-        p.setName(planName);
+        //WorkoutData.get(this).clear();
+
+        //Make a blank plan.
+        Plan p = new Plan();
+        p.setName(newPlanName);
+
+        //Log.d("4/17", ""+e.getName() + " Size: + " + exercises.length);
 
         DatabaseWrapper db = new DatabaseWrapper();
-        db.saveEntirePlan(p);   //NOTE TO SELF: DELETES IF THERE
+
+        Circuit_temp[] circuits = new Circuit_temp[0];
+        p.setCircuits(circuits);
+        db.saveEntirePlan(p);
+
 
         planList.clear();
         String[] planArray = db.loadPlanNames();
@@ -188,6 +199,8 @@ public class LoadActivity extends ActionBarActivity {
                 swipableLinearLayout.setX(0f);
                 mTextViewHandle.setOpen(false);
                 mTextViewHandle = null;
+                ImageView iview = (ImageView)convertView.findViewById(R.id.Arrow_in_plan);
+                iview.setBackground(getResources().getDrawable(R.drawable.ic_ic_expand_arrow_side_50));
             }
             ImageButton delete = (ImageButton) convertView.findViewById(R.id.deleteButton);
             delete.setOnClickListener(new View.OnClickListener() {
@@ -212,7 +225,7 @@ public class LoadActivity extends ActionBarActivity {
                 public void onClick(View v) {
                     /*
                     Intent i = new Intent(getContext(), WorkspaceActivity.class);
-                    i.putExtra("EXTRA_PLAN_NAME", planName);
+                    i.putExtra("EXTRA_PLAN_NAME", newPlanName);
                     i.putExtra("EXTRA_MODE", PLAN);
                     startActivity(i);
                     */
@@ -229,7 +242,7 @@ public class LoadActivity extends ActionBarActivity {
                 public void onClick(View v) {
                     /*
                     Intent i = new Intent(getContext(), WorkspaceActivity.class);
-                    i.putExtra("EXTRA_PLAN_NAME", planName);
+                    i.putExtra("EXTRA_PLAN_NAME", newPlanName);
                     i.putExtra("EXTRA_MODE", WORKOUT_WITH_PLAN);
                     //another flag used for ui stuff
                     startActivity(i);

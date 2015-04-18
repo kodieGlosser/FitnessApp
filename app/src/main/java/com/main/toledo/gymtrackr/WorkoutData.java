@@ -166,6 +166,7 @@ public class WorkoutData {
     }
     //newPlan
     public Plan crapNewPlan(){
+
         Plan plan = new Plan();
         //minus one for the placeholder at end
         plan.setName(m_name);

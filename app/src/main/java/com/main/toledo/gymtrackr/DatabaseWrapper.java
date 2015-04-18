@@ -171,6 +171,7 @@ public class DatabaseWrapper {
      * @return an entire list of the workouts and exercises inside of the plan
      */
     public Plan loadEntirePlan(String planName) {
+        Log.d("4/17", "LOAD PLAN CALLED FOR: " + planName);
         String rawquery = "select DISTINCT(workoutId), planId from Planned_Union where Planned_Union.planId IN (select _id from Plan where name='" + planName + "')";
         Plan plan = null;
         Cursor c = myDatabase.rawQuery(rawquery, null);
@@ -211,7 +212,11 @@ public class DatabaseWrapper {
                                         sequence = c1.getInt(c1.getColumnIndex(columnName1));
                                     }
                                 }
+                                Log.d("4/18", "WorkoutId: " + workoutId);
                                 exercises = getExercisesFromCircuitTable(workoutId);
+                                for(Exercise exercise : exercises)
+                                    Log.d("4/18", "Exercise loaded: " + exercise.getName());
+
                                 circuits[i] = new Circuit_temp(name, exercises, workoutId, open, sequence);
                                 i++;
                             }
@@ -314,7 +319,7 @@ public class DatabaseWrapper {
                 if (browseExercisesByExactName(exercises[j].getName()).length == 1){
                     exerciseId = browseExercisesByExactName(exercises[j].getName())[0].getId();
                 }
-                Log.d("SAVE TESTS", "SAVE PLAN ExerciseID: " + exerciseId + "ExerciseName: " + exercises[j].getName());
+                Log.d("4/18", "SAVE PLAN ExerciseID: " + exerciseId + "ExerciseName: " + exercises[j].getName());
                 circuitValues.put(COLUMN_EXERCISE, exerciseId);
                 circuitId = myDatabase.insert(COLUMN_CIRCUIT, null, circuitValues);
 

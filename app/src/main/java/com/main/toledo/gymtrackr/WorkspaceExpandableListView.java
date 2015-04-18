@@ -394,7 +394,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         if(getPackedPositionType(getExpandableListPosition(position))==PACKED_POSITION_TYPE_CHILD){
             int group = getPackedPositionGroup(getExpandableListPosition(position));
             int child = getPackedPositionChild(getExpandableListPosition(position));
-
             if(!Workout.get(group).getExercise(child).getName().equals("test")) {
 
                 if(!Workout.get(group).getExercise(child).isToggled()) {
