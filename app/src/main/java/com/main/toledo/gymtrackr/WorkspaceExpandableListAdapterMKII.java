@@ -13,6 +13,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseExpandableListAdapter;
@@ -37,6 +39,9 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
     private ArrayList<Circuit> Workout = new ArrayList<>();
 
     private LinearLayout.LayoutParams params;
+
+    //BROWSE STATES
+    final int NOT_BROWSE = 0, BROWSE_WORKOUT = 1, WORKOUT_BROWSE = 2;
 
     public WorkspaceExpandableListAdapterMKII(Context context){
         params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
@@ -119,9 +124,14 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     public void onClick(View v) {
                         Intent i = new Intent(_context, BrowseActivity.class);
 //                        Log.d("Test", "Browse called from circuit: " + circuit);
+                        /*
                         i.putExtra("EXTRA_CIRCUIT_NUMBER", group);
                         i.putExtra("EXTRA_CIRCUIT_OPEN", false);
-                        ((WorkspaceActivity) _context).setToBrowse(true);
+                        */
+                        WorkoutData.get(_context).setStateCircuitOpenStatus(false);
+                        WorkoutData.get(_context).setStateCircuit(group);
+                        WorkoutData.get(_context).setBrowseState(WORKOUT_BROWSE);
+
                         ((WorkspaceActivity) _context).ListFragment.workspaceListView.clearHandle();
                         _context.startActivity(i);
                     }
@@ -134,9 +144,16 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         if (WorkoutData.get(_context).isAnExerciseToggled()){
                             int WorkoutSize = Workout.size();
                             Exercise e = WorkoutData.get(_context).getToggledExerciseCopy();
+                            e.setAnimate(true);
                             WorkoutData.get(_context).addClosedCircuit(e, WorkoutSize -1);
                             notifyDataSetChanged();
-                        }
+                            /*
+                            ((WorkspaceActivity) _context).ListFragment
+                                    .workspaceListView.setSelectedChild(group, child, false);
+                                    */
+                            ((WorkspaceActivity) _context).ListFragment                               ///////////////////////////THIS NEEDS TO SCALE FOR RESOLUTIONS
+                                    .workspaceListView.smoothScrollBy(300, 800);
+                    }
                     }
                 });
                 //}
@@ -214,9 +231,14 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         public void onClick(View v) {
                             Intent i = new Intent(_context, BrowseActivity.class);
 //                        Log.d("Test", "Browse called from circuit: " + circuit);
+                            /*
                             i.putExtra("EXTRA_CIRCUIT_OPEN", true);
                             i.putExtra("EXTRA_CIRCUIT_NUMBER", group);
-                            ((WorkspaceActivity) _context).setToBrowse(true);
+                            */
+                            WorkoutData.get(_context).setStateCircuitOpenStatus(true);
+                            WorkoutData.get(_context).setStateCircuit(group);
+                            WorkoutData.get(_context).setBrowseState(WORKOUT_BROWSE);
+
                             ((WorkspaceActivity) _context).ListFragment.workspaceListView.clearHandle();
                             _context.startActivity(i);
                         }
@@ -229,8 +251,15 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                             if (WorkoutData.get(_context).isAnExerciseToggled()){
                                 int CircuitSize = Workout.get(group).getSize();
                                 Exercise e = WorkoutData.get(_context).getToggledExerciseCopy();
+                                e.setAnimate(true);
                                 Workout.get(group).addExerciseAtIndex(CircuitSize - 1, e);
                                 notifyDataSetChanged();
+                                /*
+                                ((WorkspaceActivity) _context).ListFragment
+                                        .workspaceListView.setSelectedChild(group, child, false);
+                                        */
+                                ((WorkspaceActivity) _context).ListFragment                                                     ///////////////////////////THIS NEEDS TO SCALE FOR RESOLUTIONS
+                                        .workspaceListView.smoothScrollBy(300, 800);
                             }
                         }
                     });
@@ -257,7 +286,12 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
         } else {
 
         }
-
+        if(Workout.get(group).getExercise(child).doAnimation()){
+            Animation animation = AnimationUtils.loadAnimation(_context, R.anim.slide_right);
+            animation.setDuration(500);
+            convertView.startAnimation(animation);
+            Workout.get(group).getExercise(child).setAnimate(false);
+        }
         return convertView;
     }
     @Override

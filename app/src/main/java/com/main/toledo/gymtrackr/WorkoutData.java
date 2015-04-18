@@ -22,9 +22,12 @@ public class WorkoutData {
     private Exercise mToggledExercise;
 
 
-
+    //state data
     private int mState;
     private String mPlanName;
+    private int mStateCircuit;
+    private boolean mStateCircuitOpen;
+    private int mBrowseState = 0;
 
     private WorkoutData(Context appContext){
         //adds initial values
@@ -433,4 +436,16 @@ public class WorkoutData {
     public void setWorkoutPlanName(String name){mPlanName = name;}
 
     public String getWorkoutPlanName(){return mPlanName;}
+
+    public void setBrowseState(int state){mBrowseState = state;}
+
+    public int getBrowseState(){return mBrowseState;}
+
+    public void setStateCircuit(int i){mStateCircuit = i;}
+
+    public int getStateCircuit(){return mStateCircuit;}
+
+    public void setStateCircuitOpenStatus(boolean status){mStateCircuitOpen = status;}
+
+    public boolean isStateCircuitOpen(){return mStateCircuitOpen;}
 }

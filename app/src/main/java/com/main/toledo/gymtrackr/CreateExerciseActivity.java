@@ -56,16 +56,18 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
     final int mMuscleSpinnerId = View.generateViewId();
 
     //PASSED FROM BROWSE, PROBABLY  a better way to do this
-    private int circuitNumber;
-    private boolean circuitOpen;
+    //private int circuitNumber;
+    //private boolean circuitOpen;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //MONKEY CODE
+        /*
         Bundle extras = getIntent().getExtras();
         if (extras != null){
             circuitNumber = extras.getInt("EXTRA_CIRCUIT_NUMBER");
             circuitOpen = extras.getBoolean("EXTRA_CIRCUIT_OPEN");
         }
+        */
         //END MONKEY CODE
 
         super.onCreate(savedInstanceState);
@@ -130,8 +132,10 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
                 Log.d("BROWSE FLOW", "UP");
                 //MONKEY CODE
                 Intent i = new Intent(this, BrowseActivity.class);
+                /*
                 i.putExtra("EXTRA_CIRCUIT_NUMBER", circuitNumber);
                 i.putExtra("EXTRA_CIRCUIT_OPEN", circuitOpen);
+                */
                 startActivity(i);
                 //END MONKEY CODE
                 return true;

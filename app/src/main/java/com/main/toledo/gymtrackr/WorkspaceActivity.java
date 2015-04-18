@@ -3,6 +3,7 @@ package com.main.toledo.gymtrackr;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -25,37 +26,18 @@ public class WorkspaceActivity extends ActionBarActivity {
     int mode;
 
     public static boolean isEditable = false;
-    boolean toBrowse, toEdit;
-
+    private boolean toEdit;
+    //LOAD/START STATES
     final int PLAN = 1, WORKOUT = 2, WORKOUT_WITH_PLAN = 4, LOAD_PLAN = 5;
+
+    //BROWSE STATES
+    final int NOT_BROWSE = 0, BROWSE_WORKOUT = 1, WORKOUT_BROWSE = 2;
 
     boolean workout_from_plan_flag = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*
-        Bundle extras = getIntent().getExtras();
 
-        if (extras != null){
-            planName = extras.getString("EXTRA_PLAN_NAME");
-            mode = extras.getInt("EXTRA_MODE");
-            switch(mode){
-                case PLAN:
-                    DatabaseWrapper db = new DatabaseWrapper();
-                    Plan planList = db.loadEntirePlan(planName);
-                    WorkoutData.get(this).eatPlan(planList, workout_from_plan_flag);
-                    break;
-                case WORKOUT:
-                    break;
-                case WORKOUT_WITH_PLAN:
-                    workout_from_plan_flag = true;
-                    DatabaseWrapper db2 = new DatabaseWrapper();
-                    Plan planList2 = db2.loadEntirePlan(planName);
-                    WorkoutData.get(this).eatPlan(planList2, workout_from_plan_flag);
-                    break;
-            }
-        }
-        */
         mode = WorkoutData.get(this).getState();
         switch(mode){
             case PLAN:
@@ -76,22 +58,32 @@ public class WorkspaceActivity extends ActionBarActivity {
                 planName = WorkoutData.get(this).getWorkoutPlanName();
                 Plan planList2 = db2.loadEntirePlan(planName);
                 WorkoutData.get(this).eatPlan(planList2, workout_from_plan_flag);
+                WorkoutData.get(this).setWorkoutState(WORKOUT);
                 break;
         }
         /*
-        if (extras != null){
-            planName = extras.getString("EXTRA_PLAN_NAME");
-            mode = extras.getInt("EXTRA_MODE");
-            if (extras.getBoolean("WORKOUT_FROM_PLAN_FLAG")){
-                workout_from_plan_flag = true;
-            } else {
-                workout_from_plan_flag = false;
-            }
-            DatabaseWrapper db = new DatabaseWrapper();
-            Plan planList = db.loadEntirePlan(planName);
-            WorkoutData.get(this).eatPlan(planList, workout_from_plan_flag);
+        int browseMode = WorkoutData.get(this).getBrowseState();
+        switch(browseMode){
+            case NOT_BROWSE:
+                break;
+            case BROWSE_WORKOUT:
+                WorkoutData.get(this).setBrowseState(NOT_BROWSE);
+                int circuitVal = WorkoutData.get(this).getStateCircuit();
+                boolean circuitOpenStatus = WorkoutData.get(this).isStateCircuitOpen();
+                int child;
+
+                if(circuitOpenStatus)
+                    child = WorkoutData.get(this).getWorkout().get(circuitVal).getExercises().size()-2;
+                else
+                    child = 0;
+                Log.d("4/17", "SHOULD MOVE LIST");
+                ListFragment.workspaceListView.setSelectedChild(circuitVal, child, true);
+                ListFragment.workspaceListView.smoothScrollByOffset(-300);
+                //focus right thing
+                break;
         }
         */
+
         setContentView(R.layout.w_activity_main);
 
         TabFragment = new WorkspaceTabFragment();
@@ -148,7 +140,6 @@ public class WorkspaceActivity extends ActionBarActivity {
 
     public String getPlanName(){return planName;}
     //flow control for workspace state
-    public void setToBrowse(boolean b){toBrowse = b;}
 
     public void setToEdit(boolean b){toEdit = b; }
 
@@ -195,58 +186,48 @@ public class WorkspaceActivity extends ActionBarActivity {
         Log.d("4/4", "ON RESUME CALLED IN WORKSPACE ACTIVITY");
         //THIS FIXES A BUG WHERE THE ADAPTER WONT BE UPDATED WHEN THE
         //ACTIVITY IS RESUMED AFTER BROWSE
-        toBrowse = false;
         if(listAdapter==null)
             listAdapter = new WorkspaceExpandableListAdapterMKII(this);
 
         listAdapter.hideKeypad();
+        /*
+        int browseMode = WorkoutData.get(this).getBrowseState();
+        switch(browseMode){
+            case NOT_BROWSE:
+                break;
+            case BROWSE_WORKOUT:
+                WorkoutData.get(this).setBrowseState(NOT_BROWSE);
+                int circuitVal = WorkoutData.get(this).getStateCircuit();
+                boolean circuitOpenStatus = WorkoutData.get(this).isStateCircuitOpen();
+                int child;
 
+                if(circuitOpenStatus)
+                    child = WorkoutData.get(this).getWorkout().get(circuitVal).getExercises().size()-2;
+                else
+                    child = 0;
+                Log.d("4/17", "SHOULD MOVE LIST! CIRCUIT: " + circuitVal + " -- CHILD: " + child);
+
+                ListFragment.workspaceListView.setSelectedChild(circuitVal, child, false);
+                //ListFragment.workspaceListView.smoothScrollByOffset(-300);
+                //focus right thing
+                break;
+        }
+        */
         super.onResume();
     }
-    /*
     @Override
-    public void onDestroy(){
-        //Log.d("CLEAR WORKOUTDATA TEST", "onDestroy() called.");
-
-        if(!toBrowse || !toEdit) {
-            //WorkoutData.get(this).clear();
-            WorkoutData.get(this).initialize();
-        }
-
-        super.onDestroy();
+    public void onPause(){
+        super.onPause();
+        WorkoutData.get(this).setBrowseState(NOT_BROWSE);
     }
-    @Override
-    public void onStart(){
-
-        Log.d("APP FLOW TESTS", "ON start CALLED IN WORKSPACE ACTIVITY");
-        for (Circuit c : WorkoutData.get(this).getWorkout()){
-            Log.d("APP FLOW TESTS", "CIRCUIT: " + c.getName());
-        }
-
-        super.onStart();
-    }
-    */
     public void putToggledExerciseCircuit(int exercise, int circuit){
         mToggledExercise = exercise;
         mToggledCircuit = circuit;
     }
 
     public int getToggledExercise(){return mToggledExercise;}
+
     public int getToggledCircuit(){return mToggledCircuit;}
-
-    /*
-    @Override
-    public void onDialogPositiveClick(DialogFragment dialog){
-        Plan p = WorkoutData.get(this).crapNewPlan();
-        DatabaseWrapper db = new DatabaseWrapper();
-        db.saveEntirePlan(p);
-    }
-
-    @Override
-    public void onDialogNegativeClick(DialogFragment dialog){
-
-    }
-    */
 
     public WorkspaceExpandableListAdapterMKII getAdapter(){
         return this.listAdapter;

@@ -35,6 +35,7 @@ public class Exercise {
     private boolean mToggled;//used for ui stuffs
     private boolean hasPlanMetrics = false;
     //performed, used to organize browse menu
+    private boolean mAnimate = false;
 
     public Exercise(String name, String muscleGroup, int lastPerformed, String equipmentType){
         this.m_name = name;
@@ -297,7 +298,8 @@ public class Exercise {
     public void setUsesOthers(boolean b){m_bOther = b;}
     public void setOtherName(String s){m_sOther = s;}
 
-
+    public void setAnimate(boolean b){mAnimate = b;}
+    public boolean doAnimation(){return mAnimate;}
 }
 
 

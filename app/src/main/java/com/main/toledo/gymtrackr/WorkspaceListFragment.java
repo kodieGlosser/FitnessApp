@@ -1,6 +1,7 @@
 package com.main.toledo.gymtrackr;
 
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -18,7 +19,7 @@ import android.widget.ExpandableListView;
  * Created by Adam on 2/25/2015.
  */
 public class WorkspaceListFragment extends Fragment {
-
+    final int NOT_BROWSE = 0, BROWSE_WORKOUT = 1, WORKOUT_BROWSE = 2;
         WorkspaceExpandableListView workspaceListView;
         boolean mDragInProgress;
         @Override
@@ -101,7 +102,35 @@ public class WorkspaceListFragment extends Fragment {
                 ((WorkspaceActivity) getActivity()).getAdapter().cleanView(hitRect);
             }
         });
+
         */
+        Context c = getActivity();
+        int browseMode = WorkoutData.get(c).getBrowseState();
+        switch(browseMode){
+            case NOT_BROWSE:
+                break;
+            case BROWSE_WORKOUT:
+                WorkoutData.get(c).setBrowseState(NOT_BROWSE);
+                int circuitVal = WorkoutData.get(c).getStateCircuit();
+                boolean circuitOpenStatus = WorkoutData.get(c).isStateCircuitOpen();
+                int child;
+
+                if(circuitOpenStatus)
+                    child = WorkoutData.get(c).getWorkout().get(circuitVal).getExercises().size()-2;
+                else
+                    child = 0;
+                Log.d("4/17", "SHOULD MOVE LIST! CIRCUIT: " + circuitVal + " -- CHILD: " + child);
+
+                workspaceListView.setSelectedChild(circuitVal, child, false);
+                workspaceListView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        workspaceListView.smoothScrollBy(-300, 0);
+                    }
+                });
+                //focus right thing
+                break;
+        }
         super.onResume();
     }
 

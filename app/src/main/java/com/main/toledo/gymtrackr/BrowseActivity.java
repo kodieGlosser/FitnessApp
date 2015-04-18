@@ -34,19 +34,23 @@ public class BrowseActivity extends ActionBarActivity {
 
 
     //needed for add exercise functionality
-    private int circuitNumber;
-    private boolean circuitOpen;
+    //private int circuitNumber;
+    //private boolean circuitOpen;
     private int slideVal = -200; //should change this to some fraction of screen width
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("BROWSE FLOW", "onCreate");
         super.onCreate(savedInstanceState);
+        /*
         Bundle extras = getIntent().getExtras();
         if (extras != null){
             circuitNumber = extras.getInt("EXTRA_CIRCUIT_NUMBER");
             circuitOpen = extras.getBoolean("EXTRA_CIRCUIT_OPEN");
         }
+        */
+
         setContentView(R.layout.b_activity);
         //Log.d("test", " Looking for exercise for circuit" + circuitNumber);
 
@@ -81,8 +85,11 @@ public class BrowseActivity extends ActionBarActivity {
             case R.id.action_add_exercise_item:
                 Intent i = new Intent(this, CreateExerciseActivity.class);
                 //MONKEY CODE
+                /*
                 i.putExtra("EXTRA_CIRCUIT_NUMBER", circuitNumber);
                 i.putExtra("EXTRA_CIRCUIT_OPEN", circuitOpen);
+                */
+
                 //END MONKEY CODE
                 startActivity(i);
                 return true;
@@ -106,13 +113,13 @@ public class BrowseActivity extends ActionBarActivity {
     //fragment.  queries to populate the the list could go here.  we could set addItem to take some
     //params to specify things.
 
-    public int getCircuitValue(){
-        return circuitNumber;
-    }
+    //public int getCircuitValue(){
+    //    return circuitNumber;
+    //}
 
-    public boolean isCircuitOpen(){
-        return circuitOpen;
-    }
+    //public boolean isCircuitOpen(){
+    //    return circuitOpen;
+    //}
 
     public void putBrowseExerciseList(Exercise[] exercises){
         mBrowseExerciseList.clear();
@@ -163,6 +170,9 @@ public class BrowseActivity extends ActionBarActivity {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent){
 
+            //BROWSE STATES
+            final int NOT_BROWSE = 0, BROWSE_WORKOUT = 1, WORKOUT_BROWSE = 2;
+
             if ((convertView == null)) {
                 convertView = getLayoutInflater()
                         .inflate(R.layout.b_frag_exercise_list_item, null);
@@ -208,19 +218,21 @@ public class BrowseActivity extends ActionBarActivity {
                     }
                     WorkoutData.get(mContext).setToggledExerciseExplicit(e);//Sets this as the 'last' item added
 
-
+                    int circuitValue = WorkoutData.get(mContext).getStateCircuit();
+                    boolean circuitOpenStatus = WorkoutData.get(mContext).isStateCircuitOpen();
                     //if circuit is open
-                    if (((BrowseActivity) mContext).isCircuitOpen()) {
+                    if (circuitOpenStatus) {
                         //addToOpenCircuit to that circuit
                         WorkoutData.get(mContext).addExerciseToOpenCircuit(exercise,
-                                ((BrowseActivity) mContext).getCircuitValue());
+                               circuitValue);
                         //if circuit is closed
-                    } else if (!((BrowseActivity) mContext).isCircuitOpen()) {
+                    } else if (!circuitOpenStatus) {
                         //add a closed circuit, with the exercise in it
                         WorkoutData.get(mContext).addClosedCircuit(exercise,
-                                ((BrowseActivity) mContext).getCircuitValue());
+                                circuitValue);
                     }
                     //return to workspace
+                    WorkoutData.get(mContext).setBrowseState(BROWSE_WORKOUT);
                     Intent i = new Intent(mContext, WorkspaceActivity.class);
                     startActivity(i);
                 }

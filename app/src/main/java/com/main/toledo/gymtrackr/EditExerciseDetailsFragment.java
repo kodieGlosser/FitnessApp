@@ -178,7 +178,6 @@ public class EditExerciseDetailsFragment extends Fragment {
                             } else if(actionId == EditorInfo.IME_ACTION_DONE){
                                 setExerciseCompleted();
                                 return true;
-
                             }
                             return false;
                         }
@@ -383,6 +382,7 @@ public class EditExerciseDetailsFragment extends Fragment {
                             }
                         }
                     });
+
                     LinearLayout wtRow = new LinearLayout(getActivity());
                     wtRow.setOrientation(LinearLayout.HORIZONTAL);
                     wtRow.addView(wtText);
