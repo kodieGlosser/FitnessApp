@@ -42,8 +42,11 @@ public class WorkspaceTabFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (parentActivity == DETAILS) {
+                    ((DetailActivity)getActivity()).saveDetailState();
                     Intent i = new Intent(getActivity(), WorkspaceActivity.class);
                     startActivity(i);
+
+
                 }
             }
         });

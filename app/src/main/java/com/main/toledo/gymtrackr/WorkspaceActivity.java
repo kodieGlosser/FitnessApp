@@ -28,7 +28,7 @@ public class WorkspaceActivity extends ActionBarActivity {
     public static boolean isEditable = false;
     private boolean toEdit;
     //LOAD/START STATES
-    final int PLAN = 1, WORKOUT = 2, WORKOUT_WITH_PLAN = 4, LOAD_PLAN = 5;
+    final int PLAN = 1, WORKOUT = 2, WORKOUT_WITH_PLAN = 4, LOAD_PLAN = 5, FROM_DETAIL = 6;
 
     //BROWSE STATES
     final int NOT_BROWSE = 0, BROWSE_WORKOUT = 1, WORKOUT_BROWSE = 2;
@@ -61,6 +61,8 @@ public class WorkspaceActivity extends ActionBarActivity {
                 WorkoutData.get(this).setWorkoutState(WORKOUT);
                 break;
         }
+
+
         /*
         int browseMode = WorkoutData.get(this).getBrowseState();
         switch(browseMode){

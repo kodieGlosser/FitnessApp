@@ -20,6 +20,8 @@ import android.widget.ExpandableListView;
  */
 public class WorkspaceListFragment extends Fragment {
     final int NOT_BROWSE = 0, BROWSE_WORKOUT = 1, WORKOUT_BROWSE = 2;
+    final int FROM_DETAIL = 6, FROM_WORKSPACE = 7;
+    private Context mContext = getActivity();
         WorkspaceExpandableListView workspaceListView;
         boolean mDragInProgress;
         @Override
@@ -104,34 +106,52 @@ public class WorkspaceListFragment extends Fragment {
         });
 
         */
-        Context c = getActivity();
-        int browseMode = WorkoutData.get(c).getBrowseState();
+
+        int browseMode = WorkoutData.get(mContext).getBrowseState();
         switch(browseMode){
             case NOT_BROWSE:
                 break;
             case BROWSE_WORKOUT:
-                WorkoutData.get(c).setBrowseState(NOT_BROWSE);
-                int circuitVal = WorkoutData.get(c).getStateCircuit();
-                boolean circuitOpenStatus = WorkoutData.get(c).isStateCircuitOpen();
-                int child;
+                WorkoutData.get(mContext).setBrowseState(NOT_BROWSE);
+                int circuitVal = WorkoutData.get(mContext).getStateCircuit();
 
-                if(circuitOpenStatus)
-                    child = WorkoutData.get(c).getWorkout().get(circuitVal).getExercises().size()-2;
-                else
-                    child = 0;
-                Log.d("4/17", "SHOULD MOVE LIST! CIRCUIT: " + circuitVal + " -- CHILD: " + child);
+                focusItem(circuitVal, -1);
 
-                workspaceListView.setSelectedChild(circuitVal, child, false);
-                workspaceListView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        workspaceListView.smoothScrollBy(-300, 0);
-                    }
-                });
                 //focus right thing
                 break;
         }
+
+        int detailMode = WorkoutData.get(mContext).getDetailTransition();
+        switch(detailMode){
+            case FROM_DETAIL:
+                WorkoutData.get(mContext).setDetailTransition(FROM_WORKSPACE);
+                int circuit = WorkoutData.get(mContext).getDetailCircuit();
+                int exercise = WorkoutData.get(mContext).getDetailExercise();
+                focusItem(circuit, exercise);
+
+                break;
+        }
         super.onResume();
+    }
+
+    private void focusItem(int circuitVal, int exercise){
+
+        boolean circuitOpenStatus = WorkoutData.get(mContext).isStateCircuitOpen();
+        int child;
+        if(exercise == -1) {
+            if (circuitOpenStatus)
+                exercise = WorkoutData.get(mContext).getWorkout().get(circuitVal).getExercises().size() - 2;
+            else
+                exercise = 0;
+        }
+        workspaceListView.setSelectedChild(circuitVal, exercise, false);
+        workspaceListView.post(new Runnable() {
+            @Override
+            public void run() {
+                workspaceListView.smoothScrollBy(-300, 0);
+            }
+        });
+
     }
 
     public void restoreListExpansion(){

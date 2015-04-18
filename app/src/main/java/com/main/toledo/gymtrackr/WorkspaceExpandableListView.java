@@ -82,9 +82,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     private DropListener mDropListener;
     private Context mContext;
 
-
-
-
     //GLOBAL VARS
     private int SCREENWIDTH;
     private int SCREENHEIGHT;

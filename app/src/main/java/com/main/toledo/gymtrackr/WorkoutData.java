@@ -29,6 +29,11 @@ public class WorkoutData {
     private boolean mStateCircuitOpen;
     private int mBrowseState = 0;
 
+    //detail state data
+    private int mDetailTransition;
+    private int mDetailCircuit;
+    private int mDetailExercise;
+
     private WorkoutData(Context appContext){
         //adds initial values
         mAppContext = appContext;
@@ -467,4 +472,24 @@ public class WorkoutData {
     public void setStateCircuitOpenStatus(boolean status){mStateCircuitOpen = status;}
 
     public boolean isStateCircuitOpen(){return mStateCircuitOpen;}
+
+    //DETAIL TRANSITION METHODS
+
+    public void setDetailTransition(int transition){
+        mDetailTransition = transition;
+
+    }
+    public int getDetailTransition(){
+        return mDetailTransition;
+    }
+
+    public void setDetailCircuit(int circuit){
+        mDetailCircuit = circuit;
+    }
+
+    public int getDetailCircuit(){return mDetailCircuit;}
+
+    public void setDetailExercise(int exercise){mDetailExercise = exercise;}
+
+    public int getDetailExercise(){return mDetailExercise;}
 }

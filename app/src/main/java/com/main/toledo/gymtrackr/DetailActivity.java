@@ -46,7 +46,7 @@ public class DetailActivity extends ActionBarActivity{
     private int mTotalValidExercises;
     private int mIdPointer;
 
-
+    final int FROM_DETAIL = 6, FROM_WORKSPACE = 7;
     //private LinearLayout previousLayout;
     //private LinearLayout currentLayout;
     //private LinearLayout nextLayout;
@@ -560,6 +560,11 @@ public class DetailActivity extends ActionBarActivity{
 
     }
 
+    public void saveDetailState(){
+        WorkoutData.get(this).setDetailTransition(FROM_DETAIL);
+        WorkoutData.get(this).setDetailCircuit(mCircuitVals.get(mIdPointer));
+        WorkoutData.get(this).setDetailExercise(mExerciseVals.get(mIdPointer));
+    }
     private int getRelativeLeft(View myView) {
         if (myView.getParent() == myView.getRootView())
             return myView.getLeft();
