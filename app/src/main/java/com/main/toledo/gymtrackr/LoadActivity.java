@@ -172,7 +172,7 @@ public class LoadActivity extends ActionBarActivity {
 
             public void clearHandle(){
                 mTextViewHandle = null;
-            };
+            }
         };
 
         @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)

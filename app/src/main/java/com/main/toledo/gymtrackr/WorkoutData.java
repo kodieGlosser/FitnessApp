@@ -418,6 +418,24 @@ public class WorkoutData {
             Log.d("4/5", c.getName() + " -- OPEN: " + c.isOpen());
         }
     }
+    public void clearCheckedExercises(){
+        for(Circuit c : Workout){
+            ArrayList<Exercise> exercises = c.getExercises();
+            int numExercises = exercises.size();
+            for(int j = numExercises-1; j>=0; j--){
+                if (exercises.get(j).isSaveToHistorySet()){
+                    exercises.remove(j);
+                }
+            }
+        }
+        int length = Workout.size() - 1;
+        for(int i = length-1; i>=0; i-- ){
+            Circuit c = Workout.get(i);
+            int numExercises = c.getExercises().size();
+            if(!c.isOpen()&&(numExercises == 0))
+                Workout.remove(i);
+        }
+    }
 
     public void clear(){
         Workout.clear();

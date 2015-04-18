@@ -167,6 +167,7 @@ public class WorkspaceActivity extends ActionBarActivity {
     }
     */
     private void removeChecked(){
+        ListFragment.workspaceListView.removeCheckedItems();
 
     }
     //I feel like this should be in the header fragment...
