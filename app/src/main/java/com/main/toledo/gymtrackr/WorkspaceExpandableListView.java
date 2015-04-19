@@ -266,7 +266,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                                 toggle(mStartPosition);
                             }
                         }
-                    }, 250);//mDelay);
+                    }, 175);//mDelay);
 
                     super.onTouchEvent(ev);
                     break;

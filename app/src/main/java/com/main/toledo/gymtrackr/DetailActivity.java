@@ -561,9 +561,11 @@ public class DetailActivity extends ActionBarActivity{
     }
 
     public void saveDetailState(){
-        WorkoutData.get(this).setDetailTransition(FROM_DETAIL);
-        WorkoutData.get(this).setDetailCircuit(mCircuitVals.get(mIdPointer));
-        WorkoutData.get(this).setDetailExercise(mExerciseVals.get(mIdPointer));
+        if((mIdPointer != -1) && (mIdPointer != mTotalValidExercises)) {
+            WorkoutData.get(this).setDetailTransition(FROM_DETAIL);
+            WorkoutData.get(this).setDetailCircuit(mCircuitVals.get(mIdPointer));
+            WorkoutData.get(this).setDetailExercise(mExerciseVals.get(mIdPointer));
+        }
     }
     private int getRelativeLeft(View myView) {
         if (myView.getParent() == myView.getRootView())
