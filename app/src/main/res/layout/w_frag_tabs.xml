@@ -2,20 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    >
+    android:background="@drawable/tabs"
+    android:id="@+id/tab_layout"
+    android:gravity="center">
 
-    <Button
+   <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Workspace"
         android:id="@+id/workspace"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:gravity="center"
+       android:textSize="20sp"/>
 
-    <Button
+    <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Details"
         android:id="@+id/details"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textSize="20sp"/>
 
 </LinearLayout>

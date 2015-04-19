@@ -121,7 +121,7 @@ public class DetailActivity extends ActionBarActivity{
         */
         //figure out where we are at...
 
-        LinearLayout currentLayout = new LinearLayout(this);
+        LinearLayout currentLayout;// = new LinearLayout(this);
         LinearLayout previousLayout;
         LinearLayout nextLayout;
 

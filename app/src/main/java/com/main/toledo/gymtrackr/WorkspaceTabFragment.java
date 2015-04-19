@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -24,7 +25,7 @@ public class WorkspaceTabFragment extends Fragment {
     final int PLAN = 1, WORKOUT = 2;
     final int WORKSPACE = 4, DETAILS = 5;
     private int parentActivity;
-
+    private LinearLayout handle;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,9 +36,9 @@ public class WorkspaceTabFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState){
         View v = inflater.inflate(R.layout.w_frag_tabs, null);
 
-        Button detailsButton = (Button) v.findViewById(R.id.details);
-        Button workspaceButton = (Button) v.findViewById(R.id.workspace);
-
+        TextView detailsButton = (TextView) v.findViewById(R.id.details);
+        TextView workspaceButton = (TextView) v.findViewById(R.id.workspace);
+        handle = (LinearLayout) v.findViewById(R.id.tab_layout);
         workspaceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,20 +65,29 @@ public class WorkspaceTabFragment extends Fragment {
                 }
             }
         });
+
         return v;
     }
 
     @Override
     public void onAttach(Activity activity){
 
+
+        super.onAttach(activity);
         String callingActivity = activity.getLocalClassName();
         if (callingActivity.equals("WorkspaceActivity")){
             parentActivity = WORKSPACE;
         }
         if (callingActivity.equals("DetailActivity")){
             parentActivity = DETAILS;
+
         }
 
-        super.onAttach(activity);
+    }
+    @Override
+    public void onStart(){
+        super.onStart();
+        if (parentActivity==DETAILS)
+            handle.setBackgroundResource(R.drawable.tabs2);
     }
 }
