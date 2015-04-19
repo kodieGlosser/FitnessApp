@@ -810,7 +810,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         DragIcon = new ImageView(context);
 
         DragIcon.setImageDrawable(
-                context.getResources().getDrawable(R.drawable.drag));
+                context.getResources().getDrawable(R.drawable.drag1));
 
 
         WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -819,13 +819,15 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     }
 
     private void dragTimer(final int x, final int y, final int touchCount) {
-
+        final Context context = getContext();
         cancelDrag = false;
         postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (inBounds(x, y) && !cancelDrag && (touchCount == mTouchCount)) {
                     Log.d("DRAG DELAY TESTS", "5...");
+                    DragIcon.setImageDrawable(
+                            context.getResources().getDrawable(R.drawable.drag2));
                 }
             }
         }, dragTimerInterval);
@@ -834,7 +836,8 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             @Override
             public void run() {
                 if (inBounds(x, y) && !cancelDrag && (touchCount == mTouchCount)) {
-                    Log.d("DRAG DELAY TESTS", "4...");
+                    DragIcon.setImageDrawable(
+                            context.getResources().getDrawable(R.drawable.drag3));
                 } else {
                     abortCountdown();
                 }
@@ -845,7 +848,8 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             @Override
             public void run() {
                 if (inBounds(x, y) && !cancelDrag && (touchCount == mTouchCount)) {
-                    Log.d("DRAG DELAY TESTS", "3...");
+                    DragIcon.setImageDrawable(
+                            context.getResources().getDrawable(R.drawable.drag4));
                 } else {
                     abortCountdown();
                 }
@@ -856,7 +860,8 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             @Override
             public void run() {
                 if (inBounds(x, y) && !cancelDrag && (touchCount == mTouchCount)) {
-                    Log.d("DRAG DELAY TESTS", "2...");
+                    DragIcon.setImageDrawable(
+                            context.getResources().getDrawable(R.drawable.drag5));
                 } else {
                     abortCountdown();
                 }
@@ -867,7 +872,8 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             @Override
             public void run() {
                 if (inBounds(x, y) && !cancelDrag && (touchCount == mTouchCount)) {
-                    Log.d("DRAG DELAY TESTS", "1...");
+                    DragIcon.setImageDrawable(
+                            context.getResources().getDrawable(R.drawable.drag5));
                     beginDragChecks();
                 } else {
                     abortCountdown();
