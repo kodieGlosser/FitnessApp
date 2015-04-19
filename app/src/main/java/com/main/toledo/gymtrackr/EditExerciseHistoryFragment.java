@@ -7,12 +7,15 @@ import android.os.Looper;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -27,10 +30,12 @@ public class EditExerciseHistoryFragment extends ListFragment {
     private Context mContext;
     private boolean mBoot = false;
     private String mName;
+    private int mListMarginDP = 10;
+    private int mListMargin;
     @Override
     public void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
 
+        super.onCreate(savedInstanceState);
         //sets the list adapter to the one we made in the browse activity
 
     }
@@ -50,6 +55,17 @@ public class EditExerciseHistoryFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         getListView().setDivider(null);
         getListView().setDividerHeight(0);
+
+        float scale = getActivity().getResources().getDisplayMetrics().density;
+        mListMargin = (int) (mListMarginDP * scale + 0.5f);
+        ListView listView = getListView();
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(mListMargin, mListMargin, mListMargin, 0);
+        listView.setLayoutParams(params);
+
         //LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(mContext, R.anim.list_layout_controller);
         //getListView().setLayoutAnimation(animation);
         if (mBoot)
@@ -67,20 +83,6 @@ public class EditExerciseHistoryFragment extends ListFragment {
 
     public void setFirstFragment(){mBoot = true;}
     public void animateOut() {
-
-        int totalDelay = 2000;
-        ListView thisListView = getListView();
-
-        int lastIndex = thisListView.getLastVisiblePosition();
-        int firstIndex = thisListView.getFirstVisiblePosition();
-        int numVisibleItems = lastIndex - firstIndex;
-
-        int delayPerItem = totalDelay / numVisibleItems;
-
-        //int delay = 0;
-
-        int delay = 0;
-
         AnimationSet set = new AnimationSet(true);
 
         Animation animation = new AlphaAnimation(1.0f, 0.0f);

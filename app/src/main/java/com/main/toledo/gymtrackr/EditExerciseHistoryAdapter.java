@@ -1,7 +1,10 @@
 package com.main.toledo.gymtrackr;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +22,7 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
     private ArrayList<ExerciseHistory> m_exerciseHistory;
 
     private LinearLayout metricLayout;
+    private LinearLayout metricSubLayout;
 
     private final int dateId = View.generateViewId();
     private final int firstMetricId = View.generateViewId();
@@ -29,7 +33,11 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
 
     private int mNumMetrics;
 
-
+    private int mDateTextSize = 20;
+    private final int mMetricEditLeftMargininDP = 30;
+    private int mMarginsDP = 10;
+    private int mMetricEditLeftMarginPixels;
+    private int mMarginsInPixels;
     public EditExerciseHistoryAdapter(Context context, int resource, ArrayList<ExerciseHistory> history){
         super(context, resource, history);
         m_exerciseHistory = history;
@@ -42,6 +50,10 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
             //empty data set
         }
 
+        float scale = context.getResources().getDisplayMetrics().density;
+        mMetricEditLeftMarginPixels = (int) (mMetricEditLeftMargininDP * scale + 0.5f);
+
+        mMarginsInPixels = (int) (mMarginsDP * scale + 0.5f);
         //Log.d("4.11", "CONSTRUCTIING ADAPTER, NUM METRICS: " + mNumMetrics);
     }
 
@@ -113,41 +125,62 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
     }
 
     private void initializeView(){
+        int paddingInDp = 10;
+        float scale = mContext.getResources().getDisplayMetrics().density;
+        int padding = (int) (paddingInDp*scale + 0.5f);
+
+
         metricLayout = new LinearLayout(mContext);
-        metricLayout.setOrientation(LinearLayout.VERTICAL);
+        metricLayout.setPadding(0, padding, 0, 0);
+
+        metricSubLayout = new LinearLayout(mContext);
+        metricSubLayout.setOrientation(LinearLayout.VERTICAL);
+        metricSubLayout.setBackground(mContext.getResources().getDrawable(R.drawable.circuit_notselected));
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        metricSubLayout.setLayoutParams(params);
+        metricLayout.setLayoutParams(params);
 
         TextView dateView = new TextView(mContext);
         dateView.setId(dateId);
-
-        metricLayout.addView(dateView);
+        metricSubLayout.addView(dateView);
+        dateView.setTextSize(TypedValue.COMPLEX_UNIT_SP, mDateTextSize);
 
         TextView firstMetricView = new TextView(mContext);
         firstMetricView.setId(firstMetricId);
+        firstMetricView.setPadding(mMetricEditLeftMarginPixels,0,0,0);
 
         TextView secondMetricView = new TextView(mContext);
         secondMetricView.setId(secondMetricId);
+        secondMetricView.setPadding(mMetricEditLeftMarginPixels,0,0,0);
 
         TextView thirdMetricView = new TextView(mContext);
         thirdMetricView.setId(thirdMetricId);
+        thirdMetricView.setPadding(mMetricEditLeftMarginPixels,0,0,0);
 
         switch(mNumMetrics) {
             case 0:
                 break;
             case 1:
-                metricLayout.addView(firstMetricView);
+                metricSubLayout.addView(firstMetricView);
                 break;
             case 2:
-                metricLayout.addView(firstMetricView);
-                metricLayout.addView(secondMetricView);
+                metricSubLayout.addView(firstMetricView);
+                metricSubLayout.addView(secondMetricView);
                 break;
             case 3:
-                metricLayout.addView(firstMetricView);
-                metricLayout.addView(secondMetricView);
-                metricLayout.addView(thirdMetricView);
+                metricSubLayout.addView(firstMetricView);
+                metricSubLayout.addView(secondMetricView);
+                metricSubLayout.addView(thirdMetricView);
                 break;
             default:
                 break;
         }
+        metricLayout.addView(metricSubLayout);
     }
 
     public static class ViewHolder{

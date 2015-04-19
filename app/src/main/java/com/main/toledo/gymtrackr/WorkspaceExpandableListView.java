@@ -523,7 +523,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             DeleteIcon = new ImageView(context);
 
             DeleteIcon.setImageDrawable(
-                    context.getResources().getDrawable(R.drawable.deleteplac));
+                    context.getResources().getDrawable(R.drawable.delete0));
 
 
             WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -533,6 +533,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     }
 
     private void handleRemoval() {
+        Context context = getContext();
         int removeStartX = swipeX - mRemoveOffset; //this is the x position when the remove icon was first added
         //cuurentX is the current X value
         int xOffset = removeStartX - currentX;
@@ -553,24 +554,44 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             //delete item at 10 increments
             switch (increment) {
                 case 0:
+                    DeleteIcon.setImageDrawable(
+                            context.getResources().getDrawable(R.drawable.delete0));
                     break;
                 case 1:
+                    DeleteIcon.setImageDrawable(
+                            context.getResources().getDrawable(R.drawable.delete1));
                     break;
                 case 2:
+                    DeleteIcon.setImageDrawable(
+                            context.getResources().getDrawable(R.drawable.delete2));
                     break;
                 case 3:
+                    DeleteIcon.setImageDrawable(
+                            context.getResources().getDrawable(R.drawable.delete3));
                     break;
                 case 4:
+                    DeleteIcon.setImageDrawable(
+                            context.getResources().getDrawable(R.drawable.delete4));
                     break;
                 case 5:
+                    DeleteIcon.setImageDrawable(
+                            context.getResources().getDrawable(R.drawable.delete5));
                     break;
                 case 6:
+                    DeleteIcon.setImageDrawable(
+                            context.getResources().getDrawable(R.drawable.delete6));
                     break;
                 case 7:
+                    DeleteIcon.setImageDrawable(
+                            context.getResources().getDrawable(R.drawable.delete7));
                     break;
                 case 8:
+                    DeleteIcon.setImageDrawable(
+                            context.getResources().getDrawable(R.drawable.delete8));
                     break;
                 case 9:
+                    DeleteIcon.setImageDrawable(
+                            context.getResources().getDrawable(R.drawable.delete9));
                     break;
                 default:
                     break;

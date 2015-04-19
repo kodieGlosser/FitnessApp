@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MotionEventCompat;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -37,7 +39,12 @@ public class EditExerciseDetailsFragment extends Fragment {
     private EditText mEditTextHandle;
     private LinearLayout editTextLayout;
     private LinearLayout mLayout;
-    private TextView exerciseInfoTextView;
+    private AutoResizeTextView exerciseInfoTextView;
+
+    //Dynamic layout parameters
+    private int mMetricTextSize = 30;
+    private final int mMetricEditLeftMargininDP = 30;
+    private int mMetricEditLeftMarginPixels;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,8 +56,13 @@ public class EditExerciseDetailsFragment extends Fragment {
         Log.d("4/9", "InfotextView initialized");
         View v = inflater.inflate(R.layout.e_frag_details, null);
         editTextLayout = (LinearLayout) v.findViewById(R.id.detailLinearLayout);
-        exerciseInfoTextView = (TextView) v.findViewById(R.id.exerciseNameView);
+        exerciseInfoTextView = (AutoResizeTextView) v.findViewById(R.id.exerciseNameView);
+        exerciseInfoTextView.setMaxTextSize(30);
+        exerciseInfoTextView.setMinTextSize(2);
         mLayout = (LinearLayout) v.findViewById(R.id.detailView);
+
+        float scale = getActivity().getResources().getDisplayMetrics().density;
+        mMetricEditLeftMarginPixels = (int) (mMetricEditLeftMargininDP * scale + 0.5f);
         updateUI();
         return v;
     }
@@ -139,6 +151,7 @@ public class EditExerciseDetailsFragment extends Fragment {
        // mLayout.setOnTouchListener(null);
     //}
     private void updateUI(){
+
         boolean hasPlanMetrics = false;
 
         title = mExercise.getName();
@@ -204,6 +217,8 @@ public class EditExerciseDetailsFragment extends Fragment {
 
                     LinearLayout timeRow = new LinearLayout(getActivity());
                     timeRow.setOrientation(LinearLayout.HORIZONTAL);
+                    sizeViews(timeText, timeEdit);
+
                     timeRow.addView(timeText);
                     timeRow.addView(timeEdit);
 
@@ -211,6 +226,7 @@ public class EditExerciseDetailsFragment extends Fragment {
                         TextView goalText = new TextView(getActivity());
                         String text = "target: " + planMetrics.get(i).getMetricIntValue();
                         goalText.setText(text);
+                        sizeViews(goalText);
                         timeRow.addView(goalText);
                     }
 
@@ -270,15 +286,19 @@ public class EditExerciseDetailsFragment extends Fragment {
                     });
                     LinearLayout repRow = new LinearLayout(getActivity());
                     repRow.setOrientation(LinearLayout.HORIZONTAL);
+
+                    sizeViews(repText, repEdit);
                     repRow.addView(repText);
                     repRow.addView(repEdit);
                     //repRow.setLayoutParams(params);
+
 
                     if(hasPlanMetrics){
                         TextView goalText = new TextView(getActivity());
                         String text = "target: " + planMetrics.get(i).getMetricIntValue();
                         goalText.setText(text);
                         repRow.addView(goalText);
+                        sizeViews(goalText);
                     }
 
                     editTextLayout.addView(repRow);
@@ -385,6 +405,7 @@ public class EditExerciseDetailsFragment extends Fragment {
 
                     LinearLayout wtRow = new LinearLayout(getActivity());
                     wtRow.setOrientation(LinearLayout.HORIZONTAL);
+                    sizeViews(wtText, wtEdit);
                     wtRow.addView(wtText);
                     wtRow.addView(wtEdit);
                     //wtRow.setLayoutParams(params);
@@ -393,6 +414,7 @@ public class EditExerciseDetailsFragment extends Fragment {
                         String text = "target: " + planMetrics.get(i).getMetricIntValue();
                         goalText.setText(text);
                         wtRow.addView(goalText);
+                        sizeViews(goalText);
                     }
 
                     editTextLayout.addView(wtRow);
@@ -407,6 +429,17 @@ public class EditExerciseDetailsFragment extends Fragment {
         }
     }
 
+    public void sizeViews(TextView t, EditText e){
+        t.setTextSize(TypedValue.COMPLEX_UNIT_SP, mMetricTextSize);
+        e.setTextSize(TypedValue.COMPLEX_UNIT_SP, mMetricTextSize);
+        e.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+        t.setPadding(mMetricEditLeftMarginPixels, 0, 0, 0);
+    }
+
+    public void sizeViews(TextView t){
+        t.setTextSize(TypedValue.COMPLEX_UNIT_SP, mMetricTextSize);
+        t.setPadding(mMetricEditLeftMarginPixels, 0, 0, 0);
+    }
     public void hideKeypad(){
         if (mEditTextHandle != null) {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
