@@ -43,16 +43,15 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
     //BROWSE STATES
     final int NOT_BROWSE = 0, BROWSE_WORKOUT = 1, WORKOUT_BROWSE = 2;
     //HEADER TYPES
-    final static int REGULAR_HEADER = 0, BLANK_HEADER = 1;
-
+    final static int REGULAR_HEADER = 0, BLANK_HEADER = 1, PADDED_BLANK_HEADER =2;
+    final static int NUM_HEADERS = 3;
     //CHILD TYPES
     final static int EXERCISE_ITEM_1 = 0, EXERCISE_ITEM_2 = 1, EXERCISE_ITEM_3 = 2,
             EXERCISE_ITEM_1_M = 3, EXERCISE_ITEM_2_M = 4, EXERCISE_ITEM_3_M = 5, EMPTY_BUTTONS = 6,
             CIRCUIT_BUTTONS = 7, WORKOUT_BUTTONS = 8, TERRIBLE_THINGS = 9, EXERCISE_ITEM_1C = 10, EXERCISE_ITEM_2C = 11, EXERCISE_ITEM_3C = 12,
             EXERCISE_ITEM_1_MC = 13, EXERCISE_ITEM_2_MC = 14, EXERCISE_ITEM_3_MC = 15;
+    final static int NUM_CHILDREN = 16;
 
-    //ids for dynamic layouts
-    private int CheckID = View.generateViewId();
 
     public WorkspaceExpandableListAdapterMKIII(Context context){
         params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
@@ -60,40 +59,19 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
         this._context = context;
         Workout = WorkoutData.get(_context).getWorkout();
     }
-    /*
-    @Override
-    private int getViewTypeCount(){
-        return 14;
-    }
-    */
+
     @Override
     public Exercise getChild(int groupPosition, int childPosition) {
         return Workout.get(groupPosition).getExercise(childPosition);
     }
-    /*
-    public void cleanView(Rect viewHitRect){
 
-        Log.d("PAD BUGS", "CLEAN VIEW: CALLED");
-        if (m_editTextHandle != null) {
-            //Log.d("PAD BUGS", "CLEAN VIEW: PLAN TEXT IS NOT NULL");
-            if (!m_editTextHandle.getLocalVisibleRect(viewHitRect)
-                    || viewHitRect.height() < m_editTextHandle.getHeight()) {
-                //Log.d("PAD BUGS", "CLEAN VIEW: SHOULD HIDE KEYPAD");
-                hideKeypad();
-            } else {
-                // NONE of the imageView is within the visible window
-
-            }
-        }
-    }
-    */
     @Override
     public int getChildTypeCount(){
-        return 16;
+        return NUM_CHILDREN;
     }
     @Override
     public int getGroupTypeCount(){
-        return 2;
+        return NUM_HEADERS;
     }
     @Override
     public int getChildType(int group, int child){
@@ -172,7 +150,11 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
         if(c.isOpen()){
             type = REGULAR_HEADER;
         } else {
-            type = BLANK_HEADER;
+            if(group != Workout.size()-1) {
+                type = PADDED_BLANK_HEADER;
+            }else{
+                type = BLANK_HEADER;
+            }
         }
         return type;
     }
@@ -585,52 +567,44 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
         //Log.d("TEST", "DOING STUFF FOR GROUP: " + groupPosition);
-
-        if (!(Workout.get(groupPosition).isOpen())) {
-            if( groupPosition != Workout.size()-1) {
-                LayoutInflater inflater = (LayoutInflater) this._context
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.w_empty_wpadding, null);
-                convertView.setTag("Blank");
-                ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
-            } else {
-                LayoutInflater inflater = (LayoutInflater) this._context
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.w_empty_wopadding, null);
-                convertView.setTag("Blank");
-                ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
+        LayoutInflater inflater = (LayoutInflater) this._context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        GroupViewHolder holder = null;
+        int type = getGroupType(groupPosition);
+        if(convertView == null) {
+            holder = new GroupViewHolder();
+            switch (type) {
+                case REGULAR_HEADER:
+                    convertView = inflater.inflate(R.layout.w_circuit_group, null);
+                    holder.circuitNameText = (TextView) convertView.findViewById(R.id.circuitNameHeader);
+                    holder.arrow = (ImageView) convertView.findViewById(R.id.Arrow);
+                    break;
+                case BLANK_HEADER:
+                    convertView = inflater.inflate(R.layout.w_empty_wopadding, null);
+                    ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
+                    break;
+                case PADDED_BLANK_HEADER:
+                    convertView = inflater.inflate(R.layout.w_empty_wpadding, null);
+                    ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
+                    break;
+            }
+            convertView.setTag(holder);
+        } else {
+            holder = (GroupViewHolder)convertView.getTag();
+        }
+        switch (type) {
+            case REGULAR_HEADER:
+                holder.circuitNameText.setText(Workout.get(groupPosition).getName());
+                int imageResourceId = isExpanded ? R.drawable.ic_collapse_arrow_50
+                        : R.drawable.ic_expand_arrow_50;
+                holder.arrow.setImageResource(imageResourceId);
+                break;
+            case BLANK_HEADER:
                 if(!editable)
                     convertView.setPadding(0,0,0,500);
-            }
-            //LinearLayout main = (LinearLayout) convertView.findViewById(R.id.empty);
-            //main.setPadding(100, 100, 0, 100);
-
-        }else {
-            //if (groupPosition < (workout.size() - 1)) {
-            //for the not last items in the list
-            //if (convertView == null || convertView.getTag() != "Data") {
-            LayoutInflater inflater = (LayoutInflater) this._context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.w_circuit_group, null);
-            convertView.setTag("Data");
-            //convertView.findViewById(R.id.groupHandle).setBackgroundColor(mBackgroundColor);
-            //LinearLayout main = (LinearLayout) convertView.findViewById(R.id.groupHandle);
-            //main.setPadding(100, 100, 0, 100);
-
-            // }
-            //values for circuit header stuff
-            TextView textView = (TextView) convertView.findViewById(R.id.circuitNameHeader);
-            textView.setTypeface(null, Typeface.BOLD);
-            textView.setText(Workout.get(groupPosition).getName());
-        }
-
-        if (convertView != null) {
-            ImageView img_selection = (ImageView) convertView.findViewById(R.id.Arrow);
-            int imageResourceId = isExpanded ? R.drawable.ic_collapse_arrow_50
-                    : R.drawable.ic_expand_arrow_50;
-
-            if (img_selection != null)
-                img_selection.setImageResource(imageResourceId);
+                break;
+            case PADDED_BLANK_HEADER:
+                break;
         }
 
         return convertView;
@@ -831,5 +805,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
     public static class GroupViewHolder {
         public TextView circuitNameText;
+
+        public ImageView arrow;
     }
 }
