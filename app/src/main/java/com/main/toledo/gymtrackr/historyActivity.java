@@ -70,6 +70,8 @@ public class historyActivity extends ActionBarActivity{
         mLastSelectedPos = pos;
         DatabaseWrapper db = new DatabaseWrapper();
         ExerciseHistory[] eh = db.loadExercisesByDate(selectedDate);
+        for(ExerciseHistory e : eh)
+            Log.d("4/19", "IN HIST.IMPWORKHISTADP EXERCISE: " + e.getExerciseName() + " IN EXERCISEHISTORY");
 
         if (mWorkoutHistory == null)
             mWorkoutHistory = new ArrayList<>();

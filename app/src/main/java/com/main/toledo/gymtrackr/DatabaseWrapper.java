@@ -399,7 +399,9 @@ public class DatabaseWrapper {
      * @return
      */
     public ExerciseHistory[] loadExercisesByDate(Date date) {
+        //Log.d("4/19", "DBWRAP.LOADEXBYDATE, DATE: " + date);
         String format = formatDate(date);
+        Log.d("4/19", "DBWRAP.LOADEXBYDATE, DATE: " + date + " in format: " + format);
         String rawquery = "select * from History where Date like '%" + format  + "%'";
         Cursor c = myDatabase.rawQuery(rawquery, null);
 
@@ -436,6 +438,8 @@ public class DatabaseWrapper {
     }
 
     public void addExerciseToHistory(ExerciseHistory[] exercise) {
+        for(ExerciseHistory eh : exercise)
+            Log.d("4/19", "IN DBWRAPPER.ADDEXTOHIST EXERCISE: " + eh.getExerciseName() + " IN EXERCISEHISTORY " + eh.getDate());
 
         for (int i =0; i < exercise.length; i++) {
             ContentValues exerciseHistoryValues = new ContentValues();
@@ -501,6 +505,7 @@ public class DatabaseWrapper {
             if (!isItAlreadyUsed) {
                 listOfDates.add(date);
             }
+
         }
 
         Collections.sort(listOfDates, Collections.reverseOrder());

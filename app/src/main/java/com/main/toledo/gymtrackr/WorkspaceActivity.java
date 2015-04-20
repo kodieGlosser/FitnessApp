@@ -154,6 +154,7 @@ public class WorkspaceActivity extends ActionBarActivity {
         }
         if (mode == WORKOUT || mode == WORKOUT_WITH_PLAN) {
             //CODE FOR WORKOUT SAVE, EG EXPORT TO HISTORY
+            Log.d("4/19", "SAVE WORKOUT CALLED.");
             DatabaseWrapper db = new DatabaseWrapper();
             ExerciseHistory[] eh = WorkoutData.get(this).crapHistory();
             db.addExerciseToHistory(eh);

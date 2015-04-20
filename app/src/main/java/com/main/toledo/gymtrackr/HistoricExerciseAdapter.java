@@ -18,7 +18,7 @@ public class HistoricExerciseAdapter extends ArrayAdapter {
     //private final DynamicView d;
     private ArrayList<ExerciseHistory> m_exerciseHistory;
 
-    private LinearLayout metricLayout;
+    //private LinearLayout metricLayout;
 
     private final int dateId = View.generateViewId();
     private final int firstMetricId = View.generateViewId();
@@ -29,36 +29,90 @@ public class HistoricExerciseAdapter extends ArrayAdapter {
 
     private final Context mContext;
 
-    private int mNumMetrics;
-
+    private static final int TYPE_TERRIBLE_THINGS = 0;
+    private static final int TYPE_ONE_METRIC = 1;
+    private static final int TYPE_TWO_METRICS = 2;
+    private static final int TYPE_THREE_METRICS = 3;
+    private static final int TYPE_COUNT = 4;
 
     public HistoricExerciseAdapter(Context context, int resource, ArrayList<ExerciseHistory> history){
         super(context, resource, history);
         m_exerciseHistory = history;
         mContext = context;
-
+        /*BAD
         if(history.size() != 0){
             mNumMetrics = history.get(0).getMetrics().size();
             initializeView();
         } else {
             //empty data set
         }
-
+        */
         //Log.d("4.11", "CONSTRUCTIING ADAPTER, NUM METRICS: " + mNumMetrics);
     }
-
-    public void reloadAdapter(){
-
+    @Override
+    public int getItemViewType(int position){
+        int num_metrics = m_exerciseHistory.get(position).getMetrics().size();
+        int type;
+        switch (num_metrics){
+            case 1:
+                type = TYPE_ONE_METRIC;
+                break;
+            case 2:
+                type = TYPE_TWO_METRICS;
+                break;
+            case 3:
+                type =  TYPE_THREE_METRICS;
+                break;
+            default:
+                type = TYPE_TERRIBLE_THINGS;
+                break;
+        }
+        return type;
     }
+
+    @Override
+    public int getViewTypeCount(){
+        return TYPE_COUNT;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         //Log.d("4.11", "getView called on position: " + position);
         ViewHolder holder = null;
+        int type = getItemViewType(position);
         ArrayList<Metric> metrics = m_exerciseHistory.get(position).getMetrics();
+        int numMetrics = metrics.size();
         if( convertView == null ){
             holder = new ViewHolder();
-            metricLayout = null;
-            initializeView();
+            LinearLayout metricLayout = initializeView(numMetrics);
+            switch(type){
+                case TYPE_ONE_METRIC:
+                    convertView = metricLayout;
+                    holder.name = (TextView)convertView.findViewById(nameId);
+                    holder.firstMetric = (TextView)convertView.findViewById(firstMetricId);
+                    break;
+                case TYPE_TWO_METRICS:
+                    convertView = metricLayout;
+                    holder.name = (TextView)convertView.findViewById(nameId);
+                    holder.firstMetric = (TextView)convertView.findViewById(firstMetricId);
+                    holder.secondMetric = (TextView)convertView.findViewById(secondMetricId);
+                    break;
+                case TYPE_THREE_METRICS:
+                    convertView = metricLayout;
+                    holder.name = (TextView)convertView.findViewById(nameId);
+                    holder.firstMetric = (TextView)convertView.findViewById(firstMetricId);
+                    holder.secondMetric = (TextView)convertView.findViewById(secondMetricId);
+                    holder.thirdMetric = (TextView)convertView.findViewById(thirdMetricId);
+                    break;
+                case TYPE_TERRIBLE_THINGS:
+                    convertView = metricLayout;
+                    break;
+            }
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder)convertView.getTag();
+        }
+            /*
             convertView = metricLayout;
             holder.name = (TextView)convertView.findViewById(nameId);
             switch(mNumMetrics){
@@ -80,13 +134,12 @@ public class HistoricExerciseAdapter extends ArrayAdapter {
                     break;
             }
             convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder)convertView.getTag();
-        }
+            */
+
 
         holder.name.setText(m_exerciseHistory.get(position).getExerciseName());
         String s;
-        switch(mNumMetrics){
+        switch(numMetrics){
             case 0:
                 break;
             case 1:
@@ -114,8 +167,8 @@ public class HistoricExerciseAdapter extends ArrayAdapter {
         return convertView;
     }
 
-    private void initializeView(){
-        metricLayout = new LinearLayout(mContext);
+    private LinearLayout initializeView(int numMetrics){
+        LinearLayout metricLayout = new LinearLayout(mContext);
         metricLayout.setOrientation(LinearLayout.VERTICAL);
 
         TextView nameView = new TextView(mContext);
@@ -132,7 +185,7 @@ public class HistoricExerciseAdapter extends ArrayAdapter {
         TextView thirdMetricView = new TextView(mContext);
         thirdMetricView.setId(thirdMetricId);
 
-        switch(mNumMetrics) {
+        switch(numMetrics) {
             case 0:
                 break;
             case 1:
@@ -150,6 +203,7 @@ public class HistoricExerciseAdapter extends ArrayAdapter {
             default:
                 break;
         }
+        return metricLayout;
     }
 
     public static class ViewHolder{
@@ -158,4 +212,6 @@ public class HistoricExerciseAdapter extends ArrayAdapter {
         public TextView secondMetric;
         public TextView thirdMetric;
     }
+
+
 }

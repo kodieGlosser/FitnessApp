@@ -386,6 +386,8 @@ public class WorkoutData {
         //Convert to array for db placement
         ExerciseHistory[] exerciseHistory = new ExerciseHistory[tempExerciseHolder.size()];
         exerciseHistory = tempExerciseHolder.toArray(exerciseHistory);
+        for(ExerciseHistory eh : exerciseHistory)
+            Log.d("4/19", "IN WORKOUTDATA.CRAPPLAN EXERCISE: " + eh.getExerciseName() + " IN EXERCISEHISTORY");
 
         return exerciseHistory;
     }
