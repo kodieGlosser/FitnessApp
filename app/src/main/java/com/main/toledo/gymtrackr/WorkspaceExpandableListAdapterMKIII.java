@@ -39,6 +39,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
     private LinearLayout.LayoutParams params;
 
+
     //BROWSE STATES
     final int NOT_BROWSE = 0, BROWSE_WORKOUT = 1, WORKOUT_BROWSE = 2;
     //HEADER TYPES
@@ -695,7 +696,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
     private void setValues(int group, int child, ChildViewHolder holder){
         Exercise e = Workout.get(group).getExercise(child);
-        int numMetrics = e.getMetrics().size();
+        final int numMetrics = e.getMetrics().size();
         boolean hasGoalMetrics = e.hasPlanMetrics();
 
 
@@ -710,9 +711,14 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
         ArrayList<Metric> metrics = e.getMetrics();
         for(int i = 0; i < numMetrics; i++) {
+            final int j = i;
             final Metric metric = metrics.get(i);
             holder.metricTextHolder.get(i).setText(metric.getType() + ": ");
             final EditText metricEditText = holder.metricEditHolder.get(i);
+
+            metricEditText.setText("" + metric.getMetricIntValue());
+
+
             metricEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -722,6 +728,9 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                             metricEditText.setText("0");
                         } else {
                             metric.setMetricIntValue(Integer.parseInt(v.getText().toString()));
+                        }
+                        if(j<numMetrics-1){
+
                         }
                         return true;
                     }
@@ -735,6 +744,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                     if (hasFocus) {
                         ((WorkspaceActivity) _context).ListFragment.workspaceListView.toggleListeners(false);
                         metricEditText.setSelection(metricEditText.getText().toString().length());
+                        m_editTextHandle = (EditText) v;
                         if (metricEditText.getText().toString().equals("0")) {
                             //timeEdit.setText("");
                         }
@@ -750,6 +760,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                     }
                 }
             });
+
         }
     }
 
@@ -764,7 +775,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
         holder.exerciseCheckImage.setLayoutParams(params);
-        
+
         holder.relativeLayoutHandle.addView(holder.exerciseCheckImage);
         holder.dataLayoutHandle.setTranslationX(mCheckedIndentation);
     }
