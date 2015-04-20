@@ -13,11 +13,13 @@
         android:gravity="right"
         android:layout_weight="2">
 
-        <Button
+        <ImageButton
             android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:text="DELETE"/>
+            style="@style/myButton"
+            android:padding="10dp"
+            android:src="@drawable/ic_delete_50"/>
 
     </LinearLayout>
 
@@ -37,7 +39,9 @@
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:gravity="left"
+            android:layout_weight="0.9">
 
             <TextView
                 android:id="@+id/browseMenuExerciseNameView"
@@ -68,6 +72,14 @@
                 android:layout_alignLeft="@+id/browseMenuExerciseMuscleView"
                 android:layout_alignStart="@+id/browseMenuExerciseMuscleView" />
         </RelativeLayout>
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="right"
+            android:src="@drawable/ic_ic_expand_arrow_side_50"
+            android:id="@+id/Arrow_in_plan"
+            android:layout_weight="0.1"
+            />
 
     </com.main.toledo.gymtrackr.SwipableLinearLayout>
 

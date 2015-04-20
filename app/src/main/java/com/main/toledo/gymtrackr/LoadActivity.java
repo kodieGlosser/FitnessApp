@@ -253,6 +253,14 @@ public class LoadActivity extends ActionBarActivity {
                 }
             });
 
+            ImageButton duplicate = (ImageButton) convertView.findViewById(R.id.duplicateButton);
+            duplicate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TODO: tie it in
+                }
+            });
+
             return convertView;
         }
 
