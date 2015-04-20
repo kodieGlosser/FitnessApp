@@ -187,6 +187,7 @@ public class BrowseActivity extends ActionBarActivity {
             swipableLinearLayout.setSwipeLayoutListener(listener);
             swipableLinearLayout.percentageToDragEnable(75f);
 
+
             final Exercise e = getItem(position);
             TextView nameTextView =
                     (TextView)convertView.findViewById(R.id.browseMenuExerciseNameView);
@@ -200,10 +201,13 @@ public class BrowseActivity extends ActionBarActivity {
 
             if(swipableLinearLayout.getX() != 0){
                 swipableLinearLayout.setX(0f);
-                mTextViewHandle.setOpen(false);
+
+                if(mTextViewHandle != null)
+                    mTextViewHandle.setOpen(false);
+
                 mTextViewHandle = null;
             }
-
+            swipableLinearLayout.refreshIcon();
             swipableLinearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

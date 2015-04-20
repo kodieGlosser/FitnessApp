@@ -190,9 +190,9 @@ public class WorkspaceListFragment extends Fragment {
             new DropListener() {
                 public void onDrop(int type, int toX, int toY) {
                     ExpandableListAdapter adapter = workspaceListView.getExpandableListAdapter();
-                    if (adapter instanceof WorkspaceExpandableListAdapterMKII) {
+                    if (adapter instanceof WorkspaceExpandableListAdapterMKIII) {
                         //Log.d("TOUCH TESTS", "ITEM DROPPED");
-                        ((WorkspaceExpandableListAdapterMKII)adapter).onDrop(type, toX, toY);
+                        ((WorkspaceExpandableListAdapterMKIII)adapter).onDrop(type, toX, toY);
                         //((WorkspaceActivity)getActivity()).getAdapter().notifyDataSetChanged();
                     }
                 }

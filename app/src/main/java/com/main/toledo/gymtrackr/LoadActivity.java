@@ -1,7 +1,11 @@
 package com.main.toledo.gymtrackr;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -42,6 +46,7 @@ public class LoadActivity extends ActionBarActivity {
     //the adapter is responsible for populating the load list
     public static LoadAdapter adapter;
     private String newPlanName;
+    private boolean mCopyFlag;
     //testvals
     String s;
 
@@ -90,7 +95,57 @@ public class LoadActivity extends ActionBarActivity {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_add_plan:
-                showNameDialog();
+                /*
+                final AlertDialog alertDialog = new AlertDialog.Builder(this).create(); //Read Update
+                alertDialog.setTitle("New Plan Menu");
+                alertDialog.setMessage("Select plan creation option");
+                alertDialog.setButton(Dialog.BUTTON_NEUTRAL, "Create blank plan" , new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mCopyFlag = false;
+                        showNameDialog();
+                    }
+                });
+
+                alertDialog.setButton( Dialog.BUTTON_NEUTRAL, "Create plan from workspace contents", new DialogInterface.OnClickListener()    {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mCopyFlag = true;
+                        showNameDialog();
+                    }
+                });
+
+                alertDialog.setButton( Dialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener()    {
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.cancel();
+                    }
+                });
+
+                alertDialog.show();
+                */
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("New Plan Options");
+                builder.setItems(new CharSequence[]
+                                {"Create blank plan", "Create plan from workspace contents", "Cancel"},
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // The 'which' argument contains the index position
+                                // of the selected item
+                                switch (which) {
+                                    case 0:
+                                        mCopyFlag = false;
+                                        showNameDialog();
+                                        break;
+                                    case 1:
+                                        mCopyFlag = true;
+                                        showNameDialog();
+                                        break;
+                                    case 2:
+
+                                        break;
+                                }
+                            }
+                        });
+                builder.create().show();
+
                 adapter.notifyDataSetChanged();
                 return true;
             case R.id.action_settings:
@@ -100,6 +155,7 @@ public class LoadActivity extends ActionBarActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     public LoadAdapter getAdapter(){
         return this.adapter;
     }
@@ -109,6 +165,23 @@ public class LoadActivity extends ActionBarActivity {
 
     public ArrayList<String> getPlanList(){return planList; }
 
+    public void setCopyFlag(boolean b){mCopyFlag = b;}
+
+    public boolean getCopyflag(){return mCopyFlag;}
+
+    public void createPlanFromWorkspace(){
+        mCopyFlag = false;
+        Plan p = WorkoutData.get(getApplicationContext()).crapNewPlan();
+        p.setName(newPlanName);
+        DatabaseWrapper db = new DatabaseWrapper();
+        db.saveEntirePlan(p);
+        planList.clear();
+        String[] planArray = db.loadPlanNames();
+        //convert array to list for dynamic stuffs
+        for (String s : planArray){
+            planList.add(s);
+        }
+    }
     public void createNewPlan(){
         //might be able to just create a new plan
         //WorkoutData.get(this).clear();
@@ -252,15 +325,16 @@ public class LoadActivity extends ActionBarActivity {
                     startActivity(i);
                 }
             });
-
+            /*
             ImageButton duplicate = (ImageButton) convertView.findViewById(R.id.duplicateButton);
             duplicate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: tie it in
+                    mCopyFlag = true;
+                    showNameDialog();
                 }
             });
-
+            */
             return convertView;
         }
 

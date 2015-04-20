@@ -22,13 +22,22 @@ public class LoadNamePlanDialog extends DialogFragment {
     */
     //NameDialogListener m_Listener;
     final int OTHER = 10, INVALID_NAME_VALUE = 11, TAKEN_NAME_VALUE = 12;
-
+    private boolean copyflag = false;
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View v = inflater.inflate(R.layout.w_plan_dialog, null);
-        builder.setMessage("ENTER PLAN NAME");
+        copyflag = ((LoadActivity) getActivity()).getCopyflag();
+
+
+        if(!copyflag)
+            builder.setMessage("ENTER PLAN NAME");
+
+        if(copyflag)
+            builder.setMessage("CREATING PLAN FROM WORKSPACE CONTENTS. ENTER PLAN NAME");
+
+
         final EditText t = (EditText) v.findViewById(R.id.planName);
         builder.setView(v)
                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {
@@ -53,7 +62,12 @@ public class LoadNamePlanDialog extends DialogFragment {
                         } else {
                             //NO ERROR
                             ((LoadActivity) getActivity()).setNewPlanName(planName);
-                            ((LoadActivity) getActivity()).createNewPlan();
+
+                            if(!copyflag)
+                                ((LoadActivity) getActivity()).createNewPlan();
+
+                            if(copyflag)
+                                ((LoadActivity) getActivity()).createPlanFromWorkspace();
                             //m_Listener.onDialogPositiveClick(WorkspaceNameDialog.this);
                         }
 
@@ -62,8 +76,8 @@ public class LoadNamePlanDialog extends DialogFragment {
                 .setNegativeButton("NO", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //m_Listener.onDialogNegativeClick(WorkspaceNameDialog.this);
-
-                        LoadNamePlanDialog.this.getDialog().cancel();
+                        ((LoadActivity) getActivity()).setCopyFlag(false);
+                            LoadNamePlanDialog.this.getDialog().cancel();
                     }
                 });
         //TextView t = (TextView) getView().findViewById(R.id.dialogMessage);

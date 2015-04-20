@@ -15,7 +15,7 @@ import android.view.MenuItem;
  */
 public class WorkspaceActivity extends ActionBarActivity {
 
-    WorkspaceExpandableListAdapterMKII listAdapter;
+    WorkspaceExpandableListAdapterMKIII listAdapter;
     WorkspaceListFragment ListFragment;
     WorkspaceTabFragment TabFragment;
     String planName;
@@ -195,7 +195,7 @@ public class WorkspaceActivity extends ActionBarActivity {
         //THIS FIXES A BUG WHERE THE ADAPTER WONT BE UPDATED WHEN THE
         //ACTIVITY IS RESUMED AFTER BROWSE
         if(listAdapter==null)
-            listAdapter = new WorkspaceExpandableListAdapterMKII(this);
+            listAdapter = new WorkspaceExpandableListAdapterMKIII(this);
 
         listAdapter.hideKeypad();
         /*
@@ -237,7 +237,7 @@ public class WorkspaceActivity extends ActionBarActivity {
 
     public int getToggledCircuit(){return mToggledCircuit;}
 
-    public WorkspaceExpandableListAdapterMKII getAdapter(){
+    public WorkspaceExpandableListAdapterMKIII getAdapter(){
         return this.listAdapter;
     }
 

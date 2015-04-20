@@ -667,20 +667,41 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             if (!Workout.get(group).getExercise(child).getName().equals("test")) {
                 ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(getChildAt(itemPosition - getFirstVisiblePosition()), "translationX", -(int)(SCREENWIDTH*1.5));
                 mSlidInAnimator.setDuration(300);
+                mSlidInAnimator.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
                 mSlidInAnimator.start();
 
                 Workout.get(group).removeExercise(child);
                 if (!Workout.get(group).isOpen()) {
                     Workout.remove(group);
                 }
-
+                /*
                 postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
+
                     }
                 }, 300);
-
+                */
             }
         }
     }

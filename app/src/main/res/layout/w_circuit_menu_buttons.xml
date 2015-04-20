@@ -13,27 +13,32 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:id="@+id/inCircuitButtonHandle"
-        android:background="#f7f7f7">
+        android:background="@drawable/circuit_notselected"
+        android:orientation="horizontal">
 
         <Button
-           android:layout_width="30dp"
-           android:layout_height="30dp"
-           android:text="+"
-           android:id="@+id/PlusButton"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:text="+"
+            android:id="@+id/PlusButton"
             android:background="#1ca4fb"
             android:textColor="#F0F0F0"
             style="@style/myButton"
-            />
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
 
         <Button
-            android:layout_width="200dp"
+            android:layout_width="0dp"
             android:layout_height="30dp"
             android:text="Browse"
             android:layout_marginLeft="10dp"
             android:background="#1ca4fb"
             android:textColor="#F0F0F0"
             style="@style/myButton"
-            android:id="@+id/BrowseButton" />
+            android:id="@+id/BrowseButton"
+            android:layout_weight="1"
+            android:layout_marginRight="10dp"/>
 
     </LinearLayout>
 
