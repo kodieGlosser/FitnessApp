@@ -40,24 +40,27 @@ public class BrowseActivity extends ActionBarActivity {
     //private boolean circuitOpen;
     private int slideVal = -200; //should change this to some fraction of screen width
 
-
+    //BROWSE-CREATE TRANSITION
+    private final static int NOT_FROM_CREATE = 0, ADDED_EXERCISE_IN_CREATE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("BROWSE FLOW", "onCreate");
+        Log.d("4/20 BROWSE FLOW", "onCreate");
         super.onCreate(savedInstanceState);
-        /*
-        Bundle extras = getIntent().getExtras();
-        if (extras != null){
-            circuitNumber = extras.getInt("EXTRA_CIRCUIT_NUMBER");
-            circuitOpen = extras.getBoolean("EXTRA_CIRCUIT_OPEN");
-        }
-        */
 
         setContentView(R.layout.b_activity);
-        //Log.d("test", " Looking for exercise for circuit" + circuitNumber);
 
-        //populates our display initially
-        initializeBrowseList();
+    }
+
+    @Override
+    public void onResume(){
+        Log.d("4/20 BROWSE FLOW", "onResume");
+        super.onResume();
+
+        //GET TRANSITION
+        int state;
+        state = WorkoutData.get(this).getBrowseTransition();
+        if(state == NOT_FROM_CREATE)
+            initializeBrowseList();
         //initiates filter
         FilterFragment = new BrowseFilterFragment();
         ListFragment = new BrowseListFragment();
@@ -71,6 +74,9 @@ public class BrowseActivity extends ActionBarActivity {
         transaction.add(R.id.exerciseFiltersContainer, FilterFragment);
         transaction.add(R.id.exerciseListContainer, ListFragment);
         transaction.commit();
+
+
+
     }
 
     @Override
@@ -86,13 +92,6 @@ public class BrowseActivity extends ActionBarActivity {
         switch (item.getItemId()) {
             case R.id.action_add_exercise_item:
                 Intent i = new Intent(this, CreateExerciseActivity.class);
-                //MONKEY CODE
-                /*
-                i.putExtra("EXTRA_CIRCUIT_NUMBER", circuitNumber);
-                i.putExtra("EXTRA_CIRCUIT_OPEN", circuitOpen);
-                */
-
-                //END MONKEY CODE
                 startActivity(i);
                 return true;
             case R.id.action_settings:
@@ -249,10 +248,6 @@ public class BrowseActivity extends ActionBarActivity {
                 @Override
                 public void onClick(View v) {
 
-                    //.resetPosition();
-                    //mTextViewHandle = null;
-
-                    //CODE TO REMOVE ITEM FROM DB GOES HERE
                     WorkoutData.get(mContext).exerciseRemoved(e.getId());
                     DatabaseWrapper db = new DatabaseWrapper();
                     db.deleteExerciseInExerciseTable(e.getId());

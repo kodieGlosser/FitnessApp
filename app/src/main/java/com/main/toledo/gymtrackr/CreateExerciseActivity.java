@@ -1,5 +1,6 @@
 package com.main.toledo.gymtrackr;
 
+        import android.content.Context;
         import android.content.Intent;
         import android.os.Bundle;
         import android.support.v7.app.ActionBarActivity;
@@ -7,8 +8,10 @@ package com.main.toledo.gymtrackr;
         import android.view.Menu;
         import android.view.MenuInflater;
         import android.view.MenuItem;
+        import android.view.MotionEvent;
         import android.view.View;
         import android.view.ViewGroup;
+        import android.view.inputmethod.InputMethodManager;
         import android.widget.AdapterView;
         import android.widget.ArrayAdapter;
         import android.widget.CheckBox;
@@ -32,7 +35,9 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
     private String mExerciseName;
     private String mOtherValue;
 
-    private boolean nameIsTaken;
+    private int errorType;
+
+    private static final int NO_ERROR = 0, NAME_ERROR = 1, METRIC_ERROR = 2;
 
     final private String[] mMuscleGroups = {"Shoulders", "Legs", "Back", "Abs", "Arms", "Chest"};
     final private String[] mLegs = {"Hamstrings", "Glutes", "Quadriceps", "Calves"};
@@ -54,6 +59,8 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
     private EditText mExerciseNameText;
 
     final int mMuscleSpinnerId = View.generateViewId();
+    //BROWSE CREATE TRANSITION DATA
+    private final static int NOT_FROM_CREATE = 0, ADDED_EXERCISE_IN_CREATE = 1;
 
     //PASSED FROM BROWSE, PROBABLY  a better way to do this
     //private int circuitNumber;
@@ -86,7 +93,14 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
         muscleGroupSpinner.setAdapter(muscleGroupAdapter);
         muscleGroupSpinner.setOnItemSelectedListener(this);
 
-
+        LinearLayout mainLayout = (LinearLayout)findViewById(R.id.mainLayout);
+        mainLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                hideKeypad();
+                return false;
+            }
+        });
 
     }
 
@@ -129,15 +143,10 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case android.R.id.home:
-                Log.d("BROWSE FLOW", "UP");
-                //MONKEY CODE
+
                 Intent i = new Intent(this, BrowseActivity.class);
-                /*
-                i.putExtra("EXTRA_CIRCUIT_NUMBER", circuitNumber);
-                i.putExtra("EXTRA_CIRCUIT_OPEN", circuitOpen);
-                */
                 startActivity(i);
-                //END MONKEY CODE
+
                 return true;
             case R.id.save_changes:
                 performSaveCheck();
@@ -190,25 +199,26 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
         // Is the view now checked?
         boolean checked = ((CheckBox) view).isChecked();
         // Check which checkbox was clicked
-        switch(view.getId()) {
+        switch (view.getId()) {
             case R.id.weight:
                 if (checked)
-                    mWeight=0;
+                    mWeight = 0;
                 else
-                    mWeight=-1;
+                    mWeight = -1;
                 break;
             case R.id.reps:
                 if (checked)
-                    mReps=0;
+                    mReps = 0;
                 else
-                    mReps=-1;
+                    mReps = -1;
                 break;
             case R.id.time:
                 if (checked)
-                    mTime=0;
+                    mTime = 0;
                 else
-                    mTime=-1;
+                    mTime = -1;
                 break;
+            /*
             case R.id.other:
                 if (checked) {
                     mOther = 0;
@@ -219,8 +229,10 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
                 }
 
                 break;
+                */
         }
     }
+    /* Used for Other Layout
     private void updateUI(){
         LinearLayout metricLayout = (LinearLayout)findViewById(R.id.metricLayout);
 
@@ -257,7 +269,7 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
 
         mOtherEditText.setLayoutParams(textViewParams);
     }
-
+    */
 
     private void performSaveCheck(){
 
@@ -265,28 +277,38 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
 
         DatabaseWrapper db = new DatabaseWrapper();
         Exercise[] exercises = db.browseExercisesByExactName(mExerciseName);
-
+        errorType = NO_ERROR;
         if(exercises.length == 0){
-            nameIsTaken = false;
+            //NO ERROR
         } else {
             for (Exercise e : exercises){
                 Log.d("CE ACT TEST", "COMPARING DB NAME: "
                         + e.getName() + " WITH NEW NAME: " + mExerciseName);
                 if (e.getName().equals(mExerciseName)){
-                    nameIsTaken = true;
+                    //NAME ERROR
+                    errorType = NAME_ERROR;
                     break;
                 } else {
-                    nameIsTaken = false;
+                    //NO ERROR
                 }
             }
         }
 
+        if(mWeight == -1 && mReps == -1 && mTime == -1)
+            errorType = METRIC_ERROR; //NO METRICS
+
+
         if(mExerciseName.trim().length()==0 || mExerciseName.equals("test")){
-            nameIsTaken = true;
+            errorType = NAME_ERROR;
         }
 
         CreateExerciseDialog dialog = new CreateExerciseDialog();
         dialog.show(getFragmentManager(), "Add Exercise Dialog.");
+    }
+
+
+    public int getError(){
+        return errorType;
     }
 
     public void addAdditionalSpinner(String muscleGroup){
@@ -346,9 +368,6 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
         }
     }
 
-    public boolean getError(){
-        return nameIsTaken;
-    }
 
     public void save(){
         Exercise e = new Exercise();
@@ -374,10 +393,31 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
         e.setTime(mTime);
         e.setRepetitions(mReps);
         e.setWeight(mWeight);
+        /*
         Log.d("4/9", "CREATE -- BROWSE CONSTRUCTOR CALLED NAME: " + e.getName()
                 + " -- WEIGHT: " + e.getWeight() + " -- TIME: "
                 + e.getTime() + " -- REPS: " + e.getRepetitions());
+                */
         DatabaseWrapper db = new DatabaseWrapper();
         db.addExerciseToExerciseTable(e);
+
+        WorkoutData.get(this).setBrowseTransition(ADDED_EXERCISE_IN_CREATE);
+        WorkoutData.get(this).setExerciseCreated(mExerciseName);
+        WorkoutData.get(this).setLastFilter1(null);
+        WorkoutData.get(this).setLastFilter2(null);
+
+        Intent i = new Intent(this, BrowseActivity.class);
+        startActivity(i);
+
+    }
+
+    public void hideKeypad(){
+        Context context = getApplicationContext();
+
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mExerciseNameText.getWindowToken(), 0);
+        mExerciseNameText.clearFocus();
+
     }
 }

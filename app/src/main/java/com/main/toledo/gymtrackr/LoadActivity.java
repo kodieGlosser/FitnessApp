@@ -255,7 +255,6 @@ public class LoadActivity extends ActionBarActivity {
             if ((convertView == null)) {
                 convertView = getLayoutInflater()
                         .inflate(R.layout.l_frag_list_item, null);
-                Log.d("4/4", "X location of convert view: " + convertView.getX());
             }
 
             final String planName = (String)getItem(position);
@@ -265,7 +264,6 @@ public class LoadActivity extends ActionBarActivity {
             swipableLinearLayout.setSwipeOffset(slideVal);
             swipableLinearLayout.setSwipeLayoutListener(listener);
             swipableLinearLayout.percentageToDragEnable(0f);
-            swipableLinearLayout.refreshIcon();
 
             TextView t = (TextView) convertView.findViewById(R.id.planName);
             t.setText(planName);
@@ -274,6 +272,8 @@ public class LoadActivity extends ActionBarActivity {
                 mTextViewHandle.setOpen(false);
                 mTextViewHandle = null;
             }
+            swipableLinearLayout.refreshIcon();
+
             ImageButton delete = (ImageButton) convertView.findViewById(R.id.deleteButton);
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override

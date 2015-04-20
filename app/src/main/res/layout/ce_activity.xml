@@ -41,12 +41,12 @@
             android:layout_height="wrap_content"
             android:text="Time"
             android:onClick="onCheckboxClicked"/>
-        <CheckBox
+        <!--<CheckBox
             android:id="@+id/other"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Note"
-            android:onClick="onCheckboxClicked"/>
+            android:onClick="onCheckboxClicked"/>-->
     </LinearLayout>
 
     <LinearLayout

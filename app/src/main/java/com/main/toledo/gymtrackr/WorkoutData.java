@@ -23,6 +23,12 @@ public class WorkoutData {
 
 
     //state data
+    //BrowseCreate Transition
+    private String mAddedExerciseName;
+    private int mBrowseTransition = 0;
+    private String mLastFilter1 = null;
+    private String mLastFilter2 = null;
+    //workspace
     private int mState;
     private String mPlanName;
     private int mStateCircuit;
@@ -494,4 +500,19 @@ public class WorkoutData {
     public void setDetailExercise(int exercise){mDetailExercise = exercise;}
 
     public int getDetailExercise(){return mDetailExercise;}
+
+    //BROWSE TRANSITION METHODS
+
+    public int getBrowseTransition(){return mBrowseTransition;};
+    public void setBrowseTransition(int transition){mBrowseTransition = transition;}
+
+    public void setExerciseCreated(String exerciseName){mAddedExerciseName = exerciseName;}
+    public String getExerciseCreated(){return mAddedExerciseName;}
+
+    public void setLastFilter1(String lastFilter){mLastFilter1 = lastFilter;}
+    public String getLastFilter1(){return mLastFilter1;}
+
+    public void setLastFilter2(String lastFilter){mLastFilter2 = lastFilter;}
+    public String getLastFilter2(){return mLastFilter2;}
+
 }

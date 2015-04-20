@@ -52,6 +52,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
             EXERCISE_ITEM_1_MC = 13, EXERCISE_ITEM_2_MC = 14, EXERCISE_ITEM_3_MC = 15;
     final static int NUM_CHILDREN = 16;
 
+    //private ChildViewHolder holderHandle;
 
     public WorkspaceExpandableListAdapterMKIII(Context context){
         params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
@@ -692,6 +693,16 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
             metricEditText.setText("" + metric.getMetricIntValue());
 
+            int k;
+
+            if(j<numMetrics-1){
+                k = i+1;
+            } else {
+                k = i;
+            }
+
+            final EditText nextEdit = holder.metricEditHolder.get(k);
+
 
             metricEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
@@ -704,7 +715,10 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                             metric.setMetricIntValue(Integer.parseInt(v.getText().toString()));
                         }
                         if(j<numMetrics-1){
-
+                            nextEdit.requestFocus();
+                        } else {
+                            //TODO: CODE TO DIRECT FOCUS TO NEXT WORKSPACE ROW GOES HERE
+                            //v.focusSearch(View.FOCUS_DOWN);
                         }
                         return true;
                     }
@@ -737,7 +751,11 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
         }
     }
-
+    /*
+    private void focusNextEdit(int j){
+        holderHandle.metricEditHolder.get(j+1).requestFocus();
+    }
+    */
     private void doCheck(ChildViewHolder holder){
         LayoutInflater inflater = (LayoutInflater) this._context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);

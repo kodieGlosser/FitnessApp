@@ -1,5 +1,6 @@
 package com.main.toledo.gymtrackr;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -57,6 +58,7 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
     private ArrayAdapter<String> mFilterAdapter;
 
     private Spinner muscleSpinner;
+    private Spinner filterSpinner;
 
     private final int NONE = 0, MUSCLE_GROUP = 1, EQUIPMENT_TYPE = 2, SPECIFIC_MUSCLE = 3;
     private int mSearchFilter = NONE;
@@ -65,6 +67,8 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
 
     private String mLastMuscleGroup;
     private LinearLayout mFilterLayoutHandle;
+
+    private final static int NOT_FROM_CREATE = 0, ADDED_EXERCISE_IN_CREATE = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -111,18 +115,42 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
             }
         });
 
-        Spinner equipmentSpinner = (Spinner) v.findViewById(R.id.filter_spinner);
+        filterSpinner = (Spinner) v.findViewById(R.id.filter_spinner);
         mFilterAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, mFilterOptions);
         mFilterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        equipmentSpinner.setAdapter(mFilterAdapter);
-        equipmentSpinner.setOnItemSelectedListener(this);
+        filterSpinner.setAdapter(mFilterAdapter);
+        filterSpinner.setOnItemSelectedListener(this);
 
         mFilterLayoutHandle = (LinearLayout)v.findViewById(R.id.filterLayoutHandle);
 
         queryDb();
         return v;
     }
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState){
+        super.onActivityCreated(savedInstanceState);
+        Context context = getActivity();
+        int type = WorkoutData.get(context).getBrowseTransition();
+        if(type == ADDED_EXERCISE_IN_CREATE) {
+            mSearchText = WorkoutData.get(context).getExerciseCreated();
+            mSearchFilter = NONE;
+            mSearchField.setText(mSearchText);
+            mSearchField.setSelection(mSearchField.getText().length());
+            queryDb();
+        }
+        //set last filter
+        WorkoutData.get(context).setBrowseTransition(NOT_FROM_CREATE);
+        WorkoutData.get(context).setExerciseCreated(null);
+        String lastFilter1;
+        String lastFilter2;
+        if(WorkoutData.get(context).getLastFilter1()!=null) {
+            lastFilter1 = WorkoutData.get(context).getLastFilter1();
+            filterSpinner.setSelection(mFilterAdapter.getPosition(lastFilter1));
+            //setFilterOptionsPrimary(lastFilter1);
 
+        }
+        //set search?
+    }
     private void setSearchText(){
         mSearchText = mSearchField.getText().toString();
     }
@@ -134,11 +162,13 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
 
             case R.id.filter_spinner:
                 selectedItem = mFilterOptions[pos];
+                //SET LAST FILTER
                 setFilterOptionsPrimary(selectedItem);
                 Log.d("4/4", "mgroup spin");
                 break;
             default:
                 selectedItem = mSpecMuscleFilterArray[pos];
+                WorkoutData.get(getActivity()).setLastFilter2(selectedItem);
                 if (selectedItem.equals("None")){
                     mSearchFilter = MUSCLE_GROUP;
                     mFilterOption = mLastMuscleGroup;
@@ -160,7 +190,8 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
 
     public void setFilterOptionsPrimary(String filterSelection){
         boolean addSpinners = false;
-
+        Context context = getActivity();
+        WorkoutData.get(context).setLastFilter1(filterSelection);
         switch(filterSelection){
             case "              None":
 
@@ -254,8 +285,17 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
             muscleSpinner.setOnItemSelectedListener(this);
 
             mFilterLayoutHandle.addView(muscleSpinner);
+
+            String lastFilter2;
+
+            if(WorkoutData.get(context).getLastFilter2()!=null) {
+                lastFilter2 = WorkoutData.get(context).getLastFilter2();
+                muscleSpinner.setSelection(muscleAdapter.getPosition(lastFilter2));
+            }
+
         } else {
             mFilterLayoutHandle.removeAllViewsInLayout();
+            WorkoutData.get(context).setLastFilter2(null);
         }
 
         queryDb();
