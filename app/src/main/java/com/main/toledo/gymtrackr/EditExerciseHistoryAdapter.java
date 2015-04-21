@@ -21,7 +21,6 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
     //private final DynamicView d;
     private ArrayList<ExerciseHistory> m_exerciseHistory;
 
-    private LinearLayout metricLayout;
     private LinearLayout metricSubLayout;
 
     private final int dateId = View.generateViewId();
@@ -67,9 +66,8 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
         ArrayList<Metric> metrics = m_exerciseHistory.get(position).getMetrics();
         if( convertView == null ){
             holder = new ViewHolder();
-            metricLayout = null;
-            initializeView();
-            convertView = metricLayout;
+
+            convertView = initializeView();
             holder.date = (TextView)convertView.findViewById(dateId);
             switch(mNumMetrics){
                 case 0:
@@ -124,13 +122,13 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
         return convertView;
     }
 
-    private void initializeView(){
+    private LinearLayout initializeView(){
         int paddingInDp = 10;
         float scale = mContext.getResources().getDisplayMetrics().density;
         int padding = (int) (paddingInDp*scale + 0.5f);
 
 
-        metricLayout = new LinearLayout(mContext);
+        LinearLayout metricLayout = new LinearLayout(mContext);
         metricLayout.setPadding(0, padding, 0, 0);
 
         metricSubLayout = new LinearLayout(mContext);
@@ -143,7 +141,10 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
         );
 
         metricSubLayout.setLayoutParams(params);
+
         metricLayout.setLayoutParams(params);
+
+
 
         TextView dateView = new TextView(mContext);
         dateView.setId(dateId);
@@ -181,6 +182,8 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
                 break;
         }
         metricLayout.addView(metricSubLayout);
+
+        return metricLayout;
     }
 
     public static class ViewHolder{
