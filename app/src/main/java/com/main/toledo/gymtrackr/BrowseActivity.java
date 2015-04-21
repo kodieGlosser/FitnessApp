@@ -48,7 +48,18 @@ public class BrowseActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.b_activity);
+        FilterFragment = new BrowseFilterFragment();
+        ListFragment = new BrowseListFragment();
 
+        //creates a list adapter for our stub exercises
+        adapter = new BrowseAdapter(this, 0, mBrowseExerciseList);
+
+        //adds fragments to layout/b_activity.xml
+        FragmentTransaction transaction =
+                getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.exerciseFiltersContainer, FilterFragment);
+        transaction.add(R.id.exerciseListContainer, ListFragment);
+        transaction.commit();
     }
 
     @Override
@@ -62,18 +73,7 @@ public class BrowseActivity extends ActionBarActivity {
         if(state == NOT_FROM_CREATE)
             initializeBrowseList();
         //initiates filter
-        FilterFragment = new BrowseFilterFragment();
-        ListFragment = new BrowseListFragment();
 
-        //creates a list adapter for our stub exercises
-        adapter = new BrowseAdapter(this, 0, mBrowseExerciseList);
-
-        //adds fragments to layout/b_activity.xml
-        FragmentTransaction transaction =
-                getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.exerciseFiltersContainer, FilterFragment);
-        transaction.add(R.id.exerciseListContainer, ListFragment);
-        transaction.commit();
 
 
 

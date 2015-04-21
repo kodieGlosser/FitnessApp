@@ -27,7 +27,8 @@
             android:name=".BrowseActivity"
             android:label="Browse Exercises"
             android:theme="@style/Theme.AppCompat.Light"
-            android:parentActivityName="com.main.toledo.gymtrackr.WorkspaceActivity">
+            android:parentActivityName="com.main.toledo.gymtrackr.WorkspaceActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.main.toledo.gymtrackr.WorkspaceActivity"
@@ -41,7 +42,8 @@
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.AppCompat.Light"
             android:launchMode="singleTask"
-            android:parentActivityName="com.main.toledo.gymtrackr.StartActivity">
+            android:parentActivityName="com.main.toledo.gymtrackr.StartActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.main.toledo.gymtrackr.StartActivity"
@@ -57,7 +59,8 @@
             android:theme="@style/Theme.AppCompat.Light"
             android:label="Plan Menu"
             android:noHistory="true"
-            android:parentActivityName="com.main.toledo.gymtrackr.StartActivity">
+            android:parentActivityName="com.main.toledo.gymtrackr.StartActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.main.toledo.gymtrackr.StartActivity"
@@ -70,7 +73,8 @@
             android:label="Detail View"
             android:noHistory="true"
             android:theme="@style/Theme.AppCompat.Light"
-            android:parentActivityName="com.main.toledo.gymtrackr.StartActivity">
+            android:parentActivityName="com.main.toledo.gymtrackr.StartActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.main.toledo.gymtrackr.StartActivity"
@@ -83,7 +87,8 @@
             android:label="History"
             android:noHistory="true"
             android:theme="@style/Theme.AppCompat.Light"
-            android:parentActivityName="com.main.toledo.gymtrackr.StartActivity">
+            android:parentActivityName="com.main.toledo.gymtrackr.StartActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.main.toledo.gymtrackr.StartActivity"
@@ -109,7 +114,8 @@
             android:label="Create Exercise"
             android:noHistory="true"
             android:theme="@style/Theme.AppCompat.Light"
-            android:parentActivityName="com.main.toledo.gymtrackr.BrowseActivity">
+            android:parentActivityName="com.main.toledo.gymtrackr.BrowseActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.main.toledo.gymtrackr.BrowseActivity"

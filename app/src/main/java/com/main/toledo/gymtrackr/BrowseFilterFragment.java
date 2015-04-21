@@ -1,5 +1,6 @@
 package com.main.toledo.gymtrackr;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -69,16 +70,22 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
     private LinearLayout mFilterLayoutHandle;
 
     private final static int NOT_FROM_CREATE = 0, ADDED_EXERCISE_IN_CREATE = 1;
-
+    @Override
+    public void onAttach(Activity activity){
+        Log.d("4/20." , "Browsefrag.onAttach");
+        super.onAttach(activity);
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+
+        Log.d("4/20." , "Browsefrag.oncreate");
+                super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState){
-
+        Log.d("4/20." , "Browsefrag.oncreateview");
         View v = inflater.inflate(R.layout.b_frag_filters, null);
         mSearchField = (EditText)v.findViewById(R.id.exercise_name_search);
 
@@ -123,11 +130,13 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
 
         mFilterLayoutHandle = (LinearLayout)v.findViewById(R.id.filterLayoutHandle);
 
+        mSearchField.clearComposingText();
         queryDb();
         return v;
     }
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
+        Log.d("4/20." , "Browsefrag.onActivityCreated");
         super.onActivityCreated(savedInstanceState);
         Context context = getActivity();
         int type = WorkoutData.get(context).getBrowseTransition();
@@ -184,8 +193,18 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
         }
     }
 
-    public void onNothingSelected(AdapterView<?> parent){
+    public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+    @Override
+    public void onPause(){
+        super.onPause();
+        Log.d("4/20." , "Browsefrag.onPause");
+    }
+    @Override
+    public void onStop(){
+        super.onStop();
+        Log.d("4/20." , "Browsefrag.onStop");
     }
 
     public void setFilterOptionsPrimary(String filterSelection){
