@@ -45,7 +45,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
     private int mStartPosition;
     private int mDragPointOffset;        //Used to adjust drag view location
-    private int mCurrentPosition;
+    private int mCurrentPosition = -2;
 
     private int mDraggedItemDestination;
     private int mPosition;
@@ -106,7 +106,8 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
     //TOGGLE
     private int mToggleHoldBounds;
-
+    private int doubleClickId;
+    private long mTime = 0;
     //CHECK VAR
     private boolean areChecking = false;
     private int checkInProgressDistance;//50
@@ -254,19 +255,16 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                         currentY = y;
                     }
 
-                    postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (
-                                    (currentX < (x + mToggleHoldBounds)) &&
-                                            (currentX > (x - mToggleHoldBounds)) &&
-                                            (currentY < (y + mToggleHoldBounds)) &&
-                                            (currentY > (y - mToggleHoldBounds))
-                                    ) {
-                                toggle(mStartPosition);
-                            }
-                        }
-                    }, 175);//mDelay);
+                    if(mCurrentPosition != mStartPosition){
+                        mTime = 0;
+                        mCurrentPosition = mStartPosition;
+                    }
+
+                    if(System.currentTimeMillis() < (mTime + 300)) {
+                        toggle(mStartPosition);
+                    }
+
+                    mTime = System.currentTimeMillis();
 
                     super.onTouchEvent(ev);
                     break;
@@ -320,7 +318,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                         currentX = x;
                         currentY = y;
                     }
-
+                    /*
                     postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -334,6 +332,18 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
                         toggle(mStartPosition);
                     }
+                    */
+                    if(mCurrentPosition != mStartPosition){
+                        mTime = 0;
+                        mCurrentPosition = mStartPosition;
+                    }
+
+                    if(System.currentTimeMillis() < (mTime + 300)) {
+                        toggle(mStartPosition);
+                    }
+
+                    mTime = System.currentTimeMillis();
+
                     super.onTouchEvent(ev);
                     break;
                 case MotionEvent.ACTION_MOVE: //mose if moved
@@ -507,10 +517,13 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             WindowManager.LayoutParams mWindowParams = new WindowManager.LayoutParams();
             //mWindowParams.gravity = Gravity.TOP;
             mWindowParams.x = currentX - SCREENWIDTH/2;
-            mWindowParams.y = currentY - (SCREENHEIGHT/2) - 300;//(SCREENHEIGHT/5);
+            mWindowParams.y = currentY - (SCREENHEIGHT/2) - (SCREENHEIGHT/6);//(SCREENHEIGHT/5);  WAS 300
 
-            mWindowParams.height = 100;
-            mWindowParams.width = 200;
+            //mWindowParams.height = 100;
+            //mWindowParams.width = 200;
+
+            mWindowParams.height = (int)(SCREENHEIGHT/19.2);
+            mWindowParams.width = (int)(SCREENWIDTH/5);
             mWindowParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                     | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
                     | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
