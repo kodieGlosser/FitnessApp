@@ -7,40 +7,54 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Input name for exercise below."/>
+        android:text="Input name for exercise below."
+        android:textSize="25sp"/>
 
     <EditText
         android:id="@+id/exerciseNameField"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="20sp"/>
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Select relevant metrics."/>
+        android:text="Select relevant metrics."
+        android:textSize="20sp"/>
 
     <LinearLayout
-        android:orientation="vertical" android:layout_width="match_parent"
+        android:orientation="horizontal" android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/metricLayout">
+        android:id="@+id/metricLayout"
+        android:paddingTop="10dp"
+        android:paddingBottom="30dp">
         <CheckBox
             android:id="@+id/weight"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Weight"
-            android:onClick="onCheckboxClicked"/>
+            android:onClick="onCheckboxClicked"
+            android:layout_weight="1"
+            android:scaleX="1.1"
+            android:scaleY="1.1"/>
         <CheckBox
             android:id="@+id/reps"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Repetitions"
-            android:onClick="onCheckboxClicked"/>
+            android:text="Reps"
+            android:onClick="onCheckboxClicked"
+            android:layout_weight="1"
+            android:scaleX="1.1"
+            android:scaleY="1.1"/>
         <CheckBox
             android:id="@+id/time"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Time"
-            android:onClick="onCheckboxClicked"/>
+            android:onClick="onCheckboxClicked"
+            android:layout_weight="1"
+            android:scaleX="1.1"
+            android:scaleY="1.1"/>
         <!--<CheckBox
             android:id="@+id/other"
             android:layout_width="wrap_content"
@@ -51,35 +65,48 @@
 
     <LinearLayout
         android:orientation="horizontal" android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="40dp">
+
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select equipment: "/>
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:text="Select equipment: "
+            android:textSize="15sp"
+            android:layout_weight="1"/>
         <Spinner
             android:id="@+id/equipment_spinner"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dropdown" />
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:spinnerMode="dropdown"
+            android:layout_weight="1"/>
+
     </LinearLayout>
+
     <LinearLayout
         android:orientation="horizontal" android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="40dp">
+
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select muscle group: "/>
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:text="Select muscle group: "
+            android:layout_weight="1"
+            android:textSize="15sp"/>
         <Spinner
             android:id="@+id/muscle_group_spinner"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dropdown" />
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:spinnerMode="dropdown"
+            android:layout_weight="1"/>
+
     </LinearLayout>
+
     <LinearLayout
         android:orientation="horizontal" android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/muscle_spinner_layout">
     </LinearLayout>
-
 
 </LinearLayout>

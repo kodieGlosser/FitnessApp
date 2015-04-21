@@ -138,8 +138,8 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
         metricSubLayout.setBackground(mContext.getResources().getDrawable(R.drawable.circuit_notselected));
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
         );
 
         metricSubLayout.setLayoutParams(params);

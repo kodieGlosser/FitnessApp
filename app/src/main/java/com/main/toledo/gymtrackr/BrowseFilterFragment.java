@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,21 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
     private String mFilterOption;
 
     final private String[] mFilterOptions = {
+            "None",
+            "Shoulders",
+            "Legs",
+            "Back",
+            "Abs",
+            "Arms",
+            "Chest",
+            "Barbell",
+            "Body",
+            "Cable",
+            "Dumbbell",
+            "Machine",
+            "Other"};
+
+            /*
             "              None",
             "Muscle Group: Shoulders",
             "              Legs",
@@ -43,7 +59,7 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
             "              Cable",
             "              Dumbbell",
             "              Machine",
-            "              Other"};
+            "              Other"};*/
 
     final private String[] mLegs = {"None", "Hamstrings", "Glutes", "Quadriceps", "Calves"};
     final private String[] mArms = {"None", "Bicep", "Tricep", "Forearm"};
@@ -88,7 +104,7 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
         Log.d("4/20." , "Browsefrag.oncreateview");
         View v = inflater.inflate(R.layout.b_frag_filters, null);
         mSearchField = (EditText)v.findViewById(R.id.exercise_name_search);
-
+        mSearchField.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
         mSearchField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -212,73 +228,73 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
         Context context = getActivity();
         WorkoutData.get(context).setLastFilter1(filterSelection);
         switch(filterSelection){
-            case "              None":
+            case "None":
 
                 mSearchFilter = NONE;
                 break;
 
-            case "Muscle Group: Shoulders":
+            case "Shoulders":
 
                 mFilterOption = "Shoulders";
                 mSearchFilter = MUSCLE_GROUP;
                 break;
-            case "              Legs":
+            case "Legs":
 
                 mFilterOption = "Legs";
                 mSearchFilter = MUSCLE_GROUP;
                 mSpecMuscleFilterArray = mLegs;
                 addSpinners = true;
                 break;
-            case "              Back":
+            case "Back":
 
                 mFilterOption = "Back";
                 mSearchFilter = MUSCLE_GROUP;
                 mSpecMuscleFilterArray = mBack;
                 addSpinners = true;
                 break;
-            case "              Abs":
+            case "Abs":
 
                 mFilterOption = "Abs";
                 mSearchFilter = MUSCLE_GROUP;
                 break;
-            case "              Arms":
+            case "Arms":
 
                 mFilterOption = "Arms";
                 mSearchFilter = MUSCLE_GROUP;
                 mSpecMuscleFilterArray = mArms;
                 addSpinners = true;
                 break;
-            case "              Chest":
+            case "Chest":
 
                 mFilterOption = "Chest";
                 mSearchFilter = MUSCLE_GROUP;
                 break;
-            case "Equipment:    Barbell":
+            case "Barbell":
 
                 mFilterOption = "Barbell";
                 mSearchFilter = EQUIPMENT_TYPE;
                 break;
-            case "              Body":
+            case "Body":
 
                 mFilterOption = "Body";
                 mSearchFilter = EQUIPMENT_TYPE;
                 break;
-            case "              Cable":
+            case "Cable":
 
                 mFilterOption = "Cable";
                 mSearchFilter = EQUIPMENT_TYPE;
                 break;
-            case "              Dumbbell":
+            case "Dumbbell":
 
                 mFilterOption = "Dumbell";
                 mSearchFilter = EQUIPMENT_TYPE;
                 break;
-            case "              Machine":
+            case "Machine":
 
                 mFilterOption = "Machine";
                 mSearchFilter = EQUIPMENT_TYPE;
                 break;
-            case "              Other":
+            case "Other":
 
                 mFilterOption = "Other";
                 mSearchFilter = EQUIPMENT_TYPE;
@@ -289,9 +305,13 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
         }
 
         if(addSpinners){
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+
             mFilterLayoutHandle.removeAllViewsInLayout();
+
             TextView v = new TextView(getActivity());
             v.setText("Select specific muscles: ");
+            v.setLayoutParams(params);
             mFilterLayoutHandle.addView(v);
 
             if(muscleSpinner == null) {
@@ -302,6 +322,7 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
             muscleSpinner.setAdapter(muscleAdapter);
             muscleSpinner.setId(mMuscleSpinnerId);
             muscleSpinner.setOnItemSelectedListener(this);
+            muscleSpinner.setLayoutParams(params);
 
             mFilterLayoutHandle.addView(muscleSpinner);
 

@@ -3,16 +3,19 @@ package com.main.toledo.gymtrackr;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -38,7 +41,9 @@ public class BrowseActivity extends ActionBarActivity {
     //needed for add exercise functionality
     //private int circuitNumber;
     //private boolean circuitOpen;
-    private int slideVal = -200; //should change this to some fraction of screen width
+    private int SCREENWIDTH;
+    private int SCREENHEIGHT;
+    private int slideVal; //should change this to some fraction of screen width
 
     //BROWSE-CREATE TRANSITION
     private final static int NOT_FROM_CREATE = 0, ADDED_EXERCISE_IN_CREATE = 1;
@@ -60,6 +65,15 @@ public class BrowseActivity extends ActionBarActivity {
         transaction.add(R.id.exerciseFiltersContainer, FilterFragment);
         transaction.add(R.id.exerciseListContainer, ListFragment);
         transaction.commit();
+
+        WindowManager wm = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        SCREENWIDTH = size.x;
+        SCREENHEIGHT = size.y;
+        slideVal = -(int)(SCREENWIDTH/5);
+
     }
 
     @Override

@@ -5,6 +5,7 @@ package com.main.toledo.gymtrackr;
         import android.os.Bundle;
         import android.support.v7.app.ActionBarActivity;
         import android.util.Log;
+        import android.util.TypedValue;
         import android.view.Menu;
         import android.view.MenuInflater;
         import android.view.MenuItem;
@@ -350,20 +351,28 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
                 break;
         }
         if(addSpinners){
+            float scale = getResources().getDisplayMetrics().density;
+            int spinnerHeight = (int) (30 * scale + 0.5f);
+
+
+            LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
             layout.removeAllViewsInLayout();
             TextView v = new TextView(this);
             v.setText("Select specific muscles: ");
+            v.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+            v.setLayoutParams(textParams);
             layout.addView(v);
 
             if(muscleSpinner == null) {
                 muscleSpinner = new Spinner(this);
             }
-
+            LinearLayout.LayoutParams spinnerParams = new LinearLayout.LayoutParams(0, spinnerHeight, 1f);
             muscleAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mSpecMuscleArray);
             muscleSpinner.setAdapter(muscleAdapter);
             muscleSpinner.setId(mMuscleSpinnerId);
             muscleSpinner.setOnItemSelectedListener(this);
 
+            muscleSpinner.setLayoutParams(spinnerParams);
             layout.addView(muscleSpinner);
         }
     }
