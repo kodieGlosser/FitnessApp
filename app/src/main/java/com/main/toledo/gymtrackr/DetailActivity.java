@@ -465,10 +465,13 @@ public class DetailActivity extends ActionBarActivity{
     private void setDetailEditFocus(){
         if(mIdPointer < mTotalValidExercises) {
             int detail_id = mDetailIds.get(mIdPointer);
-            ((EditExerciseDetailsFragment) getSupportFragmentManager()
-                    .findFragmentById(detail_id)).focusFirstEdit();
-            ((EditExerciseDetailsFragment) getSupportFragmentManager()
-                    .findFragmentById(detail_id)).implementSwipeListener();
+            if((getSupportFragmentManager()
+                    .findFragmentById(detail_id)) != null) {
+                ((EditExerciseDetailsFragment) getSupportFragmentManager()
+                        .findFragmentById(detail_id)).focusFirstEdit();
+                ((EditExerciseDetailsFragment) getSupportFragmentManager()
+                        .findFragmentById(detail_id)).implementSwipeListener();
+            }
         }
     }
 
