@@ -333,7 +333,8 @@ public class WorkoutData {
             if(c_new.isOpen()){
                 c_new.add(new Exercise());
             }
-            Workout.add(c_new);
+            if(!(!c_new.isOpen() && c_new.getExercises().size()== 0))
+                                                  Workout.add(c_new);
         }
         //Log.d("EAT PLAN TESTS", "COPY COMPLETED");
         initialize();
