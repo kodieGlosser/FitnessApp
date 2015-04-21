@@ -582,11 +582,11 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                     break;
                 case BLANK_HEADER:
                     convertView = inflater.inflate(R.layout.w_empty_wopadding, null);
-                    ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
+
                     break;
                 case PADDED_BLANK_HEADER:
                     convertView = inflater.inflate(R.layout.w_empty_wpadding, null);
-                    ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
+
                     break;
             }
             convertView.setTag(holder);
@@ -601,10 +601,12 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                 holder.arrow.setImageResource(imageResourceId);
                 break;
             case BLANK_HEADER:
+                ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
                 if(!editable)
                     convertView.setPadding(0,0,0,500);
                 break;
             case PADDED_BLANK_HEADER:
+                ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
                 break;
         }
 
