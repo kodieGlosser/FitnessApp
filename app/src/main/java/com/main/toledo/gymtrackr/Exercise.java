@@ -72,7 +72,7 @@ public class Exercise {
         }
         if(m_repetitions != -1){
             Metric repMetric = new Metric();
-            repMetric.setType(metricType.REPETITIONS);
+            repMetric.setType(metricType.REPS);
             repMetric.setMetricIntValue(m_repetitions);
             m_metrics.add(repMetric);
         }
@@ -123,7 +123,7 @@ public class Exercise {
         }
         if(m_bReps){
             Metric repMetric = new Metric();
-            repMetric.setType(metricType.REPETITIONS);
+            repMetric.setType(metricType.REPS);
             repMetric.setMetricIntValue(0);
             m_metrics.add(repMetric);
         }
@@ -178,7 +178,7 @@ public class Exercise {
         //weightMetric.setMetricIntValue(weight);
 
         Metric repMetric = new Metric();
-        repMetric.setType(metricType.REPETITIONS);
+        repMetric.setType(metricType.REPS);
         repMetric.setMetricIntValue(0);
         //repMetric.setMetricIntValue(repetitions);
 

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.InputType;
 import android.util.Log;
@@ -405,7 +404,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
                     goalLayout.addView(timeGoal);
                     break;
-                case REPETITIONS:
+                case REPS:
                     TextView repGoal = new TextView(_context);
                     repGoal.setText("Reps: " + plan_metrics.get(i).getMetricIntValue());
                     repGoal.setLayoutParams(params);
@@ -492,7 +491,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
 
                     layout.addView(timeRow);
                     break;
-                case REPETITIONS:
+                case REPS:
                     Log.d("4/9", "Adding metricis for: " + Workout.get(group).getExercise(child).getName() + " -- REPS: " + metrics.get(i).getType());
                     TextView repText = new TextView(_context);
                     repText.setText("Reps: ");

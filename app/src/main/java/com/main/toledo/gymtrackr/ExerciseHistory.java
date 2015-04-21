@@ -32,7 +32,7 @@ public class ExerciseHistory {
         }
         if(m_rep != -1){
             Metric repMetric = new Metric();
-            repMetric.setType(metricType.REPETITIONS);
+            repMetric.setType(metricType.REPS);
             repMetric.setMetricIntValue(m_rep);
             m_metrics.add(repMetric);
         }

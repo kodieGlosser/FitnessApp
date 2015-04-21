@@ -7,16 +7,19 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -39,8 +42,10 @@ public class LoadActivity extends ActionBarActivity {
     final int OTHER = 10, INVALID_NAME_VALUE = 11, TAKEN_NAME_VALUE = 12;
     //
     int errorType;
-    int slideVal = -650;
+    int slideVal;
 
+    int SCREENWIDTH;
+    int SCREENHEIGHT;
     //this is the stub list
     //private static ArrayList<Plan> workoutPlans = new ArrayList<>();
     //the adapter is responsible for populating the load list
@@ -52,6 +57,7 @@ public class LoadActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.l_activity_load);
@@ -81,6 +87,13 @@ public class LoadActivity extends ActionBarActivity {
         transaction.add(R.id.loadListContainer, ListFragment);
         transaction.commit();
 
+        WindowManager wm = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        SCREENWIDTH = size.x;
+        SCREENHEIGHT = size.y;
+        slideVal = -(int)(.5 * SCREENWIDTH);
     }
 
     @Override

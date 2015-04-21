@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -604,6 +605,8 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                 ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
                 if(!editable)
                     convertView.setPadding(0,0,0,500);
+                else
+                    convertView.setPadding(0,0,0,0);
                 break;
             case PADDED_BLANK_HEADER:
                 ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
@@ -657,6 +660,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
             EditText metricEdit = new EditText(_context);
             metricEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
             metricEdit.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+            metricEdit.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
 
             LinearLayout metricRow = new LinearLayout(_context);
             metricRow.setOrientation(LinearLayout.HORIZONTAL);
@@ -675,8 +679,6 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
         Exercise e = Workout.get(group).getExercise(child);
         final int numMetrics = e.getMetrics().size();
         boolean hasGoalMetrics = e.hasPlanMetrics();
-
-
 
         if(hasGoalMetrics){
             ArrayList<Metric> goalMetrics = e.getPlanMetrics();

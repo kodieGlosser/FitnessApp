@@ -18,7 +18,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ public class EditExerciseDetailsFragment extends Fragment {
     private AutoResizeTextView exerciseInfoTextView;
 
     //Dynamic layout parameters
-    private int mMetricTextSize = 30;
+    private int mMetricTextSize = 20;
     private final int mMetricEditLeftMargininDP = 30;
     private int mMetricEditLeftMarginPixels;
     @Override
@@ -236,7 +235,7 @@ public class EditExerciseDetailsFragment extends Fragment {
                         mFirstEditTextHandle = timeEdit;
 
                     break;
-                case REPETITIONS:
+                case REPS:
                     TextView repText = new TextView(getActivity());
                     repText.setText("Reps: ");
                     final EditText repEdit = new EditText(getActivity());

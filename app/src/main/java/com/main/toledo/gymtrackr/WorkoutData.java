@@ -144,7 +144,7 @@ public class WorkoutData {
                 case WEIGHT:
                     metric.setMetricIntValue(m.getMetricIntValue());
                     break;
-                case REPETITIONS:
+                case REPS:
                     metric.setMetricIntValue(m.getMetricIntValue());
                     break;
                 case OTHER:
@@ -217,7 +217,7 @@ public class WorkoutData {
                                 case WEIGHT:
                                     exercisesArray[j].setWeight(m.getMetricIntValue());
                                     break;
-                                case REPETITIONS:
+                                case REPS:
                                     exercisesArray[j].setRepetitions(m.getMetricIntValue());
                                     break;
                                 case TIME:
@@ -249,7 +249,7 @@ public class WorkoutData {
                         case WEIGHT:
                             exercisesArray[0].setWeight(m.getMetricIntValue());
                             break;
-                        case REPETITIONS:
+                        case REPS:
                             exercisesArray[0].setRepetitions(m.getMetricIntValue());
                             break;
                         case TIME:
@@ -319,7 +319,7 @@ public class WorkoutData {
                 Metric weight = new Metric();
                 weight.setType(metricType.WEIGHT);
                 Metric reps = new Metric();
-                reps.setType(metricType.REPETITIONS);
+                reps.setType(metricType.REPS);
                 e.addMetrics(weight);
                 e.addMetrics(reps);
                 */
@@ -360,7 +360,7 @@ public class WorkoutData {
                             case WEIGHT:
                                 weight = m.getMetricIntValue();
                                 break;
-                            case REPETITIONS:
+                            case REPS:
                                 reps = m.getMetricIntValue();
                                 break;
                             case TIME:
