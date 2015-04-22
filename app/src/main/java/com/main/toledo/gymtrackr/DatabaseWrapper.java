@@ -502,9 +502,9 @@ public class DatabaseWrapper {
                 }
             }
 
-            if (!isItAlreadyUsed) {
-                listOfDates.add(date);
-            }
+           // if (!isItAlreadyUsed) {
+                listOfDates.add(date); // this will return all dates now
+            //}
 
         }
 
