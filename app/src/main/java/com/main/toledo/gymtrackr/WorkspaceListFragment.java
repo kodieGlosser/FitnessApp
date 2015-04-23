@@ -60,11 +60,20 @@ public class WorkspaceListFragment extends Fragment {
         workspaceListView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Log.d("4/4", "Hide Keypad Called.");
-                ((WorkspaceActivity)getActivity()).getAdapter().hideKeypad();
+
+                final int action = event.getAction();
+                switch (action){
+                    case MotionEvent.ACTION_DOWN:
+                        Log.d("4/4", "Hide Keypad Called.");
+                        ((WorkspaceActivity)getActivity()).getAdapter().hideKeypad();
+                        break;
+                    default:
+                        break;
+                }
                 return false;
             }
         });
+
         workspaceListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
             @Override

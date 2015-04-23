@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -70,23 +71,6 @@ public class DetailActivity extends ActionBarActivity{
         Bundle extras = getIntent().getExtras();
         mContext = this;
 
-        //Get total view height.
-        /*
-                DisplayMetrics metrics = this.getResources().getDisplayMetrics();
-        mScreenHeight = metrics.heightPixels;
-        int actionBarHeight = 0;
-        TypedValue tv = new TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
-        {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
-        }
-
-
-        totalLayoutHeight = height - actionBarHeight;
-
-        LayoutInflater inflater = (LayoutInflater) this
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        */
         if (extras != null){
             currentCircuitValue = extras.getInt("CIRCUIT_VALUE");
             currentExerciseValue = extras.getInt("EXERCISE_VALUE");
@@ -98,27 +82,13 @@ public class DetailActivity extends ActionBarActivity{
             currentCircuitValue = 0;
             currentExerciseValue = 0;
         }
-        //first look at passed values if exercise name equals test then we have an empty dataset
-        //display special screen
-        //otherwise initialize
-        /*
-        for( Circuit c : WorkoutData.get(this).getWorkout())
-            for(Exercise e : c.getExercises())
-                Log.d("pointerTests", e.getName());
-        */
+
         FragmentTransaction transaction =
                 getSupportFragmentManager().beginTransaction();
         WorkspaceTabFragment tabFragment = new WorkspaceTabFragment();
         transaction.add(R.id.tabHandle, tabFragment);
         transaction.commit();
-        /*
-        FrameLayout tabHandle = (FrameLayout) findViewById(R.id.tabHandle);
-        int tabBottom = getRelativeBottom(tabHandle);
 
-        int fragmentLayoutHeight = height - tabBottom;
-
-        Log.d("4/11", "Remaining height: " + fragmentLayoutHeight);
-        */
         //figure out where we are at...
 
         LinearLayout currentLayout;// = new LinearLayout(this);
@@ -273,6 +243,21 @@ public class DetailActivity extends ActionBarActivity{
         for (ExerciseHistory eh : exerciseHistories)
             history.add(eh);
         EditExerciseHistoryAdapter adapter = new EditExerciseHistoryAdapter(this, 0, history);
+        //TODO: FIX THIS
+        //STUBS BECAUSE THE HTC ONE IS A LITTLE BITCH
+
+        ArrayList<String> stubs = new ArrayList<>();
+        stubs.add("Why you gotta be a little bitch like that, one?");
+        stubs.add("For cereal I've shit to do");
+        ArrayAdapter stubAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, stubs);
+        //END STUBS
+
+        historyFragment.setStubAdapter(stubAdapter);
+
+        //USE STUBS
+        historyFragment.useStubs();
+        //
+
         historyFragment.setAdapter(adapter);
         historyFragment.setAnimationDataSet(history, mContext, e.getName());
 
@@ -570,6 +555,7 @@ public class DetailActivity extends ActionBarActivity{
             WorkoutData.get(this).setDetailExercise(mExerciseVals.get(mIdPointer));
         }
     }
+    /*
     private int getRelativeLeft(View myView) {
         if (myView.getParent() == myView.getRootView())
             return myView.getLeft();
@@ -589,5 +575,5 @@ public class DetailActivity extends ActionBarActivity{
         else
             return myView.getBottom() + getRelativeBottom((View) myView.getParent());
     }
-
+    */
 }

@@ -613,6 +613,11 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                 break;
         }
 
+        if (convertView.getTranslationX() != 0)
+            convertView.setTranslationX(0);
+
+        convertView.setPressed(false);
+
         return convertView;
     }
 

@@ -14,6 +14,7 @@ import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.view.animation.TranslateAnimation;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -32,6 +33,9 @@ public class EditExerciseHistoryFragment extends ListFragment {
     private String mName;
     private int mListMarginDP = 10;
     private int mListMargin;
+
+    private ArrayAdapter mStubAdapter;
+    private boolean useStubFlag = false;
     @Override
     public void onCreate(Bundle savedInstanceState){
 
@@ -39,6 +43,9 @@ public class EditExerciseHistoryFragment extends ListFragment {
         //sets the list adapter to the one we made in the browse activity
 
     }
+    public void setStubAdapter(ArrayAdapter adapter){ mStubAdapter = adapter;}
+
+    public void useStubs(){useStubFlag = true;}
 
     public void setAdapter(EditExerciseHistoryAdapter adapter){
         mAdapter = adapter;
@@ -111,7 +118,10 @@ public class EditExerciseHistoryFragment extends ListFragment {
     }
 
     public void animateIn(){
-        setListAdapter(mAdapter);
+        if(!useStubFlag)
+            setListAdapter(mAdapter);
+        else
+            setListAdapter(mStubAdapter);
         //EditExerciseHistoryAdapter adapter = new EditExerciseHistoryAdapter(getActivity(), 0, mHistory);
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(mContext, R.anim.list_layout_controller);
         getListView().setLayoutAnimation(animation);

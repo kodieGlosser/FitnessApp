@@ -26,6 +26,9 @@ import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 /**
  * Created by Adam on 2/22/2015.
@@ -113,6 +116,27 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     private int checkInProgressDistance;//50
     private int checkDistance;//150
 
+    //listScrollers
+    private boolean scroll = false;
+    private android.os.Handler handler = new android.os.Handler();
+    private Runnable upRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            smoothScrollBy(-8, 5);
+            handler.postDelayed(this, 5);
+        }
+    };
+    private Runnable downRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            smoothScrollBy(8, 5);
+            handler.postDelayed(this, 5);
+        }
+    };
+    private boolean scrollUp;
+
     public WorkspaceExpandableListView(Context context, AttributeSet attrs) {
 
         super(context, attrs);
@@ -139,6 +163,9 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         //Removal Icon CODE
         mRemoveOffset = (int)(SCREENWIDTH *.1);
         mDragBarPixelsToIncrement = (int)(SCREENWIDTH * .0277777);
+
+        //Threads
+
     }
 
     public void setDropListener(DropListener l) {
@@ -200,9 +227,9 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                     dragRawY = (int) ev.getRawY();
                     //if(dragInProgress)
                     //W    Log.d("41", "MOVE-OPENUI");
-                    if (dragInProgress)
+                    if (dragInProgress) {
                         dragHandling();
-
+                    }
                     break;
                 case MotionEvent.ACTION_CANCEL:
                 case MotionEvent.ACTION_UP: //mouse button is released
@@ -318,21 +345,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                         currentX = x;
                         currentY = y;
                     }
-                    /*
-                    postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mCurrentPosition = -2;
-                        }
-                    }, 500);//mDelay);
 
-                    if (mStartPosition != mCurrentPosition) {
-                        mCurrentPosition = mStartPosition;
-                    } else {
-
-                        toggle(mStartPosition);
-                    }
-                    */
                     if(mCurrentPosition != mStartPosition){
                         mTime = 0;
                         mCurrentPosition = mStartPosition;
@@ -659,20 +672,33 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                     @Override
                     public void run() {
                         ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(getChildAt(itemPosition - getFirstVisiblePosition()), "translationX", -(int)(SCREENWIDTH*1.5));
+                        mSlidInAnimator.addListener(new Animator.AnimatorListener() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                WorkoutData.get(mContext).getWorkout().remove(group);
+                                ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
+                                ((WorkspaceActivity) mContext).ListFragment.restoreListExpansion();
+                            }
+
+                            @Override
+                            public void onAnimationCancel(Animator animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animator animation) {
+
+                            }
+                        });
                         mSlidInAnimator.setDuration(300);
                         mSlidInAnimator.start();
                     }
                 }, 500);
-
-                postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        WorkoutData.get(mContext).getWorkout().remove(group);
-                        ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
-                        ((WorkspaceActivity) mContext).ListFragment.restoreListExpansion();
-                    }
-                }, 800);
-
                 justRemovedHeader = true;
             }
         } else if (getPackedPositionType(getExpandableListPosition(itemPosition)) == PACKED_POSITION_TYPE_CHILD) {
@@ -707,20 +733,12 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                 if (!Workout.get(group).isOpen()) {
                     Workout.remove(group);
                 }
-                /*
-                postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                    }
-                }, 300);
-                */
             }
         }
     }
 
     // move the drag view
-    private void drag(int x, int y) {
+    synchronized private void drag(int x, int y) {
         if (mDragView != null) {
             WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) mDragView.getLayoutParams();
             layoutParams.x = x;
@@ -729,6 +747,41 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                     .getSystemService(Context.WINDOW_SERVICE);
             mWindowManager.updateViewLayout(mDragView, layoutParams);
         }
+        int speedCoef = 4;
+        float speed;
+        float ratio;
+        /*
+        if (System.currentTimeMillis() > mScrollTime + 2000) {
+            canScroll = true;
+        }
+        */
+        int topThreshHold = this.getHeight()/5;
+
+        if (currentYPos < topThreshHold && !scroll){
+            //start scroll
+            scroll = true;
+            scrollUp = true;
+            Log.d("4.22", "scrollup + " + scrollUp);
+            handler.postDelayed(upRunnable, 0);
+        } else if (currentYPos > topThreshHold && scrollUp){
+            //stop scroll
+            handler.removeCallbacks(upRunnable);
+            scroll = false;
+            Log.d("4.22", "scroll set to false in drag" + scroll);
+        }
+
+        int bottomThreshHold = this.getHeight()-(this.getHeight()/5);
+        if (currentYPos > bottomThreshHold){
+            scrollUp = false;
+            Log.d("4.22", "scrollup + " + scrollUp);
+            scroll = true;
+            handler.postDelayed(downRunnable, 0);
+        } else if (currentYPos < bottomThreshHold && !scrollUp){
+            handler.removeCallbacks(downRunnable);
+            scroll = false;
+        }
+
+        //TODO: THIS CODE
     }
 
     // enable the drag view for dragging
@@ -835,6 +888,21 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             mDragView.setImageDrawable(null);
             mDragView = null;
         }
+        Log.d("4.22", "scroll: " + scroll + " -- scrollup " + scrollUp);
+
+        if(scroll){
+            if(scrollUp){
+                Log.d("4.22", "Stop uprun");
+
+                scroll = false;
+                handler.removeCallbacks(upRunnable);
+            }else{
+                Log.d("4.22", "Stop downrun");
+                scroll = false;
+                handler.removeCallbacks(downRunnable);
+            }
+        }
+
     }
 
     private void dragDelayIcon(int x, int y) {
@@ -988,7 +1056,8 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             mLastY = currentYPos;
 
             if (mDirection == DOWN) {
-                mPosition = pointToPosition(currentXPos, (currentYPos + 300));
+                //mPosition = pointToPosition(currentXPos, (currentYPos + 300));
+                mPosition = pointToPosition(currentXPos, (currentYPos + mDragView.getHeight()));
                 //Log.d("TOUCH TESTS", "DIRECTION IS DOWN");
             } else {
                 mPosition = pointToPosition(currentXPos, currentYPos);
