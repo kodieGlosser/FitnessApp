@@ -497,14 +497,18 @@ public class DatabaseWrapper {
                 Calendar calInListBeingChecked = Calendar.getInstance();
                 calInListBeingChecked.setTime(date);
 
-                if (calInExistingList.get(Calendar.MONTH) == calInListBeingChecked.get(Calendar.MONTH) && calInExistingList.get(Calendar.DAY_OF_MONTH) == calInListBeingChecked.get(Calendar.DAY_OF_MONTH)) {
+                if (calInExistingList.get(Calendar.MONTH) == calInListBeingChecked.get(Calendar.MONTH)
+                        && calInExistingList.get(Calendar.DAY_OF_MONTH) == calInListBeingChecked.get(Calendar.DAY_OF_MONTH)
+                        && calInExistingList.get(Calendar.HOUR) == calInListBeingChecked.get(Calendar.HOUR)
+                        && calInExistingList.get(Calendar.MINUTE) == calInListBeingChecked.get(Calendar.MINUTE)
+                        && calInExistingList.get(Calendar.SECOND) == calInListBeingChecked.get(Calendar.SECOND)) {
                     isItAlreadyUsed = true;
                 }
             }
 
-           // if (!isItAlreadyUsed) {
+            if (!isItAlreadyUsed) {
                 listOfDates.add(date); // this will return all dates now
-            //}
+            }
 
         }
 

@@ -8,25 +8,28 @@
     android:paddingBottom="100dp"
     android:id="@+id/finalItem">
 
-    <Button
+    <ImageButton
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Add Circuit"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_add_row_50"
         android:id="@+id/AddCircuitButton"
-        android:layout_gravity="right"
+        style="@style/myButton"
         android:layout_weight="1"/>
-
-    <Button
+    <ImageButton
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="+"
+        android:layout_height="40dp"
+        style="@style/myButton"
+        android:src="@drawable/ic_copy_50"
         android:id="@+id/PlusButton"
         android:layout_weight="1" />
 
-    <Button
+    <ImageButton
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
+        android:padding="10dp"
+        style="@style/myButton"
         android:text="Browse"
+        android:src="@drawable/ic_search_50"
         android:id="@+id/BrowseButton"
         android:layout_weight="1"/>
 

@@ -20,6 +20,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -193,15 +194,15 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                 case CIRCUIT_BUTTONS:
                     convertView = inflater.inflate(R.layout.w_circuit_menu_buttons, null);
 
-                    holder.plusButton = (Button) convertView.findViewById(R.id.PlusButton);
-                    holder.browseButton = (Button) convertView.findViewById(R.id.BrowseButton);
+                    holder.plusButton = (ImageButton) convertView.findViewById(R.id.PlusButton);
+                    holder.browseButton = (ImageButton) convertView.findViewById(R.id.BrowseButton);
                     break;
                 case WORKOUT_BUTTONS:
                     convertView = inflater.inflate(R.layout.w_workout_menu_buttons, null);
                     //add circuit code
-                    holder.browseButton = (Button) convertView.findViewById(R.id.BrowseButton);
-                    holder.addCircuitButton = (Button) convertView.findViewById(R.id.AddCircuitButton);
-                    holder.plusButton = (Button) convertView.findViewById(R.id.PlusButton);
+                    holder.browseButton = (ImageButton) convertView.findViewById(R.id.BrowseButton);
+                    holder.addCircuitButton = (ImageButton) convertView.findViewById(R.id.AddCircuitButton);
+                    holder.plusButton = (ImageButton) convertView.findViewById(R.id.PlusButton);
                     break;
                 case EMPTY_BUTTONS:
                     convertView = inflater.inflate(R.layout.w_empty_wopadding, null);
@@ -811,9 +812,9 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
     }
 
     public static class ChildViewHolder {
-        public Button plusButton;
-        public Button browseButton;
-        public Button addCircuitButton;
+        public ImageButton plusButton;
+        public ImageButton browseButton;
+        public ImageButton addCircuitButton;
 
         public TextView exerciseNameText;
 

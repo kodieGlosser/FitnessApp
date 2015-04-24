@@ -19,6 +19,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -102,7 +103,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                 convertView = inflater.inflate(R.layout.w_workout_menu_buttons, null);
                 //add circuit code
 
-                Button addCircuitButton = (Button) convertView.findViewById(R.id.AddCircuitButton);
+                ImageButton addCircuitButton = (ImageButton) convertView.findViewById(R.id.AddCircuitButton);
                 addCircuitButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -117,7 +118,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     }
                 });
 
-                Button browseButton = (Button) convertView.findViewById(R.id.BrowseButton);
+                ImageButton browseButton = (ImageButton) convertView.findViewById(R.id.BrowseButton);
                 browseButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -136,7 +137,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                     }
                 });
 
-                Button plusButton = (Button) convertView.findViewById(R.id.PlusButton);
+                ImageButton plusButton = (ImageButton) convertView.findViewById(R.id.PlusButton);
                 plusButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -224,7 +225,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                             .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     convertView = inflater.inflate(R.layout.w_circuit_menu_buttons, null);
                     //convertView.setTag("Button");
-                    Button browseButton = (Button) convertView.findViewById(R.id.BrowseButton);
+                    ImageButton browseButton = (ImageButton) convertView.findViewById(R.id.BrowseButton);
                     browseButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -243,7 +244,7 @@ public class WorkspaceExpandableListAdapterMKII extends BaseExpandableListAdapte
                         }
                     });
                     //}
-                    Button plusButton = (Button) convertView.findViewById(R.id.PlusButton);
+                    ImageButton plusButton = (ImageButton) convertView.findViewById(R.id.PlusButton);
                     plusButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

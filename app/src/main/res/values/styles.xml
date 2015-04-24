@@ -26,6 +26,10 @@
         <item name="android:textViewStyle">@style/MyTextViewStyle</item>
         <item name="android:layout_margin">5dp</item>
     </style>
+    <style name="myDarkButton">
+        <item name="android:background">@drawable/dark_button</item>
+        <item name="android:textViewStyle">@style/MyTextViewStyle</item>
+    </style>
     <style name="myCircuit" >
         <item name="android:background">@drawable/circuit</item>
         <item name="android:padding">15dp</item>
