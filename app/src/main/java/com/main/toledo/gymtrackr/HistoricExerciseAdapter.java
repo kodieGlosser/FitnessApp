@@ -39,15 +39,6 @@ public class HistoricExerciseAdapter extends ArrayAdapter {
         super(context, resource, history);
         m_exerciseHistory = history;
         mContext = context;
-        /*BAD
-        if(history.size() != 0){
-            mNumMetrics = history.get(0).getMetrics().size();
-            initializeView();
-        } else {
-            //empty data set
-        }
-        */
-        //Log.d("4.11", "CONSTRUCTIING ADAPTER, NUM METRICS: " + mNumMetrics);
     }
     @Override
     public int getItemViewType(int position){
@@ -112,30 +103,6 @@ public class HistoricExerciseAdapter extends ArrayAdapter {
         } else {
             holder = (ViewHolder)convertView.getTag();
         }
-            /*
-            convertView = metricLayout;
-            holder.name = (TextView)convertView.findViewById(nameId);
-            switch(mNumMetrics){
-                case 0:
-                    break;
-                case 1:
-                    holder.firstMetric = (TextView)convertView.findViewById(firstMetricId);
-                    break;
-                case 2:
-                    holder.firstMetric = (TextView)convertView.findViewById(firstMetricId);
-                    holder.secondMetric = (TextView)convertView.findViewById(secondMetricId);
-                    break;
-                case 3:
-                    holder.firstMetric = (TextView)convertView.findViewById(firstMetricId);
-                    holder.secondMetric = (TextView)convertView.findViewById(secondMetricId);
-                    holder.thirdMetric = (TextView)convertView.findViewById(thirdMetricId);
-                    break;
-                default:
-                    break;
-            }
-            convertView.setTag(holder);
-            */
-
 
         holder.name.setText(m_exerciseHistory.get(position).getExerciseName());
         String s;

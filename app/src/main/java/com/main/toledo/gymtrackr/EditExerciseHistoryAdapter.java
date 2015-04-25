@@ -135,7 +135,7 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
         metricSubLayout = new LinearLayout(mContext);
         metricSubLayout.setOrientation(LinearLayout.VERTICAL);
         metricSubLayout.setBackground(mContext.getResources().getDrawable(R.drawable.circuit_notselected));
-
+        /*
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 AbsListView.LayoutParams.MATCH_PARENT,
                 AbsListView.LayoutParams.WRAP_CONTENT
@@ -144,7 +144,7 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
         metricSubLayout.setLayoutParams(params);
 
         metricLayout.setLayoutParams(params);
-
+        */
 
 
         TextView dateView = new TextView(mContext);

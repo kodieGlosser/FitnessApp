@@ -255,7 +255,7 @@ public class DetailActivity extends ActionBarActivity{
         historyFragment.setStubAdapter(stubAdapter);
 
         //USE STUBS
-        historyFragment.useStubs();
+        //historyFragment.useStubs();
         //
 
         historyFragment.setAdapter(adapter);
