@@ -1,6 +1,7 @@
 package com.main.toledo.gymtrackr;
 
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
@@ -18,14 +19,25 @@ public class historyListFragment extends ListFragment{
     private int mMode;
     private ArrayList<Date> mDateArray;
     private ArrayList<ExerciseHistory> mExerciseHistoryArray;
-
+    private Drawable mDivider;
+    private int mDividerHeight;
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-
         //sets the list adapter to the one we made in the browse activity
+    }
 
 
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ListView listView = getListView();
+        if(mMode == historyActivity.EXERCISE_HISTORY) { //Get rid of dividers for this list
+            listView.setDivider(null);
+            listView.setDividerHeight(0);
+        } else { //restore defaults for others.
+            listView.setDivider(mDivider);
+            listView.setDividerHeight(mDividerHeight);
+        }
     }
 
     @Override

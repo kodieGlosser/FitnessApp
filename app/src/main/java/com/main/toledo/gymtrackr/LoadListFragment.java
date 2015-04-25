@@ -16,14 +16,6 @@ public class LoadListFragment extends Fragment {
     ListView loadListView;
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-
-        //sets the list adapter to the one we made in the browse activity
-
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         //sets the view for the fragment
@@ -31,8 +23,9 @@ public class LoadListFragment extends Fragment {
         View v = inflater.inflate(R.layout.l_frag_list, null);
         loadListView = (ListView) v.findViewById(R.id.loadListView);
         loadListView.setAdapter(((LoadActivity)getActivity()).getAdapter());
-        //loadListView.setDropListener(mDropListener);
-        //loadListView.setDragListener(mDragListener);
+        loadListView.setDivider(null);
+        loadListView.setDividerHeight(0);
+
         return v;
     }
 }

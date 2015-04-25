@@ -1,6 +1,7 @@
 package com.main.toledo.gymtrackr;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -39,6 +40,11 @@ public class WorkoutData {
     private int mDetailTransition;
     private int mDetailCircuit;
     private int mDetailExercise;
+
+    //history default list values
+    private int mHistoryDividerHeight;
+    private Drawable mHistoryDivider;
+    private boolean firstLoad = true;
 
     private WorkoutData(Context appContext){
         //adds initial values
@@ -515,5 +521,16 @@ public class WorkoutData {
 
     public void setLastFilter2(String lastFilter){mLastFilter2 = lastFilter;}
     public String getLastFilter2(){return mLastFilter2;}
+
+    //HISTORY THINGS
+
+    public void setFirstLoad(boolean b){firstLoad = b;}
+    public boolean getFirstLoad(){return firstLoad;}
+
+    public void setDividerHeight(int height){mHistoryDividerHeight = height;}
+    public int getDividerHeight(){return mHistoryDividerHeight;}
+
+    public void setHistoryDivider(Drawable divider){mHistoryDivider = divider;}
+    public Drawable getHistoryDivider(){return mHistoryDivider;}
 
 }

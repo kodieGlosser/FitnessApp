@@ -38,10 +38,14 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
     private int mMarginsDP = 10;
     private int mMetricEditLeftMarginPixels;
     private int mMarginsInPixels;
+
+    private LayoutInflater mInflater;
     public EditExerciseHistoryAdapter(Context context, int resource, ArrayList<ExerciseHistory> history){
         super(context, resource, history);
         m_exerciseHistory = history;
         mContext = context;
+        mInflater = (LayoutInflater) this.mContext
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if(history.size() != 0){
             mNumMetrics = history.get(0).getMetrics().size();
@@ -57,9 +61,6 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
         //Log.d("4.11", "CONSTRUCTIING ADAPTER, NUM METRICS: " + mNumMetrics);
     }
 
-    public void reloadAdapter(){
-
-    }
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         //Log.d("4.11", "getView called on position: " + position);
@@ -124,13 +125,12 @@ public class EditExerciseHistoryAdapter extends ArrayAdapter {
     }
 
     private LinearLayout initializeView(){
-        int paddingInDp = 10;
-        float scale = mContext.getResources().getDisplayMetrics().density;
-        int padding = (int) (paddingInDp*scale + 0.5f);
+        //int paddingInDp = 10;
+        //float scale = mContext.getResources().getDisplayMetrics().density;
+        //int padding = (int) (paddingInDp*scale + 0.5f);
 
+        LinearLayout metricLayout = (LinearLayout) mInflater.inflate(R.layout.dh_list_item, null);
 
-        LinearLayout metricLayout = new LinearLayout(mContext);
-        metricLayout.setPadding(0, padding, 0, 0);
 
         metricSubLayout = new LinearLayout(mContext);
         metricSubLayout.setOrientation(LinearLayout.VERTICAL);
