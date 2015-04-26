@@ -62,7 +62,7 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
             "              Other"};*/
 
     final private String[] mLegs = {"None", "Hamstrings", "Glutes", "Quadriceps", "Calves"};
-    final private String[] mArms = {"None", "Bicep", "Tricep", "Forearm"};
+    final private String[] mArms = {"None", "Bicep", "Triceps", "Forearm"};
     //private String[] mAbs = {"Abs"};
     //private String[] mShoulders = {"Shoulders"};
     //private String[] mChest = {"Chest"};

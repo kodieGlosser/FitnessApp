@@ -44,6 +44,8 @@ public class EditExerciseDetailsFragment extends Fragment {
     private int mMetricTextSize = 20;
     private final int mMetricEditLeftMargininDP = 30;
     private int mMetricEditLeftMarginPixels;
+
+    final int PLAN = 1;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +81,9 @@ public class EditExerciseDetailsFragment extends Fragment {
     }
     public void setExerciseCompleted(){
          ((DetailActivity)getActivity()).next();
-         mExercise.setSaveToHistory(true);
+        if(WorkoutData.get(getActivity()).getState() != PLAN) {
+            mExercise.setSaveToHistory(true);
+        }
          hideKeypad();
     }
     @Override

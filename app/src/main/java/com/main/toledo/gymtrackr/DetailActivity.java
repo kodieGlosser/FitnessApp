@@ -34,29 +34,24 @@ public class DetailActivity extends ActionBarActivity{
     private int currentExerciseValue;
     private int nextCircuitValue;
     private int nextExerciseValue;
-    //private int previousCircuitValue = -1;
-   // private int previousExerciseValue= -1;
 
-    private int mScreenHeight;
 
     private ArrayList<Integer> mExerciseVals = new ArrayList<>();
     private ArrayList<Integer> mCircuitVals = new ArrayList<>();
     private ArrayList<Integer> mListIds = new ArrayList<>();
     private ArrayList<Integer> mDetailIds = new ArrayList<>();
-    //private ArrayList<Boolean> mFragmentsCreated = new ArrayList<>();
+
     private int mTotalValidExercises;
     private int mIdPointer;
 
-    final int FROM_DETAIL = 6, FROM_WORKSPACE = 7;
-    //private LinearLayout previousLayout;
-    //private LinearLayout currentLayout;
-    //private LinearLayout nextLayout;
+    final int FROM_DETAIL = 6;
+
     private LinearLayout mainLayoutHandle;
 
     private Context mContext;
     private boolean mFirst;
     final int FIRST = 0, LAST = 1, EXERCISE = 2, EMPTY = 3;
-    final int LIST_ID = 0, EDIT_ID = 1, VIEW_TYPE = 2;
+
     private ArrayList<Circuit> Workout = WorkoutData.get(this).getWorkout();
     private int totalLayoutHeight;
 
@@ -91,7 +86,7 @@ public class DetailActivity extends ActionBarActivity{
 
         //figure out where we are at...
 
-        LinearLayout currentLayout;// = new LinearLayout(this);
+        LinearLayout currentLayout;
         LinearLayout previousLayout;
         LinearLayout nextLayout;
 
@@ -243,20 +238,6 @@ public class DetailActivity extends ActionBarActivity{
         for (ExerciseHistory eh : exerciseHistories)
             history.add(eh);
         EditExerciseHistoryAdapter adapter = new EditExerciseHistoryAdapter(this, 0, history);
-        //TODO: FIX THIS
-        //STUBS BECAUSE THE HTC ONE IS A LITTLE BITCH
-
-        ArrayList<String> stubs = new ArrayList<>();
-        stubs.add("Why you gotta be a little bitch like that, one?");
-        stubs.add("For cereal I've shit to do");
-        ArrayAdapter stubAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, stubs);
-        //END STUBS
-
-        historyFragment.setStubAdapter(stubAdapter);
-
-        //USE STUBS
-        //historyFragment.useStubs();
-        //
 
         historyFragment.setAdapter(adapter);
         historyFragment.setAnimationDataSet(history, mContext, e.getName());
@@ -557,25 +538,4 @@ public class DetailActivity extends ActionBarActivity{
             WorkoutData.get(this).setDetailExercise(mExerciseVals.get(mIdPointer));
         }
     }
-    /*
-    private int getRelativeLeft(View myView) {
-        if (myView.getParent() == myView.getRootView())
-            return myView.getLeft();
-        else
-            return myView.getLeft() + getRelativeLeft((View) myView.getParent());
-    }
-
-    private int getRelativeTop(View myView) {
-        if (myView.getParent() == myView.getRootView())
-            return myView.getTop();
-        else
-            return myView.getTop() + getRelativeTop((View) myView.getParent());
-    }
-    private int getRelativeBottom(View myView) {
-        if (myView.getParent() == myView.getRootView())
-            return myView.getBottom();
-        else
-            return myView.getBottom() + getRelativeBottom((View) myView.getParent());
-    }
-    */
 }

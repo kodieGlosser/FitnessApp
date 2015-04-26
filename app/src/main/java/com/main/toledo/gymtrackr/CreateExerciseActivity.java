@@ -42,7 +42,7 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
 
     final private String[] mMuscleGroups = {"Shoulders", "Legs", "Back", "Abs", "Arms", "Chest"};
     final private String[] mLegs = {"Hamstrings", "Glutes", "Quadriceps", "Calves"};
-    final private String[] mArms = {"Bicep", "Tricep", "Forearm"};
+    final private String[] mArms = {"Bicep", "Triceps", "Forearm"};
     //private String[] mAbs = {"Abs"};
     //private String[] mShoulders = {"Shoulders"};
     //private String[] mChest = {"Chest"};

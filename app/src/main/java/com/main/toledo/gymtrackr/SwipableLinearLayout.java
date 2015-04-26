@@ -69,6 +69,7 @@ public class SwipableLinearLayout extends LinearLayout {
         final int action = MotionEventCompat.getActionMasked(ev);
         final int pointerIndex = MotionEventCompat.getActionIndex(ev);
         float area =( this.getWidth() * selectableArea )/100;
+        int swipeOffset = (this.getWidth()/20);
         Log.d("4/4", "" + area + " " + MotionEventCompat.getX(ev, pointerIndex));
         if((MotionEventCompat.getX(ev, pointerIndex) > area)) {
             switch (action) {
@@ -81,8 +82,8 @@ public class SwipableLinearLayout extends LinearLayout {
                     // Remember where we started (for dragging)
                     mStartX = x;
                     //mLastTouchY = y;
-                    mLeftX = mStartX - 50;
-                    mRightX = mStartX + 50;
+                    mLeftX = mStartX - swipeOffset;
+                    mRightX = mStartX + swipeOffset;
 
                     // Save the ID of this pointer (for dragging)
                     mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
