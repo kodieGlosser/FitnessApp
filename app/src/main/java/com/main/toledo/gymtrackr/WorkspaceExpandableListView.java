@@ -123,7 +123,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
         @Override
         public void run() {
-            smoothScrollBy(-8, 5);
+            smoothScrollBy(-10, 5);
             handler.postDelayed(this, 5);
         }
     };
@@ -131,7 +131,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
         @Override
         public void run() {
-            smoothScrollBy(8, 5);
+            smoothScrollBy(10, 5);
             handler.postDelayed(this, 5);
         }
     };
@@ -487,7 +487,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             mToggledExerciseHandle = null;
         }
     }
-
+    //TODO OPEN CODE HERE
     private void openUI(int position, View v) {//int child, View v){
         //Log.d("FINAL TESTS", "OPEN CALLED");
         if (v != null && position != -1) {
@@ -747,14 +747,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                     .getSystemService(Context.WINDOW_SERVICE);
             mWindowManager.updateViewLayout(mDragView, layoutParams);
         }
-        int speedCoef = 4;
-        float speed;
-        float ratio;
-        /*
-        if (System.currentTimeMillis() > mScrollTime + 2000) {
-            canScroll = true;
-        }
-        */
+
         int topThreshHold = this.getHeight()/5;
 
         if (currentYPos < topThreshHold && !scroll){
@@ -780,8 +773,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             handler.removeCallbacks(downRunnable);
             scroll = false;
         }
-
-        //TODO: THIS CODE
     }
 
     // enable the drag view for dragging
@@ -842,7 +833,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         mClosedParams = new LinearLayout.LayoutParams(1, 0);
         mOpenParams = new LinearLayout.LayoutParams(1, itemHeight);
 
-
+        //TODO BUG IS HERE
         mDraggedItemDestination = pointToPosition(x, y) - getFirstVisiblePosition();
 
         if (mDraggedItemType == CIRCUIT) {
@@ -855,17 +846,24 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         while (m_endGroupPosition == -1) {
             mDraggedItemDestination--;
             m_endGroupPosition = getPackedPositionGroup(getExpandableListPosition(mDraggedItemDestination));
-        }
-        //openInitialPosition()
 
-        setSpaceToOpen();
+        }
+        //GET EXERCISE ITEM HERE
+
+        //openInitialPosition()
+        //check if item is
+        m_endChildPosition = getPackedPositionChild(getExpandableListPosition(mDraggedItemDestination));
+        if (!Workout.get(m_endGroupPosition).isOpen()){
+            mDraggedItemDestination--;
+        }
+        //setSpaceToOpen();
         View v = getChildAt(mDraggedItemDestination);
         mLayoutHandle = (LinearLayout) v.findViewById(R.id.paddingViewLayout);
         mLayoutHandle.setLayoutParams(mOpenParams);
 
         //delete item from list, save in a temp location, refresh adapter
     }
-
+    /*
     private void setSpaceToOpen() {
         if (m_startChildPosition == -1) { //if group
             if (m_startGroupPosition == Workout.size() - 2) { //last circuit
@@ -877,7 +875,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
         }
     }
-
+    */
     private void stopDrag() {//int itemIndex) {
         if (mDragView != null) {
             //if (mDragListener != null)
@@ -909,18 +907,17 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         WindowManager.LayoutParams mWindowParams = new WindowManager.LayoutParams();
         //mWindowParams.gravity = Gravity.TOP;
         int xLocation;
-
-        if ((x - 650) < -450)
-            xLocation = -500;
-        else
-            xLocation = x - 650;
-
+        if (x < SCREENWIDTH/5) { //200
+            xLocation = (int)(-SCREENWIDTH / 2 + SCREENHEIGHT / 19.2);//-500;
+        }else {
+            xLocation = x - (int) (SCREENWIDTH / 2 + SCREENHEIGHT / 19.2);//650;
+        }
 
         mWindowParams.x = xLocation;
-        mWindowParams.y = y - 800;
+        mWindowParams.y = y - (int)(SCREENHEIGHT*.4166);
 
-        mWindowParams.height = 100;
-        mWindowParams.width = 100;
+        mWindowParams.height = (int)(SCREENHEIGHT/19.2);
+        mWindowParams.width = (int)(SCREENHEIGHT/19.2);
         mWindowParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
                 | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON

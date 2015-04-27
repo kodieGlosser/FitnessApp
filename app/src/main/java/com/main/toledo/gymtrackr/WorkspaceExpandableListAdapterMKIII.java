@@ -5,14 +5,17 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -55,12 +58,17 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
     final static int NUM_CHILDREN = 16;
 
     //private ChildViewHolder holderHandle;
+    private int SCREENWIDTH;
 
     public WorkspaceExpandableListAdapterMKIII(Context context){
         params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
-
         this._context = context;
         Workout = WorkoutData.get(_context).getWorkout();
+        WindowManager wm = (WindowManager) _context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        SCREENWIDTH = size.x;
     }
 
     @Override
@@ -369,7 +377,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
         } else {
             holder = (ChildViewHolder)convertView.getTag();
         }
-
+        final int height = convertView.getMeasuredHeight();
         switch (type) {
             case CIRCUIT_BUTTONS:
                 emptyFlag = true;
@@ -406,7 +414,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                                         .workspaceListView.setSelectedChild(group, child, false);
                                         */
                             ((WorkspaceActivity) _context).ListFragment                                                     ///////////////////////////THIS NEEDS TO SCALE FOR RESOLUTIONS
-                                    .workspaceListView.smoothScrollBy(300, 800);
+                                    .workspaceListView.smoothScrollBy(height, 800);
                         }
                     }
                 });
@@ -420,10 +428,9 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                         ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(group);
 
                         notifyDataSetChanged();
-                            /*
-                            ((WorkspaceActivity) _context).ListFragment
-                                    .expandLists(((WorkspaceActivity) _context).getAdapter());
-                                    */
+
+                        ((WorkspaceActivity) _context).ListFragment                                                     ///////////////////////////THIS NEEDS TO SCALE FOR RESOLUTIONS
+                                .workspaceListView.smoothScrollBy(height*2, 800);
                     }
                 });
 
@@ -461,7 +468,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                                     .workspaceListView.setSelectedChild(group, child, false);
                                     */
                             ((WorkspaceActivity) _context).ListFragment                               ///////////////////////////THIS NEEDS TO SCALE FOR RESOLUTIONS
-                                    .workspaceListView.smoothScrollBy(300, 800);
+                                    .workspaceListView.smoothScrollBy(height, 800);
                         }
                     }
                 });
@@ -605,7 +612,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
             case BLANK_HEADER:
                 ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
                 if(!editable)
-                    convertView.setPadding(0,0,0,500);
+                    convertView.setPadding(0,0,0,SCREENWIDTH/2);
                 else
                     convertView.setPadding(0,0,0,0);
                 break;
