@@ -54,7 +54,6 @@ public class EditExerciseDetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState){
-        Log.d("4/9", "InfotextView initialized");
         View v = inflater.inflate(R.layout.e_frag_details, null);
         editTextLayout = (LinearLayout) v.findViewById(R.id.detailLinearLayout);
         exerciseInfoTextView = (AutoResizeTextView) v.findViewById(R.id.exerciseNameView);
@@ -69,7 +68,6 @@ public class EditExerciseDetailsFragment extends Fragment {
     }
 
     public void focusFirstEdit(){
-        Log.d("DETAIL FOCUS TESTS", "FOCUSFIRSTEDITCALLED");
         mFirstEditTextHandle.requestFocus();
         showKeypad();
     }
@@ -114,7 +112,6 @@ public class EditExerciseDetailsFragment extends Fragment {
 
                 switch (action){
                     case MotionEvent.ACTION_DOWN: {
-                        Log.d("DETAIL SWIPE TESTS", "ACTION_DOWN");
                         final int pointerIndex = MotionEventCompat.getActionIndex(event);
                         final float startY = MotionEventCompat.getY(event, pointerIndex);
 
@@ -391,8 +388,6 @@ public class EditExerciseDetailsFragment extends Fragment {
                             if (hasFocus){
                                 mEditTextHandle = (EditText) v;
                                 ((EditText)v).setSelection(((EditText)v).getText().toString().length());
-                                Log.d("4/2 tests", "Wt edit cursor should be at"
-                                        + wtEdit.getText().toString().length());
                                 if(wtEdit.getText().toString().equals("0")){
                                     wtEdit.setText("");
                                 }

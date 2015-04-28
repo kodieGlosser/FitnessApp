@@ -88,20 +88,16 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
     private final static int NOT_FROM_CREATE = 0, ADDED_EXERCISE_IN_CREATE = 1;
     @Override
     public void onAttach(Activity activity){
-        Log.d("4/20." , "Browsefrag.onAttach");
         super.onAttach(activity);
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
-        Log.d("4/20." , "Browsefrag.oncreate");
                 super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState){
-        Log.d("4/20." , "Browsefrag.oncreateview");
         View v = inflater.inflate(R.layout.b_frag_filters, null);
         mSearchField = (EditText)v.findViewById(R.id.exercise_name_search);
         mSearchField.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
@@ -152,7 +148,6 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
     }
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
-        Log.d("4/20." , "Browsefrag.onActivityCreated");
         super.onActivityCreated(savedInstanceState);
         Context context = getActivity();
         int type = WorkoutData.get(context).getBrowseTransition();
@@ -182,14 +177,12 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id){
         String selectedItem;
-        Log.d("4/4", "" + parent.getId());
         switch(parent.getId()){
 
             case R.id.filter_spinner:
                 selectedItem = mFilterOptions[pos];
                 //SET LAST FILTER
                 setFilterOptionsPrimary(selectedItem);
-                Log.d("4/4", "mgroup spin");
                 break;
             default:
                 selectedItem = mSpecMuscleFilterArray[pos];
@@ -202,7 +195,6 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
                     mFilterOption = selectedItem;
                 }
                 queryDb();
-                Log.d("4/4", "mspecgroup spin");
                 break;
             //case R.id.muscle_spinner:
             //    break;
@@ -215,12 +207,10 @@ public class BrowseFilterFragment extends Fragment implements AdapterView.OnItem
     @Override
     public void onPause(){
         super.onPause();
-        Log.d("4/20." , "Browsefrag.onPause");
     }
     @Override
     public void onStop(){
         super.onStop();
-        Log.d("4/20." , "Browsefrag.onStop");
     }
 
     public void setFilterOptionsPrimary(String filterSelection){

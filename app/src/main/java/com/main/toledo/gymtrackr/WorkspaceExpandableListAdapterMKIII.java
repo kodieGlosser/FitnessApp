@@ -184,7 +184,6 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
     @Override
     public View getChildView(int groupPosition, int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-        Log.d("4/20", "Group" + groupPosition + "Child" + childPosition);
         LayoutInflater inflater = (LayoutInflater) this._context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout dynamicViewLayout;
@@ -640,7 +639,6 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
     }
 
     public void hideKeypad(){
-        Log.d("4/4 Tests", "HIDEKEYPAD()");
         if (m_editTextHandle != null) {
             InputMethodManager imm = (InputMethodManager) _context.getSystemService(
                     Context.INPUT_METHOD_SERVICE);

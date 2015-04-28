@@ -70,11 +70,9 @@ public class SwipableLinearLayout extends LinearLayout {
         final int pointerIndex = MotionEventCompat.getActionIndex(ev);
         float area =( this.getWidth() * selectableArea )/100;
         int swipeOffset = (this.getWidth()/20);
-        Log.d("4/4", "" + area + " " + MotionEventCompat.getX(ev, pointerIndex));
         if((MotionEventCompat.getX(ev, pointerIndex) > area)) {
             switch (action) {
                 case MotionEvent.ACTION_DOWN: {
-                    Log.d("VIEWTEST", "ACTION_DOWN");
                     final int pointerIndex2 = MotionEventCompat.getActionIndex(ev);
                     final float x = MotionEventCompat.getX(ev, pointerIndex2);
                     //final float y = MotionEventCompat.getY(ev, pointerIndex);
@@ -91,7 +89,6 @@ public class SwipableLinearLayout extends LinearLayout {
                 }
 
                 case MotionEvent.ACTION_MOVE: {
-                        Log.d("VIEWTEST", "ACTION_MOVE");
                         if ((ev.getX() < mLeftX) && !open) {
                             open();
                         }
@@ -102,19 +99,16 @@ public class SwipableLinearLayout extends LinearLayout {
                 }
 
                 case MotionEvent.ACTION_UP: {
-                    Log.d("VIEWTEST", "ACTION_UP");
                     mActivePointerId = MotionEvent.INVALID_POINTER_ID;
                     break;
                 }
 
                 case MotionEvent.ACTION_CANCEL: {
-                    Log.d("VIEWTEST", "ACTION_CANCEL");
                     mActivePointerId = MotionEvent.INVALID_POINTER_ID;
                     break;
                 }
 
                 case MotionEvent.ACTION_POINTER_UP: {
-                    Log.d("VIEWTEST", "ACTION_POINTER_UP");
                     final int pointerIndex2 = MotionEventCompat.getActionIndex(ev);
                     final int pointerId = MotionEventCompat.getPointerId(ev, pointerIndex2);
 

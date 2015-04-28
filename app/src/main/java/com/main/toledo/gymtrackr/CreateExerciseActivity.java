@@ -114,21 +114,17 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id){
-        Log.d("4/4", "" + parent.getId());
         switch(parent.getId()){
 
             case R.id.equipment_spinner:
-                Log.d("4/4", "equipspin");
                 mEquipment = mEquip[pos];
                 break;
             case R.id.muscle_group_spinner:
                 mMuscleGroup = mMuscleGroups[pos];
                 addAdditionalSpinner(mMuscleGroup);
-                Log.d("4/4", "mgroup spin");
                 break;
             default:
                 mSpecificMuscle = mSpecMuscleArray[pos];
-                Log.d("4/4", "mspecgroup spin");
                 break;
             //case R.id.muscle_spinner:
             //    break;
@@ -283,8 +279,6 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
             //NO ERROR
         } else {
             for (Exercise e : exercises){
-                Log.d("CE ACT TEST", "COMPARING DB NAME: "
-                        + e.getName() + " WITH NEW NAME: " + mExerciseName);
                 if (e.getName().equals(mExerciseName)){
                     //NAME ERROR
                     errorType = NAME_ERROR;
@@ -331,7 +325,6 @@ public class CreateExerciseActivity extends ActionBarActivity implements Adapter
                 break;
             case "Shoulders":
                 mSpecificMuscle = "Shoulders";
-                Log.d("4/4", "Will not add spinner");
                 if(muscleSpinner!=null)
                     layout.removeView(muscleSpinner);
                 layout.removeAllViewsInLayout();

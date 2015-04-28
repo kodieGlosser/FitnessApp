@@ -154,7 +154,6 @@ public class WorkspaceActivity extends ActionBarActivity {
         }
         if (mode == WORKOUT || mode == WORKOUT_WITH_PLAN) {
             //CODE FOR WORKOUT SAVE, EG EXPORT TO HISTORY
-            Log.d("4/19", "SAVE WORKOUT CALLED.");
             DatabaseWrapper db = new DatabaseWrapper();
             ExerciseHistory[] eh = WorkoutData.get(this).crapHistory();
             db.addExerciseToHistory(eh);
@@ -191,36 +190,14 @@ public class WorkspaceActivity extends ActionBarActivity {
 
     @Override
     public void onResume(){
-        Log.d("4/4", "ON RESUME CALLED IN WORKSPACE ACTIVITY");
+
         //THIS FIXES A BUG WHERE THE ADAPTER WONT BE UPDATED WHEN THE
         //ACTIVITY IS RESUMED AFTER BROWSE
         if(listAdapter==null)
             listAdapter = new WorkspaceExpandableListAdapterMKIII(this);
 
         listAdapter.hideKeypad();
-        /*
-        int browseMode = WorkoutData.get(this).getBrowseState();
-        switch(browseMode){
-            case NOT_BROWSE:
-                break;
-            case BROWSE_WORKOUT:
-                WorkoutData.get(this).setBrowseState(NOT_BROWSE);
-                int circuitVal = WorkoutData.get(this).getStateCircuit();
-                boolean circuitOpenStatus = WorkoutData.get(this).isStateCircuitOpen();
-                int child;
 
-                if(circuitOpenStatus)
-                    child = WorkoutData.get(this).getWorkout().get(circuitVal).getExercises().size()-2;
-                else
-                    child = 0;
-                Log.d("4/17", "SHOULD MOVE LIST! CIRCUIT: " + circuitVal + " -- CHILD: " + child);
-
-                ListFragment.workspaceListView.setSelectedChild(circuitVal, child, false);
-                //ListFragment.workspaceListView.smoothScrollByOffset(-300);
-                //focus right thing
-                break;
-        }
-        */
         super.onResume();
     }
     @Override

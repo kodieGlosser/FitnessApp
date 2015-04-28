@@ -19,7 +19,6 @@ public class LoadListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         //sets the view for the fragment
-        Log.d("PAD BUGS", "ON CREATE VIEW CALLED IN WLFRAG");
         View v = inflater.inflate(R.layout.l_frag_list, null);
         loadListView = (ListView) v.findViewById(R.id.loadListView);
         loadListView.setAdapter(((LoadActivity)getActivity()).getAdapter());

@@ -22,22 +22,21 @@ public class WorkspaceConfirmDialog extends DialogFragment {
         String errorNegative;
 
         int mode = ((WorkspaceActivity) getActivity()).getAppMode();
-        Log.d("4/17", "APPMODE = " + mode);
         switch(mode){
             case PLAN:
                 errorMessage = "SAVE PLAN CHANGES?";
-                errorAffirmative = "YUP";
-                errorNegative = "NAHP";
+                errorAffirmative = "Yes";
+                errorNegative = "No";
                 break;
             case WORKOUT:
                 errorMessage = "EXPORT CHECKED ITEMS TO HISTORY?  CANNOT BE UNDONE.";
-                errorAffirmative = "WERD";
-                errorNegative = "NAH";
+                errorAffirmative = "Yes";
+                errorNegative = "No";
                 break;
             case WORKOUT_WITH_PLAN:
                 errorMessage = "EXPORT CHECKED ITEMS TO HISTORY?  CANNOT BE UNDONE.";
-                errorAffirmative = "WERD";
-                errorNegative = "NAH";
+                errorAffirmative = "Yes";
+                errorNegative = "No";
                 break;
             default:
                 errorMessage = "YOU DID SOMETHING SUPER TERRIBLE";

@@ -49,7 +49,6 @@ public class BrowseActivity extends ActionBarActivity {
     private final static int NOT_FROM_CREATE = 0, ADDED_EXERCISE_IN_CREATE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("4/20 BROWSE FLOW", "onCreate");
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.b_activity);
@@ -78,7 +77,6 @@ public class BrowseActivity extends ActionBarActivity {
 
     @Override
     public void onResume(){
-        Log.d("4/20 BROWSE FLOW", "onResume");
         super.onResume();
 
         //GET TRANSITION

@@ -188,7 +188,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             if (getPackedPositionType(getExpandableListPosition(pointToPosition(x, y))) == PACKED_POSITION_TYPE_GROUP) {
                 if (!WorkoutData.get(mContext).getWorkout()
                         .get(getPackedPositionGroup(getExpandableListPosition(pointToPosition(x, y)))).isOpen()) {
-                    Log.d("OPEN TESTS", "TRIED TO DRAG CLOSED CIRCUIT HEADER");
                     mDragMode = false;
                 } else {
                     mDragMode = true;
@@ -235,7 +234,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                 case MotionEvent.ACTION_UP: //mouse button is released
                 default:
                     //Log.d("TOUCH TESTS", "MOTION EVENT IS DEFAULT");
-                    Log.d("DRAG DELAY TESTS", "DEFAULT -- X: " + x + " -- Y: " + y);
                     mDragMode = false;
                     abortCountdown();
                     if (dragInProgress) {
@@ -250,7 +248,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                         m_endGroupPosition = getPackedPositionGroup(getExpandableListPosition(mDraggedItemDestination));
                         //done
                         //Log.d("TOUCH TESTS", "MOVING CHILD: " + m_startChildPosition + " FROM GROUP: " + m_startGroupPosition);
-                        Log.d("FINAL TESTS", "TO CHILD: " + m_endChildPosition + " FROM GROUP: " + m_endGroupPosition + " LAST POSITION: " + mDraggedItemDestination);
+
                         if (!(m_endGroupPosition == -1 && m_endChildPosition == -1)) {
                             if (m_endGroupPosition < 0)
                                 m_endGroupPosition = 0;
@@ -886,16 +884,14 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             mDragView.setImageDrawable(null);
             mDragView = null;
         }
-        Log.d("4.22", "scroll: " + scroll + " -- scrollup " + scrollUp);
 
         if(scroll){
             if(scrollUp){
-                Log.d("4.22", "Stop uprun");
 
                 scroll = false;
                 handler.removeCallbacks(upRunnable);
             }else{
-                Log.d("4.22", "Stop downrun");
+
                 scroll = false;
                 handler.removeCallbacks(downRunnable);
             }
@@ -945,7 +941,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             @Override
             public void run() {
                 if (inBounds(x, y) && !cancelDrag && (touchCount == mTouchCount)) {
-                    Log.d("DRAG DELAY TESTS", "5...");
                     DragIcon.setImageDrawable(
                             context.getResources().getDrawable(R.drawable.drag2));
                 }
@@ -1131,22 +1126,19 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         int startTime = 0;
         //NOTE GET CHILD RELATIVE
         //EXPLISTPOS OVERALL
-        Log.d("4/18.", "last - first" + last + " - " + first + " -- VIEWS VISIBLE = " + viewsVisible);
         for (int i = 0; i <= viewsVisible + 1; i++) {
-            Log.d("4/18.", "looking for child...");
             if (getPackedPositionType(getExpandableListPosition(i + first)) == PACKED_POSITION_TYPE_CHILD) {
-                Log.d("4/18.", "CHILD FOUND AT i + FIRST: " + i + " + " + first);
+
                 //child
                 childPosition = getPackedPositionChild(getExpandableListPosition(i + first));
                 groupPosition = getPackedPositionGroup(getExpandableListPosition(i + first));
                 e = Workout.get(groupPosition).getExercise(childPosition);
                 if (e.isSaveToHistorySet()) {
                     //do animation
-                    Log.d("4/18.", "Save exercise name: " + e.getName());
+
                     if (getChildAt(i) != null) {
                         viewsToRemove.add(0, getChildAt(i));
-                    } else
-                        Log.d("4/18.", "Child: " + i + " IS NULL" + " LAST EQUALS: " + last);
+                    }
                 }
             }
         }
@@ -1165,7 +1157,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             if (j == (length - 1)) {
                 //we're animating at least one thing
                 setEnabled(false);
-                Log.d("4/18.", "Animatory listener set for + " + j);
                 anim.addListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {

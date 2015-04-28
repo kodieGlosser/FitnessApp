@@ -108,32 +108,7 @@ public class LoadActivity extends ActionBarActivity {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_add_plan:
-                /*
-                final AlertDialog alertDialog = new AlertDialog.Builder(this).create(); //Read Update
-                alertDialog.setTitle("New Plan Menu");
-                alertDialog.setMessage("Select plan creation option");
-                alertDialog.setButton(Dialog.BUTTON_NEUTRAL, "Create blank plan" , new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        mCopyFlag = false;
-                        showNameDialog();
-                    }
-                });
 
-                alertDialog.setButton( Dialog.BUTTON_NEUTRAL, "Create plan from workspace contents", new DialogInterface.OnClickListener()    {
-                    public void onClick(DialogInterface dialog, int which) {
-                        mCopyFlag = true;
-                        showNameDialog();
-                    }
-                });
-
-                alertDialog.setButton( Dialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener()    {
-                    public void onClick(DialogInterface dialog, int which) {
-                        alertDialog.cancel();
-                    }
-                });
-
-                alertDialog.show();
-                */
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("New Plan Options");
                 builder.setItems(new CharSequence[]
@@ -291,7 +266,6 @@ public class LoadActivity extends ActionBarActivity {
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("DELETE TESTS", "plan name: " + planName);
 
                     swipableLinearLayout.resetPosition();
                     mTextViewHandle = null;

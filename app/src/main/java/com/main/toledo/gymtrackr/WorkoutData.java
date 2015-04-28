@@ -53,7 +53,6 @@ public class WorkoutData {
     }
 
     public void initialize(){
-        Log.d("Initialize tests", "Initialize called.");
         Circuit c = new Circuit();
         c.setOpenStatus(false);
         Exercise e = new Exercise();
@@ -192,7 +191,6 @@ public class WorkoutData {
         //Because Kodie hates arraylists
         //for each circuit
         //plan.setPlanId(mPlanId);
-        Log.d("CRAP TEST", Workout.get(0).getName());
         for(int i = 0; i < Workout.size() - 1; i++){
             Circuit_temp cTemp = new Circuit_temp();
             circuits[i] = cTemp;
@@ -233,7 +231,7 @@ public class WorkoutData {
                                     //we don't support other yet
                                     break;
                                 default:
-                                    Log.d("TERRIBLE THINGS", "SOMETHING TERRIBLE HAPPENED WHEN WORKOUTDATA TRIED TO CRAP");
+
                                     break;
                             }
                         }
@@ -265,7 +263,6 @@ public class WorkoutData {
                             //we don't support other yet
                             break;
                         default:
-                            Log.d("TERRIBLE THINGS", "SOMETHING TERRIBLE HAPPENED WHEN WORKOUTDATA TRIED TO CRAP");
                             break;
                     }
                 }
@@ -274,18 +271,11 @@ public class WorkoutData {
 
         plan.setCircuits(circuits);
         //debug shit
-        for(Circuit_temp c : plan.getCircuits()){
-            Log.d("CRAP PLAN TESTS", "CIRCUITNAME: " + c.getName() + " -- CIRCUIT SEQ: " + c.getSequence() + " -- CIRCUIT OPEN: " + c.isOpen());
-            for(Exercise e : c.getExercises()){
-                Log.d("CRAP PLAN TESTS", "NAME: " + e.getName() + " -- WEIGHT: " + e.getWeight() + " -- REPS: " + e.getRepetitions() + " -- ID: " + e.getId());
-            }
-        }
         //end debug shit
         return plan;
     }
 
     public void eatPlan(Plan p, boolean workout_from_plan_flag ){
-        Log.d("4/16", "EAT PLAN CALLED");
         this.clear();
         //mPlanId = p.getPlanId();
         mPlanId = p.getPlanId();
@@ -399,8 +389,6 @@ public class WorkoutData {
         //Convert to array for db placement
         ExerciseHistory[] exerciseHistory = new ExerciseHistory[tempExerciseHolder.size()];
         exerciseHistory = tempExerciseHolder.toArray(exerciseHistory);
-        for(ExerciseHistory eh : exerciseHistory)
-            Log.d("4/19", "IN WORKOUTDATA.CRAPPLAN EXERCISE: " + eh.getExerciseName() + " IN EXERCISEHISTORY");
 
         return exerciseHistory;
     }
@@ -433,9 +421,6 @@ public class WorkoutData {
         for(int i = circuitsToRemove.size()-1; i>=0; i--){
             int j = circuitsToRemove.get(i);
             Workout.remove(j);
-        }
-        for(Circuit c: Workout){
-            Log.d("4/5", c.getName() + " -- OPEN: " + c.isOpen());
         }
     }
     public void clearCheckedExercises(){

@@ -27,12 +27,12 @@ public class LoadErrorDialog extends DialogFragment {
             case INVALID_NAME_VALUE:
                 errorMessage = "ENTERED NAME IS INVALID";
                 errorAffirmative = "";
-                errorNegative = "CRAP, I'LL FIX IT";
+                errorNegative = "Okay";
                 break;
             case TAKEN_NAME_VALUE:
                 errorMessage = "ERROR: DUPLICATE PLAN NAME EXISTS.  OVERWRITE?";
-                errorAffirmative = "YUP";
-                errorNegative = "NAW";
+                errorAffirmative = "Yes";
+                errorNegative = "No";
                 break;
             default:
                 errorMessage = "YOU DID SOMETHING SUPER TERRIBLE";

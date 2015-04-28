@@ -64,7 +64,6 @@ public class WorkspaceListFragment extends Fragment {
                 final int action = event.getAction();
                 switch (action){
                     case MotionEvent.ACTION_DOWN:
-                        Log.d("4/4", "Hide Keypad Called.");
                         ((WorkspaceActivity)getActivity()).getAdapter().hideKeypad();
                         break;
                     default:
@@ -95,7 +94,7 @@ public class WorkspaceListFragment extends Fragment {
 
     @Override
     public void onResume(){
-        Log.d("PAD BUGS", "ONRESUME() CALLED IN WLFRAG");
+
         workspaceListView.setAdapter(((WorkspaceActivity)getActivity()).getAdapter());
         restoreListExpansion();
         //need a better way to do this

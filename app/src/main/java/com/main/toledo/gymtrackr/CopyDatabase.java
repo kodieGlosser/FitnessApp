@@ -59,7 +59,6 @@ public class CopyDatabase extends SQLiteOpenHelper{
             String myPath = DB_PATH + DB_NAME;
             checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
         } catch(SQLiteException e) {
-            Log.e("Query Failure", e.getMessage());
             // DB doesnt exist yet
         }
 

@@ -26,7 +26,6 @@ public class SplashScreen extends Activity{
         try {
             myDbCopier.createDatabase();
         } catch (IOException io) {
-            Log.e("Query Failure", io.getMessage());
             throw new Error("Unable to create database");
         }
         new Handler().postDelayed(new Runnable() {
