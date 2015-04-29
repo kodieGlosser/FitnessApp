@@ -855,10 +855,11 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             mDraggedItemDestination--;
         }
         //setSpaceToOpen();
-        View v = getChildAt(mDraggedItemDestination);
-        mLayoutHandle = (LinearLayout) v.findViewById(R.id.paddingViewLayout);
-        mLayoutHandle.setLayoutParams(mOpenParams);
-
+        if(getChildAt(mDraggedItemDestination) != null) {
+            View v = getChildAt(mDraggedItemDestination);
+            mLayoutHandle = (LinearLayout) v.findViewById(R.id.paddingViewLayout);
+            mLayoutHandle.setLayoutParams(mOpenParams);
+        }
         //delete item from list, save in a temp location, refresh adapter
     }
     /*
