@@ -44,7 +44,7 @@ public class DatabaseWrapper {
     private static final String COLUMN_CIRCUIT= "Circuit";
     private static final String COLUMN_CIRCUIT_ID= "circuitId";
     private static final String COLUMN_PLANNED_UNION= "Planned_Union";
-    private static final String COLUMN_TIME= "time";
+    private static final String COLUvfrgr bhnthntnht  MN_TIME= "time";
     private static final String COLUMN_OTHER= "other";
     private static final String COLUMN_S_OTHER= "s_other";
     private static final String COLUMN_ONE_REP_MAX= "oneRepMax";
