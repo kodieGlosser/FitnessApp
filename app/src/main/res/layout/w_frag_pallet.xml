@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/pallet_layout"
+    android:gravity="center">
+
+   <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="E"
+        android:id="@+id/make_exercise"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textSize="50sp"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="C"
+        android:id="@+id/make_circuit"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textSize="50sp"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="D"
+        android:id="@+id/duplicate_item"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textSize="50sp"/>
+
+</LinearLayout>

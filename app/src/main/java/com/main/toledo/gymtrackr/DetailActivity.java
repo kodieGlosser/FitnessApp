@@ -1,29 +1,22 @@
 package com.main.toledo.gymtrackr;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.ActionBarActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.logging.Handler;
-import java.util.zip.Inflater;
 
 /**
  * Created by Adam on 4/9/2015.
@@ -80,7 +73,7 @@ public class DetailActivity extends ActionBarActivity{
 
         FragmentTransaction transaction =
                 getSupportFragmentManager().beginTransaction();
-        WorkspaceTabFragment tabFragment = new WorkspaceTabFragment();
+        WorkspacePalletFragment tabFragment = new WorkspacePalletFragment();
         transaction.add(R.id.tabHandle, tabFragment);
         transaction.commit();
 

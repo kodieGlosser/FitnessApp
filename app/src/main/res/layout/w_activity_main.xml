@@ -7,20 +7,22 @@
     android:id="@+id/mainLayoutHandle"
     >
 
-    <FrameLayout
-        android:id="@+id/WorkspaceHeaderContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top"
-        android:background="#f7f7f7"
-        />
+
 
     <FrameLayout
         android:id="@+id/WorkspaceListContainer"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:gravity="bottom"
+        android:layout_height="0dp"
+        android:layout_weight="5"
         android:background="#1ca4fb"
+        />
+
+    <FrameLayout
+        android:id="@+id/WorkspacePalletContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#f7f7f7"
         />
 
 </LinearLayout>

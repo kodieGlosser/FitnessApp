@@ -17,7 +17,7 @@ public class WorkspaceActivity extends ActionBarActivity {
 
     WorkspaceExpandableListAdapterMKIII listAdapter;
     WorkspaceListFragment ListFragment;
-    WorkspaceTabFragment TabFragment;
+    private WorkspacePalletFragment PalletFragment ;
     String planName;
     Menu mOptionsMenu;
     private int mToggledExercise = -1;
@@ -88,12 +88,12 @@ public class WorkspaceActivity extends ActionBarActivity {
 
         setContentView(R.layout.w_activity_main);
 
-        TabFragment = new WorkspaceTabFragment();
+        PalletFragment = new WorkspacePalletFragment();
         ListFragment = new WorkspaceListFragment();
 
         FragmentTransaction transaction =
                 getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.WorkspaceHeaderContainer, TabFragment);
+        transaction.add(R.id.WorkspacePalletContainer, PalletFragment);
         transaction.add(R.id.WorkspaceListContainer, ListFragment);
         transaction.commit();
     }
