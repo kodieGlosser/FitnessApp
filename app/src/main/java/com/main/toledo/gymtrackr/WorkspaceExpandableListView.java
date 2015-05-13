@@ -11,34 +11,24 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
-import android.view.animation.TranslateAnimation;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 /**
  * Created by Adam on 2/22/2015.
  * WARNING:  THIS CODE IS BUTT
+ * UPDATE: 5/13/2015
+ * BUTT FACTOR REDUCED BY 60%
  */
 public class WorkspaceExpandableListView extends ExpandableListView {
     private boolean mDragMode;
-    private boolean mRemoveMode;
     private boolean mToggle = true;
-    private boolean justRemovedHeader = false;
 
     private int m_startGroupPosition;
     private int m_startChildPosition;
@@ -48,7 +38,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
     private int mStartPosition;
     private int mDragPointOffset;        //Used to adjust drag view location
-    private int mCurrentPosition = -2;
 
     private int mDraggedItemDestination;
     private int mPosition;
@@ -57,21 +46,10 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     private final int UP = 1;
     private final int CIRCUIT = 1;
     private final int EXERCISE = 2;
-    private final int PLAN = 1, WORKOUT = 2, WORKOUT_WITH_PLAN = 4;
 
     private int mDraggedItemType;
     private int mDirection;
     private int mLastY;
-
-    private int swipeX;
-    private int swipeY;
-
-    private int currentX;
-    private int currentY;
-
-
-
-    private int mMode;
 
     private Exercise mToggledExerciseHandle;
 
@@ -89,13 +67,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     private int SCREENWIDTH;
     private int SCREENHEIGHT;
 
-    //Removal Icon CODE
-    private int mRemoveOffset;
-    private int mDragBarPixelsToIncrement;
-    private boolean mRemovalInprogress = false;
-    private ImageView DeleteIcon;
-    private boolean mSameGesture = false;
-
     //DRAG COUNTDOWN VARS
     private boolean dragInProgress = false;
     private int currentXPos;
@@ -107,14 +78,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     private boolean cancelDrag;
     private int mTouchCount = 0;
 
-    //TOGGLE
-    private int mToggleHoldBounds;
-    private int doubleClickId;
-    private long mTime = 0;
-    //CHECK VAR
-    private boolean areChecking = false;
-    private int checkInProgressDistance;//50
-    private int checkDistance;//150
 
     //listScrollers
     private boolean scroll = false;
@@ -140,7 +103,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     public WorkspaceExpandableListView(Context context, AttributeSet attrs) {
 
         super(context, attrs);
-        mMode = ((WorkspaceActivity) context).getAppMode();
         mContext = context;
         Workout = WorkoutData.get(mContext).getWorkout();
         WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
@@ -150,19 +112,8 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         SCREENWIDTH = size.x;
         SCREENHEIGHT = size.y;
 
-        //TOGGLE
-        mToggleHoldBounds = (int)(SCREENWIDTH * .0277777);
-
-        //CHECK VAR
-        checkInProgressDistance = (int)(SCREENWIDTH * .04629);
-        checkDistance = (int)(SCREENWIDTH * .138888);
-
         //DRAG COUNTDOWN VARS
         dragHoldBounds = (int)(SCREENWIDTH * .047);
-
-        //Removal Icon CODE
-        mRemoveOffset = (int)(SCREENWIDTH *.1);
-        mDragBarPixelsToIncrement = (int)(SCREENWIDTH * .0277777);
 
         //Threads
 
@@ -173,7 +124,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     }
 
     public void toggleListeners(boolean b) {
-        mRemoveMode = false;
         mToggle = b;
     }
 
@@ -184,7 +134,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         final int y = (int) ev.getY();
 
         if ((action == MotionEvent.ACTION_DOWN && x < this.getWidth() / 4) && mToggle) {
-            mRemoveMode = false;
             if (getPackedPositionType(getExpandableListPosition(pointToPosition(x, y))) == PACKED_POSITION_TYPE_GROUP) {
                 if (!WorkoutData.get(mContext).getWorkout()
                         .get(getPackedPositionGroup(getExpandableListPosition(pointToPosition(x, y)))).isOpen()) {
@@ -195,10 +144,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             } else {
                 mDragMode = true;
             }
-        }
-
-        if ((action == MotionEvent.ACTION_DOWN && x > this.getWidth() / 4) && mToggle) {
-            mRemoveMode = true;
         }
 
         //
@@ -264,230 +209,16 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             }
             return true;
         }
-        //REMOVE HANDLING/TOGGLE IN PLAN
-        if (mRemoveMode) {
-
-            switch (action) {
-                case MotionEvent.ACTION_DOWN:
-                    justRemovedHeader = false;
-                    mSameGesture = true;
-                    mStartPosition = pointToPosition(x, y);
-
-                    if (mStartPosition != INVALID_POSITION) {
-                        swipeX = x;
-                        swipeY = y;
-                        currentX = x;
-                        currentY = y;
-                    }
-
-                    if(mCurrentPosition != mStartPosition){
-                        mTime = 0;
-                        mCurrentPosition = mStartPosition;
-                    }
-
-                    if(System.currentTimeMillis() < (mTime + 300)) {
-                        toggle(mStartPosition);
-                    }
-
-                    mTime = System.currentTimeMillis();
-
-                    super.onTouchEvent(ev);
-                    break;
-                case MotionEvent.ACTION_MOVE: //mose if moved
-                    currentX = x;
-                    currentY = y;
-                    if (mRemovalInprogress) {
-                        handleRemoval();
-                        //handle remove image
-                    } else {
-                        if (mStartPosition != -1) {
-                            if (pointToPosition(x, y) != mStartPosition) {
-                                mStartPosition = -1;
-                            }
-                            if ((x < (swipeX - mRemoveOffset)) && mStartPosition != -1) {
-                                if (mSameGesture) {
-                                    showDeleteIcon();
-                                    mSameGesture = false;//Adds delete icon, sets removalinprogress
-                                }
-                                //GOING TO GO IN REMOVE CODE: deleteItem(mStartPosition);
-                                //mStartPosition = -1;
-                            }
-                        }
-                    }
-
-                    if (!justRemovedHeader) {
-                        super.onTouchEvent(ev);
-                    }
-                    break; //mouse button is released
-                default:
-                    if (!justRemovedHeader) {
-                        super.onTouchEvent(ev);
-                    }
-                    cancelDeleteIconDrag();
-                    break;
-            }
-        }
-
-        if (justRemovedHeader) {
-            return true;
-        }
-        //CHECK HANDLING
-        if (!mRemoveMode && (mMode == WORKOUT || mMode == WORKOUT_WITH_PLAN)) {
-            switch (action) {
-                case MotionEvent.ACTION_DOWN:
-                    areChecking = false;
-                    mStartPosition = pointToPosition(x, y);
-                    if (mStartPosition != INVALID_POSITION) {
-                        swipeX = x;
-                        swipeY = y;
-                        currentX = x;
-                        currentY = y;
-                    }
-
-                    if(mCurrentPosition != mStartPosition){
-                        mTime = 0;
-                        mCurrentPosition = mStartPosition;
-                    }
-
-                    if(System.currentTimeMillis() < (mTime + 300)) {
-                        toggle(mStartPosition);
-                    }
-
-                    mTime = System.currentTimeMillis();
-
-                    super.onTouchEvent(ev);
-                    break;
-                case MotionEvent.ACTION_MOVE: //mose if moved
-                    if ((x > (swipeX + checkInProgressDistance)) && mStartPosition != -1) {
-                        areChecking = true;
-                    }
-                    if ((x < (swipeX - checkInProgressDistance)) && mStartPosition != -1) {
-                        areChecking = true;
-                    }
-
-                    if (mStartPosition != -1) {
-                        if (pointToPosition(x, y) != mStartPosition) {
-                            mStartPosition = -1;
-                        }
-                        if ((x > (swipeX + checkDistance)) && mStartPosition != -1) {
-                            check(mStartPosition);
-                            mStartPosition = -1;
-                        }
-                        if ((x < (swipeX - checkDistance)) && mStartPosition != -1) {
-                            uncheck(mStartPosition);
-                            mStartPosition = -1;
-                        }
-                    }
-                    if (areChecking)
-                        return true;
-
-                    super.onTouchEvent(ev);
-
-                    break; //mouse button is released
-                default:
-                    super.onTouchEvent(ev);
-                    break;
-            }
-        }
-        if (justRemovedHeader) {
-            return true;
-        }
-
         return super.onTouchEvent(ev);
     }
-
-    private void check(int position) { //position is point to position
-        if (getPackedPositionType(getExpandableListPosition(position)) != PACKED_POSITION_TYPE_GROUP) {
-            LinearLayout layout = (LinearLayout) getChildAt(position - getFirstVisiblePosition())
-                    .findViewById(R.id.exercise_data_layout);
-
-            ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(layout, "translationX", (int)(.1 * SCREENWIDTH));
-            mSlidInAnimator.setDuration(300);
-            mSlidInAnimator.start();
-
-            RelativeLayout relativeLayout = (RelativeLayout) getChildAt(position - getFirstVisiblePosition())
-                    .findViewById(R.id.exercise_relative_layout_handle);
-
-            ImageView mChecked;
-
-            LayoutInflater inflater = (LayoutInflater) this.mContext
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            mChecked = (ImageView) inflater.inflate(R.layout.w_check, null);
-
-            relativeLayout.addView(mChecked);
-
-            RelativeLayout.LayoutParams params =
-                    (RelativeLayout.LayoutParams) mChecked.getLayoutParams();
-            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-
-
-            int group = getPackedPositionGroup(getExpandableListPosition(position));
-            int child = getPackedPositionChild(getExpandableListPosition(position));
-
-            Workout.get(group).getExercise(child).setSaveToHistory(true);
-        }
-    }
-
-    private void uncheck(int position) {
-        if (getPackedPositionType(getExpandableListPosition(position)) == PACKED_POSITION_TYPE_CHILD) {
-            int group = getPackedPositionGroup(getExpandableListPosition(position));
-            int child = getPackedPositionChild(getExpandableListPosition(position));
-            if (Workout.get(group).getExercise(child).isSaveToHistorySet()) {
-                LinearLayout layout = (LinearLayout) getChildAt(position - getFirstVisiblePosition())
-                        .findViewById(R.id.exercise_data_layout);
-
-                ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(layout, "translationX", 0);
-                mSlidInAnimator.setDuration(300);
-                mSlidInAnimator.start();
-
-                ImageView check = (ImageView) getChildAt(position - getFirstVisiblePosition())
-                        .findViewById(R.id.check);
-
-                ((RelativeLayout) check.getParent()).removeView(check);
-
-                Workout.get(group).getExercise(child).setSaveToHistory(false);
-
-            }
-        }
-    }
-
-    private void toggle(int position) {
-        if (getPackedPositionType(getExpandableListPosition(position)) == PACKED_POSITION_TYPE_CHILD) {
-            int group = getPackedPositionGroup(getExpandableListPosition(position));
-            int child = getPackedPositionChild(getExpandableListPosition(position));
-            if (!Workout.get(group).getExercise(child).getName().equals("test")) {
-
-                if (!Workout.get(group).getExercise(child).isToggled()) {
-                    if (mToggledExerciseHandle != null)
-                        mToggledExerciseHandle.setToggled(false);
-
-                    mToggledExerciseHandle = Workout.get(group).getExercise(child);
-                    mToggledExerciseHandle.setToggled(true);
-                    WorkoutData.get(mContext).setToggledExercise(group, child);
-                    ((WorkspaceActivity) mContext).putToggledExerciseCircuit(child, group);
-
-                } else if (Workout.get(group).getExercise(child).isToggled()) {
-                    Workout.get(group).getExercise(child).setToggled(false);
-                    mToggledExerciseHandle = null;
-                    WorkoutData.get(mContext).clearToggledExercise();
-                    ((WorkspaceActivity) mContext).putToggledExerciseCircuit(-1, -1);
-                }
-
-                ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
-            }
-
-        }
-    }
-
     public void clearHandle() {
         if (mToggledExerciseHandle != null) {
             mToggledExerciseHandle.setToggled(false);
             mToggledExerciseHandle = null;
         }
     }
-    //TODO OPEN CODE HERE
-    private void openUI(int position, View v) {//int child, View v){
-        //Log.d("FINAL TESTS", "OPEN CALLED");
+
+    private void openUI(int position, View v) {
         if (v != null && position != -1) {
 
             int group = getPackedPositionGroup(getExpandableListPosition(position));
@@ -510,232 +241,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         }
     }
 
-    private void showDeleteIcon() {
-        boolean validPosition = false;
-        final int group = getPackedPositionGroup(getExpandableListPosition(mStartPosition));
-        int child = getPackedPositionChild(getExpandableListPosition(mStartPosition));
-        if (getPackedPositionType(getExpandableListPosition(mStartPosition)) == PACKED_POSITION_TYPE_GROUP) {
-            if (Workout.get(group).isOpen()) {
-                validPosition = true;
-            }
-        } else if (getPackedPositionType(getExpandableListPosition(mStartPosition)) == PACKED_POSITION_TYPE_CHILD) {
-            if (!Workout.get(group).getExercise(child).getName().equals("test")) {
-                validPosition = true;
-            }
-        }
-
-        if (validPosition) {
-            WindowManager.LayoutParams mWindowParams = new WindowManager.LayoutParams();
-            //mWindowParams.gravity = Gravity.TOP;
-            mWindowParams.x = currentX - SCREENWIDTH/2;
-            mWindowParams.y = currentY - (SCREENHEIGHT/2) - (SCREENHEIGHT/6);//(SCREENHEIGHT/5);  WAS 300
-
-            //mWindowParams.height = 100;
-            //mWindowParams.width = 200;
-
-            mWindowParams.height = (int)(SCREENHEIGHT/19.2);
-            mWindowParams.width = (int)(SCREENWIDTH/5);
-            mWindowParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                    | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                    | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                    | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                    | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
-            mWindowParams.format = PixelFormat.TRANSLUCENT;
-            mWindowParams.windowAnimations = 0;
-
-            Context context = getContext();
-            DeleteIcon = new ImageView(context);
-
-            DeleteIcon.setImageDrawable(
-                    context.getResources().getDrawable(R.drawable.delete0));
-
-
-            WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            mWindowManager.addView(DeleteIcon, mWindowParams);
-            mRemovalInprogress = true;
-        }
-    }
-
-    private void handleRemoval() {
-        Context context = getContext();
-        int removeStartX = swipeX - mRemoveOffset; //this is the x position when the remove icon was first added
-        //cuurentX is the current X value
-        int xOffset = removeStartX - currentX;
-        double rawIncrement = xOffset / mDragBarPixelsToIncrement;
-        rawIncrement = Math.floor(rawIncrement);
-        int increment = (int) rawIncrement;
-
-        if ((currentX > removeStartX) || (pointToPosition(currentX, currentY) != mStartPosition)) {
-            //if x is to the right of where the icon was created,
-            //or the user has moused over a new list item
-            cancelDeleteIconDrag();
-        } else {
-            //Drag our icon
-            dragDeleteIcon();
-            //Determine how many increments of mDragBarPixelsToIncrement we have moved...
-
-            //set image based on our increments
-            //delete item at 10 increments
-            switch (increment) {
-                case 0:
-                    DeleteIcon.setImageDrawable(
-                            context.getResources().getDrawable(R.drawable.delete0));
-                    break;
-                case 1:
-                    DeleteIcon.setImageDrawable(
-                            context.getResources().getDrawable(R.drawable.delete1));
-                    break;
-                case 2:
-                    DeleteIcon.setImageDrawable(
-                            context.getResources().getDrawable(R.drawable.delete2));
-                    break;
-                case 3:
-                    DeleteIcon.setImageDrawable(
-                            context.getResources().getDrawable(R.drawable.delete3));
-                    break;
-                case 4:
-                    DeleteIcon.setImageDrawable(
-                            context.getResources().getDrawable(R.drawable.delete4));
-                    break;
-                case 5:
-                    DeleteIcon.setImageDrawable(
-                            context.getResources().getDrawable(R.drawable.delete5));
-                    break;
-                case 6:
-                    DeleteIcon.setImageDrawable(
-                            context.getResources().getDrawable(R.drawable.delete6));
-                    break;
-                case 7:
-                    DeleteIcon.setImageDrawable(
-                            context.getResources().getDrawable(R.drawable.delete7));
-                    break;
-                case 8:
-                    DeleteIcon.setImageDrawable(
-                            context.getResources().getDrawable(R.drawable.delete8));
-                    break;
-                case 9:
-                    DeleteIcon.setImageDrawable(
-                            context.getResources().getDrawable(R.drawable.delete9));
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        if ((currentX < (swipeX - mRemoveOffset - (10 * mDragBarPixelsToIncrement)))
-                && mStartPosition != -1
-                && mRemovalInprogress) {
-            deleteItem(mStartPosition);
-            cancelDeleteIconDrag();
-
-        }
-    }
-
-    private void cancelDeleteIconDrag() {
-        mRemovalInprogress = false;
-        removeDeleteIcon();
-    }
-
-    private void dragDeleteIcon() {
-        if (DeleteIcon != null) {
-            WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) DeleteIcon.getLayoutParams();
-            layoutParams.x = currentX - SCREENWIDTH/2;
-            layoutParams.y = currentY - SCREENHEIGHT/2 + (SCREENHEIGHT/10);
-            WindowManager mWindowManager = (WindowManager) getContext()
-                    .getSystemService(Context.WINDOW_SERVICE);
-            mWindowManager.updateViewLayout(DeleteIcon, layoutParams);
-        }
-    }
-
-    private void removeDeleteIcon() {
-        if (DeleteIcon != null) {
-            DeleteIcon.setVisibility(GONE);
-            WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-            wm.removeView(DeleteIcon);
-            DeleteIcon.setImageDrawable(null);
-            DeleteIcon = null;
-        }
-    }
-
-    private void deleteItem(final int itemPosition) {
-
-        final int group = getPackedPositionGroup(getExpandableListPosition(itemPosition));
-        int child = getPackedPositionChild(getExpandableListPosition(itemPosition));
-        if (getPackedPositionType(getExpandableListPosition(itemPosition)) == PACKED_POSITION_TYPE_GROUP) {
-            if (Workout.get(group).isOpen()) {
-
-                ((WorkspaceActivity) mContext).ListFragment.workspaceListView.collapseGroup(group);
-
-                postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(getChildAt(itemPosition - getFirstVisiblePosition()), "translationX", -(int)(SCREENWIDTH*1.5));
-                        mSlidInAnimator.addListener(new Animator.AnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                WorkoutData.get(mContext).getWorkout().remove(group);
-                                ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
-                                ((WorkspaceActivity) mContext).ListFragment.restoreListExpansion();
-                            }
-
-                            @Override
-                            public void onAnimationCancel(Animator animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animator animation) {
-
-                            }
-                        });
-                        mSlidInAnimator.setDuration(300);
-                        mSlidInAnimator.start();
-                    }
-                }, 500);
-                justRemovedHeader = true;
-            }
-        } else if (getPackedPositionType(getExpandableListPosition(itemPosition)) == PACKED_POSITION_TYPE_CHILD) {
-            //Log.d("SWIPE TESTS", "CHILD " + child + " SHOULD FALL OFF ITEM POS: " + itemPosition);
-            if (!Workout.get(group).getExercise(child).getName().equals("test")) {
-                ObjectAnimator mSlidInAnimator = ObjectAnimator.ofFloat(getChildAt(itemPosition - getFirstVisiblePosition()), "translationX", -(int)(SCREENWIDTH*1.5));
-                mSlidInAnimator.setDuration(300);
-                mSlidInAnimator.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                });
-                mSlidInAnimator.start();
-
-                Workout.get(group).removeExercise(child);
-                if (!Workout.get(group).isOpen()) {
-                    Workout.remove(group);
-                }
-            }
-        }
-    }
-
-    // move the drag view
     synchronized private void drag(int x, int y) {
         if (mDragView != null) {
             WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) mDragView.getLayoutParams();
@@ -862,19 +367,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         }
         //delete item from list, save in a temp location, refresh adapter
     }
-    /*
-    private void setSpaceToOpen() {
-        if (m_startChildPosition == -1) { //if group
-            if (m_startGroupPosition == Workout.size() - 2) { //last circuit
-                //Expand padding at bottom.
-            } else { //all other circuits
 
-            }
-        } else { //if exercise
-
-        }
-    }
-    */
     private void stopDrag() {//int itemIndex) {
         if (mDragView != null) {
             //if (mDragListener != null)
