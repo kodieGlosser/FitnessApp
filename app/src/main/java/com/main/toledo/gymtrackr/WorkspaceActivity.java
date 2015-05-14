@@ -62,30 +62,6 @@ public class WorkspaceActivity extends ActionBarActivity {
                 break;
         }
 
-
-        /*
-        int browseMode = WorkoutData.get(this).getBrowseState();
-        switch(browseMode){
-            case NOT_BROWSE:
-                break;
-            case BROWSE_WORKOUT:
-                WorkoutData.get(this).setBrowseState(NOT_BROWSE);
-                int circuitVal = WorkoutData.get(this).getStateCircuit();
-                boolean circuitOpenStatus = WorkoutData.get(this).isStateCircuitOpen();
-                int child;
-
-                if(circuitOpenStatus)
-                    child = WorkoutData.get(this).getWorkout().get(circuitVal).getExercises().size()-2;
-                else
-                    child = 0;
-                Log.d("4/17", "SHOULD MOVE LIST");
-                ListFragment.workspaceListView.setSelectedChild(circuitVal, child, true);
-                ListFragment.workspaceListView.smoothScrollByOffset(-300);
-                //focus right thing
-                break;
-        }
-        */
-
         setContentView(R.layout.w_activity_main);
 
         PalletFragment = new WorkspacePalletFragment();
@@ -140,11 +116,6 @@ public class WorkspaceActivity extends ActionBarActivity {
         }
     }
 
-    public String getPlanName(){return planName;}
-    //flow control for workspace state
-
-    public void setToEdit(boolean b){toEdit = b; }
-
     public void save(){
         if (mode == PLAN) {
             //CODE FOR PLAN SAVE
@@ -160,7 +131,6 @@ public class WorkspaceActivity extends ActionBarActivity {
             removeChecked();
         }
     }
-    public boolean workoutFromPlan(){return workout_from_plan_flag;}
 
     public int getAppMode(){return mode;}
     /*Not used at the moment
@@ -205,14 +175,6 @@ public class WorkspaceActivity extends ActionBarActivity {
         super.onPause();
         WorkoutData.get(this).setBrowseState(NOT_BROWSE);
     }
-    public void putToggledExerciseCircuit(int exercise, int circuit){
-        mToggledExercise = exercise;
-        mToggledCircuit = circuit;
-    }
-
-    public int getToggledExercise(){return mToggledExercise;}
-
-    public int getToggledCircuit(){return mToggledCircuit;}
 
     public WorkspaceExpandableListAdapterMKIII getAdapter(){
         return this.listAdapter;

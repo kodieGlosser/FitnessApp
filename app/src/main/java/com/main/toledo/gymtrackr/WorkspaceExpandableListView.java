@@ -44,12 +44,13 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
     private final int DOWN = 2;
     private final int UP = 1;
-    private final int CIRCUIT = 1;
-    private final int EXERCISE = 2;
+    public final int CIRCUIT = 1;
+    public final int EXERCISE = 2;
 
-    private int mDraggedItemType;
+    public int mDraggedItemType;
     private int mDirection;
-    private int mLastY;
+    //TODO: Maybe 0 is a bad thing
+    private int mLastY = 0;
 
     private Exercise mToggledExerciseHandle;
 
@@ -69,8 +70,8 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
     //DRAG COUNTDOWN VARS
     private boolean dragInProgress = false;
-    private int currentXPos;
-    private int currentYPos;
+    public int currentXPos;
+    public int currentYPos;
     private int dragRawY;
     private ImageView DragIcon;
     private int dragTimerInterval = 150;
@@ -169,10 +170,12 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                     currentXPos = x;
                     currentYPos = y;
                     dragRawY = (int) ev.getRawY();
+                    Log.d("WorkspaceExpandableList", "Y: " + currentYPos);
+                    Log.d("WorkspaceExpandableList", "X: " + currentXPos);
                     //if(dragInProgress)
                     //W    Log.d("41", "MOVE-OPENUI");
                     if (dragInProgress) {
-                        dragHandling();
+                        dragHandling(true);
                     }
                     break;
                 case MotionEvent.ACTION_CANCEL:
@@ -218,7 +221,13 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         }
     }
 
+    public void closeUI(){
+        if (mLayoutHandle != null){
+            mLayoutHandle.setLayoutParams(mClosedParams);
+        }
+    }
     private void openUI(int position, View v) {
+        Log.d("WELV", "OpenUI called->Position: " + position);
         if (v != null && position != -1) {
 
             int group = getPackedPositionGroup(getExpandableListPosition(position));
@@ -278,6 +287,11 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         }
     }
 
+    public void setDragSpacing(int viewHeight){
+        mClosedParams = new LinearLayout.LayoutParams(1, 0);
+        mOpenParams = new LinearLayout.LayoutParams(1, viewHeight);
+    }
+
     // enable the drag view for dragging
     private void startDrag(int InitialItemPositionOnScreen, int x, int y) {
         int itemHeight;
@@ -332,11 +346,8 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         }
         ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
 
+        setDragSpacing(itemHeight);
 
-        mClosedParams = new LinearLayout.LayoutParams(1, 0);
-        mOpenParams = new LinearLayout.LayoutParams(1, itemHeight);
-
-        //TODO BUG IS HERE
         mDraggedItemDestination = pointToPosition(x, y) - getFirstVisiblePosition();
 
         if (mDraggedItemType == CIRCUIT) {
@@ -530,9 +541,9 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         }
     }
 
-    private void dragHandling() {
+    public void dragHandling(boolean fromList) {
         if (pointToPosition(currentXPos, currentYPos) != INVALID_POSITION) {
-
+            Log.d("WELV", "dragHandling -> position not invalid.");
             if (currentYPos > mLastY) {
                 mDirection = DOWN;
             } else if (currentYPos < mLastY) {
@@ -543,7 +554,10 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
             if (mDirection == DOWN) {
                 //mPosition = pointToPosition(currentXPos, (currentYPos + 300));
-                mPosition = pointToPosition(currentXPos, (currentYPos + mDragView.getHeight()));
+                if(fromList)
+                    mPosition = pointToPosition(currentXPos, (currentYPos + mDragView.getHeight()));
+                else
+                    mPosition = pointToPosition(currentXPos, (currentYPos + 200));  //todo: make scale
                 //Log.d("TOUCH TESTS", "DIRECTION IS DOWN");
             } else {
                 mPosition = pointToPosition(currentXPos, currentYPos);
@@ -576,7 +590,9 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                 }
             }
         }
-        drag(0, currentYPos);// replace 0 with x if desired
+
+        if(fromList)
+            drag(0, currentYPos);// replace 0 with x if desired
     }
 
     private boolean checkIfValidPosition() {
@@ -607,7 +623,6 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     }
 
     public void removeCheckedItems() {
-
 
         int first = getFirstVisiblePosition();
         int last = getLastVisiblePosition();

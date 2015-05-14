@@ -19,7 +19,7 @@ import android.widget.TextView;
  */
 public class WorkspacePalletFragment extends Fragment {
 
-    private TextView makeExercise;
+    public TextView makeExercise;
     private ImageView exerciseDraggable;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,17 +36,16 @@ public class WorkspacePalletFragment extends Fragment {
             public boolean onTouch(View v, MotionEvent event) {
 
                 final int action = event.getAction();
+                final float y = event.getY();
+                final float x = event.getX();
 
                 switch (action) {
                     case MotionEvent.ACTION_DOWN: {
-                        final float y = event.getY();
-                        final float x = event.getX();
-                        Log.d("WorkspacePalletFragment", "DOWN on E");
 
                         WindowManager.LayoutParams mWindowParams = new WindowManager.LayoutParams();
                         mWindowParams.x = (int)x - 700;
                         mWindowParams.y = (int)y + 650;
-                        //TODO: MAKE SCALABLE
+                        //TODO: MAKE SCREEN SIZE SCALABLE
                         mWindowParams.height = 200;
                         mWindowParams.width = 200;
                         mWindowParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
@@ -67,6 +66,10 @@ public class WorkspacePalletFragment extends Fragment {
                         WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
                         mWindowManager.addView(exerciseDraggable, mWindowParams);
 
+                        //Todo readability: what is 2?
+                        ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.mDraggedItemType = 2;
+                        ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.setDragSpacing(200);
+                        ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.currentXPos = 150;
                         break;
                     }
 
@@ -78,18 +81,25 @@ public class WorkspacePalletFragment extends Fragment {
                             WindowManager mWindowManager = (WindowManager) getActivity()
                                     .getSystemService(Context.WINDOW_SERVICE);
                             mWindowManager.updateViewLayout(exerciseDraggable, layoutParams);
+
+                            //TODO make scalable
+
+                            ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.currentYPos = (int)y + 1300;
+                            ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.dragHandling(false);
+                            Log.d("WorkspacePalletFragment", "Y: " + ((int)y + 1300));
                         }
                         break;
                     }
 
                     case MotionEvent.ACTION_UP: {
-                        Log.d("WorkspacePalletFragment", "UP  on E");
+
                         if (exerciseDraggable != null) {
                             exerciseDraggable.setVisibility(View.GONE);
                             WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
                             wm.removeView(exerciseDraggable);
                             exerciseDraggable.setImageDrawable(null);
                             exerciseDraggable = null;
+                            ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.closeUI();
                         }
 
                     }
@@ -100,6 +110,15 @@ public class WorkspacePalletFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState){
+        super.onActivityCreated(savedInstanceState);
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+
+    }
     private void createExerciseDraggable(){
 
     }
