@@ -79,16 +79,10 @@ public class BrowseActivity extends ActionBarActivity {
     public void onResume(){
         super.onResume();
 
-        //GET TRANSITION
         int state;
         state = WorkoutData.get(this).getBrowseTransition();
         if(state == NOT_FROM_CREATE)
             initializeBrowseList();
-        //initiates filter
-
-
-
-
     }
 
     @Override

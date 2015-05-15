@@ -87,7 +87,7 @@ public class WorkspaceListFragment extends Fragment {
             }
         });
 
-        workspaceListView.setDropListener(mDropListener);
+        //workspaceListView.setDropListener(mDropListener);
 
         return v;
     }
@@ -193,7 +193,7 @@ public class WorkspaceListFragment extends Fragment {
     public void setDragInProgress(boolean b){
         mDragInProgress = b;
     }
-
+    /*
     private DropListener mDropListener =
             new DropListener() {
                 public void onDrop(int type, int toX, int toY) {
@@ -205,6 +205,6 @@ public class WorkspaceListFragment extends Fragment {
                     }
                 }
             };
-
+            */
 }
 

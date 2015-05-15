@@ -110,12 +110,27 @@ public class WorkoutData {
         mTempExercise = null;
     }
 
-    //removes exercise at circuit
-    public void removeExercise(int exercisePosition, int circuitPosition){
-        Workout.get(circuitPosition).removeExercise(exercisePosition);
-    }
-    public void setToggledExercise(int circuit, int exercise){
-        mToggledExercise = Workout.get(circuit).getExercise(exercise);
+    public void addClosedCircuitWithGenericExercise(int circuitNumber){
+        Exercise generic = new Exercise();
+        generic.setName("Generic 01");
+
+        Metric reps = new Metric();
+        reps.setType(metricType.REPS);
+
+        Metric time = new Metric();
+        time.setType(metricType.TIME);
+
+        Metric weight = new Metric();
+        weight.setType(metricType.WEIGHT);
+
+        generic.addMetrics(weight);
+        generic.addMetrics(reps);
+        generic.addMetrics(time);
+
+        Circuit c = new Circuit();
+        c.setOpenStatus(false);
+        c.add(generic);
+        Workout.add(circuitNumber, c);
     }
 
     public void setToggledExerciseExplicit(Exercise e){
@@ -172,6 +187,27 @@ public class WorkoutData {
         Workout.get(circuit).add(exercise, mTempExercise);
         mTempExercise = null;
     }
+
+    public void placeGenericExercise(int circuit, int exercise){
+        Exercise generic = new Exercise();
+        generic.setName("Generic 01");
+
+        Metric reps = new Metric();
+        reps.setType(metricType.REPS);
+
+        Metric time = new Metric();
+        time.setType(metricType.TIME);
+
+        Metric weight = new Metric();
+        weight.setType(metricType.WEIGHT);
+
+        generic.addMetrics(weight);
+        generic.addMetrics(reps);
+        generic.addMetrics(time);
+
+        Workout.get(circuit).add(exercise, generic);
+    }
+
     public void setTempCircuit(int circuit){
         mTempCircuit = Workout.get(circuit);
         Workout.remove(circuit);

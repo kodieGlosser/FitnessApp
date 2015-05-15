@@ -100,6 +100,7 @@ public class WorkspacePalletFragment extends Fragment {
                             exerciseDraggable.setImageDrawable(null);
                             exerciseDraggable = null;
                             ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.closeUI();
+                            ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.placeGenericExercise();
                         }
 
                     }

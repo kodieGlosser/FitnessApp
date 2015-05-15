@@ -29,7 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapter implements DropListener{
+public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapter{
 
     private Context _context;
 
@@ -786,7 +786,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
         holder.relativeLayoutHandle.addView(holder.exerciseCheckImage);
         holder.dataLayoutHandle.setTranslationX(mCheckedIndentation);
     }
-
+    /*
     @Override
     public void onDrop(int type, int destinationExerciseIndex ,int destinationCircuitIndex) {
         synchronized (Workout) {//Save to temp, remove from workout
@@ -815,7 +815,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
             ((WorkspaceActivity) _context).ListFragment.restoreListExpansion();
         }
     }
-
+    */
     public static class ChildViewHolder {
         public ImageButton plusButton;
         public ImageButton browseButton;
