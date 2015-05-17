@@ -216,6 +216,13 @@ public class WorkoutData {
         Workout.add(circuit, mTempCircuit);
         mTempCircuit = null;
     }
+    public void placeNewCircuit(int circuit){
+        Circuit c = new Circuit();
+        c.setName("New Circuit");
+        c.add(new Exercise());
+        c.setOpenStatus(true);
+        Workout.add(circuit, c);
+    }
     //newPlan
     public Plan crapNewPlan(){
 

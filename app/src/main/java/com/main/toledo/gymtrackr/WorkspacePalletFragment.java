@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,7 +19,8 @@ import android.widget.TextView;
 public class WorkspacePalletFragment extends Fragment {
 
     public TextView makeExercise;
-    private ImageView exerciseDraggable;
+    public TextView makeCircuit;
+    private ImageView UIDraggable;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,14 +57,14 @@ public class WorkspacePalletFragment extends Fragment {
                         mWindowParams.windowAnimations = 0;
 
                         Context context = getActivity();
-                        exerciseDraggable = new ImageView(context);
+                        UIDraggable = new ImageView(context);
 
-                        exerciseDraggable.setImageDrawable(
+                        UIDraggable.setImageDrawable(
                                 context.getResources().getDrawable(R.drawable.drag1));
 
 
                         WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-                        mWindowManager.addView(exerciseDraggable, mWindowParams);
+                        mWindowManager.addView(UIDraggable, mWindowParams);
 
                         //Todo readability: what is 2?
                         ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.mDraggedItemType = 2;
@@ -74,35 +74,115 @@ public class WorkspacePalletFragment extends Fragment {
                     }
 
                     case MotionEvent.ACTION_MOVE: {
-                        if (exerciseDraggable != null) {
-                            WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) exerciseDraggable.getLayoutParams();
+                        if (UIDraggable != null) {
+                            WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) UIDraggable.getLayoutParams();
                             layoutParams.x = (int)event.getX() - 700;
                             layoutParams.y = (int)event.getY() + 650;
                             WindowManager mWindowManager = (WindowManager) getActivity()
                                     .getSystemService(Context.WINDOW_SERVICE);
-                            mWindowManager.updateViewLayout(exerciseDraggable, layoutParams);
+                            mWindowManager.updateViewLayout(UIDraggable, layoutParams);
 
                             //TODO make scalable
 
                             ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.currentYPos = (int)y + 1300;
                             ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.dragHandling(false);
-                            Log.d("WorkspacePalletFragment", "Y: " + ((int)y + 1300));
+
                         }
                         break;
                     }
 
                     case MotionEvent.ACTION_UP: {
 
-                        if (exerciseDraggable != null) {
-                            exerciseDraggable.setVisibility(View.GONE);
+                        if (UIDraggable != null) {
+                            UIDraggable.setVisibility(View.GONE);
                             WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-                            wm.removeView(exerciseDraggable);
-                            exerciseDraggable.setImageDrawable(null);
-                            exerciseDraggable = null;
+                            wm.removeView(UIDraggable);
+                            UIDraggable.setImageDrawable(null);
+                            UIDraggable = null;
                             ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.closeUI();
                             ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.placeGenericExercise();
                         }
+                    }
+                }
+                return true;
+            }
+        });
 
+        makeCircuit = (TextView) v.findViewById(R.id.make_circuit);
+        makeCircuit.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                final int action = event.getAction();
+                final float y = event.getY();
+                final float x = event.getX();
+
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN: {
+
+                        WindowManager.LayoutParams mWindowParams = new WindowManager.LayoutParams();
+                        mWindowParams.x = (int) x - 700;
+                        mWindowParams.y = (int) y + 650;
+                        //TODO: MAKE SCREEN SIZE SCALABLE
+                        mWindowParams.height = 200;
+                        mWindowParams.width = 200;
+                        mWindowParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                                | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
+                        mWindowParams.format = PixelFormat.TRANSLUCENT;
+                        mWindowParams.windowAnimations = 0;
+
+                        Context context = getActivity();
+                        UIDraggable = new ImageView(context);
+
+                        UIDraggable.setImageDrawable(
+                                context.getResources().getDrawable(R.drawable.drag1));
+
+
+                        WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+                        mWindowManager.addView(UIDraggable, mWindowParams);
+
+                        //Todo readability: what is 1?
+                        ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.mDraggedItemType = 1;
+                        ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.setDragSpacing(200);
+                        ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.currentXPos = 150;
+
+                        //call thing to collapse groups
+                        ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.startedDraggingCircuit();
+                        break;
+                    }
+
+                    case MotionEvent.ACTION_MOVE: {
+                        if (UIDraggable != null) {
+                            WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) UIDraggable.getLayoutParams();
+                            layoutParams.x = (int) event.getX() - 700;
+                            layoutParams.y = (int) event.getY() + 650;
+                            WindowManager mWindowManager = (WindowManager) getActivity()
+                                    .getSystemService(Context.WINDOW_SERVICE);
+                            mWindowManager.updateViewLayout(UIDraggable, layoutParams);
+
+                            //TODO make scalable
+
+                            ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.currentYPos = (int) y + 1300;
+                            ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.dragHandling(false);
+
+                        }
+                        break;
+                    }
+
+                    case MotionEvent.ACTION_UP: {
+
+                        if (UIDraggable != null) {
+                            UIDraggable.setVisibility(View.GONE);
+                            WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+                            wm.removeView(UIDraggable);
+                            UIDraggable.setImageDrawable(null);
+                            UIDraggable = null;
+                            ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.closeUI();
+                            ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.placeNewCircuit();
+                        }
                     }
                 }
                 return true;

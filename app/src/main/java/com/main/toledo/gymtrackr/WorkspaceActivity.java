@@ -79,7 +79,7 @@ public class WorkspaceActivity extends ActionBarActivity {
         mOptionsMenu = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_workspace, menu);
-
+        /*
         if(!workout_from_plan_flag){
             isEditable = true;
             listAdapter.setEditable(isEditable);
@@ -93,7 +93,7 @@ public class WorkspaceActivity extends ActionBarActivity {
             ListFragment.workspaceListView.clearHandle();
             mOptionsMenu.findItem(R.id.action_toggle_edit).setIcon(R.drawable.locked);
         }
-
+        */
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -101,9 +101,11 @@ public class WorkspaceActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
+            /*
             case R.id.action_toggle_edit:
                 toggleEdit();
                 return true;
+                */
             case R.id.save_changes:
                 WorkspaceConfirmDialog dialog = new WorkspaceConfirmDialog();
                 dialog.show(getFragmentManager(), "NameDialogFragment");
@@ -143,6 +145,7 @@ public class WorkspaceActivity extends ActionBarActivity {
 
     }
     //I feel like this should be in the header fragment...
+    /*
     public void toggleEdit(){
         isEditable = !isEditable;
 
@@ -157,6 +160,7 @@ public class WorkspaceActivity extends ActionBarActivity {
         ListFragment.workspaceListView.toggleListeners(isEditable);
         ListFragment.workspaceListView.clearHandle();
     }
+    */
 
     @Override
     public void onResume(){

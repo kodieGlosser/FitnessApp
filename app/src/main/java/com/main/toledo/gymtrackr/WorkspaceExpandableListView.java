@@ -28,7 +28,7 @@ import java.util.ArrayList;
  */
 public class WorkspaceExpandableListView extends ExpandableListView {
     private boolean mDragMode;
-    private boolean mToggle = true;
+    //private boolean mToggle = true;
 
     private int m_startGroupPosition;
     private int m_startChildPosition;
@@ -55,7 +55,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     private Exercise mToggledExerciseHandle;
 
     private ArrayList<Circuit> Workout = new ArrayList<>();
-    private LinearLayout mLayoutHandle;
+    private LinearLayout mOpenedLayoutHandle;
     private LinearLayout.LayoutParams mOpenParams;
     private LinearLayout.LayoutParams mClosedParams;
 
@@ -114,18 +114,18 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         //DRAG COUNTDOWN VARS
         dragHoldBounds = (int)(SCREENWIDTH * .047);
     }
-
+    /*
     public void toggleListeners(boolean b) {
         mToggle = b;
     }
-
+    */
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         final int action = ev.getAction();
         final int x = (int) ev.getX();
         final int y = (int) ev.getY();
 
-        if ((action == MotionEvent.ACTION_DOWN && x < this.getWidth() / 4) && mToggle) {
+        if ((action == MotionEvent.ACTION_DOWN && x < this.getWidth() / 4)) {// && mToggle) {
             if (getPackedPositionType(getExpandableListPosition(pointToPosition(x, y))) == PACKED_POSITION_TYPE_GROUP) {
                 if (!WorkoutData.get(mContext).getWorkout()
                         .get(getPackedPositionGroup(getExpandableListPosition(pointToPosition(x, y)))).isOpen()) {
@@ -180,7 +180,8 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         abortCountdown();
         if (dragInProgress) {
             //close spacing between items
-            mLayoutHandle.setLayoutParams(mClosedParams);
+            mOpenedLayoutHandle.setLayoutParams(mClosedParams);
+            mOpenedLayoutHandle = null;
             //remove drag icon
             stopDragAndScroll();
 
@@ -227,31 +228,53 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     }
 
     public void placeGenericExercise(){
+        if (mOpenedLayoutHandle != null) {
+            mOpenedLayoutHandle.setLayoutParams(mClosedParams);
+            mOpenedLayoutHandle = null;
 
-        mLayoutHandle.setLayoutParams(mClosedParams);
-        m_endChildPosition = getPackedPositionChild(getExpandableListPosition(mDraggedItemDestination));
-        m_endGroupPosition = getPackedPositionGroup(getExpandableListPosition(mDraggedItemDestination));
+            m_endChildPosition = getPackedPositionChild(getExpandableListPosition(mDraggedItemDestination));
+            m_endGroupPosition = getPackedPositionGroup(getExpandableListPosition(mDraggedItemDestination));
 
-        if (!(m_endGroupPosition == -1 && m_endChildPosition == -1)) {
+            if (!(m_endGroupPosition == -1 && m_endChildPosition == -1)) {
 
-            if (m_endGroupPosition < 0) //beginning of workout
-                m_endGroupPosition = 0;
+                if (m_endGroupPosition < 0) //beginning of workout
+                    m_endGroupPosition = 0;
 
-            if (m_endGroupPosition >= Workout.size() - 1)              //if the destination circuit is the last or later
-                m_endChildPosition = -1;
+                if (m_endGroupPosition >= Workout.size() - 1)              //if the destination circuit is the last or later
+                    m_endChildPosition = -1;
 
-            switch (m_endChildPosition){
-                case -1:
-                    WorkoutData.get(mContext).addClosedCircuitWithGenericExercise(m_endGroupPosition);
-                    break;
-                default:
-                    WorkoutData.get(mContext).placeGenericExercise(m_endGroupPosition, m_endChildPosition);
-                    break;
+                switch (m_endChildPosition) {
+                    case -1:
+                        WorkoutData.get(mContext).addClosedCircuitWithGenericExercise(m_endGroupPosition);
+                        break;
+                    default:
+                        WorkoutData.get(mContext).placeGenericExercise(m_endGroupPosition, m_endChildPosition);
+                        break;
+                }
+                ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
             }
-            ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
         }
     }
 
+    public void placeNewCircuit() {
+        if (mOpenedLayoutHandle != null) {
+            mOpenedLayoutHandle.setLayoutParams(mClosedParams);
+            mOpenedLayoutHandle = null;
+
+            m_endGroupPosition = getPackedPositionGroup(getExpandableListPosition(mDraggedItemDestination));
+            if (!(m_endGroupPosition < 0)) {
+                WorkoutData.get(mContext).placeNewCircuit(m_endGroupPosition);
+                ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
+            }
+            ((WorkspaceActivity) mContext).ListFragment.restoreListExpansion();
+        }
+    }
+
+    public void startedDraggingCircuit(){
+        ((WorkspaceActivity) mContext).ListFragment.setDragInProgress(true);
+        ((WorkspaceActivity) mContext).ListFragment.collapseAllGroups();
+        mDraggedItemDestination = pointToPosition(currentXPos, currentYPos) - getFirstVisiblePosition();
+    }
 
     public void clearHandle() {
         if (mToggledExerciseHandle != null) {
@@ -261,8 +284,8 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     }
 
     public void closeUI(){
-        if (mLayoutHandle != null){
-            mLayoutHandle.setLayoutParams(mClosedParams);
+        if (mOpenedLayoutHandle != null){
+            mOpenedLayoutHandle.setLayoutParams(mClosedParams);
         }
     }
     private void openUI(int position, View v) {
@@ -278,11 +301,11 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             if (!(!Workout.get(group).isOpen()
                     && (getPackedPositionChild(getExpandableListPosition(position)) == 0))) {
 
-                if (mLayoutHandle != null)
-                    mLayoutHandle.setLayoutParams(mClosedParams);
+                if (mOpenedLayoutHandle != null)
+                    mOpenedLayoutHandle.setLayoutParams(mClosedParams);
 
-                mLayoutHandle = (LinearLayout) v.findViewById(R.id.paddingViewLayout);
-                mLayoutHandle.setLayoutParams(mOpenParams);
+                mOpenedLayoutHandle = (LinearLayout) v.findViewById(R.id.paddingViewLayout);
+                mOpenedLayoutHandle.setLayoutParams(mOpenParams);
 
                 mDraggedItemDestination = position;
             }
@@ -305,19 +328,19 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             //start scroll
             scroll = true;
             scrollUp = true;
-            Log.d("4.22", "scrollup + " + scrollUp);
+
             handler.postDelayed(upRunnable, 0);
         } else if (currentYPos > topThreshHold && scrollUp){
             //stop scroll
             handler.removeCallbacks(upRunnable);
             scroll = false;
-            Log.d("4.22", "scroll set to false in drag" + scroll);
+
         }
 
         int bottomThreshHold = this.getHeight()-(this.getHeight()/5);
         if (currentYPos > bottomThreshHold){
             scrollUp = false;
-            Log.d("4.22", "scrollup + " + scrollUp);
+
             scroll = true;
             handler.postDelayed(downRunnable, 0);
         } else if (currentYPos < bottomThreshHold && !scrollUp){
@@ -412,8 +435,8 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         //setSpaceToOpen();
         if(getChildAt(mDraggedItemDestination) != null) {
             View v = getChildAt(mDraggedItemDestination);
-            mLayoutHandle = (LinearLayout) v.findViewById(R.id.paddingViewLayout);
-            mLayoutHandle.setLayoutParams(mOpenParams);
+            mOpenedLayoutHandle = (LinearLayout) v.findViewById(R.id.paddingViewLayout);
+            mOpenedLayoutHandle.setLayoutParams(mOpenParams);
         }
         //delete item from list, save in a temp location, refresh adapter
     }

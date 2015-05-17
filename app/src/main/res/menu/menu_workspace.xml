@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/action_toggle_edit"
+    <!--<item android:id="@+id/action_toggle_edit"
         android:title="Toggle Edit Mode"
         android:icon="@drawable/locked"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom" />-->
 
     <item android:id="@+id/save_changes"
         android:title="Save changes"

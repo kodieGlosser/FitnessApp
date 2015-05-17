@@ -33,7 +33,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
     private Context _context;
 
-    private boolean editable = true;
+    //private boolean editable = true;
 
     private EditText m_editTextHandle;
 
@@ -91,16 +91,21 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
         if(e.getName().equals("test")){
             if(Workout.size()-1 == group){
                 //group is last, and test means end buttons
-                if(editable)
+
+                //if(editable)
                     type = WORKOUT_BUTTONS;
+                /*
                 else
                     type = EMPTY_BUTTONS;
+                    */
             } else {
                 //if not last group and test name, type is rego buttons
-                if(editable)
+                //if(editable)
                     type = CIRCUIT_BUTTONS;
+                /*
                 else
                     type = EMPTY_BUTTONS;
+                    */
             }
         } else {
             //we have reggo exercise
@@ -169,13 +174,13 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
         }
         return type;
     }
-
+    /*
     public void setEditable(boolean b){
         //Log.d("EDITABLE TEST", "setEditable() called in adapter.  editable: " + b);
         editable = b;
         notifyDataSetChanged();
     }
-
+    */
     @Override
     public long getChildId(int groupPosition, int childPosition) {
         return childPosition;
@@ -610,10 +615,12 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                 break;
             case BLANK_HEADER:
                 ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
-                if(!editable)
+                //if(!editable)
                     convertView.setPadding(0,0,0,SCREENWIDTH/2);
+                /*
                 else
                     convertView.setPadding(0,0,0,0);
+                    */
                 break;
             case PADDED_BLANK_HEADER:
                 ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
@@ -745,7 +752,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (hasFocus) {
-                        ((WorkspaceActivity) _context).ListFragment.workspaceListView.toggleListeners(false);
+                        //((WorkspaceActivity) _context).ListFragment.workspaceListView.toggleListeners(false);
                         metricEditText.setSelection(metricEditText.getText().toString().length());
                         m_editTextHandle = (EditText) v;
                         if (metricEditText.getText().toString().equals("0")) {
@@ -753,7 +760,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                         }
                         //Log.d("WORKSPACELISTFOCUS", "PLAN FOCUSED" + timeEdit.getText());
                     } else {
-                        ((WorkspaceActivity) _context).ListFragment.workspaceListView.toggleListeners(editable);
+                        //((WorkspaceActivity) _context).ListFragment.workspaceListView.toggleListeners(editable);
                         //Log.d("WORKSPACELISTFOCUS", "PLAN LOST FOCUS" + timeEdit.getText());
                         if (((EditText) v).getText().toString().equals("")) {
                             metric.setMetricIntValue(0);
