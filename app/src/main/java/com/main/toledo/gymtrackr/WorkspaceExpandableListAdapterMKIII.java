@@ -4,12 +4,9 @@ package com.main.toledo.gymtrackr;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Point;
-import android.graphics.Typeface;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -21,9 +18,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -206,15 +201,15 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                 case CIRCUIT_BUTTONS:
                     convertView = inflater.inflate(R.layout.w_circuit_menu_buttons, null);
 
-                    holder.plusButton = (ImageButton) convertView.findViewById(R.id.PlusButton);
-                    holder.browseButton = (ImageButton) convertView.findViewById(R.id.BrowseButton);
+                    //holder.plusButton = (ImageButton) convertView.findViewById(R.id.PlusButton);
+                    //holder.browseButton = (ImageButton) convertView.findViewById(R.id.BrowseButton);
                     break;
                 case WORKOUT_BUTTONS:
                     convertView = inflater.inflate(R.layout.w_workout_menu_buttons, null);
                     //add circuit code
-                    holder.browseButton = (ImageButton) convertView.findViewById(R.id.BrowseButton);
-                    holder.addCircuitButton = (ImageButton) convertView.findViewById(R.id.AddCircuitButton);
-                    holder.plusButton = (ImageButton) convertView.findViewById(R.id.PlusButton);
+                    //holder.browseButton = (ImageButton) convertView.findViewById(R.id.BrowseButton);
+                    //holder.addCircuitButton = (ImageButton) convertView.findViewById(R.id.AddCircuitButton);
+                    //holder.plusButton = (ImageButton) convertView.findViewById(R.id.PlusButton);
                     break;
                 case EMPTY_BUTTONS:
                     convertView = inflater.inflate(R.layout.w_empty_wopadding, null);
@@ -226,7 +221,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
                     holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
 
-                    holder.relativeLayoutHandle = (RelativeLayout) convertView.findViewById(R.id.exercise_relative_layout_handle);
+                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
 
                     holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
 
@@ -239,7 +234,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
                     holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
 
-                    holder.relativeLayoutHandle = (RelativeLayout) convertView.findViewById(R.id.exercise_relative_layout_handle);
+                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
 
                     holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
                     break;
@@ -250,7 +245,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
                     holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
 
-                    holder.relativeLayoutHandle = (RelativeLayout) convertView.findViewById(R.id.exercise_relative_layout_handle);
+                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
 
                     holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
 
@@ -263,7 +258,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
                     holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
 
-                    holder.relativeLayoutHandle = (RelativeLayout) convertView.findViewById(R.id.exercise_relative_layout_handle);
+                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
 
                     holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
 
@@ -275,7 +270,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
                     holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
 
-                    holder.relativeLayoutHandle = (RelativeLayout) convertView.findViewById(R.id.exercise_relative_layout_handle);
+                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
 
                     holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
 
@@ -288,7 +283,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
                     holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
 
-                    holder.relativeLayoutHandle = (RelativeLayout) convertView.findViewById(R.id.exercise_relative_layout_handle);
+                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
 
                     holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
 
@@ -300,7 +295,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
                     holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
 
-                    holder.relativeLayoutHandle = (RelativeLayout) convertView.findViewById(R.id.exercise_relative_layout_handle);
+                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
 
                     holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
 
@@ -314,7 +309,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
                     holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
 
-                    holder.relativeLayoutHandle = (RelativeLayout) convertView.findViewById(R.id.exercise_relative_layout_handle);
+                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
 
                     holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
 
@@ -327,7 +322,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
                     holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
 
-                    holder.relativeLayoutHandle = (RelativeLayout) convertView.findViewById(R.id.exercise_relative_layout_handle);
+                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
 
                     holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
 
@@ -341,7 +336,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
                     holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
 
-                    holder.relativeLayoutHandle = (RelativeLayout) convertView.findViewById(R.id.exercise_relative_layout_handle);
+                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
 
                     holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
 
@@ -354,7 +349,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
                     holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
 
-                    holder.relativeLayoutHandle = (RelativeLayout) convertView.findViewById(R.id.exercise_relative_layout_handle);
+                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
 
                     holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
 
@@ -368,7 +363,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
                     holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
 
-                    holder.relativeLayoutHandle = (RelativeLayout) convertView.findViewById(R.id.exercise_relative_layout_handle);
+                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
 
                     holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
 
@@ -385,15 +380,12 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
         switch (type) {
             case CIRCUIT_BUTTONS:
                 emptyFlag = true;
+
+                /*
                 holder.browseButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(_context, BrowseActivity.class);
-//                        Log.d("Test", "Browse called from circuit: " + circuit);
-                            /*
-                            i.putExtra("EXTRA_CIRCUIT_OPEN", true);
-                            i.putExtra("EXTRA_CIRCUIT_NUMBER", group);
-                            */
                         WorkoutData.get(_context).setStateCircuitOpenStatus(true);
                         WorkoutData.get(_context).setStateCircuit(group);
                         WorkoutData.get(_context).setBrowseState(WORKOUT_BROWSE);
@@ -402,7 +394,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                         _context.startActivity(i);
                     }
                 });
-                //}
+
 
                 holder.plusButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -413,18 +405,17 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                             e.setAnimate(true);
                             Workout.get(group).addExerciseAtIndex(CircuitSize - 1, e);
                             notifyDataSetChanged();
-                                /*
-                                ((WorkspaceActivity) _context).ListFragment
-                                        .workspaceListView.setSelectedChild(group, child, false);
-                                        */
                             ((WorkspaceActivity) _context).ListFragment                                                     ///////////////////////////THIS NEEDS TO SCALE FOR RESOLUTIONS
                                     .workspaceListView.smoothScrollBy(height, 800);
                         }
                     }
                 });
+                */
+
                 break;
             case WORKOUT_BUTTONS:
                 emptyFlag = true;
+                /*
                 holder.addCircuitButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -443,11 +434,6 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(_context, BrowseActivity.class);
-//                        Log.d("Test", "Browse called from circuit: " + circuit);
-                        /*
-                        i.putExtra("EXTRA_CIRCUIT_NUMBER", group);
-                        i.putExtra("EXTRA_CIRCUIT_OPEN", false);
-                        */
                         WorkoutData.get(_context).setStateCircuitOpenStatus(false);
                         WorkoutData.get(_context).setStateCircuit(group);
                         WorkoutData.get(_context).setBrowseState(WORKOUT_BROWSE);
@@ -467,15 +453,13 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                             e.setAnimate(true);
                             WorkoutData.get(_context).addClosedCircuit(e, WorkoutSize -1);
                             notifyDataSetChanged();
-                            /*
-                            ((WorkspaceActivity) _context).ListFragment
-                                    .workspaceListView.setSelectedChild(group, child, false);
-                                    */
                             ((WorkspaceActivity) _context).ListFragment                               ///////////////////////////THIS NEEDS TO SCALE FOR RESOLUTIONS
                                     .workspaceListView.smoothScrollBy(height, 800);
                         }
                     }
                 });
+                */
+
                 break;
             case EMPTY_BUTTONS:
                 emptyFlag = true;
@@ -534,11 +518,11 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
 
         if(Workout.get(group).getExercise(child).isToggled()){
-            convertView.findViewById(R.id.exercise_relative_layout_handle).setBackgroundResource(R.drawable.circuit_selected);
+            convertView.findViewById(R.id.LAYOUT_HANDLE).setBackgroundResource(R.drawable.circuit_selected);
             //convertView.findViewById(R.id.exercise_relative_layout_handle).setPressed(true);
         } else if(!emptyFlag){
-            if(convertView.findViewById(R.id.exercise_relative_layout_handle) != null)
-                convertView.findViewById(R.id.exercise_relative_layout_handle).setBackgroundResource(R.drawable.circuit_notselected);
+            if(convertView.findViewById(R.id.LAYOUT_HANDLE) != null)
+                convertView.findViewById(R.id.LAYOUT_HANDLE).setBackgroundResource(R.drawable.circuit_notselected);
             //convertView.findViewById(R.id.exerciseMainLayout).setBackgroundColor(Color.BLUE);
 
         } else {
@@ -790,47 +774,15 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
         holder.exerciseCheckImage.setLayoutParams(params);
 
-        holder.relativeLayoutHandle.addView(holder.exerciseCheckImage);
+        holder.layoutHandle.addView(holder.exerciseCheckImage);
         holder.dataLayoutHandle.setTranslationX(mCheckedIndentation);
     }
-    /*
-    @Override
-    public void onDrop(int type, int destinationExerciseIndex ,int destinationCircuitIndex) {
-        synchronized (Workout) {//Save to temp, remove from workout
 
-            if (destinationCircuitIndex >= Workout.size() - 1) {             //if the destination circuit is the last or later
-                destinationExerciseIndex = -1;
-
-            }
-            switch (type) {
-                case CIRCUIT:
-                    WorkoutData.get(_context).placeTempCircuit(destinationCircuitIndex);
-
-                    break;
-                case EXERCISE:  //passed location is a group child
-                    switch (destinationExerciseIndex){
-                        case -1:
-                            WorkoutData.get(_context).addClosedCircuitWithTempExercise(destinationCircuitIndex);
-                            break;
-                        default:
-                            WorkoutData.get(_context).placeTempExercise(destinationCircuitIndex, destinationExerciseIndex);
-                            break;
-                    }
-                    break;
-            }
-            notifyDataSetChanged();
-            ((WorkspaceActivity) _context).ListFragment.restoreListExpansion();
-        }
-    }
-    */
     public static class ChildViewHolder {
-        public ImageButton plusButton;
-        public ImageButton browseButton;
-        public ImageButton addCircuitButton;
 
         public TextView exerciseNameText;
 
-        public RelativeLayout relativeLayoutHandle;
+        public LinearLayout layoutHandle;
 
         public LinearLayout dataLayoutHandle;
 
@@ -848,4 +800,5 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
         public ImageView arrow;
     }
+
 }

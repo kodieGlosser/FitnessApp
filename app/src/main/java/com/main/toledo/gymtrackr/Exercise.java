@@ -7,7 +7,6 @@ import java.util.ArrayList;
  * Created by Adam on 2/9/2015.
  */
 public class Exercise {
-
     private int m_id;
 
     private String m_name;
@@ -26,6 +25,7 @@ public class Exercise {
     private boolean m_bTime;
     private boolean m_bOther;
     private String m_sOther;
+    private int m_exercise_id;
 
     private int m_lastPerformed;  //this will be an integer value of the last time the exercise was
     //performed, used to organize browse menu
@@ -38,6 +38,10 @@ public class Exercise {
     private boolean mAnimate = false;
 
     public Exercise(String name, String muscleGroup, int lastPerformed, String equipmentType){
+        m_exercise_id = WorkoutData.STABLE_ID;
+        WorkoutData.STABLE_ID++;
+        Log.d("EXERCISE CONS 1", "Exercise id: " + m_exercise_id + " Exercise name: " + name);
+
         this.m_name = name;
         this.m_muscleGroup = muscleGroup;
         this.m_lastPerformed = lastPerformed;
@@ -49,10 +53,16 @@ public class Exercise {
         //tests for whether exercise was used or not, used when saving history
         mSaveToHistory = false;
         mToggled = false;
+
+
     }
     //db constructor
     //called when loading a plan
     public Exercise(int id, String name, int repetitions, int weight, int sequence, int oneRepMaxPercent, int time, int other){
+        m_exercise_id = WorkoutData.STABLE_ID;
+        WorkoutData.STABLE_ID++;
+        Log.d("EXERCISE CONS 2", "Exercise id: " + m_exercise_id + " Exercise name: " + name);
+
         this.m_id = id;
         this.m_name = name;
         this.m_repetitions = repetitions;
@@ -101,6 +111,10 @@ public class Exercise {
 
     //called from browse
     public Exercise(int id, String name, String muscleGroup, String equipmentType, String targetMuscle, int oneRepMax, boolean weight, boolean reps, boolean time, boolean other, String s_other){
+        m_exercise_id = WorkoutData.STABLE_ID;
+        WorkoutData.STABLE_ID++;
+        Log.d("EXERCISE CONS 3", "Exercise id: " + m_exercise_id + " Exercise name: " + name);
+
         this.m_id = id;
         this.m_name = name;
         this.m_muscleGroup = muscleGroup;
@@ -151,6 +165,10 @@ public class Exercise {
     }
 
     public Exercise(){
+        m_exercise_id = WorkoutData.STABLE_ID;
+        WorkoutData.STABLE_ID++;
+        Log.d("EXERCISE CONS 4", "Exercise id: " + m_exercise_id + " Exercise name: test");
+
         m_name = "test";
         m_muscleGroup = "test";
         m_lastPerformed = 0;
@@ -186,6 +204,7 @@ public class Exercise {
         m_metrics.add(repMetric);
     }
     */
+    public void setStableExerciseId(int id){m_exercise_id = id;}
     public void setOneRepMax(int oneRepMax) { this.m_oneRepMax = oneRepMax; }
 
     public int getOneRepMax() { return this.m_oneRepMax; }
@@ -263,6 +282,8 @@ public class Exercise {
     public void setToggled(boolean b){mToggled = b;}
 
     public boolean isToggled(){return mToggled;}
+
+    public int getStableID(){return m_exercise_id;}
 
     public int getMetricValueByType(metricType metricType){
         int i = 0;

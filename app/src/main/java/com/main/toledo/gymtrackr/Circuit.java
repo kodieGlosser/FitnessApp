@@ -15,15 +15,20 @@ import java.util.ArrayList;
  * Created by Adam on 2/9/2015.
  */
 public class Circuit {
+    private int m_circuit_id;
 
     protected ArrayList<Exercise> exercises = new ArrayList<Exercise>();
     private String name;
     private boolean isOpen;
     private boolean isExpanded = true;
     private int id;
+
     //test for null pointer in workout data
 
     public Circuit(){
+        m_circuit_id = WorkoutData.STABLE_ID;
+        WorkoutData.STABLE_ID++;
+        Log.d("CIRCUIT", "Circuit id: " + m_circuit_id);
         name = "Placeholder";
     }
 
@@ -41,6 +46,8 @@ public class Circuit {
     public Exercise getExercise(int i){
         return exercises.get(i);
     }
+
+    public int getStableID(){return m_circuit_id;}
 
     public void removeExercise(int i) {exercises.remove(i);}
 

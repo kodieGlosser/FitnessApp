@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -67,9 +66,11 @@ public class WorkspacePalletFragment extends Fragment {
                         mWindowManager.addView(UIDraggable, mWindowParams);
 
                         //Todo readability: what is 2?
+                        /*
                         ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.mDraggedItemType = 2;
                         ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.setDragSpacing(200);
-                        ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.currentXPos = 150;
+                        ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.mCurrentXPos = 150;
+                        */
                         break;
                     }
 
@@ -83,10 +84,10 @@ public class WorkspacePalletFragment extends Fragment {
                             mWindowManager.updateViewLayout(UIDraggable, layoutParams);
 
                             //TODO make scalable
-
-                            ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.currentYPos = (int)y + 1300;
+                            /*
+                            ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.mCurrentYPos = (int)y + 1300;
                             ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.dragHandling(false);
-
+                            */
                         }
                         break;
                     }
@@ -99,8 +100,10 @@ public class WorkspacePalletFragment extends Fragment {
                             wm.removeView(UIDraggable);
                             UIDraggable.setImageDrawable(null);
                             UIDraggable = null;
+                            /*
                             ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.closeUI();
                             ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.placeGenericExercise();
+                            */
                         }
                     }
                 }
@@ -145,12 +148,14 @@ public class WorkspacePalletFragment extends Fragment {
                         mWindowManager.addView(UIDraggable, mWindowParams);
 
                         //Todo readability: what is 1?
+                        /*
                         ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.mDraggedItemType = 1;
                         ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.setDragSpacing(200);
-                        ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.currentXPos = 150;
+                        ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.mCurrentXPos = 150;
 
                         //call thing to collapse groups
                         ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.startedDraggingCircuit();
+                        */
                         break;
                     }
 
@@ -164,10 +169,10 @@ public class WorkspacePalletFragment extends Fragment {
                             mWindowManager.updateViewLayout(UIDraggable, layoutParams);
 
                             //TODO make scalable
-
-                            ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.currentYPos = (int) y + 1300;
+                            /*
+                            ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.mCurrentYPos = (int) y + 1300;
                             ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.dragHandling(false);
-
+                            */
                         }
                         break;
                     }
@@ -180,8 +185,10 @@ public class WorkspacePalletFragment extends Fragment {
                             wm.removeView(UIDraggable);
                             UIDraggable.setImageDrawable(null);
                             UIDraggable = null;
+                            /*
                             ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.closeUI();
                             ((WorkspaceActivity) getActivity()).ListFragment.workspaceListView.placeNewCircuit();
+                            */
                         }
                     }
                 }

@@ -21,7 +21,7 @@ public class WorkoutData {
     private Circuit mTempCircuit;
     private Exercise mTempExercise;
     private Exercise mToggledExercise;
-
+    public static int STABLE_ID;
 
     //state data
     //BrowseCreate Transition
@@ -58,6 +58,30 @@ public class WorkoutData {
         Exercise e = new Exercise();
         c.add(e);
         Workout.add(c);
+        doStubs();
+    }
+
+    private void doStubs(){
+        Circuit circuitOne = new Circuit();
+        circuitOne.setOpenStatus(true);
+        circuitOne.setName("Circuit One");
+        circuitOne.add(new Exercise(0, "1", 0, 0, 0, 0, 0, -1));
+        circuitOne.add(new Exercise(1, "2", 0, 0, 0, 0, 0, -1));
+        circuitOne.add(new Exercise(2, "3", 0, 0, 0, 0, 0, -1));
+        circuitOne.add(new Exercise(3, "4", 0, 0, 0, 0, 0, -1));
+        circuitOne.add(new Exercise());
+
+        Circuit circuitTwo = new Circuit();
+        circuitTwo.setOpenStatus(true);
+        circuitTwo.setName("Circuit Two");
+        circuitTwo.add(new Exercise(0, "1", 0, 0, 0, 0, 0, -1));
+        circuitTwo.add(new Exercise(1, "2", 0, 0, 0, 0, 0, -1));
+        circuitTwo.add(new Exercise(2, "3", 0, 0, 0, 0, 0, -1));
+        circuitTwo.add(new Exercise(3, "4", 0, 0, 0, 0, 0, -1));
+        circuitTwo.add(new Exercise());
+
+        Workout.add(0, circuitOne);
+        Workout.add(1, circuitTwo);
     }
 
     public static WorkoutData get(Context c){
@@ -102,12 +126,11 @@ public class WorkoutData {
         Workout.add(circuitNumber, c);
     }
 
-    public void addClosedCircuitWithTempExercise(int circuitNumber){
+    public void placeClosedCircuitWithExercise(int circuitNumber, Exercise exercise){
         Circuit c = new Circuit();
         c.setOpenStatus(false);
-        c.add(mTempExercise);
+        c.add(exercise);
         Workout.add(circuitNumber, c);
-        mTempExercise = null;
     }
 
     public void addClosedCircuitWithGenericExercise(int circuitNumber){
@@ -148,13 +171,13 @@ public class WorkoutData {
 
     public Exercise getToggledExercise(){return mToggledExercise;}
 
-    public Exercise getToggledExerciseCopy(){
-        Exercise e = new Exercise();
-        e.setName(mToggledExercise.getName());
-        e.setEquipment(mToggledExercise.getEquipment());
-        e.setMuscleGroup(mToggledExercise.getMuscleGroup());
-        e.setId(mToggledExercise.getId());
-        for(Metric m : mToggledExercise.getMetrics()){
+    public Exercise getCopyExercise(Exercise originalExercise){
+        Exercise copyExercise = new Exercise();
+        copyExercise.setName(originalExercise.getName());
+        copyExercise.setEquipment(originalExercise.getEquipment());
+        copyExercise.setMuscleGroup(originalExercise.getMuscleGroup());
+        copyExercise.setId(originalExercise.getId());
+        for(Metric m : originalExercise.getMetrics()){
             Metric metric = new Metric();
             metric.setType(m.getType());
             switch(m.getType()){
@@ -171,9 +194,9 @@ public class WorkoutData {
                     metric.setMetricStringValue(m.getMetricStringValue());
                     break;
             }
-            e.addMetrics(metric);
+            copyExercise.addMetrics(metric);
         }
-        return e;
+        return copyExercise;
     }
 
     public void setTempExercise(int circuit, int exercise){
@@ -183,6 +206,7 @@ public class WorkoutData {
             Workout.remove(circuit);
         }
     }
+
     public void placeTempExercise(int circuit, int exercise){
         Workout.get(circuit).add(exercise, mTempExercise);
         mTempExercise = null;

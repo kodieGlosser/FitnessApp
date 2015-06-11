@@ -1,22 +1,29 @@
 package com.main.toledo.gymtrackr;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.TypeEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.PixelFormat;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.widget.AbsListView;
 import android.widget.ExpandableListView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
@@ -25,79 +32,80 @@ import java.util.ArrayList;
  * WARNING:  THIS CODE IS BUTT
  * UPDATE: 5/13/2015
  * BUTT FACTOR REDUCED BY 60%
+ * UPDATE: 5/19/2015 BUTT FACTOR REDUCED BY AN ADDITIONAL 15%
  */
 public class WorkspaceExpandableListView extends ExpandableListView {
-    private boolean mDragMode;
-    //private boolean mToggle = true;
 
-    private int m_startGroupPosition;
-    private int m_startChildPosition;
+    private final String logTag = "DRAGGABLE TESTS";
 
-    private int m_endGroupPosition;
-    private int m_endChildPosition;
-
-    private int mStartPosition;
-    private int mDragPointOffset;        //Used to adjust drag view location
-
-    private int mDraggedItemDestination;
-    private int mPosition;
-
-    private final int DOWN = 2;
-    private final int UP = 1;
-    public final int CIRCUIT = 1;
-    public final int EXERCISE = 2;
-
-    public int mDraggedItemType;
-    private int mDirection;
-    //TODO: Maybe 0 is a bad thing
-    private int mLastY = 0;
-
-    private Exercise mToggledExerciseHandle;
+    private final int SMOOTH_SCROLL_AMOUNT_AT_EDGE = 15;
+    private final int MOVE_DURATION = 150;
+    private final int LINE_THICKNESS = 15;
 
     private ArrayList<Circuit> Workout = new ArrayList<>();
-    private LinearLayout mOpenedLayoutHandle;
-    private LinearLayout.LayoutParams mOpenParams;
-    private LinearLayout.LayoutParams mClosedParams;
-
-    private ImageView mDragView;
 
     private Context mContext;
+
+    //SCROLL STUFF
+    private boolean mDragMode = false;
+    private boolean mIsMobileScrolling = false;
+    private boolean mIsWaitingForScrollFinish = false;
+    private int mSmoothScrollAmountAtEdge = 0;
+    private int mScrollState = OnScrollListener.SCROLL_STATE_IDLE;
 
     //GLOBAL VARS
     private int SCREENWIDTH;
     private int SCREENHEIGHT;
 
     //DRAG COUNTDOWN VARS
-    private boolean dragInProgress = false;
-    public int currentXPos;
-    public int currentYPos;
-    private int dragRawY;
-    private ImageView DragIcon;
-    private int dragTimerInterval = 150;
-    private int dragHoldBounds;
-    private boolean cancelDrag;
-    private int mTouchCount = 0;
+    private boolean mDragInProgress = false;
+    public int mDownY;
+    public int mLastEventY;
 
-    //LIST SCROLLERS
-    private boolean scroll = false;
-    private android.os.Handler handler = new android.os.Handler();
-    private Runnable upRunnable = new Runnable() {
+    private int mTotalOffset = 0;
+    //HoverView
+    private BitmapDrawable mHoverCell;
+    private Rect mHoverCellCurrentBounds;
+    private Rect mHoverCellOriginalBounds;
 
-        @Override
-        public void run() {
-            smoothScrollBy(-10, 5);
-            handler.postDelayed(this, 5);
-        }
-    };
-    private Runnable downRunnable = new Runnable() {
+    //pointer id
+    private final int INVALID_POINTER_ID = -1;
+    private int mActivePointerId = INVALID_POINTER_ID;
 
-        @Override
-        public void run() {
-            smoothScrollBy(10, 5);
-            handler.postDelayed(this, 5);
-        }
-    };
-    private boolean scrollUp;
+    private final int INVALID_ID = -1;
+    private int mAboveItemId = INVALID_ID;
+    private int mMobileItemId = INVALID_ID;
+    private int mBelowItemId = INVALID_ID;
+
+    //SWAP VARS
+    final private int INVALID_POSITION = -1;
+    final private int ABOVE = 1;
+    final private int BELOW = 2;
+
+    private boolean mSwapInProgress = false;
+
+    private int ABOVE_VALID_GROUP = INVALID_POSITION;
+    private int ABOVE_VALID_POSITION = INVALID_POSITION;
+    private boolean ABOVE_GROUP_IS_OPEN = false;
+
+    private int BELOW_VALID_POSITION = INVALID_POSITION;
+    private int BELOW_VALID_GROUP = INVALID_POSITION;
+    private boolean BELOW_GROUP_IS_OPEN = false;
+
+    private int CURRENT_CHILD = INVALID_POSITION;
+    private int CURRENT_GROUP = INVALID_POSITION;
+    private boolean CURRENT_GROUP_IS_OPEN = false;
+
+    //private int LAST_CHILD = INVALID_POSITION;
+    //private int LAST_GROUP = INVALID_POSITION;
+   //private boolean LAST_GROUP_IS_OPEN = false;
+
+    //TYPE
+    private final int DRAGGED_ITEM_INVALID = -1;
+    private int mDraggedItemType = DRAGGED_ITEM_INVALID;
+
+    //ITEM IDS
+
 
     public WorkspaceExpandableListView(Context context, AttributeSet attrs) {
 
@@ -112,20 +120,20 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         SCREENHEIGHT = size.y;
 
         //DRAG COUNTDOWN VARS
-        dragHoldBounds = (int)(SCREENWIDTH * .047);
+        //dragHoldBounds = (int)(SCREENWIDTH * .047);
+        //setOnItemLongClickListener(mOnItemLongClickListener);
+        //setOnScrollListener(mScrollListener);
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        mSmoothScrollAmountAtEdge = (int)(SMOOTH_SCROLL_AMOUNT_AT_EDGE / metrics.density);
     }
-    /*
-    public void toggleListeners(boolean b) {
-        mToggle = b;
-    }
-    */
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        final int action = ev.getAction();
-        final int x = (int) ev.getX();
-        final int y = (int) ev.getY();
 
-        if ((action == MotionEvent.ACTION_DOWN && x < this.getWidth() / 4)) {// && mToggle) {
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        final int action = event.getAction();
+        final int x = (int) event.getX();
+        final int y = (int) event.getY();
+
+        if ((action == MotionEvent.ACTION_DOWN && x > this.getWidth() * 9 / 10)) {
             if (getPackedPositionType(getExpandableListPosition(pointToPosition(x, y))) == PACKED_POSITION_TYPE_GROUP) {
                 if (!WorkoutData.get(mContext).getWorkout()
                         .get(getPackedPositionGroup(getExpandableListPosition(pointToPosition(x, y)))).isOpen()) {
@@ -137,536 +145,652 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                 mDragMode = true;
             }
         }
-
         //  DRAG LOGIC
 
         if (mDragMode) {
             switch (action) {
                 case MotionEvent.ACTION_DOWN: //mouse button is initially pressed
+                    mDownY = y;
+                    mTotalOffset = 0;
+                    mActivePointerId = event.getPointerId(0);
+                    int startPosition = pointToPosition(x, y);
 
-                    mTouchCount++;
-                    currentXPos = x;
-                    currentYPos = y;
-                    dragRawY = (int) ev.getRawY();
-                    boolean okayToDrag = checkIfValidPosition();
-                    if (okayToDrag) {
-                        dragDelayIcon(x, y);
-                        dragTimer(x, y, mTouchCount);
+                    if (checkIfValidPosition(startPosition)) {
+                        View selectedView = getChildAt(startPosition - getFirstVisiblePosition());
+                        //get item id
+                        long expListPos = getExpandableListPosition(startPosition);
+                        mDraggedItemType = getPackedPositionType(expListPos);
+
+                        CURRENT_GROUP = getPackedPositionGroup(expListPos);
+                        CURRENT_CHILD = getPackedPositionChild(expListPos);
+                        CURRENT_GROUP_IS_OPEN = Workout.get(CURRENT_GROUP).isOpen();
+
+                        if(mDraggedItemType == PACKED_POSITION_TYPE_CHILD){
+                            mMobileItemId = Workout.get(CURRENT_GROUP).getExercise(CURRENT_CHILD).getStableID();
+                            Log.d(logTag, "Current Item id = " + mMobileItemId);
+                        } else if(mDraggedItemType == PACKED_POSITION_TYPE_GROUP){
+                            mMobileItemId = Workout.get(CURRENT_GROUP).getStableID();
+                        }
+
+                        mHoverCell = getAndAddHoverView(selectedView);
+
+                        selectedView.setVisibility(INVISIBLE);
+                        getValidPositions();
+                        updateNeighborViewsForCurrentPosition();
+
+                        mDragInProgress = true;
+                        //startDrag();
                     }
+
                     break;
                 case MotionEvent.ACTION_MOVE: //mose if moved
+                    if (mActivePointerId == INVALID_POINTER_ID) {
+                        break;
+                    }
 
-                    currentXPos = x;
-                    currentYPos = y;
-                    dragRawY = (int) ev.getRawY();
-                    if (dragInProgress) {
-                        dragHandling(true);
+                    int pointerIndex = event.findPointerIndex(mActivePointerId);
+
+                    mLastEventY = (int) event.getY(pointerIndex);
+                    int deltaY = mLastEventY - mDownY;
+
+                    if (mDragInProgress) {
+                        mHoverCellCurrentBounds.offsetTo(mHoverCellOriginalBounds.left,
+                                mHoverCellOriginalBounds.top + deltaY + mTotalOffset);
+                        mHoverCell.setBounds(mHoverCellCurrentBounds);
+                        invalidate();
+
+                        handleCellSwitch();
+
+                        mIsMobileScrolling = false;
+                        handleMobileCellScroll();
+
+                        return false;
                     }
 
                     break;
                 case MotionEvent.ACTION_CANCEL:
+                    touchEventsCancelled();
+                    break;
                 case MotionEvent.ACTION_UP: //mouse button is released
+                    touchEventsEnded();
+                    break;
+                case MotionEvent.ACTION_POINTER_UP:
+                /* If a multitouch event took place and the original touch dictating
+                 * the movement of the hover cell has ended, then the dragging event
+                 * ends and the hover cell is animated to its corresponding position
+                 * in the listview. */
+                    pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >>
+                            MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+                    final int pointerId = event.getPointerId(pointerIndex);
+                    if (pointerId == mActivePointerId) {
+                        touchEventsEnded();
+                    }
+                    break;
                 default:
-                    placeDraggedItem();
                     break;
             }
-            return true;
         }
-        return super.onTouchEvent(ev);
+        return super.onTouchEvent(event);
     }
 
-    private void placeDraggedItem(){
-        mDragMode = false;
-        abortCountdown();
-        if (dragInProgress) {
-            //close spacing between items
-            mOpenedLayoutHandle.setLayoutParams(mClosedParams);
-            mOpenedLayoutHandle = null;
-            //remove drag icon
-            stopDragAndScroll();
+    private void handleCellSwitch() {
+        //Log.d(logTag, "handleCellSwitch()");
+        final int deltaY = mLastEventY - mDownY;
+        int deltaYTotal = mHoverCellOriginalBounds.top + mTotalOffset + deltaY;
 
-            m_endChildPosition = getPackedPositionChild(getExpandableListPosition(mDraggedItemDestination));
-            m_endGroupPosition = getPackedPositionGroup(getExpandableListPosition(mDraggedItemDestination));
+        View belowView = getViewForID(mBelowItemId);
+        View mobileView = getViewForID(mMobileItemId);
+        View aboveView = getViewForID(mAboveItemId);
 
-            if (!(m_endGroupPosition == -1 && m_endChildPosition == -1)) {
-                if (m_endGroupPosition < 0)
-                    m_endGroupPosition = 0;
-                onDrop(); //this gets passed the start and end LIST positions
+        boolean isBelow = (belowView != null) && (deltaYTotal > belowView.getTop());
+        boolean isAbove = (aboveView != null) && (deltaYTotal < aboveView.getTop());
+
+        //i like the use above and below thing
+        if ((isBelow || isAbove)) {
+
+            //Log.d(logTag, "is below: " + isBelow + "; is above: " + isAbove);
+            //Log.d(logTag, "moving from circuit-group: " + CURRENT_GROUP + "-" + CURRENT_CHILD);
+            final int switchItemID = isBelow ? mBelowItemId : mAboveItemId;
+            //Log.d(logTag, "handleCellSwitch(), is below or above, switchItemID = " + switchItemID);
+            View switchView = isBelow ? belowView : aboveView;
+            //final int originalItem = getPositionForView(mobileView);
+
+            if (switchView == null) {
+                getValidPositions();
+                updateNeighborViewsForCurrentPosition();
+                return;
             }
-            if (mDraggedItemType == CIRCUIT) {
-                ((WorkspaceActivity) mContext).ListFragment.onItemDrop();
-                ((WorkspaceActivity) mContext).ListFragment.setDragInProgress(false);
-            }
-            dragInProgress = false;
+            ///old current
+            if(isBelow) moveElement(BELOW);
+
+            if(isAbove) moveElement(ABOVE);
+            ///new current
+            //addition 6/5
+            mobileView.setVisibility(View.VISIBLE);
+            ((WorkspaceExpandableListAdapterMKIII) getExpandableListAdapter()).notifyDataSetChanged();
+
+            mDownY = mLastEventY;
+
+            final int switchViewStartTop = switchView.getTop();
+
+
+            Log.d(logTag, "handleCellSwitch(), getViewForID called on id: " + mMobileItemId);
+            mobileView = getViewForID(mMobileItemId);
+            Log.d(logTag, "handleCellSwitch(), MOBILE VIEW INVISIBLE!" );
+            mobileView.setVisibility(View.INVISIBLE);
+            //Alteration 6/5
+            //mobileView.setVisibility(View.VISIBLE);
+            //switchView.setVisibility(View.INVISIBLE);
+
+            getValidPositions();
+            updateNeighborViewsForCurrentPosition();
+
+            final ViewTreeObserver observer = getViewTreeObserver();
+
+            observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                public boolean onPreDraw() {
+
+                    observer.removeOnPreDrawListener(this);
+                    //Log.d(logTag, "Switch item ID: " + switchItemID);
+                    View switchView = getViewForID(switchItemID);
+
+                    mTotalOffset += deltaY;
+
+                    int switchViewNewTop = switchView.getTop();
+                    int delta = switchViewStartTop - switchViewNewTop;
+
+                    switchView.setTranslationY(delta);
+
+                    ObjectAnimator animator = ObjectAnimator.ofFloat(switchView,
+                            View.TRANSLATION_Y, 0);
+                    animator.setDuration(MOVE_DURATION);
+                    animator.start();
+                    return true;
+                }
+            });
+
+        }
+    }
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
+        if (mHoverCell != null) {
+            mHoverCell.draw(canvas);
         }
     }
 
-    private void onDrop() {
-        //synchronized (Workout) {//Save to temp, remove from workout
-        if (m_endGroupPosition >= Workout.size() - 1) {             //if the destination circuit is the last or later
-            m_endChildPosition = -1;
-        }
+    private void moveElement(int useWhich) {
+        Log.d(logTag, "moveElement() - called");
+        int TARGET_GROUP;
+        int TARGET_POSITION;
+        boolean TARGET_GROUP_IS_OPEN;
+        Exercise originalExercise;
+        Exercise copyOfExercise;
+        Object temp;
 
-        switch (mDraggedItemType) {
-            case CIRCUIT:
-                WorkoutData.get(mContext).placeTempCircuit(m_endGroupPosition);
+
+        switch(useWhich){
+            case ABOVE:
+                //Log.d(logTag, "addElement - using above");
+                TARGET_GROUP = ABOVE_VALID_GROUP;
+                TARGET_POSITION = ABOVE_VALID_POSITION;
+                TARGET_GROUP_IS_OPEN = ABOVE_GROUP_IS_OPEN;
+                temp = Workout.get(CURRENT_GROUP).getExercise(CURRENT_CHILD);
+                Workout.get(CURRENT_GROUP).removeExercise(CURRENT_CHILD);
+
+                if(TARGET_GROUP_IS_OPEN){
+                    Workout.get(TARGET_GROUP).add(TARGET_POSITION, (Exercise)temp);
+                    if(CURRENT_GROUP_IS_OPEN){
+                        //target open, current open
+                        Workout.get(CURRENT_GROUP).removeExercise(CURRENT_CHILD);
+                    }else{
+                        //target open, current closed
+                        Workout.get(CURRENT_GROUP).removeExercise(CURRENT_CHILD);
+                        Workout.remove(CURRENT_GROUP);
+                    }
+                    CURRENT_GROUP_IS_OPEN = TARGET_GROUP_IS_OPEN;
+                    CURRENT_GROUP = TARGET_GROUP;
+                    CURRENT_CHILD = TARGET_POSITION;
+                } else {
+                    WorkoutData.get(mContext).placeClosedCircuitWithExercise(TARGET_GROUP, (Exercise)temp);
+                    if(CURRENT_GROUP_IS_OPEN){
+                        //target closed, current open
+                        Workout.get(CURRENT_GROUP + 1).removeExercise(CURRENT_CHILD);
+                        CURRENT_GROUP_IS_OPEN = false;
+                        CURRENT_GROUP = TARGET_GROUP;
+                        CURRENT_CHILD = 0;
+                    }else{
+                        //target closed, current closed
+                        Workout.get(CURRENT_GROUP + 1).removeExercise(CURRENT_CHILD);
+                        Workout.remove(CURRENT_GROUP + 1);
+                        CURRENT_GROUP_IS_OPEN = false;
+                        CURRENT_GROUP = TARGET_GROUP;
+                        CURRENT_CHILD = 0;
+                    }
+                }
+
+                CURRENT_GROUP_IS_OPEN = TARGET_GROUP_IS_OPEN;
+                CURRENT_GROUP = TARGET_GROUP;
+                CURRENT_CHILD = TARGET_POSITION;
+                Workout.get(CURRENT_GROUP).removeExercise(CURRENT_CHILD);
+                if (!Workout.get(CURRENT_GROUP).isOpen()){
+                    Workout.remove(CURRENT_GROUP);
+                }
 
                 break;
-            case EXERCISE:  //passed location is a group child
-                switch (m_endChildPosition){
-                    case -1:
-                        WorkoutData.get(mContext).addClosedCircuitWithTempExercise(m_endGroupPosition);
-                        break;
-                    default:
-                        WorkoutData.get(mContext).placeTempExercise(m_endGroupPosition, m_endChildPosition);
-                        break;
+            case BELOW:
+
+                TARGET_GROUP = BELOW_VALID_GROUP;
+                TARGET_POSITION = BELOW_VALID_POSITION;
+                TARGET_GROUP_IS_OPEN = BELOW_GROUP_IS_OPEN;
+                Log.d(logTag, "moveElement() - moving to group: " + TARGET_GROUP + " - child:" + TARGET_POSITION);
+                temp = Workout.get(CURRENT_GROUP).getExercise(CURRENT_CHILD);
+                if(TARGET_GROUP_IS_OPEN){
+                    //Target open
+                    Workout.get(TARGET_GROUP).add(TARGET_POSITION, (Exercise)temp);
+                    if(CURRENT_GROUP_IS_OPEN){
+                        //Target open,
+                        Workout.get(CURRENT_GROUP).removeExercise(CURRENT_CHILD);
+                        CURRENT_CHILD = TARGET_POSITION;
+                        CURRENT_GROUP = TARGET_GROUP;
+                        CURRENT_GROUP_IS_OPEN = true;
+                    } else {
+                        Workout.get(CURRENT_GROUP).removeExercise(CURRENT_CHILD);
+                        Workout.remove(CURRENT_GROUP);
+                        CURRENT_GROUP_IS_OPEN = true;
+                    }
+                } else {
+                    WorkoutData.get(mContext).placeClosedCircuitWithExercise(TARGET_GROUP, (Exercise)temp);
+                    Workout.get(CURRENT_GROUP).removeExercise(CURRENT_CHILD);
+                    if(CURRENT_GROUP_IS_OPEN){
+
+                    } else {
+                        Workout.remove(CURRENT_GROUP);
+                    }
+                    CURRENT_GROUP_IS_OPEN = false;
+                    CURRENT_GROUP = TARGET_GROUP;
+                    CURRENT_CHILD = TARGET_POSITION;
                 }
+
                 break;
+            default:
+                return;
         }
-        ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
-        ((WorkspaceActivity) mContext).ListFragment.restoreListExpansion();
+        Log.d(logTag, "moveElement() CURRENT_GROUP: " + CURRENT_GROUP + " - CURRENT_CHILD: " + CURRENT_CHILD);
     }
 
-    public void placeGenericExercise(){
-        if (mOpenedLayoutHandle != null) {
-            mOpenedLayoutHandle.setLayoutParams(mClosedParams);
-            mOpenedLayoutHandle = null;
+    private BitmapDrawable getAndAddHoverView(View v) {
 
-            m_endChildPosition = getPackedPositionChild(getExpandableListPosition(mDraggedItemDestination));
-            m_endGroupPosition = getPackedPositionGroup(getExpandableListPosition(mDraggedItemDestination));
+        int w = v.getWidth();
+        int h = v.getHeight();
+        int top = v.getTop();
+        int left = v.getLeft();
+        //Log.d(logTag, "getandaddhoverview - w: " + w + "; h: " + h + "; top: " + top + "; left: " + left);
+        Bitmap b = getBitmapWithBorder(v);
 
-            if (!(m_endGroupPosition == -1 && m_endChildPosition == -1)) {
+        BitmapDrawable drawable = new BitmapDrawable(getResources(), b);
 
-                if (m_endGroupPosition < 0) //beginning of workout
-                    m_endGroupPosition = 0;
+        mHoverCellOriginalBounds = new Rect(left, top, left + w, top + h);
+        mHoverCellCurrentBounds = new Rect(mHoverCellOriginalBounds);
 
-                if (m_endGroupPosition >= Workout.size() - 1)              //if the destination circuit is the last or later
-                    m_endChildPosition = -1;
+        drawable.setBounds(mHoverCellCurrentBounds);
 
-                switch (m_endChildPosition) {
-                    case -1:
-                        WorkoutData.get(mContext).addClosedCircuitWithGenericExercise(m_endGroupPosition);
-                        break;
-                    default:
-                        WorkoutData.get(mContext).placeGenericExercise(m_endGroupPosition, m_endChildPosition);
-                        break;
-                }
-                ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
-            }
-        }
+        return drawable;
     }
 
-    public void placeNewCircuit() {
-        if (mOpenedLayoutHandle != null) {
-            mOpenedLayoutHandle.setLayoutParams(mClosedParams);
-            mOpenedLayoutHandle = null;
+    /** Draws a black border over the screenshot of the view passed in. */
+    private Bitmap getBitmapWithBorder(View v) {
+        Bitmap bitmap = getBitmapFromView(v);
+        Canvas can = new Canvas(bitmap);
 
-            m_endGroupPosition = getPackedPositionGroup(getExpandableListPosition(mDraggedItemDestination));
-            if (!(m_endGroupPosition < 0)) {
-                WorkoutData.get(mContext).placeNewCircuit(m_endGroupPosition);
-                ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
-            }
-            ((WorkspaceActivity) mContext).ListFragment.restoreListExpansion();
-        }
+        Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(LINE_THICKNESS);
+        paint.setColor(Color.BLACK);
+
+        can.drawBitmap(bitmap, 0, 0, null);
+        can.drawRect(rect, paint);
+
+        return bitmap;
     }
 
-    public void startedDraggingCircuit(){
-        ((WorkspaceActivity) mContext).ListFragment.setDragInProgress(true);
-        ((WorkspaceActivity) mContext).ListFragment.collapseAllGroups();
-        mDraggedItemDestination = pointToPosition(currentXPos, currentYPos) - getFirstVisiblePosition();
+    private Bitmap getBitmapFromView(View v) {
+        Bitmap bitmap = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas (bitmap);
+        v.draw(canvas);
+        return bitmap;
     }
 
-    public void clearHandle() {
-        if (mToggledExerciseHandle != null) {
-            mToggledExerciseHandle.setToggled(false);
-            mToggledExerciseHandle = null;
-        }
-    }
+    private void updateNeighborViewsForCurrentPosition() {
+        //above id
+        if(CURRENT_GROUP == INVALID_POSITION) return;
 
-    public void closeUI(){
-        if (mOpenedLayoutHandle != null){
-            mOpenedLayoutHandle.setLayoutParams(mClosedParams);
-        }
-    }
-    private void openUI(int position, View v) {
-        Log.d("WELV", "OpenUI called->Position: " + position);
-        if (v != null && position != -1) {
-
-            int group = getPackedPositionGroup(getExpandableListPosition(position));
-            while (group == -1) {
-                position--;
-                group = getPackedPositionGroup(getExpandableListPosition(position));
-            }
-
-            if (!(!Workout.get(group).isOpen()
-                    && (getPackedPositionChild(getExpandableListPosition(position)) == 0))) {
-
-                if (mOpenedLayoutHandle != null)
-                    mOpenedLayoutHandle.setLayoutParams(mClosedParams);
-
-                mOpenedLayoutHandle = (LinearLayout) v.findViewById(R.id.paddingViewLayout);
-                mOpenedLayoutHandle.setLayoutParams(mOpenParams);
-
-                mDraggedItemDestination = position;
-            }
-        }
-    }
-
-    synchronized private void drag(int x, int y) {
-        if (mDragView != null) {
-            WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) mDragView.getLayoutParams();
-            layoutParams.x = x;
-            layoutParams.y = y - mDragPointOffset;
-            WindowManager mWindowManager = (WindowManager) getContext()
-                    .getSystemService(Context.WINDOW_SERVICE);
-            mWindowManager.updateViewLayout(mDragView, layoutParams);
-        }
-        //List move codef
-        int topThreshHold = this.getHeight()/5;
-
-        if (currentYPos < topThreshHold && !scroll){
-            //start scroll
-            scroll = true;
-            scrollUp = true;
-
-            handler.postDelayed(upRunnable, 0);
-        } else if (currentYPos > topThreshHold && scrollUp){
-            //stop scroll
-            handler.removeCallbacks(upRunnable);
-            scroll = false;
-
+        if(CURRENT_CHILD == INVALID_POSITION){
+            //group header
+            mAboveItemId = INVALID_ID;
+            mBelowItemId = INVALID_ID;
+            return;
         }
 
-        int bottomThreshHold = this.getHeight()-(this.getHeight()/5);
-        if (currentYPos > bottomThreshHold){
-            scrollUp = false;
-
-            scroll = true;
-            handler.postDelayed(downRunnable, 0);
-        } else if (currentYPos < bottomThreshHold && !scrollUp){
-            handler.removeCallbacks(downRunnable);
-            scroll = false;
-        }
-    }
-
-    public void setDragSpacing(int viewHeight){
-        mClosedParams = new LinearLayout.LayoutParams(1, 0);
-        mOpenParams = new LinearLayout.LayoutParams(1, viewHeight);
-    }
-
-    // enable the drag view for dragging
-    private void startDrag(int InitialItemPositionOnScreen, int x, int y) {
-        int itemHeight;
-
-        stopDragAndScroll();//InitialItemPositionOnScreen);
-
-        View item = getChildAt(InitialItemPositionOnScreen);
-        if (item == null) return;
-        item.setDrawingCacheEnabled(true);
-        itemHeight = item.getHeight();
-        //if (mDragListener != null)
-        //   mDragListener.onStartDrag(item);
-
-
-        // Create a copy of the drawing cache so that it does not get recycled
-        // by the framework when the list tries to clean up memory
-        Bitmap bitmap = Bitmap.createBitmap(item.getDrawingCache());
-
-        WindowManager.LayoutParams mWindowParams = new WindowManager.LayoutParams();
-        mWindowParams.gravity = Gravity.TOP;
-        mWindowParams.x = 0;
-        mWindowParams.y = y - mDragPointOffset;
-
-        mWindowParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        mWindowParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        mWindowParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
-        mWindowParams.format = PixelFormat.TRANSLUCENT;
-        mWindowParams.windowAnimations = 0;
-
-        Context context = getContext();
-        ImageView imageView = new ImageView(context);
-        imageView.setImageBitmap(bitmap);
-
-        WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        mWindowManager.addView(imageView, mWindowParams);
-        mDragView = imageView;
-
-        if (getPackedPositionType(getExpandableListPosition(mStartPosition)) == PACKED_POSITION_TYPE_CHILD) {
-            m_startChildPosition = getPackedPositionChild(getExpandableListPosition(mStartPosition));
-            m_startGroupPosition = getPackedPositionGroup(getExpandableListPosition(mStartPosition));
-            WorkoutData.get(mContext).setTempExercise(m_startGroupPosition, m_startChildPosition);
-            mDraggedItemType = EXERCISE;
-        } else if (getPackedPositionType(getExpandableListPosition(mStartPosition)) == PACKED_POSITION_TYPE_GROUP) {
-            m_startChildPosition = -1;
-            m_startGroupPosition = getPackedPositionGroup(getExpandableListPosition(mStartPosition));
-            WorkoutData.get(mContext).setTempCircuit(m_startGroupPosition);
-            mDraggedItemType = CIRCUIT;
-        }
-        ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
-
-        setDragSpacing(itemHeight);
-
-        mDraggedItemDestination = pointToPosition(x, y) - getFirstVisiblePosition();
-
-        if (mDraggedItemType == CIRCUIT) {
-            ((WorkspaceActivity) mContext).ListFragment.setDragInProgress(true);
-            ((WorkspaceActivity) mContext).ListFragment.collapseAllGroups();
-            mDraggedItemDestination = pointToPosition(x, y) - getFirstVisiblePosition();
-        }
-
-        m_endGroupPosition = getPackedPositionGroup(getExpandableListPosition(mDraggedItemDestination));
-        while (m_endGroupPosition == -1) {
-            mDraggedItemDestination--;
-            m_endGroupPosition = getPackedPositionGroup(getExpandableListPosition(mDraggedItemDestination));
-
-        }
-        //GET EXERCISE ITEM HERE
-
-        //openInitialPosition()
-        //check if item is
-        m_endChildPosition = getPackedPositionChild(getExpandableListPosition(mDraggedItemDestination));
-        if (!Workout.get(m_endGroupPosition).isOpen()){
-            mDraggedItemDestination--;
-        }
-        //setSpaceToOpen();
-        if(getChildAt(mDraggedItemDestination) != null) {
-            View v = getChildAt(mDraggedItemDestination);
-            mOpenedLayoutHandle = (LinearLayout) v.findViewById(R.id.paddingViewLayout);
-            mOpenedLayoutHandle.setLayoutParams(mOpenParams);
-        }
-        //delete item from list, save in a temp location, refresh adapter
-    }
-
-    private void stopDragAndScroll() {//int itemIndex) {
-        if (mDragView != null) {
-            //if (mDragListener != null)
-            //    mDragListener.onStopDrag(getChildAt(itemIndex));
-            mDragView.setVisibility(GONE);
-            WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-            wm.removeView(mDragView);
-            mDragView.setImageDrawable(null);
-            mDragView = null;
-        }
-        //stops scrolling when dropped
-        if(scroll){
-            if(scrollUp){
-                scroll = false;
-                handler.removeCallbacks(upRunnable);
-            }else{
-                scroll = false;
-                handler.removeCallbacks(downRunnable);
-            }
-        }
-
-    }
-
-    private void dragDelayIcon(int x, int y) {
-        WindowManager.LayoutParams mWindowParams = new WindowManager.LayoutParams();
-        //mWindowParams.gravity = Gravity.TOP;
-        int xLocation;
-        if (x < SCREENWIDTH/5) { //200
-            xLocation = (int)(-SCREENWIDTH / 2 + SCREENHEIGHT / 19.2);//-500;
-        }else {
-            xLocation = x - (int) (SCREENWIDTH / 2 + SCREENHEIGHT / 19.2);//650;
-        }
-
-        mWindowParams.x = xLocation;
-        mWindowParams.y = y - (int)(SCREENHEIGHT*.4166);
-
-        mWindowParams.height = (int)(SCREENHEIGHT/19.2);
-        mWindowParams.width = (int)(SCREENHEIGHT/19.2);
-        mWindowParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
-        mWindowParams.format = PixelFormat.TRANSLUCENT;
-        mWindowParams.windowAnimations = 0;
-
-        Context context = getContext();
-        DragIcon = new ImageView(context);
-
-        DragIcon.setImageDrawable(
-                context.getResources().getDrawable(R.drawable.drag1));
-
-
-        WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        mWindowManager.addView(DragIcon, mWindowParams);
-
-    }
-
-    private void dragTimer(final int x, final int y, final int touchCount) {
-        final Context context = getContext();
-        cancelDrag = false;
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (inBounds(x, y) && !cancelDrag && (touchCount == mTouchCount)) {
-                    DragIcon.setImageDrawable(
-                            context.getResources().getDrawable(R.drawable.drag2));
-                }
-            }
-        }, dragTimerInterval);
-
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (inBounds(x, y) && !cancelDrag && (touchCount == mTouchCount)) {
-                    DragIcon.setImageDrawable(
-                            context.getResources().getDrawable(R.drawable.drag3));
-                } else {
-                    abortCountdown();
-                }
-            }
-        }, dragTimerInterval * 2);
-
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (inBounds(x, y) && !cancelDrag && (touchCount == mTouchCount)) {
-                    DragIcon.setImageDrawable(
-                            context.getResources().getDrawable(R.drawable.drag4));
-                } else {
-                    abortCountdown();
-                }
-            }
-        }, dragTimerInterval * 3);
-
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (inBounds(x, y) && !cancelDrag && (touchCount == mTouchCount)) {
-                    DragIcon.setImageDrawable(
-                            context.getResources().getDrawable(R.drawable.drag5));
-                } else {
-                    abortCountdown();
-                }
-            }
-        }, dragTimerInterval * 4);
-
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (inBounds(x, y) && !cancelDrag && (touchCount == mTouchCount)) {
-                    DragIcon.setImageDrawable(
-                            context.getResources().getDrawable(R.drawable.drag5));
-                    beginDragChecks();
-                } else {
-                    abortCountdown();
-                }
-            }
-        }, dragTimerInterval * 5);
-    }
-
-    private boolean inBounds(int x, int y) {
-        //X and Y are start x and Y values
-        if ((currentXPos < dragHoldBounds + x) && (currentXPos > x - dragHoldBounds) &&
-                (currentYPos < dragHoldBounds + y) && (currentYPos > y - dragHoldBounds)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private void abortCountdown() {
-        cancelDrag = true;
-        if (DragIcon != null) {
-            DragIcon.setVisibility(GONE);
-            WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-            wm.removeView(DragIcon);
-            DragIcon.setImageDrawable(null);
-            DragIcon = null;
-        }
-    }
-
-    private void beginDragChecks() {
-        abortCountdown();
-        mStartPosition = pointToPosition(currentXPos, currentYPos); //mstartposition is the TRUE position
-        if (mStartPosition != INVALID_POSITION) {
-            int ItemPositionOnSreen = mStartPosition - getFirstVisiblePosition();
-            mDragPointOffset = currentYPos - getChildAt(ItemPositionOnSreen).getTop(); //returns top position of this view relative to parent in pixels
-            //mLayoutHeight = getChildAt(mItemPosition).getHeight();
-            mDragPointOffset -= dragRawY - currentYPos;
-            mLastY = currentYPos;
-            dragInProgress = true;
-            startDrag(ItemPositionOnSreen, currentXPos, currentYPos);
-            //mItemPosition is the RELATIVE position on the list, 2nd item ON SCREEN vs 12th item
-
-            drag(0, currentYPos);// replace 0 with x if desired
-        }
-    }
-
-    public void dragHandling(boolean fromList) {
-        if (pointToPosition(currentXPos, currentYPos) != INVALID_POSITION) {
-            if (currentYPos > mLastY) {
-                mDirection = DOWN;
-            } else if (currentYPos < mLastY) {
-                mDirection = UP;
-            }
-
-            mLastY = currentYPos;
-
-            if (mDirection == DOWN) {
-                if(fromList)
-                    mPosition = pointToPosition(currentXPos, (currentYPos + mDragView.getHeight()));
-                else
-                    mPosition = pointToPosition(currentXPos, (currentYPos + 200));  //todo: make scale
+        if (CURRENT_GROUP_IS_OPEN) {
+            //current group is open
+            if (CURRENT_CHILD == 0) {
+                //switch view id is group header id
+                mAboveItemId = Workout.get(CURRENT_GROUP).getStableID();
             } else {
-                mPosition = pointToPosition(currentXPos, currentYPos);
+                //regular group scenario use above
+                mAboveItemId = Workout.get(ABOVE_VALID_GROUP).getExercise(ABOVE_VALID_POSITION).getStableID();
+            }
+        } else {
+            //current group is closed
+            //if top group is invalid (Current is first)
+            if (ABOVE_VALID_GROUP == INVALID_POSITION) {
+                mAboveItemId = INVALID_ID;
+            } else {
+                //swap with above valid group
+                mAboveItemId = Workout.get(ABOVE_VALID_GROUP).getExercise(ABOVE_VALID_POSITION).getStableID();
+            }
+        }
+
+        //below id
+        if (!CURRENT_GROUP_IS_OPEN) {
+            //closed group
+            if (BELOW_GROUP_IS_OPEN) {
+                //switch item is group header
+                mBelowItemId = Workout.get(BELOW_VALID_GROUP).getStableID();
+
+            } else {
+                //below group is closed get next item
+                mBelowItemId = Workout.get(BELOW_VALID_GROUP).getExercise(BELOW_VALID_POSITION).getStableID();
             }
 
-            if (!(mPosition == mDraggedItemDestination)) {
-                switch (mDraggedItemType) {
-                    case EXERCISE:
-                        if (mPosition == getLastVisiblePosition()) {
-                            View v = getChildAt(mPosition - getFirstVisiblePosition());
-                            if (v.getId() == R.id.finalItem) {
-                                mPosition--;
-                            }
-                        }
-                        openUI(mPosition, getChildAt(mPosition - getFirstVisiblePosition()));
-                        break;
-                    case CIRCUIT:
-                        if (mPosition == getLastVisiblePosition()) {
-                            View v = getChildAt(mPosition - getFirstVisiblePosition());
-                            if (v.getId() == R.id.finalItem) {
-                                mPosition--;
-                            }
-                        }
+        } else {
+            //from open circuit
+            if (!BELOW_GROUP_IS_OPEN) {
+                //to closed circuit.  return final item
+                mBelowItemId = Workout.get(CURRENT_GROUP).getExercise(CURRENT_CHILD + 1).getStableID();
+            } else {
+                //otherwise return next
+                mBelowItemId = Workout.get(BELOW_VALID_GROUP).getExercise(BELOW_VALID_POSITION).getStableID();
+            }
+        }
+        //Log.d(logTag, "updateNeighborViewsForCurrentPosition called: mBelowItemId = " + mBelowItemId);
+        //Log.d(logTag, "updateNeighborViewsForCurrentPosition called: mAboveItemId = " + mAboveItemId);
+    }
+    //todo dafuq?
+    public View getViewForID (int itemID){
+        //Log.d(logTag, "getViewForId() looking for id: " + itemID);
+        for(int i = 0; i < getChildCount(); i++) {
+            View v = getChildAt(i);
 
-                        if (getPackedPositionType(getExpandableListPosition(mPosition)) == PACKED_POSITION_TYPE_GROUP) {
-                            openUI(mPosition, getChildAt(mPosition - getFirstVisiblePosition()));
-                        }
-                        break;
+            Long expLstPos = getExpandableListPosition(getFirstVisiblePosition() + i);
+            int group = getPackedPositionGroup(expLstPos);
+            int type = getPackedPositionType(expLstPos);
+            int child = getPackedPositionChild(expLstPos);
+            //we're gonna get the position of the list item in exp list speak
+            //then check that id vs the id of what we think the id should be
+            //Log.d(logTag, "getViewForID - looking for id: " + itemID);
+            //Log.d(logTag, "getViewForID - i: " + i);
+            //Log.d(logTag, "getViewForID - explstpos: " + expLstPos);
+            //Log.d(logTag, "getViewForID - LOOKING FOR VIEW AT GROUP: " + group + " + CHILD: " + child);
+            if (type == PACKED_POSITION_TYPE_GROUP){
+                //Log.d(logTag, "getViewForID - type is group");
+                //Log.d(logTag, "getViewForID, group: " + group + " found, id == " + Workout.get(group).getStableID());
+                if(Workout.get(group).getStableID() == itemID) {
+                    //Log.d(logTag, "FOUND!");
+                    return v;
+                }
+
+            } else if (type == PACKED_POSITION_TYPE_CHILD){
+                //Log.d(logTag, "getViewForID, group/child/name " + group +"/" + child + "/" + Workout.get(group).getExercise(child).getName() + " found, id == " + Workout.get(group).getExercise(child).getStableID());
+                if(Workout.get(group).getExercise(child).getStableID() == itemID) {
+                    //Log.d(logTag, "FOUND!");
+                    v = getChildAt(i);
+                    return v;
+                }
+            }
+        }
+        //Log.d(logTag, "getViewForId() returning null!!!");
+        return null;
+    }
+
+
+    private void getValidPositions(){
+
+        boolean curGrpLast;
+
+        curGrpLast = CURRENT_GROUP == Workout.size()-1;
+
+        //DEFAULT VALS
+
+        ABOVE_VALID_GROUP = INVALID_POSITION;
+        ABOVE_VALID_POSITION = INVALID_POSITION;
+        ABOVE_GROUP_IS_OPEN = false;
+
+        BELOW_VALID_GROUP = INVALID_POSITION;
+        BELOW_VALID_POSITION = INVALID_POSITION;
+        BELOW_GROUP_IS_OPEN = false;
+
+        //LAST_GROUP = CURRENT_GROUP;
+        //LAST_CHILD = CURRENT_CHILD;
+        //LAST_GROUP_IS_OPEN = CURRENT_GROUP_IS_OPEN;
+        //*****
+        //
+        //CODE TO GET NEXT POSITION OF ITEM
+        //
+        //****
+
+        //CIRCUIT IS OPEN?
+        if (CURRENT_GROUP_IS_OPEN) {
+            Circuit curCircuit = Workout.get(CURRENT_GROUP);
+            //Next item is last (name eq test)
+            if(curCircuit.getExercise(CURRENT_CHILD+1).getName().equals("test")){
+                //next pos will be new closed circuit
+                BELOW_GROUP_IS_OPEN = false;
+                BELOW_VALID_POSITION = 0;
+                BELOW_VALID_GROUP = CURRENT_GROUP + 1;
+            } else {
+                //next item is neighbor
+                BELOW_GROUP_IS_OPEN = true;
+                BELOW_VALID_POSITION = CURRENT_CHILD + 1;
+                BELOW_VALID_GROUP = CURRENT_GROUP;
+            }
+        } else {
+            //in closed circuit
+            //is last circuit?
+            if(curGrpLast){
+                //at end, do nothing
+                BELOW_VALID_GROUP = INVALID_POSITION;
+                BELOW_VALID_POSITION = INVALID_POSITION;
+            } else {
+                //not at end
+                if(Workout.get(CURRENT_GROUP + 1).isOpen()){
+                    //Next circuit open
+                    //  add to beginning
+                    BELOW_VALID_GROUP = CURRENT_GROUP + 1;
+                    BELOW_VALID_POSITION = 0;
+                    BELOW_GROUP_IS_OPEN = true;
+                } else {
+                    //next circuit is closed
+                    BELOW_VALID_GROUP = CURRENT_GROUP + 1;
+                    BELOW_VALID_POSITION = 0;
+                    BELOW_GROUP_IS_OPEN = false;
                 }
             }
         }
 
-        if(fromList)
-            drag(0, currentYPos);// replace 0 with x if desired
+        //*****
+        //
+        //CODE TO GET PREV POSITION OF ITEM
+        //
+        //****
+        //if item is first
+        if(CURRENT_CHILD == 0){
+            if(CURRENT_GROUP_IS_OPEN){
+                //first item in open circuit
+                //  make new closed
+                ABOVE_VALID_GROUP = CURRENT_GROUP;
+                ABOVE_VALID_POSITION = 0;
+                ABOVE_GROUP_IS_OPEN = false;
+            } else {
+                //item in closed circuit
+                if(CURRENT_GROUP == 0){
+                    //  do nothing if first circuit
+                    ABOVE_VALID_POSITION = INVALID_POSITION;
+                    ABOVE_VALID_GROUP = INVALID_POSITION;
+                }else {
+                    if(Workout.get(CURRENT_GROUP - 1).isOpen()){
+                        //  add to bottom of prev open
+                        ABOVE_VALID_GROUP = CURRENT_GROUP - 1;
+                        ABOVE_VALID_POSITION = Workout.get(CURRENT_GROUP - 1).getSize() - 1;
+                        ABOVE_GROUP_IS_OPEN = true;
+                    } else{
+                        //  swap with prev closed
+                        ABOVE_VALID_GROUP = CURRENT_GROUP - 1;
+                        ABOVE_VALID_POSITION = 0;
+                        ABOVE_GROUP_IS_OPEN = false;
+                    }
+                }
+            }
+        }else{
+            //swap with prev child
+            ABOVE_VALID_GROUP = CURRENT_GROUP;
+            ABOVE_VALID_POSITION = CURRENT_CHILD - 1;
+            ABOVE_GROUP_IS_OPEN = true;
+        }
+        Log.d(logTag, "above group/position/open: " + ABOVE_VALID_GROUP + "/" + ABOVE_VALID_POSITION + "/" + ABOVE_GROUP_IS_OPEN);
+        Log.d(logTag, "current group/position/open: " + CURRENT_GROUP + "/" + CURRENT_CHILD + "/" + CURRENT_GROUP_IS_OPEN);
+        Log.d(logTag, "below group/position/open: " + BELOW_VALID_GROUP + "/" + BELOW_VALID_POSITION + "/" + BELOW_GROUP_IS_OPEN);
     }
 
-    private boolean checkIfValidPosition() {
+    private void touchEventsEnded () {
+        Log.d(logTag, "touchEventsEnded()");
+        final View mobileView = getViewForID(mMobileItemId);
+        if (mDragInProgress|| mIsWaitingForScrollFinish) {
+            mDragInProgress = false;
+            mIsWaitingForScrollFinish = false;
+            mIsMobileScrolling = false;
+            mActivePointerId = INVALID_POINTER_ID;
+
+            // If the autoscroller has not completed scrolling, we need to wait for it to
+            // finish in order to determine the final location of where the hover cell
+            // should be animated to.
+            if (mScrollState != OnScrollListener.SCROLL_STATE_IDLE) {
+                mIsWaitingForScrollFinish = true;
+                return;
+            }
+
+            mHoverCellCurrentBounds.offsetTo(mHoverCellOriginalBounds.left, mobileView.getTop());
+
+            ObjectAnimator hoverViewAnimator = ObjectAnimator.ofObject(mHoverCell, "bounds",
+                    sBoundEvaluator, mHoverCellCurrentBounds);
+            hoverViewAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    invalidate();
+                }
+            });
+            hoverViewAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    setEnabled(false);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mAboveItemId = INVALID_ID;
+                    mMobileItemId = INVALID_ID;
+                    mBelowItemId = INVALID_ID;
+                    mobileView.setVisibility(VISIBLE);
+                    mDragMode = false;
+                    mHoverCell = null;
+                    setEnabled(true);
+                    invalidate();
+                }
+            });
+            hoverViewAnimator.start();
+        } else {
+            touchEventsCancelled();
+        }
+    }
+
+    /**
+     * Resets all the appropriate fields to a default state.
+     */
+    private void touchEventsCancelled () {
+        Log.d(logTag, "touchEventsCancelled() mobileItemID: " + mMobileItemId);
+
+        View mobileView = getViewForID(mMobileItemId);
+        if (mDragMode) {
+            mAboveItemId = INVALID_ID;
+            mMobileItemId = INVALID_ID;
+            mBelowItemId = INVALID_ID;
+                mobileView.setVisibility(VISIBLE);
+
+            mHoverCell = null;
+            invalidate();
+        }
+        mDragMode = false;
+        mIsMobileScrolling = false;
+        mActivePointerId = INVALID_POINTER_ID;
+    }
+
+    private final static TypeEvaluator<Rect> sBoundEvaluator = new TypeEvaluator<Rect>() {
+        public Rect evaluate(float fraction, Rect startValue, Rect endValue) {
+            return new Rect(interpolate(startValue.left, endValue.left, fraction),
+                    interpolate(startValue.top, endValue.top, fraction),
+                    interpolate(startValue.right, endValue.right, fraction),
+                    interpolate(startValue.bottom, endValue.bottom, fraction));
+        }
+
+        public int interpolate(int start, int end, float fraction) {
+            return (int)(start + fraction * (end - start));
+        }
+    };
+
+    private void handleMobileCellScroll() {
+        mIsMobileScrolling = handleMobileCellScroll(mHoverCellCurrentBounds);
+    }
+
+    public boolean handleMobileCellScroll(Rect r) {
+        int offset = computeVerticalScrollOffset();
+        int height = getHeight();
+        int extent = computeVerticalScrollExtent();
+        int range = computeVerticalScrollRange();
+        int hoverViewTop = r.top;
+        int hoverHeight = r.height();
+
+        if (hoverViewTop <= 0 && offset > 0) {
+            smoothScrollBy(-mSmoothScrollAmountAtEdge, 0);
+            return true;
+        }
+
+        if (hoverViewTop + hoverHeight >= height && (offset + extent) < range) {
+            smoothScrollBy(mSmoothScrollAmountAtEdge, 0);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean checkIfValidPosition(int startPosition) {
         boolean okayToDrag = false;
-        int position = pointToPosition(currentXPos, currentYPos);
         int groupPosition;
         int childPosition;
         Exercise e;
         Circuit c;
-        if (position != INVALID_POSITION) {
-            if (getPackedPositionType(getExpandableListPosition(position)) == PACKED_POSITION_TYPE_CHILD) {
-                childPosition = getPackedPositionChild(getExpandableListPosition(position));
-                groupPosition = getPackedPositionGroup(getExpandableListPosition(position));
+        if (startPosition != INVALID_POSITION) {
+            if (getPackedPositionType(getExpandableListPosition(startPosition)) == PACKED_POSITION_TYPE_CHILD) {
+                childPosition = getPackedPositionChild(getExpandableListPosition(startPosition));
+                groupPosition = getPackedPositionGroup(getExpandableListPosition(startPosition));
                 e = Workout.get(groupPosition).getExercise(childPosition);
                 if (!e.getName().equals("test")) {
                     okayToDrag = true;
                 }
-            } else if (getPackedPositionType(getExpandableListPosition(position)) == PACKED_POSITION_TYPE_GROUP) {
-                groupPosition = getPackedPositionGroup(getExpandableListPosition(position));
+            } else if (getPackedPositionType(getExpandableListPosition(startPosition)) == PACKED_POSITION_TYPE_GROUP) {
+                groupPosition = getPackedPositionGroup(getExpandableListPosition(startPosition));
                 c = Workout.get(groupPosition);
                 int workoutLength = Workout.size();
                 if (c.isOpen() || groupPosition != (workoutLength - 1)) {
@@ -676,6 +800,85 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         }
         return okayToDrag;
     }
+    //TODO LOOK AT THIS
+    private AbsListView.OnScrollListener mScrollListener = new AbsListView.OnScrollListener () {
+
+        private int mPreviousFirstVisibleItem = -1;
+        private int mPreviousVisibleItemCount = -1;
+        private int mCurrentFirstVisibleItem;
+        private int mCurrentVisibleItemCount;
+        private int mCurrentScrollState;
+
+        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+                             int totalItemCount) {
+            mCurrentFirstVisibleItem = firstVisibleItem;
+            mCurrentVisibleItemCount = visibleItemCount;
+
+            mPreviousFirstVisibleItem = (mPreviousFirstVisibleItem == -1) ? mCurrentFirstVisibleItem
+                    : mPreviousFirstVisibleItem;
+            mPreviousVisibleItemCount = (mPreviousVisibleItemCount == -1) ? mCurrentVisibleItemCount
+                    : mPreviousVisibleItemCount;
+
+            checkAndHandleFirstVisibleCellChange();
+            checkAndHandleLastVisibleCellChange();
+
+            mPreviousFirstVisibleItem = mCurrentFirstVisibleItem;
+            mPreviousVisibleItemCount = mCurrentVisibleItemCount;
+        }
+
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+            mCurrentScrollState = scrollState;
+            mScrollState = scrollState;
+            isScrollCompleted();
+        }
+
+        /**
+         * This method is in charge of invoking 1 of 2 actions. Firstly, if the listview
+         * is in a state of scrolling invoked by the hover cell being outside the bounds
+         * of the listview, then this scrolling event is continued. Secondly, if the hover
+         * cell has already been released, this invokes the animation for the hover cell
+         * to return to its correct position after the listview has entered an idle scroll
+         * state.
+         */
+        private void isScrollCompleted() {
+            if (mCurrentVisibleItemCount > 0 && mCurrentScrollState == SCROLL_STATE_IDLE) {
+                if (mDragMode && mIsMobileScrolling) {
+                    handleMobileCellScroll();
+                } else if (mIsWaitingForScrollFinish) {
+                    touchEventsEnded();
+                }
+            }
+        }
+
+        /**
+         * Determines if the listview scrolled up enough to reveal a new cell at the
+         * top of the list. If so, then the appropriate parameters are updated.
+         */
+        public void checkAndHandleFirstVisibleCellChange() {
+            if (mCurrentFirstVisibleItem != mPreviousFirstVisibleItem) {
+                if (mDragMode && mMobileItemId != INVALID_ID) {
+                    updateNeighborViewsForCurrentPosition();
+                    handleCellSwitch();
+                }
+            }
+        }
+
+        /**
+         * Determines if the listview scrolled down enough to reveal a new cell at the
+         * bottom of the list. If so, then the appropriate parameters are updated.
+         */
+        public void checkAndHandleLastVisibleCellChange() {
+            int currentLastVisibleItem = mCurrentFirstVisibleItem + mCurrentVisibleItemCount;
+            int previousLastVisibleItem = mPreviousFirstVisibleItem + mPreviousVisibleItemCount;
+            if (currentLastVisibleItem != previousLastVisibleItem) {
+                if (mDragMode && mMobileItemId != INVALID_ID) {
+                    updateNeighborViewsForCurrentPosition();
+                    handleCellSwitch();
+                }
+            }
+        }
+    };
 
     public void removeCheckedItems() {
 
@@ -730,7 +933,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         WorkoutData.get(mContext).clearCheckedExercises();
-                        ((WorkspaceActivity) mContext).getAdapter().notifyDataSetChanged();
+                        ((WorkspaceExpandableListAdapterMKIII) getExpandableListAdapter()).notifyDataSetChanged();
                         setEnabled(true);
                     }
 
@@ -751,8 +954,5 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             set.playSequentially(animators);
             set.start();
         }
-
-
         }
     }
-
