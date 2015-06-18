@@ -126,11 +126,11 @@ public class WorkoutData {
         Workout.add(circuitNumber, c);
     }
 
-    public void placeClosedCircuitWithExercise(int circuitNumber, Exercise exercise){
+    public void placeClosedCircuitWithExercise(int circuitPosition, Exercise exercise){
         Circuit c = new Circuit();
         c.setOpenStatus(false);
         c.add(exercise);
-        Workout.add(circuitNumber, c);
+        Workout.add(circuitPosition, c);
     }
 
     public void addClosedCircuitWithGenericExercise(int circuitNumber){
