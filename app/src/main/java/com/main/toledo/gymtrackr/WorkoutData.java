@@ -53,11 +53,13 @@ public class WorkoutData {
     }
 
     public void initialize(){
+
         Circuit c = new Circuit();
         c.setOpenStatus(false);
         Exercise e = new Exercise();
         c.add(e);
         Workout.add(c);
+
         doStubs();
     }
 
@@ -110,7 +112,7 @@ public class WorkoutData {
             Workout.add(c);
         }
     }
-    //adds a new open circuit
+    //adds a new open circuitworkspaceListView
     public void addCircuit(int circuitNumber){
         Circuit c = new Circuit();
         c.setName("Circuit " + circuitNumber);

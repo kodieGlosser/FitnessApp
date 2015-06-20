@@ -96,9 +96,10 @@ public class WorkspaceListFragment extends Fragment {
     public void onResume(){
 
         workspaceListView.setAdapter(((WorkspaceActivity)getActivity()).getAdapter());
-        restoreListExpansion();
-        //need a better way to do this
+        workspaceListView.restoreListExpansion();
         workspaceListView.setGroupIndicator(null);
+
+
         //final Rect hitRect = new Rect();
         //workspaceListView.getHitRect(hitRect);
         /*
@@ -161,7 +162,7 @@ public class WorkspaceListFragment extends Fragment {
         });
 
     }
-
+     /*
     public void restoreListExpansion(){
         int length = WorkoutData.get(getActivity()).getWorkout().size();
         for (int i = 0; i < length; i++){
@@ -193,7 +194,7 @@ public class WorkspaceListFragment extends Fragment {
     public void setDragInProgress(boolean b){
         mDragInProgress = b;
     }
-    /*
+
     private DropListener mDropListener =
             new DropListener() {
                 public void onDrop(int type, int toX, int toY) {

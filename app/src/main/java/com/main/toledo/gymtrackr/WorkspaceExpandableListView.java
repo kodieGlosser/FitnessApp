@@ -241,7 +241,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         //Log.d(logTag, "handleCellSwitch()");
         final int deltaY = mLastEventY - mDownY;
         int deltaYTotal = mHoverCellOriginalBounds.top + mTotalOffset + deltaY;
-        Log.d(logTag, "top of handleCellSwitch() - mBelowItemId: " + mBelowItemId);
+        //Log.d(logTag, "top of handleCellSwitch() - mBelowItemId: " + mBelowItemId);
         View belowView = getViewForID(mBelowItemId);
         final View mobileView = getViewForID(mMobileItemId);
         View aboveView = getViewForID(mAboveItemId);
@@ -255,15 +255,17 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             //Log.d(logTag, "moving from circuit-group: " + CURRENT_GROUP + "-" + CURRENT_CHILD);
             final int switchItemID = isBelow ? mBelowItemId : mAboveItemId;
             final int currentId = mMobileItemId;
+
             //Log.d(logTag, "handleCellSwitch(), is below or above, switchItemID = " + switchItemID);
             View switchView = isBelow ? belowView : aboveView;
             //final int originalItem = getPositionForView(mobileView);
-
+            /*
             if (switchView == null) {
                 getNeighborPositions();
                 updateNeighborIDsForCurrentPosition();
                 return;
             }
+            */
             ///old current
             if(isBelow) moveElement(BELOW);
 
@@ -275,6 +277,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
 
             mobileView.setVisibility(View.VISIBLE);
             ((WorkspaceExpandableListAdapterMKIII) getExpandableListAdapter()).notifyDataSetChanged();
+            restoreListExpansion();
 
             mDownY = mLastEventY;
 
@@ -299,14 +302,30 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 public boolean onPreDraw() {
 
+
+
                     observer.removeOnPreDrawListener(this);
                     //TODO WE ARE HERE
-                    Log.d(logTag, "Current item ID: " + currentId);
-                    Log.d(logTag, "Switch item ID: " + switchItemID);
+                    //Log.d(logTag, "Current item ID: " + currentId);
+                    //Log.d(logTag, "PreDraw Switch item ID: " + switchItemID);
+                    /*
+                    Log.d(logTag, "CurrentGroup: "
+                            + CURRENT_GROUP
+                            + " BelowGroup "
+                            + BELOW_VALID_GROUP);
+                    */
+                    //BUTTCODE
+                    int i = 0;
+
+
                     testflag = true;
                     getViewForID(currentId).setVisibility(View.INVISIBLE);
-                    testflag = false;
+
+
+
                     View switchView = getViewForID(switchItemID);
+
+                    testflag = false;
 
                     mTotalOffset += deltaY;
                     int switchViewNewTop = switchView.getTop();
@@ -341,7 +360,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         //Exercise copyOfExercise;
 
         Exercise temp = Workout.get(CURRENT_GROUP).getExercise(CURRENT_CHILD);
-
+        Log.d(logTag, "Moving item: " + temp.getName() + " with id " + temp.getStableID() + " CURRENT GROUP: " + CURRENT_GROUP +" CURRENT CHILD " + CURRENT_CHILD);
         switch(useWhich){
             case ABOVE:
                 //Log.d(logTag, "addElement - using above");
@@ -420,6 +439,15 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                                     +(TARGET_GROUP + 1)
                                     +" ITEM ID IS: "
                                     +Workout.get(TARGET_GROUP + 1).getExercise(0).getStableID());
+
+                            for(Circuit c : Workout){
+                                Log.d(logTag, c.getName());
+                                for(Exercise e : c.getExercises())
+                                    Log.d(logTag, e.getName());
+                            }
+
+                            CURRENT_GROUP = TARGET_GROUP;
+                            CURRENT_CHILD = 0;
                         }
                     }
                 } else {
@@ -447,10 +475,11 @@ public class WorkspaceExpandableListView extends ExpandableListView {
             default:
                 return;
         }
-        //Log.d(logTag, "moveElement() CURRENT POSITIONS SET - CURRENT_GROUP: " + CURRENT_GROUP + " - CURRENT_CHILD: " + CURRENT_CHILD);
+        Log.d(logTag, "moveElement() CURRENT POSITIONS SET - CURRENT_GROUP: " + CURRENT_GROUP + " - CURRENT_CHILD: " + CURRENT_CHILD);
         //for(Circuit c: Workout)
          //   for(Exercise e : c.getExercises())
          //       Log.d(logTag, "IN MOVE ELEMENT - " + c.getName() + " " + e.getName());
+        Log.d(logTag, "moveElement() BELOW POSITIONS SET - BELOW_GROUP: " + BELOW_VALID_GROUP + " - BELOW_CHILD: " + BELOW_VALID_POSITION);
     }
 
     private BitmapDrawable getAndAddHoverView(View v) {
@@ -573,14 +602,14 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                 //Log.d(logTag, "getViewForID - type is group");
                 //Log.d(logTag, "getViewForID, group: " + group + " found, id == " + Workout.get(group).getStableID());
                 if(Workout.get(group).getStableID() == itemID) {
-                    //Log.d(logTag, "FOUND!");
+                    if(testflag)Log.d(logTag, "FOUND GROUP! ID: " + itemID);
                     return getChildAt(i);
                 }
 
             } else if (type == PACKED_POSITION_TYPE_CHILD){
                 //Log.d(logTag, "getViewForID, group/child/name " + group +"/" + child + "/" + Workout.get(group).getExercise(child).getName() + " found, id == " + Workout.get(group).getExercise(child).getStableID() + " - i : " + i);
                 if(Workout.get(group).getExercise(child).getStableID() == itemID) {
-                    //Log.d(logTag, "FOUND! group:" + group + " child:" + child + " getChildat("+ i + "); called");
+                    if(testflag)Log.d(logTag, "FOUND CHILD! ID: " + itemID);
 
                     //if (testflag) return getChildAt(i - 1);
                     return getChildAt(i);
@@ -702,6 +731,11 @@ public class WorkspaceExpandableListView extends ExpandableListView {
     }
 
     private void touchEventsEnded () {
+        for(Circuit c : Workout){
+            Log.d(logTag, c.getName());
+            for(Exercise e : c.getExercises())
+                Log.d(logTag, e.getName());
+        }
         //Log.d(logTag, "touchEventsEnded()");
         final View mobileView = getViewForID(mMobileItemId);
         if (mDragInProgress|| mIsWaitingForScrollFinish) {
@@ -756,7 +790,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
      * Resets all the appropriate fields to a default state.
      */
     private void touchEventsCancelled () {
-        Log.d(logTag, "touchEventsCancelled() mobileItemID: " + mMobileItemId);
+       // Log.d(logTag, "touchEventsCancelled() mobileItemID: " + mMobileItemId);
 
         View mobileView = getViewForID(mMobileItemId);
         if (mDragMode) {
@@ -916,6 +950,17 @@ public class WorkspaceExpandableListView extends ExpandableListView {
         }
     };
 
+    public void restoreListExpansion(){
+        int length = Workout.size();
+        for (int i = 0; i < length; i++){
+            if(Workout.get(i).isExpanded()){
+                expandGroup(i);
+            } else {
+                collapseGroup(i);
+            }
+        }
+    }
+
     public void removeCheckedItems() {
 
         int first = getFirstVisiblePosition();
@@ -970,6 +1015,7 @@ public class WorkspaceExpandableListView extends ExpandableListView {
                     public void onAnimationEnd(Animator animation) {
                         WorkoutData.get(mContext).clearCheckedExercises();
                         ((WorkspaceExpandableListAdapterMKIII) getExpandableListAdapter()).notifyDataSetChanged();
+                        restoreListExpansion();
                         setEnabled(true);
                     }
 

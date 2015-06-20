@@ -598,7 +598,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                 holder.arrow.setImageResource(imageResourceId);
                 break;
             case BLANK_HEADER:
-                ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
+                //((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
                 //if(!editable)
                     convertView.setPadding(0,0,0,SCREENWIDTH/2);
                 /*
@@ -607,7 +607,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                     */
                 break;
             case PADDED_BLANK_HEADER:
-                ((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
+                //((WorkspaceActivity) _context).ListFragment.workspaceListView.expandGroup(groupPosition);
                 break;
         }
 
