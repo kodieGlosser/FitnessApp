@@ -21,11 +21,13 @@ import android.widget.ExpandableListView;
 public class WorkspaceListFragment extends Fragment {
     final int NOT_BROWSE = 0, BROWSE_WORKOUT = 1, WORKOUT_BROWSE = 2;
     final int FROM_DETAIL = 6, FROM_WORKSPACE = 7;
+    private static final String logTag = "wrkspcLstFrg";
+
     private Context mContext = getActivity();
-        WorkspaceExpandableListView workspaceListView;
+        private WorkspaceExpandableListView workspaceListView;
         boolean mDragInProgress;
         @Override
-   public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         //Log.d("PAD BUGS", "ONCREATE() CALLED IN WLFRAG");
         super.onCreate(savedInstanceState);
     }
@@ -38,7 +40,7 @@ public class WorkspaceListFragment extends Fragment {
 
         workspaceListView = (WorkspaceExpandableListView)
                 v.findViewById(R.id.workspaceListView);
-
+        /*
         workspaceListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
             @Override
             public void onGroupCollapse(int groupPosition) {
@@ -52,11 +54,11 @@ public class WorkspaceListFragment extends Fragment {
         workspaceListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
-                //Log.d("PAD BUGS", "ON GROUP COLLAPSE CALLED");
+                Log.d("PAD BUGS", "ON GROUP EXPAND CALLED");
                 WorkoutData.get(getActivity()).getWorkout().get(groupPosition).setExpanded(true);
             }
         });
-
+        */
         workspaceListView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -72,8 +74,8 @@ public class WorkspaceListFragment extends Fragment {
                 return false;
             }
         });
-
-        workspaceListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+        /*
+                workspaceListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v,
@@ -84,6 +86,22 @@ public class WorkspaceListFragment extends Fragment {
                 } else {
                     return false;
                 }
+            }
+        });
+         */
+        workspaceListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v,
+                                        int groupPosition, long id) {
+                if(workspaceListView.isGroupExpanded(groupPosition)){
+                    workspaceListView.collapseGroupWithAnimation(groupPosition);
+                    WorkoutData.get(getActivity()).getWorkout().get(groupPosition).setExpanded(false);
+                } else {
+                    workspaceListView.expandGroupWithAnimation(groupPosition);
+                    WorkoutData.get(getActivity()).getWorkout().get(groupPosition).setExpanded(true);
+                }
+                return true;
             }
         });
 

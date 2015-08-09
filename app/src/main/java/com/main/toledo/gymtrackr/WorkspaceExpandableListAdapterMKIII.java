@@ -590,9 +590,10 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
             holder = new GroupViewHolder();
             switch (type) {
                 case REGULAR_HEADER:
-                    convertView = inflater.inflate(R.layout.w_circuit_group, null);
+                    convertView = inflater.inflate(R.layout.w_group_header, null);
                     holder.circuitNameText = (TextView) convertView.findViewById(R.id.circuitNameHeader);
                     holder.arrow = (ImageView) convertView.findViewById(R.id.Arrow);
+                    holder.footerView = (View)convertView.findViewById(R.id.circuitFooter);
                     break;
                 case BLANK_HEADER:
                     convertView = inflater.inflate(R.layout.w_empty_wopadding, null);
@@ -612,7 +613,15 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                 holder.circuitNameText.setText(mWorkout.get(groupPosition).getName());
                 int imageResourceId = isExpanded ? R.drawable.ic_collapse_arrow_50
                         : R.drawable.ic_expand_arrow_50;
+                //todo Add code to hide footer view
                 holder.arrow.setImageResource(imageResourceId);
+
+                if (isExpanded)
+                    holder.footerView.setVisibility(View.GONE);
+                else
+                    holder.footerView.setVisibility(View.VISIBLE);
+
+
                 break;
             case BLANK_HEADER:
                 //((WorkspaceActivity) mContext).ListFragment.workspaceListView.expandGroup(groupPosition);
@@ -932,6 +941,8 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
         public TextView circuitNameText;
 
         public ImageView arrow;
+
+        public View footerView;
     }
 
 }

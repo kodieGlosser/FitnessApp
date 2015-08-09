@@ -21,7 +21,7 @@ public class WorkoutData {
     private Circuit mTempCircuit;
     private Exercise mTempExercise;
     private Exercise mToggledExercise;
-    public static int STABLE_ID;
+    //public static int STABLE_ID;
 
     //state data
     //BrowseCreate Transition
@@ -91,6 +91,13 @@ public class WorkoutData {
             sWorkspaceData = new WorkoutData(c.getApplicationContext());
         }
         return sWorkspaceData;
+    }
+
+    public static Circuit getNewClosedCircuit(Exercise exercise){
+        Circuit circuit = new Circuit();
+        circuit.setOpenStatus(false);
+        circuit.add(exercise);
+        return circuit;
     }
 
     public ArrayList<Circuit> getWorkout(){

@@ -141,7 +141,7 @@ public class WorkspaceActivity extends ActionBarActivity {
     }
     */
     private void removeChecked(){
-        ListFragment.workspaceListView.removeCheckedItems();
+        //ListFragment.workspaceListView.removeCheckedItems();
 
     }
     //I feel like this should be in the header fragment...
@@ -167,12 +167,13 @@ public class WorkspaceActivity extends ActionBarActivity {
 
         //THIS FIXES A BUG WHERE THE ADAPTER WONT BE UPDATED WHEN THE
         //ACTIVITY IS RESUMED AFTER BROWSE
+
+
+        super.onResume();
         if(listAdapter==null)
             listAdapter = new WorkspaceExpandableListAdapterMKIII(this);
 
         listAdapter.hideKeypad();
-
-        super.onResume();
     }
     @Override
     public void onPause(){

@@ -26,8 +26,8 @@ public class Circuit {
     //test for null pointer in workout data
 
     public Circuit(){
-        m_circuit_id = WorkoutData.STABLE_ID;
-        WorkoutData.STABLE_ID++;
+        //m_circuit_id = WorkoutData.STABLE_ID;
+        //WorkoutData.STABLE_ID++;
         Log.d("CIRCUIT", "Circuit id: " + m_circuit_id);
         name = "Placeholder";
     }
@@ -47,7 +47,7 @@ public class Circuit {
         return exercises.get(i);
     }
 
-    public int getStableID(){return m_circuit_id;}
+    //public int getStableID(){return m_circuit_id;}
 
     public void removeExercise(int i) {exercises.remove(i);}
 

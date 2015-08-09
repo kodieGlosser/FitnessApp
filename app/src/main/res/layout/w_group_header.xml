@@ -8,15 +8,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/paddingViewLayout">
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:id="@+id/groupHandle"
+        android:id="@+id/circuitHeader"
         android:background="@drawable/circuit"
         android:paddingBottom="10dp"
         android:layout_gravity="center_horizontal"
@@ -51,6 +44,15 @@
             android:background="@drawable/drag"/>
 
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:id="@+id/circuitFooter"
+        android:background="@drawable/circuit_notselected"
+        android:orientation="horizontal"
+        android:visibility="gone">
     </LinearLayout>
 
 </LinearLayout>
