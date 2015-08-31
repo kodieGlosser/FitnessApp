@@ -1,27 +1,15 @@
 package com.main.toledo.gymtrackr;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.animation.TranslateAnimation;
 import android.widget.ExpandableListView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +28,33 @@ public class animatedExpandableListView extends ExpandableListView {
     private Context mContext;
     private List<View> mViewsToDraw = new ArrayList<View>();
     final static int EXPANSION_TIME = 400;
+
+
+    //ANIMATION VARS
+    private BitmapDrawable mHoverCell;
+    private Rect mHoverCellCurrentBounds;
+    private Rect mHoverCellOriginalBounds;
     private boolean mExpanding = false;
+    private boolean mCollapsing = false;
+    //private View mFooterView = null;
+    //private int mFooterHeight = 0;
+    //private animatedExpandableListView mListView;
+    private HashMap<View, int[]> mOffsetViewPositions = new HashMap<>();
+    private HashMap<View, int[]> mResizeViewPositions = new HashMap<>();
+    private ArrayList<View> mOrderedResizeViews = new ArrayList<>();
+    private ArrayList<Integer> mResizeViewCutoffs = new ArrayList<>();
+    private ArrayList<Boolean> mIsItemResized = new ArrayList<>();
+    private long mStartTime;
+    private int mAnimationTime = 2000;
+    private int mTopOfExpandingItems;
+    private int mBottomOfExpandingItems;
+    private int mOffsetOffset = 0;
+    //private int mLastViewExpanded;
+    private int mNumResizeViews;
+    private int mFooterHeight;
+    private float mPixelsResizedPerMS;
+    private int mTotalOffset;
+
     public animatedExpandableListView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mWorkout = WorkoutData.get(context).getWorkout();
@@ -59,24 +73,36 @@ public class animatedExpandableListView extends ExpandableListView {
             canvas.translate(0, v.getTop());
             v.draw(canvas);
             canvas.translate(0, -v.getTop());
+            //Log.d(logTag, "ViewHeight: " + v.getHeight());
         }
+        //Log.d(logTag, "should check animation now");
+        //if(mGroupExpander.shouldAnimate()) mGroupExpander.animate();
+
+        if(mExpanding) animateExpansion();
+
+        if(mCollapsing) animateCollapse();
+
+        if (mHoverCell != null) {
+            mHoverCell.draw(canvas);
+        }
+
     }
 
     @Override
     public boolean expandGroup(int groupPos, boolean animate){
-        Log.d(logTag, "expandGroup(int groupPos, boolean animate) called on group: " + groupPos);
+        //Log.d(logTag, "expandGroup(int groupPos, boolean animate) called on group: " + groupPos);
         return super.expandGroup(groupPos, animate);
     }
 
     @Override
     public boolean expandGroup(int groupPos){
-        Log.d(logTag, "expandGroup(int groupPos) called on group: " + groupPos);
+        //Log.d(logTag, "expandGroup(int groupPos) called on group: " + groupPos);
         return super.expandGroup(groupPos);
     }
 
     @Override
     public boolean collapseGroup(int groupPos){
-        Log.d(logTag, "collapseGroup(int groupPos) called on group: " + groupPos);
+        //Log.d(logTag, "collapseGroup(int groupPos) called on group: " + groupPos);
         return super.collapseGroup(groupPos);
     }
 
@@ -122,53 +148,95 @@ public class animatedExpandableListView extends ExpandableListView {
         //Log.d(logTag, "getViewForId() returning null!!!");
         return null;
     }
-    /*
-    private BitmapDrawable getAndAddHoverView(View v) {
 
-        int w = v.getWidth();
-        int h = v.getHeight();
-        int top = v.getTop();
-        int left = v.getLeft();
-        //Log.d(logTag, "getandaddhoverview - w: " + w + "; h: " + h + "; top: " + top + "; left: " + left);
-        Bitmap b = getBitmapFromView(v);//eating this method
+    public void collapseGroupWithAnimation(final int groupPos){
 
-        BitmapDrawable drawable = new BitmapDrawable(getResources(), b);
-
-        mHoverCellOriginalBounds = new Rect(left, top, left + w, top + h);
-        mHoverCellCurrentBounds = new Rect(mHoverCellOriginalBounds);
-
-        drawable.setBounds(mHoverCellCurrentBounds);
-
-        return drawable;
-    }
-
-    private Bitmap getBitmapFromView(View v) {
-        Bitmap bitmap = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas (bitmap);
-        v.draw(canvas);
-        return bitmap;
-    }
-    */
-
-    public void animateOffsetViews(HashMap<View, int[]> viewsToOffset, int offset){//todo
-        for (final View OffsetView : viewsToOffset.keySet()){
-            int[] coords = viewsToOffset.get(OffsetView);
-            int bottom = coords[1];
-            int top = coords[0];
-            OffsetView.setTop(top + offset);
-            OffsetView.setBottom(bottom + offset);
+        if(mWorkout.get(groupPos).getSize()<=1){
+            collapseGroup(groupPos);
+            return;
         }
-        invalidate();
-    }
-
-    public void collapseGroupWithAnimation(int groupPos){
-        collapseGroup(groupPos);
         //Log.d(logTag, "collapseGroupWithAnimation(int groupPos) called on group: " + groupPos);
-        final ViewTreeObserver observer = getViewTreeObserver();
+        //Expanded group things
+        //final HashMap<View, int[]> collapsingViewInitialCoords = new HashMap<>();
+        //final HashMap<View, int[]> offsetViewInitialCoords = new HashMap<>();
+        //final ArrayList<View> orderedCollapsingViews = new ArrayList<>();
+        int childCount = getChildCount();
+        int firstVisible = getFirstVisiblePosition();
+        int footerChildIndex = mWorkout.get(groupPos).getSize() - 1;
+        View footer = null;
+        View header = null;
+        for (int i = 0; i < childCount; i++){
+            long expLstPos = getExpandableListPosition(i + firstVisible);
+            int group = getPackedPositionGroup(expLstPos);
+            if(groupPos == group){
+                View v = getChildAt(i);
+                if (getPackedPositionType(expLstPos) == PACKED_POSITION_TYPE_CHILD) {
+                    //group child
+                    v.setHasTransientState(true);  //we don't want these recycled\
+                    //Log.d(logTag, "childPos > footerChildIndex " + getPackedPositionChild(expLstPos) + " > " + footerChildIndex);
+                    if(getPackedPositionChild(expLstPos) < footerChildIndex){//todo this is busted
+                        //v is collapsing view
+                        //Log.d(logTag, "in collapseGroupWithAnimation(int).  should now add view to mOrderedResiveViews.");
+                        mOrderedResizeViews.add(v);
+                        mResizeViewPositions.put(v, new int[]{v.getTop(), v.getBottom()});
 
+                    } else {
+                        //v is group footer
+                        //offsetViewInitialCoords.put(v, new int[]{v.getTop(), v.getBottom()});
+                        footer = v;
+                    }
+                    mViewsToDraw.add(v);
+                } else {
+                    //group header
+                    header = v;
+                    mOffsetOffset = v.getBottom();
+                }
+            }
+        }
+
+        final View headerView = header;
+        final View footerView = footer;
+        final int bottomOfListView = this.getHeight();
+        int bottomCutoff = bottomOfListView;
+        if(footerView != null) bottomCutoff = footerView.getTop();
+        //Log.d(logTag, "bottom of listview: " + bottomOfListView + " bottomcutoff: " + bottomCutoff + " moffsetoffset: " + mOffsetOffset);
+        mTotalOffset = bottomCutoff - mOffsetOffset;
+        collapseGroup(groupPos);
+        final ViewTreeObserver observer = getViewTreeObserver();
         observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
                 observer.removeOnPreDrawListener(this);
+                //Collapsed group things
+                int childCount = getChildCount();
+                int firstVisible = getFirstVisiblePosition();
+
+                for (int i = 0; i < childCount; i++){
+                    long expLstPos = getExpandableListPosition(i + firstVisible);
+                    int group = getPackedPositionGroup(expLstPos);
+                    if(group > groupPos){
+                        View v = getChildAt(i);
+                        //store final offset
+                        mOffsetViewPositions.put(v, new int []{v.getTop(), v.getBottom()});
+                    }
+                }
+
+                //footer handling code
+
+                View headerFooterView = headerView.findViewById(R.id.circuitFooter);
+                //next if there is no footer to animate, add bitmap to represent it
+                if (footerView == null){
+                    //add hovercell just offscreen
+                    mHoverCell = getAndAddHoverView(headerFooterView, bottomOfListView, headerFooterView.getLeft());
+                } else {
+                    //add footerview to offset view End Position map
+                    mOffsetViewPositions.put(footerView, new int[]{footerView.getTop() - mTotalOffset, footerView.getBottom() - mTotalOffset});
+                }
+                //make headerfooter invis (get image view if footer view is null.)
+                headerFooterView.setVisibility(View.INVISIBLE);
+
+
+                setCollapsingViews();
+                startSingleCollapse();
 
                 return true;
             }
@@ -177,13 +245,14 @@ public class animatedExpandableListView extends ExpandableListView {
 
     public void expandGroupWithAnimation(final int groupPos){
 
+        //Log.d(logTag, "Circuit pos: " + groupPos + " Workout size: " + mWorkout.get(groupPos).getSize());
+        if(mWorkout.get(groupPos).getSize()<=1){
+            expandGroup(groupPos);
+            return;
+        }
 
         final WorkspaceExpandableListAdapterMKIII adapter =
                 (WorkspaceExpandableListAdapterMKIII)getExpandableListAdapter();
-        final animatedExpandableListView listView = this;
-        final int groupSize = mWorkout.get(groupPos).getSize();
-        final HashMap<View, int[]> expandingViewFinalCoords = new HashMap<View, int[]>();
-        final HashMap<View, int[]> startViewPositions = new HashMap<View, int[]>();
         final long groupHeaderId = adapter.getGroupId(groupPos);
 
         //Log.d(logTag, "expandGroupWithAnimation(int groupPos) called on group: " + groupPos);
@@ -193,11 +262,12 @@ public class animatedExpandableListView extends ExpandableListView {
         int firstVisible = getFirstVisiblePosition();
         for (int i = 0; i < childCount; i++) {
             View v = getChildAt(i);
+            //v.setHasTransientState(true); //ts 8-11-15
             long expLstPos = getExpandableListPosition(i + firstVisible);
             int group = getPackedPositionGroup(expLstPos);
             if (group > groupPos) {
-                v.setHasTransientState(true);
-                startViewPositions.put(v, new int[]{v.getTop(), v.getBottom()});
+                v.setHasTransientState(true); //ts 8-11-15
+                mOffsetViewPositions.put(v, new int[]{v.getTop(), v.getBottom()});
             }
         }
 
@@ -208,10 +278,10 @@ public class animatedExpandableListView extends ExpandableListView {
         int headerPortionOfGroupViewHeight = headerPortionOfGroupView.getBottom() - headerPortionOfGroupView.getTop();
         final int footerPortionOfGroupViewTop = collapsedGroupViewTop + headerPortionOfGroupViewHeight + collapsedGroupView.getPaddingTop() - 2; // -2 for reasons?
 
-        View footerPortionOfGroupView = collapsedGroupView.findViewById(R.id.circuitFooter);
-        final int footerHeight = footerPortionOfGroupView.getBottom() - footerPortionOfGroupView.getTop();
-
-        final int footerPortionOfGroupViewBottom = footerPortionOfGroupViewTop + footerHeight;
+        final View footerPortionOfGroupView = collapsedGroupView.findViewById(R.id.circuitFooter);
+        mFooterHeight = footerPortionOfGroupView.getBottom() - footerPortionOfGroupView.getTop();
+        final int footerPortionOfGroupViewLeft = footerPortionOfGroupView.getLeft();
+        final int footerPortionOfGroupViewBottom = footerPortionOfGroupViewTop + mFooterHeight;
 
         //Knowing things, expand group
         expandGroup(groupPos);
@@ -227,7 +297,6 @@ public class animatedExpandableListView extends ExpandableListView {
                 int group, child, headerIndex = -1;
                 int footerChildIndex = mWorkout.get(groupPos).getSize() - 1;
                 View footerView = null;
-                ArrayList<View> orderedExpandingViews = new ArrayList<View>();
                 for (int i = 0; i < childCount; i++) {
                     expLstPos = getExpandableListPosition(i + firstVisible);
                     group = getPackedPositionGroup(expLstPos);
@@ -237,213 +306,249 @@ public class animatedExpandableListView extends ExpandableListView {
                             View v = getChildAt(i);
                             //v.setVisibility(View.GONE);
                             //v.setHasTransientState(true);
-                            expandingViewFinalCoords.put(v, new int[]{v.getTop(), v.getBottom()});
-                            orderedExpandingViews.add(v);
+                            mResizeViewPositions.put(v, new int[]{v.getTop(), v.getBottom()});
+                            mOrderedResizeViews.add(v);
                             //Log.d(logTag, "Expanding item: " + i + " Top: " + v.getTop() + " Bottom: " + v.getBottom());
                         } else if (child == footerChildIndex) {
                             footerView = getChildAt(i);//we'll need this later
-                            expandingViewFinalCoords.put(footerView, new int[]{footerView.getTop(), footerView.getBottom()});//8415
+                            mResizeViewPositions.put(footerView, new int[]{footerView.getTop(), footerView.getBottom()});//8415
                         }
                     }
                 }
 
                 //figure out which offset views will not be displayed after expansion
                 //store them in mViewsToDraw so we can reference them for animation
-                for (View offsetView : startViewPositions.keySet()) {
-                    int[] offsetViewOld = startViewPositions.get(offsetView);
+                for (View offsetView : mOffsetViewPositions.keySet()) {
+                    int[] offsetViewOld = mOffsetViewPositions.get(offsetView);
                     offsetView.setTop(offsetViewOld[0]);
                     offsetView.setBottom(offsetViewOld[1]);
                     if (offsetView.getParent() == null) {
                         mViewsToDraw.add(offsetView);
                     } else {
-                        offsetView.setHasTransientState(false);
+                        offsetView.setHasTransientState(false); //ts 8-11-15
                     }
                 }
 
                 //Set initial footer position
                 if (footerView == null) { //if list footer is not on screen after expansion
-                    //make a mock one to use
-                    LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    View mockFooter = layoutInflater.inflate(R.layout.w_circuit_menu_buttons, listView);
-                    //give mock view the collapsedGroupView-footers' coords, add to offset view list for animations
-                    startViewPositions.put(mockFooter, new int[]{footerPortionOfGroupViewTop, footerPortionOfGroupViewBottom});
-                    //view isn't drawn by list view normally, add to views to draw
-                    mViewsToDraw.add(mockFooter);
+                    //mFooterView = footerPortionOfGroupView;
+                    //mFooterView.setVisibility(View.VISIBLE);
+                    //mFooterHeight = footerHeight;
+                    mHoverCell = getAndAddHoverView(footerPortionOfGroupView, footerPortionOfGroupViewTop, footerPortionOfGroupViewLeft);
                 } else {//list footer is on screen after expansion, we can just animate it
                     footerView.setTop(footerPortionOfGroupViewTop);
                     footerView.setBottom(footerPortionOfGroupViewBottom);
-                    startViewPositions.put(footerView, new int[]{footerPortionOfGroupViewTop, footerPortionOfGroupViewBottom});
+                    mOffsetViewPositions.put(footerView, new int[]{footerPortionOfGroupViewTop, footerPortionOfGroupViewBottom});
                 }
 
                 //Disable Listview for animation
-                setEnabled(false);
-                setClickable(false);
 
-                //setup the animator set;
-                AnimatorSet animSet = new AnimatorSet();
+                setExpandingViews();
 
-                ArrayList<Animator> ExpansionAnimatorArray = new ArrayList<Animator>();
-                int expandingPortionTop = 0;
-                int expandingPortionBottom = 0;
-                int size = orderedExpandingViews.size();
-                final long startTime = System.currentTimeMillis();//DEBUG VAR
-                //get expansion animator for each expanding view
-                /*
-                for (int i = 0; i < size; i++){
-                    final View expandingView = orderedExpandingViews.get(i);
-                    ValueAnimator expansionAnimator;
-                    int[] old = expandingViewFinalCoords.get(expandingView);
-
-                    int height = old[1] - old[0];
-                    expandingView.setTop(old[0]);
-                    expandingView.setBottom(old[0]);
-
-                    expansionAnimator = getAnimation(expandingView, 0, height);
-
-                    expansionAnimator.setDuration(1000);
-                    ExpansionAnimatorArray.add(expansionAnimator);
-                    //if(i == 0) expandingPortionBottom = old[0]; //Get start y coord
-
-                    //if(i == size - 1) expandingPortionTop = old[1]; //Get end y coord
-
-
-                    expansionAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                        @Override
-                        public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                            //Log.d(logTag, "ExpandingView bottom: " + (expandingView.getBottom() - footerPortionOfGroupViewTop));
-                            listView.animateOffsetViews(startViewPositions, expandingView.getBottom() - footerPortionOfGroupViewTop);
-                        }
-                    });
-                }
-                */
-                groupExpander expander = new groupExpander();
-                expander.setTime(EXPANSION_TIME);
-                expander.setOffsetViews(startViewPositions);
-                expander.setExpandingViews(expandingViewFinalCoords, orderedExpandingViews);
-                expander.setListView(listView);
-                //int totalOffset = expandingPortionTop - expandingPortionBottom;
-                //play expansion animators in sequence
-                /*
-                for(int i = 0; i<ExpansionAnimatorArray.size(); i++){
-                    if (i > 0) {
-                        animSet.play(ExpansionAnimatorArray.get(i)).after(ExpansionAnimatorArray.get(i-1)).after(0);
-                    }
-                }
-
-                //animSet.playSequentially(ExpansionAnimatorArray);
-                //create offset animations for views below last expanding view
-                //play the offset animations with the first expansion animator
-
-                boolean debugFlag = true; //DEBUG SHIT
-                for (final View OffsetView : startViewPositions.keySet()){
-                    Animator offsetAnimation = getAnimation(OffsetView,
-                            totalOffset, totalOffset);
-                    offsetAnimation.setDuration(550);
-                    animSet.play(offsetAnimation).with(ExpansionAnimatorArray.get(0));
-                    //DEBUG SHIT
-
-                    if(debugFlag){
-                        offsetAnimation.addListener(new Animator.AnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animator) {
-                                Log.d(logTag, "Offset animator start @ " + (System.currentTimeMillis() - startTime));
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animator animator) {
-                                Log.d(logTag, "Offset animator finish @ " + (System.currentTimeMillis() - startTime));
-                            }
-
-                            @Override
-                            public void onAnimationCancel(Animator animator) {
-
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animator animator) {
-
-                            }
-                        });
-                    }
-                    debugFlag = false;
-
-                    //END DEBUG SHIT
-                }
-                */
-                //
-
-                /*
-                    //TODO WE ARE HERE
-                    totalOffset += height;
-                    for (final View offsetView : startViewPositions.keySet()) {
-                        //animate each views top and bottom by height
-
-                        if(!dFlag){
-                            dTestView = offsetView; //set our sample view
-                            dFlag = true;
-                        }
-
-                        Animator dTestAnimator;
-                        if(offsetView == dTestView) {
-                            Log.d(logTag, "totalOffset: " + totalOffset);
-                            final int dOffset = totalOffset;
-                            dTestAnimator = getAnimation(offsetView, totalOffset, totalOffset, true);
-                            dTestAnimator.addListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationStart(Animator animation) {
-                                    Log.d(logTag, "Animator Fired for test view.  Total offset at fire is " + dOffset);
-                                }
-                            });
-                        } else {
-                            dTestAnimator = getAnimation(offsetView, totalOffset, totalOffset);
-                        }
-
-                        animSet.play(dTestAnimator).with(lastExpansionAnimation);
-                    }
-                    */
-
-                //TEST THINGS
-
-                //END TEST THINGS
-                animSet.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        //super.onAnimationEnd(animation);  PRY NOT NEEDED?
-                        //restore functionality
-                        setEnabled(true);
-                        setClickable(true);
-                        if (mViewsToDraw.size() > 0) {
-                            for (View v : mViewsToDraw) {
-                                v.setHasTransientState(false);
-                            }
-                        }
-                        mViewsToDraw.clear();
-                    }
-                });
-
-                //animSet.start();
-
+                startSingleExpansion();
                 return true;
             }
         });
     }
-    /**
-     * This method takes some view and the values by which its top and bottom bounds
-     * should be changed by. Given these params, an animation which will animate
-     * these bound changes is created and returned.
-     */
-    private ValueAnimator getAnimation(final View view, float translateTop, float translateBottom) {
 
-        int top = view.getTop();
-        int bottom = view.getBottom();
+    public void onFinishAnimation(){
+        Log.d(logTag, "On Finish called");
+        setEnabled(true);
+        setClickable(true);
 
-        int endTop = (int)(top + translateTop);
-        int endBottom = (int)(bottom + translateBottom);
+        if (mViewsToDraw.size() > 0) {
+            for (View v : mViewsToDraw) {
+                v.setHasTransientState(false); //8-11-2015
+            }
+        }
 
-        PropertyValuesHolder translationTop = PropertyValuesHolder.ofInt("top", top, endTop);
-        PropertyValuesHolder translationBottom = PropertyValuesHolder.ofInt("bottom", bottom,
-                endBottom);
+        mExpanding = false;
+        mViewsToDraw.clear();
+        mOffsetViewPositions.clear();
+        mResizeViewPositions.clear();
+        mOrderedResizeViews.clear();
+        mResizeViewCutoffs.clear();
+        mIsItemResized.clear();
+        mHoverCell = null;
+    }
 
-        return ObjectAnimator.ofPropertyValuesHolder(view, translationTop, translationBottom);
+    public void setExpandingViews(){
+        mNumResizeViews = mOrderedResizeViews.size();
+        mStartTime = System.currentTimeMillis();
+
+        for(int i = 0; i < mNumResizeViews; i++){
+            int[] old = mResizeViewPositions.get(mOrderedResizeViews.get(i));
+            int top = old[0];
+            int bottom = old[1];
+            mResizeViewCutoffs.add(i, bottom);
+            mIsItemResized.add(i, false);
+            if(i == 0){
+                mTopOfExpandingItems = top;
+            }
+
+            if(i == mNumResizeViews - 1){
+                mBottomOfExpandingItems = bottom;
+            }
+        }
+
+        int totalOffset = mBottomOfExpandingItems - mTopOfExpandingItems;
+        //Log.d(logTag, mBottomOfExpandingItems + " - " + mTopOfExpandingItems + " = " + totalOffset);
+        mPixelsResizedPerMS = (float) totalOffset / (float) mAnimationTime;
+        //Log.d(logTag, totalOffset + " / " + mAnimationTime + " = " + mPixelsResizedPerMS);
+    }
+
+    public void setCollapsingViews(){
+        mNumResizeViews = mOrderedResizeViews.size();
+        //Log.d(logTag, "setCollapsingViews() called.  mNumResizeViews = " + mNumResizeViews);
+        mStartTime = System.currentTimeMillis();
+        for(int i = 0; i < mNumResizeViews; i++){
+            int[] old = mResizeViewPositions.get(mOrderedResizeViews.get(i));
+            mResizeViewCutoffs.add(i, old[0]);
+            mIsItemResized.add(i, false);
+        }
+        mPixelsResizedPerMS = (float) mTotalOffset / (float) mAnimationTime;
+        //for()
+    }
+
+    public void startSingleExpansion(){
+        //Log.d(logTag, "startSingleExpansion() called.");
+        setEnabled(false);
+        setClickable(false);
+        //mStartTime = System.currentTimeMillis();
+        //set expanding views to height 0
+        for(View v : mOrderedResizeViews){
+            int[] old = mResizeViewPositions.get(v);
+            v.setBottom(old[0]);
+        }
+
+        mExpanding = true;
+        invalidate();
+    }
+
+    public void startSingleCollapse(){
+
+        setEnabled(false);
+        setClickable(false);
+        //set positions for collapsing views
+        for(View v : mOrderedResizeViews){//todo this is weird
+            int[] old = mResizeViewPositions.get(v);
+            v.setTop(old[0]);
+            v.setBottom(old[1]);
+            //Log.d(logTag, "top set to: " + old[0] + " bottom set to: " + old[1]);
+        }
+
+        mCollapsing = true;
+        invalidate();
+    }
+
+    private void animateExpansion(){
+        long currentTime = System.currentTimeMillis();
+        long timeElapsed = currentTime - mStartTime;
+        //Log.d(logTag, currentTime + " - " + mStartTime + " = " + timeElapsed);
+        int totalOffset = (int)(timeElapsed * mPixelsResizedPerMS);
+        //Log.d(logTag, "pixels per ms = " + mPixelsResizedPerMS);
+        int actualOffset = totalOffset + mTopOfExpandingItems;
+        actualOffset = actualOffset + mFooterHeight/2;
+        //Log.d(logTag, "In animate().  Total offset = " + totalOffset + " Top of expanding items = " + mTopOfExpandingItems
+        //        + " actual offset: " + actualOffset);
+        //figure out which view we are on
+        for(int i = 0; i< mNumResizeViews; i++){
+            if(actualOffset < mResizeViewCutoffs.get(i)){
+                //we are on this view set the bottom
+                mOrderedResizeViews.get(i).setBottom(actualOffset);
+                //mOrderedResizeViews.get(i).setAlpha(0);
+                break;
+            } else if((mResizeViewCutoffs.get(i)<=actualOffset)&&(!mIsItemResized.get(i))){
+                mIsItemResized.remove(i);
+                mIsItemResized.add(i, true);
+                mOrderedResizeViews.get(i).setBottom(mResizeViewCutoffs.get(i));
+            }
+        }
+        if(totalOffset > (mBottomOfExpandingItems - mTopOfExpandingItems))
+            totalOffset = mBottomOfExpandingItems - mTopOfExpandingItems;
+
+        animateOffsetViews(totalOffset);
+
+        invalidate();
+
+        //Log.d(logTag, "Time elapsed: " + timeElapsed + " Animation Time: " + mAnimationTime);
+        if(timeElapsed > mAnimationTime) {
+            mExpanding = false;
+            onFinishAnimation();
+        }
+    }
+
+    private void animateCollapse(){
+        long currentTime = System.currentTimeMillis();
+        long timeElapsed = currentTime - mStartTime;
+
+        int resizeOffset = (int)(mTotalOffset - (timeElapsed * mPixelsResizedPerMS));
+        //Log.d(logTag, "resize offset = " + resizeOffset + " = " + mTotalOffset + " - (" + timeElapsed + " * " + mPixelsResizedPerMS + ")");
+        int trueOffsetPos = resizeOffset + mOffsetOffset;
+        //go through list of views backwards
+        for(int i = mNumResizeViews - 1; i > -1; i--){
+            if (trueOffsetPos > mResizeViewCutoffs.get(i)) {
+                View v = mOrderedResizeViews.get(i);
+                v.setBottom(trueOffsetPos);
+                Log.d(logTag, "in animateCollapse() view should be shrinking: trueOffset: " + trueOffsetPos
+                        + " view top/bottom:" + v.getTop() + "/" + v.getBottom());
+                v.setAlpha(0);
+                break;
+            } else if ( (trueOffsetPos<=mResizeViewCutoffs.get(i)) && (!mIsItemResized.get(i))){
+                View v = mOrderedResizeViews.get(i);
+                v.setBottom(v.getTop());
+                mIsItemResized.remove(i);
+                mIsItemResized.add(i, true);
+            }
+        }
+
+        animateOffsetViews(resizeOffset);
+
+        invalidate();
+        if(timeElapsed > mAnimationTime){
+            mCollapsing = false;
+            onFinishAnimation();
+        }
+    }
+
+    public void animateOffsetViews(int offset){
+        //for (final View OffsetView : mOffsetViewPositions.keySet()){
+        //Log.d(logTag, "animateOffsetViews() offset: " + offset);
+        for (final View OffsetView : mOffsetViewPositions.keySet()){
+            int[] coords = mOffsetViewPositions.get(OffsetView);
+            int bottom = coords[1];
+            int top = coords[0];
+            OffsetView.setTop(top + offset);
+            OffsetView.setBottom(bottom + offset);
+        }
+
+        if(mHoverCell != null){
+            mHoverCellCurrentBounds.offsetTo(mHoverCellOriginalBounds.left, mHoverCellOriginalBounds.top + offset);
+            mHoverCell.setBounds(mHoverCellCurrentBounds);
+        }
+    }
+
+    private BitmapDrawable getAndAddHoverView(View v, int footerTop, int footerLeft) {
+
+        int w = v.getWidth();
+        int h = v.getHeight();
+        //Log.d(logTag, "getandaddhoverview - w: " + w + "; h: " + h + "; top: " + top + "; left: " + left);
+        Bitmap b = getBitmapFromView(v);
+
+        BitmapDrawable drawable = new BitmapDrawable(getResources(), b);
+
+        mHoverCellOriginalBounds = new Rect(footerLeft, footerTop, footerLeft + w, footerTop + h);
+        mHoverCellCurrentBounds = new Rect(mHoverCellOriginalBounds);
+
+        drawable.setBounds(mHoverCellCurrentBounds);
+
+        return drawable;
+    }
+
+    private Bitmap getBitmapFromView(View v) {
+        Bitmap bitmap = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas (bitmap);
+        v.draw(canvas);
+        return bitmap;
     }
 }
