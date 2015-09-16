@@ -22,12 +22,10 @@ public class animatedExpandableListView extends ExpandableListView {
 
     private static final String logTag = "animExpListVw";
     private ArrayList<Circuit> mWorkout;
-    private Context mContext;
     private List<View> mViewsToDraw = new ArrayList<View>();
     private static int PASS;
-
     //ANIMATION VARS
-    private BitmapDrawable mHoverCell;
+    private BitmapDrawable mFalseFooter;
     private Rect mHoverCellCurrentBounds;
     private Rect mHoverCellOriginalBounds;
     private boolean mExpanding = false;
@@ -53,47 +51,37 @@ public class animatedExpandableListView extends ExpandableListView {
     private int mCollapsingGroup;
     private View mHeaderFooterView;
     private boolean mClearBitmap;
+    private boolean mClearViewsToDraw;
+
     public animatedExpandableListView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mWorkout = WorkoutData.get(context).getWorkout();
-        mContext = context;
     }
 
     @Override
-    protected void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(Canvas canvas) { //todo fix offset bug
         super.dispatchDraw(canvas);
-        //Log.d(logTag, "should now check mcollapsing");
 
-        //if (mViewsToDraw.size() == 0) {
-        //    return;
-        //}
+        if(mExpanding) animateExpansion();
+        if(mCollapsing) animateCollapse();
 
         for (View v: mViewsToDraw) {
             canvas.translate(0, v.getTop());
             v.draw(canvas);
             canvas.translate(0, -v.getTop());
-            //Log.d(logTag, "ViewHeight: " + v.getHeight());
-        }
-        //Log.d(logTag, "should check animation now");
-        //if(mGroupExpander.shouldAnimate()) mGroupExpander.animate();
-
-        if(mExpanding) animateExpansion();
-
-        //Log.d(logTag, "should now check mcollapsing");
-        if(mCollapsing) {
-            //Log.d(logTag, "should now call animate collapse");
-            animateCollapse();
         }
 
-        if (mHoverCell != null) {
-            mHoverCell.draw(canvas);
+        if (mFalseFooter != null) {
+            mFalseFooter.draw(canvas);
 
-            if(mClearBitmap){
-                mHoverCell = null;
+            if(mClearBitmap) { //this fixes a bug where the footer will flicker on collapse if drawn from offscreen
+                mFalseFooter = null;
                 mClearBitmap = false;
             }
 
         }
+
+        if(mClearViewsToDraw) mViewsToDraw.clear();
 
     }
 
@@ -158,13 +146,14 @@ public class animatedExpandableListView extends ExpandableListView {
         return null;
     }
 
-    public void collapseGroupWithAnimation(final int groupPos){ //todo collapse animation
+    public void collapseGroupWithAnimation(final int groupPos){
 
         if(mWorkout.get(groupPos).getSize()<=1){
             collapseGroup(groupPos);
             return;
         }
         mClearBitmap = false;
+        mClearViewsToDraw = false;
         mCollapsingGroup = groupPos;
         PASS = 1; //used for predrawlistener passes
         //Log.d(logTag, "collapseGroupWithAnimation(int groupPos) called on group: " + groupPos);
@@ -263,7 +252,7 @@ public class animatedExpandableListView extends ExpandableListView {
                         }
                         if (footer == null){
                             //add hovercell just offscreen
-                            mHoverCell = getAndAddHoverView(mHeaderFooterView, bottomOfListView, mHeaderFooterView.getLeft());
+                            mFalseFooter = getAndAddHoverView(mHeaderFooterView, bottomOfListView, mHeaderFooterView.getLeft());
                         } else {
                             //add footerview to offset view End Position map
                             mOffsetViewPositions.put(footer, new int[]{footer.getTop(), footer.getBottom()});
@@ -279,6 +268,7 @@ public class animatedExpandableListView extends ExpandableListView {
 
     public void expandGroupWithAnimation(final int groupPos){
         mClearBitmap = false;
+        mClearViewsToDraw = false;
         //Log.d(logTag, "Circuit pos: " + groupPos + " Workout size: " + mWorkout.get(groupPos).getSize());
         if(mWorkout.get(groupPos).getSize()<=1){
             expandGroup(groupPos);
@@ -368,7 +358,7 @@ public class animatedExpandableListView extends ExpandableListView {
                     //mFooterView = footerPortionOfGroupView;
                     //mFooterView.setVisibility(View.VISIBLE);
                     //mFooterHeight = footerHeight;
-                    mHoverCell = getAndAddHoverView(footerPortionOfGroupView, footerPortionOfGroupViewTop, footerPortionOfGroupViewLeft);
+                    mFalseFooter = getAndAddHoverView(footerPortionOfGroupView, footerPortionOfGroupViewTop, footerPortionOfGroupViewLeft);
                 } else {//list footer is on screen after expansion, we can just animate it
                     footerView.setTop(footerPortionOfGroupViewTop);
                     footerView.setBottom(footerPortionOfGroupViewBottom);
@@ -396,13 +386,13 @@ public class animatedExpandableListView extends ExpandableListView {
         }
 
         mExpanding = false;
-        mViewsToDraw.clear();
         mOffsetViewPositions.clear();
         mResizeViewPositions.clear();
         mOrderedResizeViews.clear();
         mResizeViewCutoffs.clear();
         mIsItemResized.clear();
-        mClearBitmap = true;//mHoverCell = null;
+        mClearBitmap = true;//mFalseFooter = null;
+        mClearViewsToDraw = true;//mViewsToDraw.clear();
     }
 
     public void setExpandingViews(){
@@ -538,7 +528,7 @@ public class animatedExpandableListView extends ExpandableListView {
         }
     }
     //applies offset to original view positions
-    public void animateOffsetViews(int offset){
+    public void animateOffsetViews(int offset){ //todo fix offset bug
         for (final View OffsetView : mOffsetViewPositions.keySet()){
             int[] coords = mOffsetViewPositions.get(OffsetView);
             int bottom = coords[1];
@@ -547,9 +537,9 @@ public class animatedExpandableListView extends ExpandableListView {
             OffsetView.setBottom(bottom + offset);
         }
 
-        if(mHoverCell != null){
+        if(mFalseFooter != null){
             mHoverCellCurrentBounds.offsetTo(mHoverCellOriginalBounds.left, mHoverCellOriginalBounds.top + offset);
-            mHoverCell.setBounds(mHoverCellCurrentBounds);
+            mFalseFooter.setBounds(mHoverCellCurrentBounds);
         }
     }
 
