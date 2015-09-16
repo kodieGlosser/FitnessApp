@@ -52,7 +52,7 @@ public class animatedExpandableListView extends ExpandableListView {
     private int mTotalOffset;
     private int mCollapsingGroup;
     private View mHeaderFooterView;
-
+    private boolean mClearBitmap;
     public animatedExpandableListView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mWorkout = WorkoutData.get(context).getWorkout();
@@ -87,6 +87,12 @@ public class animatedExpandableListView extends ExpandableListView {
 
         if (mHoverCell != null) {
             mHoverCell.draw(canvas);
+
+            if(mClearBitmap){
+                mHoverCell = null;
+                mClearBitmap = false;
+            }
+
         }
 
     }
@@ -158,6 +164,7 @@ public class animatedExpandableListView extends ExpandableListView {
             collapseGroup(groupPos);
             return;
         }
+        mClearBitmap = false;
         mCollapsingGroup = groupPos;
         PASS = 1; //used for predrawlistener passes
         //Log.d(logTag, "collapseGroupWithAnimation(int groupPos) called on group: " + groupPos);
@@ -271,7 +278,7 @@ public class animatedExpandableListView extends ExpandableListView {
     }
 
     public void expandGroupWithAnimation(final int groupPos){
-
+        mClearBitmap = false;
         //Log.d(logTag, "Circuit pos: " + groupPos + " Workout size: " + mWorkout.get(groupPos).getSize());
         if(mWorkout.get(groupPos).getSize()<=1){
             expandGroup(groupPos);
@@ -395,7 +402,7 @@ public class animatedExpandableListView extends ExpandableListView {
         mOrderedResizeViews.clear();
         mResizeViewCutoffs.clear();
         mIsItemResized.clear();
-        mHoverCell = null;
+        mClearBitmap = true;//mHoverCell = null;
     }
 
     public void setExpandingViews(){
