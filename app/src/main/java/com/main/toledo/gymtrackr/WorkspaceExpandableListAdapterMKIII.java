@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -21,6 +22,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -32,11 +34,6 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
     private Context mContext;
 
     private EditText mEditTextHandle;
-
-    //private boolean editable = true;
-
-    final int CIRCUIT = 1;
-    final int EXERCISE = 2;
     final float mCheckedIndentation = 100;
     private ArrayList<Circuit> mWorkout; //6/23 UNEEDED? = new ArrayList<>();
     private LinearLayout.LayoutParams params;
@@ -58,6 +55,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
     final static int REGULAR_HEADER = 0, BLANK_HEADER = 1, PADDED_BLANK_HEADER =2;
     final static int NUM_HEADERS = 3;
     //CHILD TYPES
+    //M means child has plan metric, C means child is checked
     final static int EXERCISE_ITEM_1 = 0, EXERCISE_ITEM_2 = 1, EXERCISE_ITEM_3 = 2,
             EXERCISE_ITEM_1_M = 3, EXERCISE_ITEM_2_M = 4, EXERCISE_ITEM_3_M = 5, EMPTY_BUTTONS = 6,
             CIRCUIT_BUTTONS = 7, WORKOUT_BUTTONS = 8, TERRIBLE_THINGS = 9, EXERCISE_ITEM_1C = 10, EXERCISE_ITEM_2C = 11, EXERCISE_ITEM_3C = 12,
@@ -66,10 +64,14 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
 
     //private ChildViewHolder holderHandle;
     private int SCREENWIDTH;
+    private dragListener mListener;
+    public interface dragListener {//todo we are here
+        void OnDragHandleLongClickedListener(View selectedView, int type);
+    }
 
     public WorkspaceExpandableListAdapterMKIII(Context context){
         params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
-        this.mContext = context;
+        mContext = context;
 
         //Set initial stable id's ADD IDS TO SOME MAP
         AVAILABLE_STABLE_ID = 0L;
@@ -91,6 +93,8 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
         display.getSize(size);
         SCREENWIDTH = size.x;
     }
+
+    public void setDragListener(dragListener listener){ mListener = listener; }
 
     @Override
     public Exercise getChild(int groupPosition, int childPosition) {
@@ -240,87 +244,46 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                     convertView = inflater.inflate(R.layout.w_exercise, null);
                     dynamicViewLayout = (LinearLayout) convertView.findViewById(R.id.dynamicViewLayout);
                     dynamicViewLayout.addView(createMetricLayout(group, child, holder));
-
-                    holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
-
-                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
-
-                    holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
-
+                    populateHolder(holder, convertView);
                     break;
                 case EXERCISE_ITEM_1_M:
                     convertView = inflater.inflate(R.layout.w_exercise, null);
                     dynamicViewLayout = (LinearLayout) convertView.findViewById(R.id.dynamicViewLayout);
                     dynamicViewLayout.addView(createGoalLayout(group, child, holder));
                     dynamicViewLayout.addView(createMetricLayout(group, child, holder));
-
-                    holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
-
-                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
-
-                    holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
+                    populateHolder(holder, convertView);
                     break;
                 case EXERCISE_ITEM_2:
                     convertView = inflater.inflate(R.layout.w_exercise, null);
                     dynamicViewLayout = (LinearLayout) convertView.findViewById(R.id.dynamicViewLayout);
                     dynamicViewLayout.addView(createMetricLayout(group, child, holder));
-
-                    holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
-
-                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
-
-                    holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
-
+                    populateHolder(holder, convertView);
                     break;
                 case EXERCISE_ITEM_2_M:
                     convertView = inflater.inflate(R.layout.w_exercise, null);
                     dynamicViewLayout = (LinearLayout) convertView.findViewById(R.id.dynamicViewLayout);
                     dynamicViewLayout.addView(createGoalLayout(group, child, holder));
                     dynamicViewLayout.addView(createMetricLayout(group, child, holder));
-
-                    holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
-
-                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
-
-                    holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
-
+                    populateHolder(holder, convertView);
                     break;
                 case EXERCISE_ITEM_3:
                     convertView = inflater.inflate(R.layout.w_exercise, null);
                     dynamicViewLayout = (LinearLayout) convertView.findViewById(R.id.dynamicViewLayout);
                     dynamicViewLayout.addView(createMetricLayout(group, child, holder));
-
-                    holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
-
-                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
-
-                    holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
-
+                    populateHolder(holder, convertView);
                     break;
                 case EXERCISE_ITEM_3_M:
                     convertView = inflater.inflate(R.layout.w_exercise, null);
                     dynamicViewLayout = (LinearLayout) convertView.findViewById(R.id.dynamicViewLayout);
                     dynamicViewLayout.addView(createGoalLayout(group, child, holder));
                     dynamicViewLayout.addView(createMetricLayout(group, child, holder));
-
-                    holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
-
-                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
-
-                    holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
-
+                    populateHolder(holder, convertView);
                     break;
                 case EXERCISE_ITEM_1C:
                     convertView = inflater.inflate(R.layout.w_exercise, null);
                     dynamicViewLayout = (LinearLayout) convertView.findViewById(R.id.dynamicViewLayout);
                     dynamicViewLayout.addView(createMetricLayout(group, child, holder));
-
-                    holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
-
-                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
-
-                    holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
-
+                    populateHolder(holder, convertView);
                     doCheck(holder);
                     break;
                 case EXERCISE_ITEM_1_MC:
@@ -328,26 +291,14 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                     dynamicViewLayout = (LinearLayout) convertView.findViewById(R.id.dynamicViewLayout);
                     dynamicViewLayout.addView(createGoalLayout(group, child, holder));
                     dynamicViewLayout.addView(createMetricLayout(group, child, holder));
-
-                    holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
-
-                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
-
-                    holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
-
+                    populateHolder(holder, convertView);
                     doCheck(holder);
                     break;
                 case EXERCISE_ITEM_2C:
                     convertView = inflater.inflate(R.layout.w_exercise, null);
                     dynamicViewLayout = (LinearLayout) convertView.findViewById(R.id.dynamicViewLayout);
                     dynamicViewLayout.addView(createMetricLayout(group, child, holder));
-
-                    holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
-
-                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
-
-                    holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
-
+                    populateHolder(holder, convertView);
                     doCheck(holder);
                     break;
                 case EXERCISE_ITEM_2_MC:
@@ -355,26 +306,14 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                     dynamicViewLayout = (LinearLayout) convertView.findViewById(R.id.dynamicViewLayout);
                     dynamicViewLayout.addView(createGoalLayout(group, child, holder));
                     dynamicViewLayout.addView(createMetricLayout(group, child, holder));
-
-                    holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
-
-                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
-
-                    holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
-
+                    populateHolder(holder, convertView);
                     doCheck(holder);
                     break;
                 case EXERCISE_ITEM_3C:
                     convertView = inflater.inflate(R.layout.w_exercise, null);
                     dynamicViewLayout = (LinearLayout) convertView.findViewById(R.id.dynamicViewLayout);
                     dynamicViewLayout.addView(createMetricLayout(group, child, holder));
-
-                    holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
-
-                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
-
-                    holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
-
+                    populateHolder(holder, convertView);
                     doCheck(holder);
                     break;
                 case EXERCISE_ITEM_3_MC:
@@ -382,13 +321,7 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                     dynamicViewLayout = (LinearLayout) convertView.findViewById(R.id.dynamicViewLayout);
                     dynamicViewLayout.addView(createGoalLayout(group, child, holder));
                     dynamicViewLayout.addView(createMetricLayout(group, child, holder));
-
-                    holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
-
-                    holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
-
-                    holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
-
+                    populateHolder(holder, convertView);
                     doCheck(holder);
                     break;
                 case TERRIBLE_THINGS:
@@ -594,6 +527,16 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                     holder.circuitNameText = (TextView) convertView.findViewById(R.id.circuitNameHeader);
                     holder.arrow = (ImageView) convertView.findViewById(R.id.Arrow);
                     holder.footerView = (View)convertView.findViewById(R.id.circuitFooter);
+                    holder.dragHandle = (View)convertView.findViewById(R.id.drag_icon);
+                    final View cView = convertView;
+                    if(mListener != null)
+                        holder.dragHandle.setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View view) {
+                                mListener.OnDragHandleLongClickedListener(cView, ExpandableListView.PACKED_POSITION_TYPE_GROUP);
+                                return false;
+                            }
+                        });
                     break;
                 case BLANK_HEADER:
                     convertView = inflater.inflate(R.layout.w_empty_wopadding, null);
@@ -615,7 +558,13 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                         : R.drawable.ic_expand_arrow_50;
                 //todo Add code to hide footer view
                 holder.arrow.setImageResource(imageResourceId);
-
+                holder.dragHandle = (View) convertView.findViewById(R.id.drag_icon);
+                holder.dragHandle.setOnClickListener(new View.OnClickListener() { //todo long item click to drag goes here
+                    @Override
+                    public void onClick(View view) {
+                        Log.d(logTag, "group header clicked.");
+                    }
+                });
                 if (isExpanded)
                     holder.footerView.setVisibility(View.GONE);
                 else
@@ -862,11 +811,11 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
                         } else {
                             metric.setMetricIntValue(Integer.parseInt(v.getText().toString()));
                         }
-                        if(j<numMetrics-1){
+                        if (j < numMetrics - 1) {
                             nextEdit.requestFocus();
                         } //else {
-                            //TODO: CODE TO DIRECT FOCUS TO NEXT WORKSPACE ROW GOES HERE
-                            //v.focusSearch(View.FOCUS_DOWN);
+                        //TODO: CODE TO DIRECT FOCUS TO NEXT WORKSPACE ROW GOES HERE
+                        //v.focusSearch(View.FOCUS_DOWN);
                         //}
                         return true;
                     }
@@ -920,6 +869,25 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
         holder.dataLayoutHandle.setTranslationX(mCheckedIndentation);
     }
 
+    private void populateHolder(ChildViewHolder holder, final View convertView){
+        holder.exerciseNameText = (TextView) convertView.findViewById(R.id.workspaceExerciseNameView);
+
+        holder.layoutHandle = (LinearLayout) convertView.findViewById(R.id.LAYOUT_HANDLE);
+
+        holder.dataLayoutHandle = (LinearLayout) convertView.findViewById(R.id.exercise_data_layout);
+
+        holder.dragHandle = (View) convertView.findViewById(R.id.drag_icon);
+
+        if(mListener != null)
+            holder.dragHandle.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    mListener.OnDragHandleLongClickedListener(convertView, ExpandableListView.PACKED_POSITION_TYPE_CHILD);
+                    return false;
+                }
+            });
+    }
+
     public static class ChildViewHolder {
 
         public TextView exerciseNameText;
@@ -935,6 +903,8 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
         public ArrayList<TextView> metricGoalText = new ArrayList<>();
 
         public ImageView exerciseCheckImage;
+
+        public View dragHandle;
     }
 
     public static class GroupViewHolder {
@@ -943,6 +913,8 @@ public class WorkspaceExpandableListAdapterMKIII extends BaseExpandableListAdapt
         public ImageView arrow;
 
         public View footerView;
+
+        public View dragHandle;
     }
 
 }

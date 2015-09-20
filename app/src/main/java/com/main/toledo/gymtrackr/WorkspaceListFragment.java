@@ -2,8 +2,6 @@ package com.main.toledo.gymtrackr;
 
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -11,8 +9,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 
 /**
@@ -21,15 +17,18 @@ import android.widget.ExpandableListView;
 public class WorkspaceListFragment extends Fragment {
     final int NOT_BROWSE = 0, BROWSE_WORKOUT = 1, WORKOUT_BROWSE = 2;
     final int FROM_DETAIL = 6, FROM_WORKSPACE = 7;
-    private static final String logTag = "wrkspcLstFrg";
 
-    private Context mContext = getActivity();
-        private WorkspaceExpandableListView workspaceListView;
-        boolean mDragInProgress;
-        @Override
+    private static final String logTag = "wrkspcLstFrg";
+    private WorkspaceExpandableListAdapterMKIII mListAdapter;
+
+    private Context mContext;
+    private WorkspaceExpandableListView workspaceListView;
+    @Override
+
     public void onCreate(Bundle savedInstanceState) {
         //Log.d("PAD BUGS", "ONCREATE() CALLED IN WLFRAG");
         super.onCreate(savedInstanceState);
+        mContext = getActivity();
     }
 
     public View onCreateView(LayoutInflater inflater,
@@ -66,7 +65,7 @@ public class WorkspaceListFragment extends Fragment {
                 final int action = event.getAction();
                 switch (action){
                     case MotionEvent.ACTION_DOWN:
-                        ((WorkspaceActivity)getActivity()).getAdapter().hideKeypad();
+                        mListAdapter.hideKeypad();
                         break;
                     default:
                         break;
@@ -112,27 +111,12 @@ public class WorkspaceListFragment extends Fragment {
 
     @Override
     public void onResume(){
-
-        workspaceListView.setAdapter(((WorkspaceActivity)getActivity()).getAdapter());
-        workspaceListView.restoreListExpansion();
-        workspaceListView.setGroupIndicator(null);
-
-
-        //final Rect hitRect = new Rect();
-        //workspaceListView.getHitRect(hitRect);
-        /*
-        workspaceListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-            }
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                Log.d("PAD BUGS", "HIT RECT CALLED: " + hitRect.flattenToString());
-                ((WorkspaceActivity) getActivity()).getAdapter().cleanView(hitRect);
-            }
-        });
-
-        */
+        Log.d(logTag, "listfrag resume");
+        if(mListAdapter == null)
+            mListAdapter = new WorkspaceExpandableListAdapterMKIII(mContext);
+        workspaceListView.setAdapter(mListAdapter);
+        mListAdapter.hideKeypad();
+        workspaceListView.init();
 
         int browseMode = WorkoutData.get(mContext).getBrowseState();
         switch(browseMode){
@@ -180,50 +164,5 @@ public class WorkspaceListFragment extends Fragment {
         });
 
     }
-     /*
-    public void restoreListExpansion(){
-        int length = WorkoutData.get(getActivity()).getWorkout().size();
-        for (int i = 0; i < length; i++){
-            if(WorkoutData.get(getActivity()).getWorkout().get(i).isExpanded()){
-                workspaceListView.expandGroup(i);
-            } else {
-                workspaceListView.collapseGroup(i);
-            }
-        }
-    }
-
-    public void collapseAllGroups(){
-        int length = WorkoutData.get(getActivity()).getWorkout().size();
-        for(int i = 0; i < length; i++){
-            if (WorkoutData.get(getActivity()).getWorkout().get(i).isOpen())
-                workspaceListView.collapseGroup(i);
-        }
-    }
-
-    public void onItemDrop(){
-        int length = WorkoutData.get(getActivity()).getWorkout().size();
-        for(int i = 0; i < length; i++){
-            if (WorkoutData.get(getActivity()).getWorkout().get(i).isExpanded()){
-                workspaceListView.expandGroup(i);
-            }
-        }
-    }
-
-    public void setDragInProgress(boolean b){
-        mDragInProgress = b;
-    }
-
-    private DropListener mDropListener =
-            new DropListener() {
-                public void onDrop(int type, int toX, int toY) {
-                    ExpandableListAdapter adapter = workspaceListView.getExpandableListAdapter();
-                    if (adapter instanceof WorkspaceExpandableListAdapterMKIII) {
-                        //Log.d("TOUCH TESTS", "ITEM DROPPED");
-                        ((WorkspaceExpandableListAdapterMKIII)adapter).onDrop(type, toX, toY);
-                        //((WorkspaceActivity)getActivity()).getAdapter().notifyDataSetChanged();
-                    }
-                }
-            };
-            */
 }
 

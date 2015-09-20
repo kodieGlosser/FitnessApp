@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.AbsListView;
@@ -107,11 +108,47 @@ public class WorkspaceExpandableListView extends animatedExpandableListView {
    //private boolean LAST_GROUP_IS_OPEN = false;
 
     //TYPE
-    private final int DRAGGED_ITEM_INVALID = -1;
-    private int mDraggedItemType = DRAGGED_ITEM_INVALID;
+    //private final int DRAGGED_ITEM_INVALID = -1;
+    //private int mDraggedItemType = DRAGGED_ITEM_INVALID;
 
     //ITEM IDS
+    private WorkspaceExpandableListAdapterMKIII.dragListener mListener = new WorkspaceExpandableListAdapterMKIII.dragListener(){
+        @Override
+        public void OnDragHandleLongClickedListener(View selectView, int type){
 
+            mDragMode = true;
+            mTotalOffset = 0;
+
+            long expLstPos = getExpandableListPosition(getPositionForView(selectView));
+            CURRENT_GROUP = getPackedPositionGroup(expLstPos);
+            CURRENT_CHILD = getPackedPositionChild(expLstPos);
+
+            CURRENT_GROUP_IS_OPEN = Workout.get(CURRENT_GROUP).isOpen();
+
+            WorkspaceExpandableListAdapterMKIII adapter =
+                    (WorkspaceExpandableListAdapterMKIII) getExpandableListAdapter();
+
+            if(type == PACKED_POSITION_TYPE_CHILD){
+                //\\\6/25mMobileItemId = Workout.get(CURRENT_GROUP).getExercise(CURRENT_CHILD).getStableID();
+                Log.d(logTag, "interfaceCalled for child.  group: " + CURRENT_GROUP + " child: " + CURRENT_CHILD);
+                mMobileItemId = adapter.getChildId(CURRENT_GROUP, CURRENT_CHILD);
+                //Log.d(logTag, "Current Item id = " + mMobileItemId);
+            } else if(type == PACKED_POSITION_TYPE_GROUP){
+                //\\\mMobileItemId = Workout.get(CURRENT_GROUP).getStableID();
+                Log.d(logTag, "interfaceCalled for group.  group: " + CURRENT_GROUP + " child: " + CURRENT_CHILD);
+                mMobileItemId = adapter.getGroupId(CURRENT_GROUP);
+                //todo collapse all code
+            }
+
+            mHoverCell = getAndAddHoverView(selectView);
+
+            selectView.setVisibility(INVISIBLE);
+            getNeighborPositions();
+            updateNeighborIDsForCurrentPosition();
+
+            mDragInProgress = true;
+        }
+    };
 
     public WorkspaceExpandableListView(Context context, AttributeSet attrs) {
 
@@ -125,75 +162,23 @@ public class WorkspaceExpandableListView extends animatedExpandableListView {
         SCREENWIDTH = size.x;
         SCREENHEIGHT = size.y;
 
-        //DRAG COUNTDOWN VARS
-        //dragHoldBounds = (int)(SCREENWIDTH * .047);
-        //setOnItemLongClickListener(mOnItemLongClickListener);
-        //setOnScrollListener(mScrollListener);
+        setOnScrollListener(mScrollListener);
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         mSmoothScrollAmountAtEdge = (int)(SMOOTH_SCROLL_AMOUNT_AT_EDGE / metrics.density);
+        //Log.d(logTag, "Listview constructed");
+    }
+
+    public void init(){
+        restoreListExpansion();
+        setGroupIndicator(null);
+        ((WorkspaceExpandableListAdapterMKIII) getExpandableListAdapter()).setDragListener(mListener);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        final int action = event.getAction();
-        final int x = (int) event.getX();
-        final int y = (int) event.getY();
-
-        if ((action == MotionEvent.ACTION_DOWN && x > this.getWidth() * 9 / 10)) {
-            if (getPackedPositionType(getExpandableListPosition(pointToPosition(x, y))) == PACKED_POSITION_TYPE_GROUP) {
-                if (!WorkoutData.get(mContext).getWorkout()
-                        .get(getPackedPositionGroup(getExpandableListPosition(pointToPosition(x, y)))).isOpen()) {
-                    mDragMode = false;
-                } else {
-                    mDragMode = true;
-                }
-            } else {
-                mDragMode = true;
-            }
-        }
-        //  DRAG LOGIC
 
         if (mDragMode) {
-            switch (action) {
-                case MotionEvent.ACTION_DOWN: //mouse button is initially pressed
-                    mDownY = y;
-                    mTotalOffset = 0;
-                    mActivePointerId = event.getPointerId(0);
-                    int startPosition = pointToPosition(x, y);
-
-                    if (checkIfValidPosition(startPosition)) {
-                        View selectedView = getChildAt(startPosition - getFirstVisiblePosition());
-                        //get item id
-                        long expListPos = getExpandableListPosition(startPosition);
-                        mDraggedItemType = getPackedPositionType(expListPos);
-
-                        CURRENT_GROUP = getPackedPositionGroup(expListPos);
-                        CURRENT_CHILD = getPackedPositionChild(expListPos);
-                        CURRENT_GROUP_IS_OPEN = Workout.get(CURRENT_GROUP).isOpen();
-
-                        WorkspaceExpandableListAdapterMKIII adapter =
-                                (WorkspaceExpandableListAdapterMKIII) getExpandableListAdapter();
-
-                        if(mDraggedItemType == PACKED_POSITION_TYPE_CHILD){
-                            //\\\6/25mMobileItemId = Workout.get(CURRENT_GROUP).getExercise(CURRENT_CHILD).getStableID();
-                            mMobileItemId = adapter.getChildId(CURRENT_GROUP, CURRENT_CHILD);
-                            //Log.d(logTag, "Current Item id = " + mMobileItemId);
-                        } else if(mDraggedItemType == PACKED_POSITION_TYPE_GROUP){
-                            //\\\mMobileItemId = Workout.get(CURRENT_GROUP).getStableID();
-                            mMobileItemId = adapter.getGroupId(CURRENT_GROUP);
-                        }
-
-                        mHoverCell = getAndAddHoverView(selectedView);
-
-                        selectedView.setVisibility(INVISIBLE);
-                        getNeighborPositions();
-                        updateNeighborIDsForCurrentPosition();
-
-                        mDragInProgress = true;
-                        //startDrag();
-                    }
-
-                    break;
+            switch (event.getAction()) {
                 case MotionEvent.ACTION_MOVE: //mose if moved
                     if (mActivePointerId == INVALID_POINTER_ID) {
                         break;
@@ -242,6 +227,19 @@ public class WorkspaceExpandableListView extends animatedExpandableListView {
             }
         }
         return super.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent event){
+        //Log.d(logTag, "touch event in interceptor");
+        if (event.getAction() == MotionEvent.ACTION_DOWN){
+            mDownY = (int) event.getY();
+            mActivePointerId = event.getPointerId(0);
+            onTouchEvent(event);
+        } else {
+            onTouchEvent(event);
+        }
+        return false;
     }
 
     private void handleCellSwitch() {
@@ -332,7 +330,7 @@ public class WorkspaceExpandableListView extends animatedExpandableListView {
                     //testflag = false;
 
                     mTotalOffset += deltaY;
-                    int switchViewNewTop = switchView.getTop();
+                     int switchViewNewTop = switchView.getTop();
                     int delta = switchViewStartTop - switchViewNewTop;
 
                     switchView.setTranslationY(delta);
@@ -354,7 +352,7 @@ public class WorkspaceExpandableListView extends animatedExpandableListView {
             mHoverCell.draw(canvas);
         }
     }
-    //TODO MODIFY DATASET VIA ADAPTER
+
     private void moveElement(int useWhich) {
         //Log.d(logTag, "moveElement() - called");
         int TARGET_GROUP;
@@ -488,8 +486,6 @@ public class WorkspaceExpandableListView extends animatedExpandableListView {
                 }
 
                 break;
-            default:
-                return;
         }
         //Log.d(logTag, "moveElement() CURRENT POSITIONS SET - CURRENT_GROUP: " + CURRENT_GROUP + " - CURRENT_CHILD: " + CURRENT_CHILD);
         //for(Circuit c: Workout)
@@ -544,7 +540,7 @@ public class WorkspaceExpandableListView extends animatedExpandableListView {
 
     private void updateNeighborIDsForCurrentPosition() {
         //above id
-
+        //todo handle group things
         WorkspaceExpandableListAdapterMKIII adapter =
                 (WorkspaceExpandableListAdapterMKIII) getExpandableListAdapter();
 
@@ -662,7 +658,7 @@ public class WorkspaceExpandableListView extends animatedExpandableListView {
     }
     */
     private void getNeighborPositions(){
-
+        //todo handle group and child differences
         boolean curGrpLast;
 
         curGrpLast = CURRENT_GROUP == Workout.size()-1;
@@ -897,7 +893,7 @@ public class WorkspaceExpandableListView extends animatedExpandableListView {
 
         return false;
     }
-
+    /*
     private boolean checkIfValidPosition(int startPosition) {
         boolean okayToDrag = false;
         int groupPosition;
@@ -923,7 +919,7 @@ public class WorkspaceExpandableListView extends animatedExpandableListView {
         }
         return okayToDrag;
     }
-
+    */
     private AbsListView.OnScrollListener mScrollListener = new AbsListView.OnScrollListener () {
 
         private int mPreviousFirstVisibleItem = -1;
@@ -1013,7 +1009,7 @@ public class WorkspaceExpandableListView extends animatedExpandableListView {
             }
         }
     }
-
+    /*
     public void removeCheckedItems() {
 
         int first = getFirstVisiblePosition();
@@ -1090,6 +1086,6 @@ public class WorkspaceExpandableListView extends animatedExpandableListView {
             set.start();
         }
         }
-
+    */
     }
 

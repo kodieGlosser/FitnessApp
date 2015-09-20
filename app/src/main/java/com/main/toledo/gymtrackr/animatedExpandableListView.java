@@ -81,7 +81,7 @@ public class animatedExpandableListView extends ExpandableListView {
 
         }
 
-        if(mClearViewsToDraw) mViewsToDraw.clear();
+        if(mClearViewsToDraw) mViewsToDraw.clear();  //this fixes a bug where views drawn from offscreen will flicker
 
     }
 
