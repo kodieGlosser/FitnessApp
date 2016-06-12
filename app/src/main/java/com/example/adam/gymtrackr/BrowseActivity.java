@@ -56,8 +56,8 @@ public class BrowseActivity extends FragmentActivity {
         StubExercises.add( new Exercise("curl", "arms", 1, "dumbbell"));
         StubExercises.add( new Exercise("squat", "legs", 2, "barbell"));
         StubExercises.add( new Exercise("bench press", "chest", 3, "barbell"));
-        StubExercises.add( new Exercise("dumb bell row", "back", 4, "dumbell"));
-        StubExercises.add( new Exercise("triceps extension", "arms", 5, "dumbell"));
+        StubExercises.add( new Exercise("dumb bell row", "back", 4, "dumbbell"));
+        StubExercises.add( new Exercise("triceps extension", "arms", 5, "dumbbell"));
         StubExercises.add( new Exercise("shoulder press", "shoulders", 6, "barbell"));
         StubExercises.add( new Exercise("shrug", "shoulders", 7, "barbell"));
     }

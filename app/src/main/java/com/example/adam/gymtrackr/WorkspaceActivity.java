@@ -28,8 +28,8 @@ public class WorkspaceActivity extends Activity {
         CircuitA.add( new Exercise("curl", "arms", 1, "dumbbell"));
         CircuitA.add( new Exercise("squat", "legs", 2, "barbell"));
         CircuitA.add( new Exercise("bench press", "chest", 3, "barbell"));
-        CircuitB.add( new Exercise("dumb bell row", "back", 4, "dumbell"));
-        CircuitB.add( new Exercise("triceps extension", "arms", 5, "dumbell"));
+        CircuitB.add( new Exercise("dumb bell row", "back", 4, "dumbbell"));
+        CircuitB.add( new Exercise("triceps extension", "arms", 5, "dumbbell"));
         CircuitC.add( new Exercise("shoulder press", "shoulders", 6, "barbell"));
         CircuitC.add( new Exercise("shrug", "shoulders", 7, "barbell"));
 
